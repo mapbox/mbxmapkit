@@ -1,0 +1,73 @@
+---
+layout: default
+section: developers
+---
+<div class='clearfix doc-header fill-light'>
+  <div class='col12 pad4x contain'>
+    <a class='tag pad1y2x fill-darken0' href='{{site.url}}/{{page.section|downcase}}'>{{page.section}}</a>
+  </div>
+
+  <div class='pad4 clearfix'>
+      <div class='col6'>
+        <h2>{{site.title}}</h2>
+        <p>{{site.description}}</p>
+      </div>
+
+      <nav class='col6 pill clearfix'>
+        <a class='button col3' href='{{site.baseurl}}/'>Guide</a><a class='button col3' href='{{site.baseurl}}/api/'>API</a><a class='button col3 active' href='{{site.baseurl}}/examples/'>Examples</a><a class='button col3' href='{{site.baseurl}}/changelog/'>Changelog</a>
+      </nav>
+    </div>
+
+    <div class='doc-page pad4c fill-grey clearfix'>
+      <div class='fill-white clearfix'>
+        <div class='col3'>
+          <div class='doc-nav'>
+            <form class='doc-search contain pad2'>
+              <fieldset class='search'>
+                <span class='icon search'></span>
+                <input class='stretch' type='text' placeholder='Filter examples'>
+              </fieldset>
+            </form>
+            <nav class='v small'>
+              {% for item in site.categories.examples reversed %}
+              <a class='pad1y2x {% if item.url == page.url %} active{% endif %}' href='{{site.baseurl}}{{item.url}}'>{{item.title}}</a>
+              {% endfor %}
+            </nav>
+          </div>
+        </div>
+        <div class='col9 doc-example keyline-left'>
+          <div class='pad2 doc example-header keyline-bottom'>
+            <h3>{{page.title}}</h3>
+            <span class='description'>{{page.description}}</span>
+          </div>
+
+          <div id='screenshot' class='doc pad2'>
+            <img src='{{site.baseurl}}/images{{page.url | replace:'examples/',''}}.png'/>
+          </div>
+          <div id='code' class='doc'>
+{% highlight objective-c %}
+#import "MapBox.h"
+
+{{content}}
+
+@end
+{% endhighlight %}
+          </div>
+          <div class='keyline-top center small'>
+            <div class='pad2'>
+              The code and documentation to <a href='http://github.com/mapbox/mapbox-ios-sdk'>mapbox-ios-sdk is hosted on GitHub</a> where you can contribute changes and improvements.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% include developers-footer.html %}
+
+<script>
+  $(function () {
+    var example = new Docs();
+    example.bindSearch($('.doc-search input'), $('nav.v'), false);
+  });
+</script>
