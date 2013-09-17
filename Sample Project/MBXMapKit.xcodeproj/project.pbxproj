@@ -18,8 +18,8 @@
 		DD33A42917E8D8C2009B3EB1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DD33A42217E8D8C2009B3EB1 /* main.m */; };
 		DD33A42A17E8D8C2009B3EB1 /* MBXAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DD33A42417E8D8C2009B3EB1 /* MBXAppDelegate.m */; };
 		DD9796BD17E8E8B100F8F1D2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD9796BB17E8E8B100F8F1D2 /* MainMenu.xib */; };
-		DDD05BC317E8EDD3008F6210 /* MBXMapKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD05BC217E8EDD3008F6210 /* MBXMapKit.m */; };
-		DDD05BC417E8EDD3008F6210 /* MBXMapKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD05BC217E8EDD3008F6210 /* MBXMapKit.m */; };
+		DDCDA08F17E900E50037CAAD /* MBXMapKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DDCDA08E17E900E50037CAAD /* MBXMapKit.m */; };
+		DDCDA09017E900E50037CAAD /* MBXMapKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DDCDA08E17E900E50037CAAD /* MBXMapKit.m */; };
 		DDD5906717D7D086009291B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD5906617D7D086009291B8 /* Foundation.framework */; };
 		DDD5906917D7D086009291B8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD5906817D7D086009291B8 /* CoreGraphics.framework */; };
 		DDD5906B17D7D086009291B8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD5906A17D7D086009291B8 /* UIKit.framework */; };
@@ -46,8 +46,8 @@
 		DD33A42517E8D8C2009B3EB1 /* MBXMapKit Mac-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "MBXMapKit Mac-Info.plist"; path = "MBXMapKit-Mac/MBXMapKit Mac-Info.plist"; sourceTree = SOURCE_ROOT; };
 		DD33A42617E8D8C2009B3EB1 /* MBXMapKit Mac-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "MBXMapKit Mac-Prefix.pch"; path = "MBXMapKit-Mac/MBXMapKit Mac-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		DD9796BC17E8E8B100F8F1D2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "MBXMapKit-Mac/Base.lproj/MainMenu.xib"; sourceTree = SOURCE_ROOT; };
-		DDD05BC117E8EDD3008F6210 /* MBXMapKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBXMapKit.h; path = ../../MBXMapKit.h; sourceTree = "<group>"; };
-		DDD05BC217E8EDD3008F6210 /* MBXMapKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBXMapKit.m; path = ../../MBXMapKit.m; sourceTree = "<group>"; };
+		DDCDA08D17E900E50037CAAD /* MBXMapKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXMapKit.h; sourceTree = "<group>"; };
+		DDCDA08E17E900E50037CAAD /* MBXMapKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXMapKit.m; sourceTree = "<group>"; };
 		DDD5906317D7D086009291B8 /* MBXMapKit iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MBXMapKit iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDD5906617D7D086009291B8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		DDD5906817D7D086009291B8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -127,12 +127,22 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		DDCDA08C17E900D80037CAAD /* MBXMapKit */ = {
+			isa = PBXGroup;
+			children = (
+				DDCDA08D17E900E50037CAAD /* MBXMapKit.h */,
+				DDCDA08E17E900E50037CAAD /* MBXMapKit.m */,
+			);
+			name = MBXMapKit;
+			path = ..;
+			sourceTree = "<group>";
+		};
 		DDD5905A17D7D086009291B8 = {
 			isa = PBXGroup;
 			children = (
 				DD320F1717E3CC0600CD95A9 /* MBXMapKit iOS Demo */,
 				DD320F6F17E3CE5500CD95A9 /* MBXMapKit Mac Demo */,
-				DDD5906C17D7D086009291B8 /* MBXMapKit */,
+				DDCDA08C17E900D80037CAAD /* MBXMapKit */,
 				DDD5906417D7D086009291B8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -155,15 +165,6 @@
 				DDD5906A17D7D086009291B8 /* UIKit.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		DDD5906C17D7D086009291B8 /* MBXMapKit */ = {
-			isa = PBXGroup;
-			children = (
-				DDD05BC117E8EDD3008F6210 /* MBXMapKit.h */,
-				DDD05BC217E8EDD3008F6210 /* MBXMapKit.m */,
-			);
-			path = MBXMapKit;
 			sourceTree = "<group>";
 		};
 		DDD5906D17D7D086009291B8 /* Supporting Files */ = {
@@ -289,7 +290,7 @@
 			files = (
 				DD33A42A17E8D8C2009B3EB1 /* MBXAppDelegate.m in Sources */,
 				DD33A42917E8D8C2009B3EB1 /* main.m in Sources */,
-				DDD05BC417E8EDD3008F6210 /* MBXMapKit.m in Sources */,
+				DDCDA09017E900E50037CAAD /* MBXMapKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,10 +298,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DDD05BC317E8EDD3008F6210 /* MBXMapKit.m in Sources */,
 				DD320F2617E3CD0E00CD95A9 /* MBXViewController.m in Sources */,
 				DD320F2817E3CD0E00CD95A9 /* MBXAppDelegate.m in Sources */,
 				DD320F2A17E3CD0E00CD95A9 /* main.m in Sources */,
+				DDCDA08F17E900E50037CAAD /* MBXMapKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
