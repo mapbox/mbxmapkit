@@ -154,12 +154,12 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode)
 
 - (NSURL *)URLForTilePath:(MKTileOverlayPath)path
 {
-    return [NSURL URLWithString:[NSString stringWithFormat:@"https://%@.tiles.mapbox.com/v3/%@/%d/%d/%d%@.png",
+    return [NSURL URLWithString:[NSString stringWithFormat:@"https://%@.tiles.mapbox.com/v3/%@/%ld/%ld/%ld%@.png",
                                     [@[ @"a", @"b", @"c", @"d" ] objectAtIndex:(rand() % 4)],
                                     self.mapView.mapID,
-                                    path.z,
-                                    path.x,
-                                    path.y,
+                                    (long)path.z,
+                                    (long)path.x,
+                                    (long)path.y,
                                     (path.contentScaleFactor > 1.0 ? @"@2x" : @"")]];
 }
 
@@ -241,12 +241,12 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode)
 
 - (NSString *)cachePathForTilePath:(MKTileOverlayPath)path
 {
-    return [NSString stringWithFormat:@"%@/%@/%i_%i_%i%@.png",
+    return [NSString stringWithFormat:@"%@/%@/%ld_%ld_%ld%@.png",
                [self.mapView cachePath],
                self.mapView.mapID,
-               path.z,
-               path.x,
-               path.y,
+               (long)path.z,
+               (long)path.x,
+               (long)path.y,
                (path.contentScaleFactor > 1.0 ? @"@2x" : @"")];
 }
 
