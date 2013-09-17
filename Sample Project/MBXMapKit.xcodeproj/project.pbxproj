@@ -1,0 +1,532 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DD320F2617E3CD0E00CD95A9 /* MBXViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD320F1A17E3CD0E00CD95A9 /* MBXViewController.m */; };
+		DD320F2817E3CD0E00CD95A9 /* MBXAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DD320F1F17E3CD0E00CD95A9 /* MBXAppDelegate.m */; };
+		DD320F2917E3CD0E00CD95A9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD320F2217E3CD0E00CD95A9 /* InfoPlist.strings */; };
+		DD320F2A17E3CD0E00CD95A9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DD320F2417E3CD0E00CD95A9 /* main.m */; };
+		DD320F6A17E3CE5500CD95A9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD320F6917E3CE5500CD95A9 /* Cocoa.framework */; };
+		DD320F9C17E3CF8E00CD95A9 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD320F9B17E3CF8E00CD95A9 /* MapKit.framework */; };
+		DD33A42717E8D8C2009B3EB1 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = DD33A41E17E8D8C2009B3EB1 /* Credits.rtf */; };
+		DD33A42817E8D8C2009B3EB1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD33A42017E8D8C2009B3EB1 /* InfoPlist.strings */; };
+		DD33A42917E8D8C2009B3EB1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DD33A42217E8D8C2009B3EB1 /* main.m */; };
+		DD33A42A17E8D8C2009B3EB1 /* MBXAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DD33A42417E8D8C2009B3EB1 /* MBXAppDelegate.m */; };
+		DD9796BD17E8E8B100F8F1D2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD9796BB17E8E8B100F8F1D2 /* MainMenu.xib */; };
+		DDD05BC317E8EDD3008F6210 /* MBXMapKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD05BC217E8EDD3008F6210 /* MBXMapKit.m */; };
+		DDD05BC417E8EDD3008F6210 /* MBXMapKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD05BC217E8EDD3008F6210 /* MBXMapKit.m */; };
+		DDD5906717D7D086009291B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD5906617D7D086009291B8 /* Foundation.framework */; };
+		DDD5906917D7D086009291B8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD5906817D7D086009291B8 /* CoreGraphics.framework */; };
+		DDD5906B17D7D086009291B8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD5906A17D7D086009291B8 /* UIKit.framework */; };
+		DDD5909F17D7D18A009291B8 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD5909E17D7D18A009291B8 /* MapKit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		DD320F1A17E3CD0E00CD95A9 /* MBXViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBXViewController.m; path = "MBXMapKit-iOS/MBXViewController.m"; sourceTree = "<group>"; };
+		DD320F1C17E3CD0E00CD95A9 /* MBXMapKit-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "MBXMapKit-Info.plist"; path = "MBXMapKit-iOS/MBXMapKit-Info.plist"; sourceTree = SOURCE_ROOT; };
+		DD320F1D17E3CD0E00CD95A9 /* MBXViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBXViewController.h; path = "MBXMapKit-iOS/MBXViewController.h"; sourceTree = "<group>"; };
+		DD320F1E17E3CD0E00CD95A9 /* MBXAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBXAppDelegate.h; path = "MBXMapKit-iOS/MBXAppDelegate.h"; sourceTree = "<group>"; };
+		DD320F1F17E3CD0E00CD95A9 /* MBXAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBXAppDelegate.m; path = "MBXMapKit-iOS/MBXAppDelegate.m"; sourceTree = "<group>"; };
+		DD320F2017E3CD0E00CD95A9 /* MBXMapKit-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "MBXMapKit-Prefix.pch"; path = "MBXMapKit-iOS/MBXMapKit-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		DD320F2317E3CD0E00CD95A9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
+		DD320F2417E3CD0E00CD95A9 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "MBXMapKit-iOS/main.m"; sourceTree = SOURCE_ROOT; };
+		DD320F6717E3CE5500CD95A9 /* MBXMapKit Mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MBXMapKit Mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD320F6917E3CE5500CD95A9 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		DD320F9B17E3CF8E00CD95A9 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/MapKit.framework; sourceTree = DEVELOPER_DIR; };
+		DD33A41F17E8D8C2009B3EB1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = "MBXMapKit-Mac/en.lproj/Credits.rtf"; sourceTree = SOURCE_ROOT; };
+		DD33A42117E8D8C2009B3EB1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "MBXMapKit-Mac/en.lproj/InfoPlist.strings"; sourceTree = SOURCE_ROOT; };
+		DD33A42217E8D8C2009B3EB1 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "MBXMapKit-Mac/main.m"; sourceTree = SOURCE_ROOT; };
+		DD33A42317E8D8C2009B3EB1 /* MBXAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBXAppDelegate.h; path = "MBXMapKit-Mac/MBXAppDelegate.h"; sourceTree = SOURCE_ROOT; };
+		DD33A42417E8D8C2009B3EB1 /* MBXAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBXAppDelegate.m; path = "MBXMapKit-Mac/MBXAppDelegate.m"; sourceTree = SOURCE_ROOT; };
+		DD33A42517E8D8C2009B3EB1 /* MBXMapKit Mac-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "MBXMapKit Mac-Info.plist"; path = "MBXMapKit-Mac/MBXMapKit Mac-Info.plist"; sourceTree = SOURCE_ROOT; };
+		DD33A42617E8D8C2009B3EB1 /* MBXMapKit Mac-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "MBXMapKit Mac-Prefix.pch"; path = "MBXMapKit-Mac/MBXMapKit Mac-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		DD9796BC17E8E8B100F8F1D2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "MBXMapKit-Mac/Base.lproj/MainMenu.xib"; sourceTree = SOURCE_ROOT; };
+		DDD05BC117E8EDD3008F6210 /* MBXMapKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBXMapKit.h; path = ../../MBXMapKit.h; sourceTree = "<group>"; };
+		DDD05BC217E8EDD3008F6210 /* MBXMapKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBXMapKit.m; path = ../../MBXMapKit.m; sourceTree = "<group>"; };
+		DDD5906317D7D086009291B8 /* MBXMapKit iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MBXMapKit iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DDD5906617D7D086009291B8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		DDD5906817D7D086009291B8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		DDD5906A17D7D086009291B8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		DDD5909E17D7D18A009291B8 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DD320F6417E3CE5500CD95A9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD320F6A17E3CE5500CD95A9 /* Cocoa.framework in Frameworks */,
+				DD320F9C17E3CF8E00CD95A9 /* MapKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DDD5906017D7D086009291B8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DDD5906917D7D086009291B8 /* CoreGraphics.framework in Frameworks */,
+				DDD5906717D7D086009291B8 /* Foundation.framework in Frameworks */,
+				DDD5909F17D7D18A009291B8 /* MapKit.framework in Frameworks */,
+				DDD5906B17D7D086009291B8 /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		DD320F1717E3CC0600CD95A9 /* MBXMapKit iOS Demo */ = {
+			isa = PBXGroup;
+			children = (
+				DD320F1E17E3CD0E00CD95A9 /* MBXAppDelegate.h */,
+				DD320F1F17E3CD0E00CD95A9 /* MBXAppDelegate.m */,
+				DD320F1D17E3CD0E00CD95A9 /* MBXViewController.h */,
+				DD320F1A17E3CD0E00CD95A9 /* MBXViewController.m */,
+				DDD5906D17D7D086009291B8 /* Supporting Files */,
+				DDD5906517D7D086009291B8 /* Frameworks */,
+			);
+			name = "MBXMapKit iOS Demo";
+			sourceTree = "<group>";
+		};
+		DD320F6817E3CE5500CD95A9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DD320F6917E3CE5500CD95A9 /* Cocoa.framework */,
+				DD320F9B17E3CF8E00CD95A9 /* MapKit.framework */,
+			);
+			name = Frameworks;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		DD320F6F17E3CE5500CD95A9 /* MBXMapKit Mac Demo */ = {
+			isa = PBXGroup;
+			children = (
+				DD33A42317E8D8C2009B3EB1 /* MBXAppDelegate.h */,
+				DD33A42417E8D8C2009B3EB1 /* MBXAppDelegate.m */,
+				DD9796BB17E8E8B100F8F1D2 /* MainMenu.xib */,
+				DD320F7017E3CE5500CD95A9 /* Supporting Files */,
+				DD320F6817E3CE5500CD95A9 /* Frameworks */,
+			);
+			name = "MBXMapKit Mac Demo";
+			path = "MBXMapKit Mac";
+			sourceTree = "<group>";
+		};
+		DD320F7017E3CE5500CD95A9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DD33A42517E8D8C2009B3EB1 /* MBXMapKit Mac-Info.plist */,
+				DD33A42017E8D8C2009B3EB1 /* InfoPlist.strings */,
+				DD33A42217E8D8C2009B3EB1 /* main.m */,
+				DD33A42617E8D8C2009B3EB1 /* MBXMapKit Mac-Prefix.pch */,
+				DD33A41E17E8D8C2009B3EB1 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		DDD5905A17D7D086009291B8 = {
+			isa = PBXGroup;
+			children = (
+				DD320F1717E3CC0600CD95A9 /* MBXMapKit iOS Demo */,
+				DD320F6F17E3CE5500CD95A9 /* MBXMapKit Mac Demo */,
+				DDD5906C17D7D086009291B8 /* MBXMapKit */,
+				DDD5906417D7D086009291B8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DDD5906417D7D086009291B8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DDD5906317D7D086009291B8 /* MBXMapKit iOS.app */,
+				DD320F6717E3CE5500CD95A9 /* MBXMapKit Mac.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DDD5906517D7D086009291B8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DDD5906817D7D086009291B8 /* CoreGraphics.framework */,
+				DDD5906617D7D086009291B8 /* Foundation.framework */,
+				DDD5909E17D7D18A009291B8 /* MapKit.framework */,
+				DDD5906A17D7D086009291B8 /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DDD5906C17D7D086009291B8 /* MBXMapKit */ = {
+			isa = PBXGroup;
+			children = (
+				DDD05BC117E8EDD3008F6210 /* MBXMapKit.h */,
+				DDD05BC217E8EDD3008F6210 /* MBXMapKit.m */,
+			);
+			path = MBXMapKit;
+			sourceTree = "<group>";
+		};
+		DDD5906D17D7D086009291B8 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DD320F1C17E3CD0E00CD95A9 /* MBXMapKit-Info.plist */,
+				DD320F2217E3CD0E00CD95A9 /* InfoPlist.strings */,
+				DD320F2417E3CD0E00CD95A9 /* main.m */,
+				DD320F2017E3CD0E00CD95A9 /* MBXMapKit-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			path = MBXMapKit;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DD320F6617E3CE5500CD95A9 /* MBXMapKit Mac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DD320F9517E3CE5500CD95A9 /* Build configuration list for PBXNativeTarget "MBXMapKit Mac" */;
+			buildPhases = (
+				DD320F6317E3CE5500CD95A9 /* Sources */,
+				DD320F6417E3CE5500CD95A9 /* Frameworks */,
+				DD320F6517E3CE5500CD95A9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MBXMapKit Mac";
+			productName = "MBXMapKit Mac";
+			productReference = DD320F6717E3CE5500CD95A9 /* MBXMapKit Mac.app */;
+			productType = "com.apple.product-type.application";
+		};
+		DDD5906217D7D086009291B8 /* MBXMapKit iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DDD5909817D7D087009291B8 /* Build configuration list for PBXNativeTarget "MBXMapKit iOS" */;
+			buildPhases = (
+				DDD5905F17D7D086009291B8 /* Sources */,
+				DDD5906017D7D086009291B8 /* Frameworks */,
+				DDD5906117D7D086009291B8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MBXMapKit iOS";
+			productName = MBXMapKit;
+			productReference = DDD5906317D7D086009291B8 /* MBXMapKit iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DDD5905B17D7D086009291B8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = MBX;
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = MapBox;
+				TargetAttributes = {
+					DD320F6617E3CE5500CD95A9 = {
+						DevelopmentTeam = 4QJUGA28YU;
+						SystemCapabilities = {
+							com.apple.Mac = {
+								enabled = 1;
+							};
+						};
+					};
+					DDD5906217D7D086009291B8 = {
+						SystemCapabilities = {
+							com.apple.iOS = {
+								enabled = 1;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = DDD5905E17D7D086009291B8 /* Build configuration list for PBXProject "MBXMapKit" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = DDD5905A17D7D086009291B8;
+			productRefGroup = DDD5906417D7D086009291B8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DDD5906217D7D086009291B8 /* MBXMapKit iOS */,
+				DD320F6617E3CE5500CD95A9 /* MBXMapKit Mac */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DD320F6517E3CE5500CD95A9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD33A42717E8D8C2009B3EB1 /* Credits.rtf in Resources */,
+				DD33A42817E8D8C2009B3EB1 /* InfoPlist.strings in Resources */,
+				DD9796BD17E8E8B100F8F1D2 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DDD5906117D7D086009291B8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD320F2917E3CD0E00CD95A9 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DD320F6317E3CE5500CD95A9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD33A42A17E8D8C2009B3EB1 /* MBXAppDelegate.m in Sources */,
+				DD33A42917E8D8C2009B3EB1 /* main.m in Sources */,
+				DDD05BC417E8EDD3008F6210 /* MBXMapKit.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DDD5905F17D7D086009291B8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DDD05BC317E8EDD3008F6210 /* MBXMapKit.m in Sources */,
+				DD320F2617E3CD0E00CD95A9 /* MBXViewController.m in Sources */,
+				DD320F2817E3CD0E00CD95A9 /* MBXAppDelegate.m in Sources */,
+				DD320F2A17E3CD0E00CD95A9 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		DD320F2217E3CD0E00CD95A9 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DD320F2317E3CD0E00CD95A9 /* en */,
+			);
+			name = InfoPlist.strings;
+			path = "MBXMapKit-iOS/en.lproj";
+			sourceTree = SOURCE_ROOT;
+		};
+		DD33A41E17E8D8C2009B3EB1 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DD33A41F17E8D8C2009B3EB1 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		DD33A42017E8D8C2009B3EB1 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DD33A42117E8D8C2009B3EB1 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		DD9796BB17E8E8B100F8F1D2 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DD9796BC17E8E8B100F8F1D2 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		DD320F9617E3CE5500CD95A9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MBXMapKit-Mac/MBXMapKit Mac-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				HEADER_SEARCH_PATHS = ..;
+				INFOPLIST_FILE = "$(SRCROOT)/MBXMapKit-Mac/MBXMapKit Mac-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		DD320F9717E3CE5500CD95A9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MBXMapKit-Mac/MBXMapKit Mac-Prefix.pch";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				HEADER_SEARCH_PATHS = ..;
+				INFOPLIST_FILE = "$(SRCROOT)/MBXMapKit-Mac/MBXMapKit Mac-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		DDD5909617D7D087009291B8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DDD5909717D7D087009291B8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DDD5909917D7D087009291B8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MBXMapKit-iOS/MBXMapKit-Prefix.pch";
+				HEADER_SEARCH_PATHS = ..;
+				INFOPLIST_FILE = "$(SRCROOT)/MBXMapKit-iOS/MBXMapKit-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		DDD5909A17D7D087009291B8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MBXMapKit-iOS/MBXMapKit-Prefix.pch";
+				HEADER_SEARCH_PATHS = ..;
+				INFOPLIST_FILE = "$(SRCROOT)/MBXMapKit-iOS/MBXMapKit-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DD320F9517E3CE5500CD95A9 /* Build configuration list for PBXNativeTarget "MBXMapKit Mac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD320F9617E3CE5500CD95A9 /* Debug */,
+				DD320F9717E3CE5500CD95A9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DDD5905E17D7D086009291B8 /* Build configuration list for PBXProject "MBXMapKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DDD5909617D7D087009291B8 /* Debug */,
+				DDD5909717D7D087009291B8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DDD5909817D7D087009291B8 /* Build configuration list for PBXNativeTarget "MBXMapKit iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DDD5909917D7D087009291B8 /* Debug */,
+				DDD5909A17D7D087009291B8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DDD5905B17D7D086009291B8 /* Project object */;
+}
