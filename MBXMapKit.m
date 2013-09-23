@@ -387,7 +387,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode)
         // Add dummy overlay until we get TileJSON. Don't show default tiles just in case.
         //
         self.tileOverlay = [[MBXMapViewTileOverlay alloc] initWithTileJSONDictionary:nil mapView:self];
-        [self addOverlay:self.tileOverlay];
+        [self insertOverlay:self.tileOverlay atIndex:0];
     }
 
     [self setMapID:mapID];
@@ -499,7 +499,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode)
 
                                                         [self.tileOverlay sweepCache];
 
-                                                        [self addOverlay:self.tileOverlay];
+                                                        [self insertOverlay:self.tileOverlay atIndex:0];
 
                                                         [self setCenterCoordinate:self.tileOverlay.coordinate zoomLevel:self.tileOverlay.centerZoom animated:NO];
                                                     });
