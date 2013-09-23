@@ -393,6 +393,16 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode)
     [self setMapID:mapID];
 }
 
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+
+    if (self)
+        [self MBXMapView_commonSetupWithMapID:nil showDefaultBaseLayerMode:MBXMapViewShowDefaultBaseLayerAlways];
+
+    return self;
+}
+
 - (id)initWithFrame:(CGRect)frame mapID:(NSString *)mapID
 {
     self = [super initWithFrame:frame];
