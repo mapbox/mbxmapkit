@@ -294,13 +294,13 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode)
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)selector
 {
-	if (selector == @selector(mapView:rendererForOverlay:))
+    if (selector == @selector(mapView:rendererForOverlay:))
         return [[MBXMapViewDelegate class] methodSignatureForSelector:selector];
 
     if ([self.realDelegate respondsToSelector:selector])
         return [(NSObject *)self.realDelegate methodSignatureForSelector:selector];
 
-	return [[NSObject class] methodSignatureForSelector:selector];
+    return [[NSObject class] methodSignatureForSelector:selector];
 }
 
 - (void)forwardInvocation:(NSInvocation *)invocation
