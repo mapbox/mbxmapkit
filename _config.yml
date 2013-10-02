@@ -1,6 +1,6 @@
 permalink: /:categories/:title
 baseurl: /mbxmapkit
-url: https://www.mapbox.com
+url: //www.mapbox.com
 title: MBXMapKit
 description: One-line MapBox integration with MapKit on iOS and OS X
 pygments: true
