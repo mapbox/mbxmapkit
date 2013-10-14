@@ -4,7 +4,7 @@ section: developers
 ---
 <div class='clearfix doc-header fill-light'>
   <div class='col12 pad4x contain'>
-    <a class='tag pad1y2x fill-darken0' href='{{site.url}}/{{page.section|downcase}}'>{{page.section}}</a>
+    <a class='tag pad1y pad2x fill-darken0' href='{{site.url}}/{{page.section|downcase}}'>{{page.section}}</a>
   </div>
 
   <div class='pad4 clearfix'>
@@ -18,7 +18,7 @@ section: developers
       </nav>
     </div>
 
-    <div class='doc-page pad4c fill-grey clearfix'>
+    <div class='doc-page pad4 fill-grey clearfix'>
       <div class='fill-white clearfix'>
         <div class='col3'>
           <div class='doc-nav'>
@@ -30,7 +30,7 @@ section: developers
             </form>
             <nav class='v small'>
               {% for item in site.categories.examples reversed %}
-              <a class='pad1y2x {% if item.url == page.url %} active{% endif %}' href='{{site.baseurl}}{{item.url}}'>{{item.title}}</a>
+              <a class='pad1y pad2x {% if item.url == page.url %} active{% endif %}' href='{{site.baseurl}}{{item.url}}'>{{item.title}}</a>
               {% endfor %}
             </nav>
           </div>
