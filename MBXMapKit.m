@@ -49,6 +49,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode)
 @property (nonatomic) NSURLSession *dataSession;
 @property (nonatomic) NSURLSessionTask *metadataTask;
 @property (nonatomic) MBXMapViewTileOverlay *tileOverlay;
+@property (nonatomic) BOOL hasInitialCenterCoordinate;
 
 @end
 
@@ -433,6 +434,62 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode)
     return self;
 }
 
+- (void)setCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate
+{
+    self.hasInitialCenterCoordinate = YES;
+
+    [super setCenterCoordinate:centerCoordinate];
+}
+
+- (void)setRegion:(MKCoordinateRegion)region
+{
+    self.hasInitialCenterCoordinate = YES;
+
+    [super setRegion:region];
+}
+
+- (void)setVisibleMapRect:(MKMapRect)visibleMapRect
+{
+    self.hasInitialCenterCoordinate = YES;
+
+    [super setVisibleMapRect:visibleMapRect];
+}
+
+- (void)setCenterCoordinate:(CLLocationCoordinate2D)coordinate animated:(BOOL)animated
+{
+    self.hasInitialCenterCoordinate = YES;
+
+    [super setCenterCoordinate:coordinate animated:animated];
+}
+
+- (void)setRegion:(MKCoordinateRegion)region animated:(BOOL)animated
+{
+    self.hasInitialCenterCoordinate = YES;
+
+    [super setRegion:region animated:animated];
+}
+
+- (void)setVisibleMapRect:(MKMapRect)mapRect animated:(BOOL)animate
+{
+    self.hasInitialCenterCoordinate = YES;
+
+    [super setVisibleMapRect:mapRect animated:animate];
+}
+
+- (void)setVisibleMapRect:(MKMapRect)mapRect edgePadding:(UIEdgeInsets)insets animated:(BOOL)animate
+{
+    self.hasInitialCenterCoordinate = YES;
+
+    [super setVisibleMapRect:mapRect edgePadding:insets animated:animate];
+}
+
+- (void)showAnnotations:(NSArray *)annotations animated:(BOOL)animated
+{
+    self.hasInitialCenterCoordinate = YES;
+
+    [super showAnnotations:annotations animated:animated];
+}
+
 - (void)setCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate zoomLevel:(NSUInteger)zoomLevel animated:(BOOL)animated
 {
     [self setRegion:MKCoordinateRegionMake(centerCoordinate, MKCoordinateSpanMake(0, 360 / pow(2, zoomLevel) * self.frame.size.width / 256)) animated:animated];
@@ -501,7 +558,8 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode)
 
                                                         [self insertOverlay:self.tileOverlay atIndex:0];
 
-                                                        [self setCenterCoordinate:self.tileOverlay.coordinate zoomLevel:self.tileOverlay.centerZoom animated:NO];
+                                                        if ( ! self.hasInitialCenterCoordinate)
+                                                            [self setCenterCoordinate:self.tileOverlay.coordinate zoomLevel:self.tileOverlay.centerZoom animated:NO];
                                                     });
                                                 }
                                                 else
