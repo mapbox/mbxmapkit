@@ -1,0 +1,18 @@
+<script src='{{site.baseurl}}/assets/js/site.js'></script>
+<link href='{{site.baseurl}}/assets/css/site.css' rel='stylesheet' />
+
+<div class='col12 clearfix'>
+  <div class='pad4y'>
+    <h1 class='small'>
+      <a class='quiet' href='{{site.url}}/{{page.section|downcase}}'>{{page.section}}</a>
+    </h1>
+    <h2>{{site.title}}</h2>
+    <p>{{site.description}}</p>
+  </div>
+
+  <nav class='col12 pill mobile-cols space-bottom clearfix'>
+    <a class='button col3 {% if page.url == "/" %} active{% endif %}' href='{{site.baseurl}}/'>Guide</a>
+    <a class='button col3 {% if page.url contains "api" %} active{% endif %}' href='{{site.baseurl}}/api/'>API</a>
+    <a class='button col3 {% if page.url contains "examples" %} active{% endif %}' href='{{site.baseurl}}/examples/'>Examples</a><a class='button col3' href='{{site.baseurl}}/changelog/'>Changelog</a>
+  </nav>
+</div>
