@@ -1,47 +1,26 @@
 ---
 layout: default
 section: developers
-class: box
 ---
-<div class='clearfix doc-header fill-light'>
-  <div class='col12 pad4x contain'>
-    <a class='tag pad1y pad2x fill-darken0' href='{{site.url}}/{{page.section|downcase}}'>{{page.section}}</a>
-  </div>
 
-  <div class='pad4 clearfix'>
-      <div class='col6'>
-        <h2>{{site.title}}</h2>
-        <p>{{site.description}}</p>
-      </div>
+{% include header.html %}
 
-      <nav class='col6 pill clearfix'>
-        <a class='button col4' href='{{site.baseurl}}/'>Guide</a>
-        <a class='button col4' href='{{site.baseurl}}/api/'>API</a>
-        <!-- <a class='button col3' href='{{site.baseurl}}/examples/'>Examples</a> -->
-        <a class='button col4 active' href='{{site.baseurl}}/changelog/'>Changelog</a>
-      </nav>
-    </div>
-
-    <div class='doc-page pad4 fill-grey clearfix'>
-      <div class='fill-white prose doc-content clearfix' style='border:0'>
-        {% for item in page.releases %}
-        <div class='doc pad4 keyline-top'>
-          <h2 id='{{item.version|replace:' ', '_'}}'>{{item.version}} {% if item.date %}<small>{{item.date|date:'%B %d %Y'}}</small>{% endif %}</h2>
-          <ul class='checklist'>
-            {% for item in item.notes %}
-            <li class='check'>{{item | markdownify}}</li>
-            {% endfor %}
-          </ul>
-        </div>
+<div class='keyline-all clearfix'>
+  <div class='prose'>
+    {% for item in page.releases %}
+    <div class='doc pad4 keyline-bottom'>
+      <h2 id='{{item.version|replace:' ', '_'}}'>{{item.version}} {% if item.date %}<small>{{item.date|date:'%B %d %Y'}}</small>{% endif %}</h2>
+      <ul class='checklist'>
+        {% for item in item.notes %}
+        <li class='check'>{{item | markdownify}}</li>
         {% endfor %}
-        <div class='keyline-top small center'>
-          <div class='pad2'>
-            The code and documentation to <a href='http://github.com/mapbox/mbxmapkit'>mbxmapkit is hosted on GitHub</a> where you can contribute changes and improvements.
-          </div>
-        </div>
-      </div>
+      </ul>
+    </div>
+    {% endfor %}
+    <div class='small pad2 center'>
+      The code and documentation to <a href='https://github.com/mapbox/mapbox-ios-sdk'>mapbox-ios-sdk is hosted on GitHub</a> where you can contribute changes and improvements.
     </div>
   </div>
+</div>
 
 {% include developers-footer.html %}
-
