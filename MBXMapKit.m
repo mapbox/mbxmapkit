@@ -289,7 +289,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<MBXMapViewDelegate: %p, realDelegate: %p>", self, self.realDelegate];
+    return [NSString stringWithFormat:@"<MBXMapViewDelegate: %p, realDelegate (%@): %p>", self, (self.realDelegate ? [self.realDelegate class] : @""), self.realDelegate];
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)selector
