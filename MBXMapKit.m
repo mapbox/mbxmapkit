@@ -13,8 +13,7 @@
 #define kMBXMapViewCacheFolder   @"MBXMapViewCache"
 #define kMBXMapViewCacheInterval 60 * 60 * 24 * 7
 
-typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode)
-{
+typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     MBXMapViewShowDefaultBaseLayerNever,
     MBXMapViewShowDefaultBaseLayerAlways,
     MBXMapViewShowDefaultBaseLayerIfPartial,
