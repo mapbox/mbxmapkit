@@ -56,6 +56,8 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 @implementation MBXMapViewTileOverlay
 
+@synthesize boundingMapRect=_boundingMapRect;
+
 - (id)initWithTileJSONDictionary:(NSDictionary *)tileJSONDictionary mapView:(MBXMapView *)mapView
 {
     self = [super initWithURLTemplate:nil];
@@ -81,21 +83,11 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
             self.minimumZ = [_tileJSONDictionary[@"minzoom"] integerValue];
             self.maximumZ = [_tileJSONDictionary[@"maxzoom"] integerValue];
 
-            _region = MKCoordinateRegionMake(CLLocationCoordinate2DMake(0, 0), MKCoordinateSpanMake(0, 0));
-
             if (_mapView.showDefaultBaseLayerMode == MBXMapViewShowDefaultBaseLayerIfPartial)
             {
                 // Show default tiles only if a partial overlay.
                 //
-                CLLocationCoordinate2D nw = CLLocationCoordinate2DMake(self.coordinate.latitude  + (self.region.span.latitudeDelta  / 2),
-                                                                       self.coordinate.longitude - (self.region.span.longitudeDelta / 2));
-                CLLocationCoordinate2D se = CLLocationCoordinate2DMake(self.coordinate.latitude  - (self.region.span.latitudeDelta  / 2),
-                                                                       self.coordinate.longitude + (self.region.span.longitudeDelta / 2));
-
-                self.canReplaceMapContent = (nw.longitude == -180 &&
-                                             se.latitude  <=  -85 &&
-                                             se.longitude ==  180 &&
-                                             nw.latitude  >=   85);
+                self.canReplaceMapContent = (self.region.span.latitudeDelta >= 170 && self.region.span.longitudeDelta == 360);
             }
             else if (_mapView.showDefaultBaseLayerMode == MBXMapViewShowDefaultBaseLayerNever)
             {
@@ -144,12 +136,20 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 - (MKMapRect)boundingMapRect
 {
-    MKMapPoint nwPoint = MKMapPointForCoordinate(CLLocationCoordinate2DMake(self.coordinate.latitude  + (self.region.span.latitudeDelta  / 2),
-                                                                            self.coordinate.longitude - (self.region.span.longitudeDelta / 2)));
-    MKMapPoint sePoint = MKMapPointForCoordinate(CLLocationCoordinate2DMake(self.coordinate.latitude  - (self.region.span.latitudeDelta  / 2),
-                                                                            self.coordinate.longitude + (self.region.span.longitudeDelta / 2)));
+    if ( ! _boundingMapRect.size.width || ! _boundingMapRect.size.height)
+    {
+        CLLocationCoordinate2D nw = CLLocationCoordinate2DMake([self.tileJSONDictionary[@"bounds"][3] doubleValue], [self.tileJSONDictionary[@"bounds"][0] doubleValue]);
+        CLLocationCoordinate2D se = CLLocationCoordinate2DMake([self.tileJSONDictionary[@"bounds"][1] doubleValue], [self.tileJSONDictionary[@"bounds"][2] doubleValue]);
 
-    return MKMapRectMake(nwPoint.x, nwPoint.y, (sePoint.x - nwPoint.x), (sePoint.y - nwPoint.y)); // note this follows the iOS 'y' convention
+        MKMapPoint nwPoint = MKMapPointForCoordinate(nw);
+        MKMapPoint sePoint = MKMapPointForCoordinate(se);
+
+        MKMapSize size = MKMapSizeMake(sePoint.x - nwPoint.x, sePoint.y - nwPoint.y);
+
+        _boundingMapRect = MKMapRectMake(nwPoint.x, nwPoint.y, size.width, size.height);
+    }
+
+    return _boundingMapRect;
 }
 
 - (NSURL *)URLForTilePath:(MKTileOverlayPath)path
