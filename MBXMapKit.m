@@ -347,7 +347,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode)
     }
     else if ([overlay isKindOfClass:[MBXMapViewTileOverlay class]])
     {
-        // Step in if the user-set delegate doens't try to provide a renderer.
+        // Step in if the user-set delegate doesn't try to provide a renderer.
         //
         return [[MKTileOverlayRenderer alloc] initWithTileOverlay:overlay];
     }
