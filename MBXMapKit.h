@@ -19,7 +19,9 @@
 
 /** Initialize a map view with a given frame and MapBox map ID.
 *
-*   By default, Apple's maps will be hidden if the map ID represents a full-world map and shown if the map ID represents a map with partial-world coverage. If you have a full-world map with transparency and wish to show Apple's maps below it, use the initWithFrame:mapID:showDefaultBaseLayer: with a `showDefaultBaseLayer` value of `YES`.
+*   By default, Apple's maps will be hidden if the map ID represents a full-world map and shown if the map ID represents a map with partial-world coverage. If you have a full-world map with transparency and wish to show Apple's maps below it, use the initWithFrame:mapID:showDefaultBaseLayer: with a `showDefaultBaseLayer` value of `YES`. 
+*
+*   If you set a `delegate` on the map view (adopting the `MKMapViewDelegate` protocol), you do not need to return a renderer for `mapView:rendererForOverlay:` in order to render the MapBox overlay. However, if you do implement that delegate method, you should return either a custom `MKTileOverlayRenderer` object or simply `nil` in response to the MapBox overlay in order to ensure proper display. 
 *
 *   @param frame The map view's frame.
 *   @param mapID The MapBox map ID. 
