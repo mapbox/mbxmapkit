@@ -423,6 +423,30 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     return self;
 }
 
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+- (id)initWithFrame:(CGRect)frame mbtilesPath:(NSString *)mbtilesPath
+{
+    self = [super initWithFrame:frame];
+    
+    if (self) {
+#warning Need to implement this
+    }
+    
+    return self;
+}
+
+- (id)initWithFrame:(CGRect)frame mbtilesPath:(NSString *)mbtilesPath showDefaultBaseLayer:(BOOL)showDefaultBaseLayer
+{
+    self = [super initWithFrame:frame];
+    
+    if (self) {
+#warning Need to implement this
+    }
+    
+    return self;
+}
+#endif
+
 - (id)initWithCoder:(NSCoder *)decoder
 {
     self = [super initWithCoder:decoder];
