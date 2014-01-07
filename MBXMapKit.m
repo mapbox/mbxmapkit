@@ -518,10 +518,10 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     } else if(rc == SQLITE_DONE) {
         // The query returned no results. Depending on how the map is set up, this might indicate a problem, or it might
         // be okay. For instance, perhaps you want to set up a map with Apple's satellite map on the bottom and a couple
-        // semi-transparent MBTiles overlays on top. Each of those three layers will potentially have bounds, min zoom,
-        // and max zoom. Setting MKTileOverlay's minimumZ and maximumZ properties for the MBTiles layers should prevent
-        // calls to loadTileAtPath:result: for non-existant zoom levels, but you will probably still get calls for tiles
-        // that are within the zoom limits but outside of the bounding box (TODO: test if that's really how it works).
+        // semi-transparent MBTiles overlays on top. Each of those three layers will potentially have different bounds,
+        // min zoom, and max zoom. Setting MKTileOverlay's minimumZ and maximumZ properties for the MBTiles layers should
+        // prevent calls to loadTileAtPath:result: for non-existant zoom levels, but you will probably still get calls for
+        // tiles that are within the zoom limits but outside of the bounding box (TODO: test if that's really how it works).
         NSLog(@"Query returned no results: %@",query);
               
     } else if(rc == SQLITE_BUSY) {
