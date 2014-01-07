@@ -475,7 +475,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
     
     // Open the database read-only and multi-threaded. The slightly obscure c-style variable names here and below are
-    // used to be consistent with the sqlite documentaion. See http://sqlite.org/c3ref/open.html
+    // used to stay consistent with the sqlite documentaion. See http://sqlite.org/c3ref/open.html
     sqlite3 *db;
     int rc;
     const char *filename = [mbtilesPath cStringUsingEncoding:NSUTF8StringEncoding];
@@ -506,17 +506,22 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
         // The query is supposed to be for exactly one column
         assert(sqlite3_column_count(ppStmt)==1);
         
-        // Success! We got a row with one column of data.
+        // Success!
         data = [NSData dataWithBytes:sqlite3_column_blob(ppStmt, 0) length:sqlite3_column_bytes(ppStmt, 0)];
         
-        // Check if any more rows match (it's supposed to be only one row)
+        // Check if any more rows match
         if(sqlite3_step(ppStmt) != SQLITE_DONE) {
             // Oops, the query apparently matched more than one row (could also be an error)... not fatal, but not good.
             NSLog(@"Warning, query may match more than one row: %@",query);
         }
         
     } else if(rc == SQLITE_DONE) {
-        // The query returned no results. This is okay in the case of a tile that's not included in the MBTiles file
+        // The query returned no results. Depending on how the map is set up, this might indicate a problem, or it might
+        // be okay. For instance, perhaps you want to set up a map with Apple's satellite map on the bottom and a couple
+        // semi-transparent MBTiles overlays on top. Each of those three layers will potentially have bounds, min zoom,
+        // and max zoom. Setting MKTileOverlay's minimumZ and maximumZ properties for the MBTiles layers should prevent
+        // calls to loadTileAtPath:result: for non-existant zoom levels, but you will probably still get calls for tiles
+        // that are within the zoom limits but outside of the bounding box (TODO: test if that's really how it works).
         NSLog(@"Query returned no results: %@",query);
               
     } else if(rc == SQLITE_BUSY) {
