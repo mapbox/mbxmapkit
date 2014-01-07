@@ -134,13 +134,13 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
         self.minimumZ = [minZoom integerValue];
         self.maximumZ = [maxZoom integerValue];
         
-        // Parse the bounds string and convert it to a map region
+        // Parse the bounds string and convert it to a map region and boundingMapRect
         double west;
         double south;
-        double north;
         double east;
+        double north;
         const char *cBounds = [bounds cStringUsingEncoding:NSASCIIStringEncoding];
-        if (4 != sscanf(cBounds,"%lf,%lf,%lf,%lf",&west,&south,&north,&east))
+        if (4 != sscanf(cBounds,"%lf,%lf,%lf,%lf",&west,&south,&east,&north))
         {
             // This is bad, bounds was supposed to have 4 comma-separated doubles
             NSLog(@"initWithMBTilesPath:mapView: failed to parse the map bounds: %@",bounds);
@@ -148,11 +148,25 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
         }
         else
         {
-            NSLog(@"bounds check: %lf,%lf,%lf,%lf == %@",west,south,north,east,bounds);
+            // Set the map region
             _region.center.latitude = (north + south) / 2.0;
             _region.center.longitude = (west + east) / 2.0;
             _region.span.latitudeDelta = north - south;
             _region.span.longitudeDelta = east - west;
+
+            // Set the map bounds
+            // FYI if anybody cares, the coordinate system for MKMapPoint works like this:
+            // 85N,180W = (0,439674.4) ------> 85N,180E = (268435456.0, 439674.4)
+            //  |
+            //  |
+            //  \/
+            // 85S,180W = (0,267995781.6)
+            // The origin is northwest, x increases as longitude moves west, and y increases as latitude moves south
+            MKMapPoint nw = MKMapPointForCoordinate(CLLocationCoordinate2DMake(north, west));
+            MKMapPoint se = MKMapPointForCoordinate(CLLocationCoordinate2DMake(south, east));
+            _boundingMapRect.origin = nw;
+            _boundingMapRect.size.width = se.x - nw.x;
+            _boundingMapRect.size.height = se.y - nw.y;
         }
         
         // Determine whether or not to include the default tiles underneath this overlay
@@ -335,6 +349,12 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 - (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *tileData, NSError *error))result
 {
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+    if (_mbtilesPath)
+    {
+        NSLog(@"mbtiles ltap:%ld,%ld,%ld",(long)path.x,(long)path.y,(long)path.z);
+    }
+#endif
     if ( ! self.mapView)
     {
         // Don't load any tiles if we are a dummy layer.
@@ -603,14 +623,25 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 {
     self = [super initWithFrame:frame];
     
-#warning This is incomplete
     if (self) {
-        MBXMapViewTileOverlay *overlay = [[MBXMapViewTileOverlay alloc] initWithMBTilesPath:mbtilesPath mapView:self];
+        // This stuff is adapted from MBXMapView_commonSetupWithMapID:showDefaultBaseLayerMode:
+        id existingDelegate;
+        if (self.delegate)
+            existingDelegate = self.delegate; // XIB
+        _ownedDelegate = [MBXMapViewDelegate new];
+        [super setDelegate:_ownedDelegate];
+        _ownedDelegate.realDelegate = existingDelegate;
+        _dataSession = nil;
+        _cacheInterval = kMBXMapViewCacheInterval;
+        _showDefaultBaseLayerMode = (showDefaultBaseLayer ? MBXMapViewShowDefaultBaseLayerAlways : MBXMapViewShowDefaultBaseLayerNever);
+        
+        // And this is for the mbtiles overlay (which doesn't have any TileJSON async loading issues)
+        self.tileOverlay = [[MBXMapViewTileOverlay alloc] initWithMBTilesPath:mbtilesPath mapView:self];
+        [self insertOverlay:self.tileOverlay atIndex:0];
     }
     
     return self;
 }
-
 #endif
 
 - (id)initWithCoder:(NSCoder *)decoder
