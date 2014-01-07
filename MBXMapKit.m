@@ -362,6 +362,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 - (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *tileData, NSError *error))result
 {
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
     if (_mbtilesPath)
     {
         // Bypass all the network and caching code if this layer is configured to use an mbtiles file
@@ -369,6 +370,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
         result(data, nil);
         return;
     }
+#endif
     if ( ! self.mapView)
     {
         // Don't load any tiles if we are a dummy layer.
