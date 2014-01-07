@@ -26,6 +26,9 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 @property (nonatomic, copy) NSDictionary *tileJSONDictionary;
 @property (nonatomic, weak) MBXMapView *mapView;
 @property (nonatomic) MKCoordinateRegion region;
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+@property (nonatomic) NSString *mbtilesPath;
+#endif
 
 @end
 
@@ -106,6 +109,173 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
     return self;
 }
+
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+- (id)initWithMBTilesPath:(NSString *)mbtilesPath mapView:(MBXMapView *)mapView
+{
+    self = [super initWithURLTemplate:nil];
+    
+    if (self)
+    {
+        _mapView = mapView;
+        _tileJSONDictionary = nil;
+        _mbtilesPath = mbtilesPath;
+
+        // Read the metadata table to set min/max zoom and the map region
+        NSString *minZoom = [self mbtilesMetadataValueForName:@"minzoom"];
+        NSString *maxZoom = [self mbtilesMetadataValueForName:@"maxzoom"];
+        NSString *bounds = [self mbtilesMetadataValueForName:@"bounds"];
+        if (minZoom == nil || maxZoom == nil || bounds == nil)
+        {
+            // Oops, looks like we can't read from the MBTiles file, or else it's got a problem with the metadata table
+            NSLog(@"initWithMBTilesPath:mapView: failed to read the MBTiles metadata.");
+            return nil;
+        }
+        self.minimumZ = [minZoom integerValue];
+        self.maximumZ = [maxZoom integerValue];
+        
+        // Parse the bounds string and convert it to a map region
+        double west;
+        double south;
+        double north;
+        double east;
+        const char *cBounds = [bounds cStringUsingEncoding:NSASCIIStringEncoding];
+        if (4 != sscanf(cBounds,"%lf,%lf,%lf,%lf",&west,&south,&north,&east))
+        {
+            // This is bad, bounds was supposed to have 4 comma-separated doubles
+            NSLog(@"initWithMBTilesPath:mapView: failed to parse the map bounds: %@",bounds);
+            return nil;
+        }
+        else
+        {
+            NSLog(@"bounds check: %lf,%lf,%lf,%lf == %@",west,south,north,east,bounds);
+            _region.center.latitude = (north + south) / 2.0;
+            _region.center.longitude = (west + east) / 2.0;
+            _region.span.latitudeDelta = north - south;
+            _region.span.longitudeDelta = east - west;
+        }
+        
+        // Determine whether or not to include the default tiles underneath this overlay
+        if (_mapView.showDefaultBaseLayerMode == MBXMapViewShowDefaultBaseLayerIfPartial)
+        {
+            // Show default tiles only if a partial overlay.
+            //
+            self.canReplaceMapContent = (self.region.span.latitudeDelta >= 170 && self.region.span.longitudeDelta == 360);
+        }
+        else if (_mapView.showDefaultBaseLayerMode == MBXMapViewShowDefaultBaseLayerNever)
+        {
+            // Don't show default tiles when told not to.
+            //
+            self.canReplaceMapContent = YES;
+        }
+        else
+        {
+            // Show default tiles per user request.
+            //
+            self.canReplaceMapContent = NO;
+        }
+    }
+    
+    return self;
+}
+
+- (NSString *)mbtilesMetadataValueForName:(NSString *)name
+{
+    NSString *query = [NSString stringWithFormat:@"SELECT value FROM metadata WHERE name='%@';",name];
+    NSData *data = [self mbtiles:_mbtilesPath dataForSingleColumnQuery:query];
+    if (data == nil)
+        return nil;
+    else
+        return [[NSString alloc] initWithBytes:data.bytes length:data.length encoding:NSUTF8StringEncoding];
+}
+
+- (NSData *)mbtiles:(NSString *)mbtilesPath dataForSingleColumnQuery:(NSString *)query
+{
+    // MBXMapKit expects libsqlite to have been compiled with SQLITE_THREADSAFE=2 (multi-thread mode), which means
+    // that it can handle its own thread safety as long as you don't attempt to re-use database connections.
+    // Considering how extensivly sqlite has been tested, relying on it to handle potential concurrency issues seems
+    // like a desirable option. Also, it's worth noting that the queries for MBTiles stuff here are all SELECT's, so
+    // locking for writes isn't an issue. Anyhow, the sqlite code here was written to be as simple as possible,
+    // optimizing for safety and readability at the possible expense of performance.
+    // Some relevant sqlite documentation:
+    // - http://sqlite.org/faq.html#q5
+    // - http://www.sqlite.org/threadsafe.html
+    // - http://www.sqlite.org/c3ref/threadsafe.html
+    // - http://www.sqlite.org/c3ref/c_config_covering_index_scan.html#sqliteconfigmultithread
+    //
+    assert(sqlite3_threadsafe()==2);
+    
+    // Open the database read-only and multi-threaded. The slightly obscure c-style variable names here and below are
+    // used to stay consistent with the sqlite documentaion. See http://sqlite.org/c3ref/open.html
+    sqlite3 *db;
+    int rc;
+    const char *filename = [mbtilesPath cStringUsingEncoding:NSUTF8StringEncoding];
+    rc = sqlite3_open_v2(filename, &db, SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, NULL);
+    if (rc)
+    {
+        NSLog(@"Can't open database: %s", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return nil;
+    }
+    
+    // Prepare the query, see http://sqlite.org/c3ref/prepare.html
+    const char *zSql = [query cStringUsingEncoding:NSUTF8StringEncoding];
+    int nByte = [query lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+    sqlite3_stmt *ppStmt;
+    const char *pzTail;
+    rc = sqlite3_prepare_v2(db, zSql, nByte, &ppStmt, &pzTail);
+    if (rc)
+    {
+        NSLog(@"Problem preparing sql statement: %s", sqlite3_errmsg(db));
+        sqlite3_finalize(ppStmt);
+        sqlite3_close(db);
+        return nil;
+    }
+    
+    // Evaluate the query, see http://sqlite.org/c3ref/step.html and http://sqlite.org/c3ref/column_blob.html
+    NSData *data = nil;
+    rc = sqlite3_step(ppStmt);
+    if (rc == SQLITE_ROW)
+    {
+        // The query is supposed to be for exactly one column
+        assert(sqlite3_column_count(ppStmt)==1);
+        
+        // Success!
+        data = [NSData dataWithBytes:sqlite3_column_blob(ppStmt, 0) length:sqlite3_column_bytes(ppStmt, 0)];
+        
+        // Check if any more rows match
+        if(sqlite3_step(ppStmt) != SQLITE_DONE)
+        {
+            // Oops, the query apparently matched more than one row (could also be an error)... not fatal, but not good.
+            NSLog(@"Warning, query may match more than one row: %@",query);
+        }
+    }
+    else if (rc == SQLITE_DONE)
+    {
+        // The query returned no results. Depending on how the map is set up, this might indicate a problem, or it might
+        // be okay. For instance, perhaps you want to set up a map with Apple's satellite map on the bottom and a couple
+        // semi-transparent MBTiles overlays on top. Each of those three layers will potentially have different bounds,
+        // min zoom, and max zoom. Setting MKTileOverlay's minimumZ and maximumZ properties for the MBTiles layers should
+        // prevent calls to loadTileAtPath:result: for non-existant zoom levels, but you will probably still get calls for
+        // tiles that are within the zoom limits but outside of the bounding box (TODO: test if that's really how it works).
+        NSLog(@"Query returned no results: %@",query);
+    }
+    else if (rc == SQLITE_BUSY)
+    {
+        // This is bad, but theoretically it should never happen
+        NSLog(@"sqlite3_step() returned SQLITE_BUSY. You probably have a concurrency problem.");
+    }
+    else
+    {
+        NSLog(@"sqlite3_step() isn't happy: %s", sqlite3_errmsg(db));
+    }
+    
+    // Clean up
+    sqlite3_finalize(ppStmt);
+    sqlite3_close(db);
+    return data;
+}
+#endif
 
 - (NSInteger)centerZoom
 {
@@ -435,108 +605,12 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     
 #warning This is incomplete
     if (self) {
-        // Now read some MBTiles metadata as an inital test of the sqlite code...
-        NSLog(@"bounds: %@",[self mbtiles:mbtilesPath metadataValueForName:@"bounds"]);
-        NSLog(@"center: %@",[self mbtiles:mbtilesPath metadataValueForName:@"center"]);
-        NSLog(@"minzoom: %@",[self mbtiles:mbtilesPath metadataValueForName:@"minzoom"]);
-        NSLog(@"maxzoom: %@",[self mbtiles:mbtilesPath metadataValueForName:@"maxzoom"]);
-        NSLog(@"name: %@",[self mbtiles:mbtilesPath metadataValueForName:@"name"]);
-        NSLog(@"attribution: %@",[self mbtiles:mbtilesPath metadataValueForName:@"attribution"]);
-        NSLog(@"description: %@",[self mbtiles:mbtilesPath metadataValueForName:@"description"]);
-        NSLog(@"template: %@",[self mbtiles:mbtilesPath metadataValueForName:@"template"]);
-        NSLog(@"version: %@",[self mbtiles:mbtilesPath metadataValueForName:@"version"]);
+        MBXMapViewTileOverlay *overlay = [[MBXMapViewTileOverlay alloc] initWithMBTilesPath:mbtilesPath mapView:self];
     }
     
     return self;
 }
 
-- (NSString *)mbtiles:(NSString *)mbtilesPath metadataValueForName:(NSString *)name
-{
-    NSString *query = [NSString stringWithFormat:@"SELECT value FROM metadata WHERE name='%@';",name];
-    NSData *data = [self mbtiles:mbtilesPath dataForSingleColumnQuery:query];
-    return [[NSString alloc] initWithBytes:data.bytes length:data.length encoding:NSUTF8StringEncoding];
-}
-
-- (NSData *)mbtiles:(NSString *)mbtilesPath dataForSingleColumnQuery:(NSString *)query
-{
-    // MBXMapKit expects libsqlite to have been compiled with SQLITE_THREADSAFE=2 (multi-thread mode), which means
-    // that it can handle its own thread safety as long as you don't attempt to re-use database connections.
-    // Considering how extensivly sqlite has been tested, relying on it to handle potential concurrency issues seems
-    // like a desirable option. Also, it's worth noting that the queries for MBTiles stuff here are all SELECT's, so
-    // locking for writes isn't an issue. Anyhow, the sqlite code here was written to be as simple as possible,
-    // optimizing for safety and readability at the possible expense of performance.
-    // Some relevant sqlite documentation:
-    // - http://sqlite.org/faq.html#q5
-    // - http://www.sqlite.org/threadsafe.html
-    // - http://www.sqlite.org/c3ref/threadsafe.html
-    // - http://www.sqlite.org/c3ref/c_config_covering_index_scan.html#sqliteconfigmultithread
-    //
-    assert(sqlite3_threadsafe()==2);
-
-    
-    // Open the database read-only and multi-threaded. The slightly obscure c-style variable names here and below are
-    // used to stay consistent with the sqlite documentaion. See http://sqlite.org/c3ref/open.html
-    sqlite3 *db;
-    int rc;
-    const char *filename = [mbtilesPath cStringUsingEncoding:NSUTF8StringEncoding];
-    rc = sqlite3_open_v2(filename, &db, SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, NULL);
-    if(rc){
-        NSLog(@"Can't open database: %s", sqlite3_errmsg(db));
-        sqlite3_close(db);
-        return nil;
-    }
-    
-    // Prepare the query, see http://sqlite.org/c3ref/prepare.html
-    const char *zSql = [query cStringUsingEncoding:NSUTF8StringEncoding];
-    int nByte = [query lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
-    sqlite3_stmt *ppStmt;
-    const char *pzTail;
-    rc = sqlite3_prepare_v2(db, zSql, nByte, &ppStmt, &pzTail);
-    if(rc) {
-        NSLog(@"Problem preparing sql statement: %s", sqlite3_errmsg(db));
-        sqlite3_finalize(ppStmt);
-        sqlite3_close(db);
-        return nil;
-    }
-    
-    // Evaluate the query, see http://sqlite.org/c3ref/step.html and http://sqlite.org/c3ref/column_blob.html
-    NSData *data = nil;
-    rc = sqlite3_step(ppStmt);
-    if(rc == SQLITE_ROW) {
-        // The query is supposed to be for exactly one column
-        assert(sqlite3_column_count(ppStmt)==1);
-        
-        // Success!
-        data = [NSData dataWithBytes:sqlite3_column_blob(ppStmt, 0) length:sqlite3_column_bytes(ppStmt, 0)];
-        
-        // Check if any more rows match
-        if(sqlite3_step(ppStmt) != SQLITE_DONE) {
-            // Oops, the query apparently matched more than one row (could also be an error)... not fatal, but not good.
-            NSLog(@"Warning, query may match more than one row: %@",query);
-        }
-        
-    } else if(rc == SQLITE_DONE) {
-        // The query returned no results. Depending on how the map is set up, this might indicate a problem, or it might
-        // be okay. For instance, perhaps you want to set up a map with Apple's satellite map on the bottom and a couple
-        // semi-transparent MBTiles overlays on top. Each of those three layers will potentially have different bounds,
-        // min zoom, and max zoom. Setting MKTileOverlay's minimumZ and maximumZ properties for the MBTiles layers should
-        // prevent calls to loadTileAtPath:result: for non-existant zoom levels, but you will probably still get calls for
-        // tiles that are within the zoom limits but outside of the bounding box (TODO: test if that's really how it works).
-        NSLog(@"Query returned no results: %@",query);
-              
-    } else if(rc == SQLITE_BUSY) {
-        // This is bad, but theoretically it should never happen
-        NSLog(@"sqlite3_step() returned SQLITE_BUSY. You probably have a concurrency problem.");
-        
-    } else {
-        NSLog(@"sqlite3_step() isn't happy: %s", sqlite3_errmsg(db));
-    }
-    
-    // Clean up
-    sqlite3_finalize(ppStmt);
-    sqlite3_close(db);
-    return data;
-}
 #endif
 
 - (id)initWithCoder:(NSCoder *)decoder
