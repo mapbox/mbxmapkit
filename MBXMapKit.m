@@ -26,9 +26,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 @property (nonatomic, copy) NSDictionary *tileJSONDictionary;
 @property (nonatomic, weak) MBXMapView *mapView;
 @property (nonatomic) MKCoordinateRegion region;
-#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
 @property (nonatomic) NSString *mbtilesPath;
-#endif
 
 @end
 
@@ -161,7 +159,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
             //  |
             //  \/
             // 85S,180W = (0,267995781.6)
-            // The origin is northwest, x increases as longitude moves west, and y increases as latitude moves south
+            // The origin is northwest, x increases as longitude moves east, and y increases as latitude moves south
             MKMapPoint nw = MKMapPointForCoordinate(CLLocationCoordinate2DMake(north, west));
             MKMapPoint se = MKMapPointForCoordinate(CLLocationCoordinate2DMake(south, east));
             _boundingMapRect.origin = nw;
@@ -201,6 +199,13 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
         return nil;
     else
         return [[NSString alloc] initWithBytes:data.bytes length:data.length encoding:NSUTF8StringEncoding];
+}
+
+- (NSData *)mbtilesImageDataForPath:(MKTileOverlayPath)path
+{
+    NSString *query = [NSString stringWithFormat:@"select tile_data from tiles where zoom_level = %ld and tile_column = %ld and tile_row = %ld",(long)path.z,(long)path.x,(long)path.y];;
+    NSData *data = [self mbtiles:_mbtilesPath dataForSingleColumnQuery:query];
+    return data;
 }
 
 - (NSData *)mbtiles:(NSString *)mbtilesPath dataForSingleColumnQuery:(NSString *)query
@@ -347,14 +352,23 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
                                     (path.contentScaleFactor > 1.0 ? @"@2x" : @"")]];
 }
 
+- (BOOL)isGeometryFlipped
+{
+    if (_mbtilesPath)
+        return YES;
+    else
+        return NO;
+}
+
 - (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *tileData, NSError *error))result
 {
-#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
     if (_mbtilesPath)
     {
-        NSLog(@"mbtiles ltap:%ld,%ld,%ld",(long)path.x,(long)path.y,(long)path.z);
+        // Bypass all the network and caching code if this layer is configured to use an mbtiles file
+        NSData *data = [self mbtilesImageDataForPath:path];
+        result(data, nil);
+        return;
     }
-#endif
     if ( ! self.mapView)
     {
         // Don't load any tiles if we are a dummy layer.
