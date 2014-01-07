@@ -14,7 +14,7 @@
 *  who don't need MBTiles support, the MBTiles code is disabled by default. To enable MBTiles support, just link to
 *  sqlite and uncomment the define for MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3.
 */
-//#define MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+#define MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
 #ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
 #import <sqlite3.h>
 #endif
