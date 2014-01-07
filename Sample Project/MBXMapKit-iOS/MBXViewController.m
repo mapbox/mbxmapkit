@@ -18,10 +18,16 @@
 
     
 #ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
-    // Demonstrate how to add an offline MBTiles map layer by specifiying the path to an MBTiles file
-    // NOTE: Please refer to the comments in MBXMapKit.h about linking to sqlite.
-    [self.view addSubview:[[MBXMapView alloc] initWithFrame:self.view.bounds mbtilesPath:@"some/path"]];
+    // Using MBTiles offline maps is slightly more complicated than using an online map with a MapBox map ID.
+    // If you want to use MBTiles maps, please refer to the comments about MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+    // near the top of MBXMapKit.h.
     
+    // This build target is already linked to libsqlite3, and it already includes WorldMapZoom0to4.mbtiles (a small
+    // world map) as a bundle resource. All we need to do to set up an opaque world map tile overlay is find
+    // the path in the bundle and pass it to initWithFrame:mbtilesPath:.
+    NSString *mbtilesPath = [[NSBundle mainBundle] pathForResource:@"WorldMapZoom0to4" ofType:@"mbtiles"];
+    [self.view addSubview:[[MBXMapView alloc] initWithFrame:self.view.bounds mbtilesPath:mbtilesPath]];
+        
 #else
     // iOS project shows use via programmatic view API
     //
