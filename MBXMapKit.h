@@ -142,9 +142,11 @@
 
 /** Initialize an offline MBTiles tile overlay layer
  *  @param mbtilesPath The local filesystem path to the MBTiles file
+ *  @param useWorldForBounds Set this to YES if you want to have this layer show a blank background (rather than Apple's map
+ *         or any layers which might be beneath it) for tiles which are not included in the MBTiles file
  *  @param mapView The mapView this overlay will be added to
  */
-- (id)initWithMBTilesPath:(NSString *)mbtilesPath mapView:(MBXMapView *)mapView;
+- (id)initWithMBTilesPath:(NSString *)mbtilesPath useWorldForBounds:(BOOL)worldBounds mapView:(MBXMapView *)mapView;
 
 @end
 #endif
