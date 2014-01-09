@@ -114,7 +114,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 }
 
 #ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
-- (id)initWithMBTilesPath:(NSString *)mbtilesPath mapView:(MBXMapView *)mapView
+- (id)initWithMBTilesPath:(NSString *)mbtilesPath useWorldForBounds:(BOOL)worldBounds mapView:(MBXMapView *)mapView
 {
     self = [super initWithURLTemplate:nil];
     
@@ -158,18 +158,30 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
             _region.span.longitudeDelta = east - west;
 
             // Set the map bounds
-            // FYI if anybody cares, the coordinate system for MKMapPoint works like this:
-            // 85N,180W = (0,439674.4) ------> 85N,180E = (268435456.0, 439674.4)
-            //  |
-            //  |
-            //  \/
-            // 85S,180W = (0,267995781.6)
-            // The origin is northwest, x increases as longitude moves east, and y increases as latitude moves south
-            MKMapPoint nw = MKMapPointForCoordinate(CLLocationCoordinate2DMake(north, west));
-            MKMapPoint se = MKMapPointForCoordinate(CLLocationCoordinate2DMake(south, east));
-            _boundingMapRect.origin = nw;
-            _boundingMapRect.size.width = se.x - nw.x;
-            _boundingMapRect.size.height = se.y - nw.y;
+            if (worldBounds)
+            {
+                // This is what you need if you want to have a blank background shown for tiles which are not
+                // included in your MBTiles file.
+                _boundingMapRect = MKMapRectWorld;
+            }
+            else
+            {
+                // This is what you need if you want the tiles from your MBTiles file to be shown on top of other
+                // map layers (Apple's basemap, a MapBox map, other MBTiles overlays, etc)
+                //
+                // FYI if anybody cares, the coordinate system for MKMapPoint works like this:
+                // 85N,180W = (0,439674.4) ------> 85N,180E = (268435456.0, 439674.4)
+                //  |
+                //  |
+                //  \/
+                // 85S,180W = (0,267995781.6)
+                // The origin is northwest, x increases as longitude moves east, and y increases as latitude moves south
+                MKMapPoint nw = MKMapPointForCoordinate(CLLocationCoordinate2DMake(north, west));
+                MKMapPoint se = MKMapPointForCoordinate(CLLocationCoordinate2DMake(south, east));
+                _boundingMapRect.origin = nw;
+                _boundingMapRect.size.width = se.x - nw.x;
+                _boundingMapRect.size.height = se.y - nw.y;
+            }
         }
         
         // Determine whether or not to include the default tiles underneath this overlay
@@ -277,12 +289,9 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     else if (rc == SQLITE_DONE)
     {
         // The query returned no results. Depending on how the map is set up, this might indicate a problem, or it might
-        // be okay. For instance, perhaps you want to set up a map with Apple's satellite map on the bottom and a couple
-        // semi-transparent MBTiles overlays on top. Each of those three layers will potentially have different bounds,
-        // min zoom, and max zoom. Setting MKTileOverlay's minimumZ and maximumZ properties for the MBTiles layers should
-        // prevent calls to loadTileAtPath:result: for non-existant zoom levels, but you will probably still get calls for
-        // tiles that are within the zoom limits but outside of the bounding box (TODO: test if that's really how it works).
-        NSLog(@"Query returned no results: %@",query);
+        // be okay. If your map doesn't cover the whole world, and you set the map's bounds to MKMapRectWorld, this is
+        // what will happen for tiles that aren't included in your MBTiles file. That's good if you want to have your
+        // tiles show up on top of a blank background.
     }
     else if (rc == SQLITE_BUSY)
     {
@@ -659,7 +668,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
         _showDefaultBaseLayerMode = (showDefaultBaseLayer ? MBXMapViewShowDefaultBaseLayerAlways : MBXMapViewShowDefaultBaseLayerNever);
         
         // And this is for the mbtiles overlay (which doesn't have any TileJSON async loading issues)
-        self.tileOverlay = [[MBXMapViewTileOverlay alloc] initWithMBTilesPath:mbtilesPath mapView:self];
+        self.tileOverlay = [[MBXMapViewTileOverlay alloc] initWithMBTilesPath:mbtilesPath useWorldForBounds:NO mapView:self];
         [self insertOverlay:self.tileOverlay atIndex:0];
     }
     
