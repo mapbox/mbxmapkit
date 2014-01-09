@@ -129,3 +129,22 @@
 - (void)mapView:(MBXMapView *)mapView saveCacheData:(NSData *)tileData forMapID:(NSString *)mapID tilePath:(MKTileOverlayPath)path;
 
 @end
+
+
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+@interface MBXMapViewTileOverlay : MKTileOverlay
+
+/** Initialize a MapBox online tile overlay layer
+ *  @param tileJSONDictionary The tileJSON dictionary describing the MapBox map to be used
+ *  @param mapView The mapView this overlay will be added to
+ */
+- (id)initWithTileJSONDictionary:(NSDictionary *)tileJSONDictionary mapView:(MBXMapView *)mapView;
+
+/** Initialize an offline MBTiles tile overlay layer
+ *  @param mbtilesPath The local filesystem path to the MBTiles file
+ *  @param mapView The mapView this overlay will be added to
+ */
+- (id)initWithMBTilesPath:(NSString *)mbtilesPath mapView:(MBXMapView *)mapView;
+
+@end
+#endif

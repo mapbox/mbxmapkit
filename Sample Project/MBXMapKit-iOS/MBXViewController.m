@@ -25,7 +25,8 @@
     // This build target is already linked to libsqlite3, and it already includes WorldMapZoom0to4.mbtiles (a small
     // world map) as a bundle resource. All we need to do to set up an opaque world map tile overlay is find
     // the path in the bundle and pass it to initWithFrame:mbtilesPath:.
-    NSString *mbtilesPath = [[NSBundle mainBundle] pathForResource:@"WorldMapZoom0to4" ofType:@"mbtiles"];
+    //NSString *mbtilesPath = [[NSBundle mainBundle] pathForResource:@"WorldMapZoom0to4" ofType:@"mbtiles"];
+    NSString *mbtilesPath = [[NSBundle mainBundle] pathForResource:@"USAMapZoom0to6" ofType:@"mbtiles"];
     [self.view addSubview:[[MBXMapView alloc] initWithFrame:self.view.bounds mbtilesPath:mbtilesPath]];
         
 #else

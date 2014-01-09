@@ -21,13 +21,18 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 #pragma mark - Private Interfaces -
 
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+@interface MBXMapViewTileOverlay ()
+#else
 @interface MBXMapViewTileOverlay : MKTileOverlay
+#endif
 
 @property (nonatomic, copy) NSDictionary *tileJSONDictionary;
 @property (nonatomic, weak) MBXMapView *mapView;
 @property (nonatomic) MKCoordinateRegion region;
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
 @property (nonatomic) NSString *mbtilesPath;
-
+#endif
 @end
 
 #pragma mark -
@@ -352,6 +357,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
                                     (path.contentScaleFactor > 1.0 ? @"@2x" : @"")]];
 }
 
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
 - (BOOL)isGeometryFlipped
 {
     if (_mbtilesPath)
@@ -359,6 +365,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     else
         return NO;
 }
+#endif
 
 - (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *tileData, NSError *error))result
 {
