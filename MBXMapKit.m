@@ -47,10 +47,36 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 @property (nonatomic) MBXMapViewDelegate *ownedDelegate;
 @property (nonatomic) NSURLSession *dataSession;
 @property (nonatomic) NSURLSessionTask *metadataTask;
+#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
+@property (nonatomic) NSURLSessionTask *markersTask;
+#endif
 @property (nonatomic) MBXMapViewTileOverlay *tileOverlay;
 @property (nonatomic) BOOL hasInitialCenterCoordinate;
 
 @end
+
+#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
+#pragma mark -
+
+/* MBXSimpleStyleAnnotation Notes:
+ * 1) The MapBox Core API docs for markers are relevant: https://www.mapbox.com/developers/api/#Markers
+ * 2) The Core API docs for simplestyle markers (https://www.mapbox.com/developers/simplestyle/ )
+ *    are a bit different than the 1.1.0 simplestyle-spec (https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0 )
+ *    MBXSimpleStyleAnnotation follows the Core API docs which match what's currently being served at
+ *    https://a.tiles.mapbox.com/v3/{{yourMapID}}/markers.geojson
+ * 3) The images for these annotations are meant to be displayed by a generic MKAnnotationView, see
+ *    https://developer.apple.com/library/ios/documentation/MapKit/Reference/MKAnnotationView_Class/Reference/Reference.html
+ */
+typedef NS_ENUM(NSUInteger,MarkerSizeType) {small, medium, large};
+
+@interface MBXSimpleStyleAnnotation : MKShape
+
+@property (assign) MarkerSizeType markerSize;
+@property (nonatomic) NSString *markerColor;
+@property (nonatomic) NSString *markerSymbol;
+
+@end
+#endif
 
 #pragma mark - MBXMapViewTileOverlay - Custom overlay fetching tiles from MapBox -
 
@@ -504,8 +530,18 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     {
         _mapID = [mapID copy];
 
+#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
+        if (_mapID)
+        {
+            [self updateOverlay];
+            // The tileJSON from updateOverlay does include the path to the markers resource, but there's no need to wait around for
+            // that to load since the marker resource location is known (see https://www.mapbox.com/developers/api/#Map.resources )
+            [self updateMarkers];
+        }
+#else
         if (_mapID)
             [self updateOverlay];
+#endif
     }
 }
 
@@ -583,6 +619,103 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     [self.metadataTask resume];
 }
 
+
+#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
+
+- (void)addMarkersJSONDictionaryToMap:(NSDictionary *)markersJSONDictionary
+{
+    // Find point features in the markers dictionary (if there are any) and add them to the map...
+    id value;
+    id markers = markersJSONDictionary[@"features"];
+    if (markers && [markers isKindOfClass:[NSArray class]])
+    {
+        for(value in (NSArray *)markers)
+        {
+            if([value isKindOfClass:[NSDictionary class]])
+            {
+                NSDictionary *feature = (NSDictionary *)value;
+                NSString *type = feature[@"geometry"][@"type"];
+                if([@"Point" isEqualToString:type])
+                {
+                    // This is what we were looking for, a simplestyle Point!
+                    //
+                    NSString *longitude = feature[@"geometry"][@"coordinates"][0];
+                    NSString *latitude = feature[@"geometry"][@"coordinates"][1];
+                    NSString *title = feature[@"properties"][@"title"];
+                    NSString *description = feature[@"properties"][@"description"];
+                    NSString *size = feature[@"properties"][@"marker-size"];
+                    NSString *color = feature[@"properties"][@"marker-color"];
+                    NSString *symbol = feature[@"properties"][@"marker-symbol"];
+                    if(longitude && latitude && size && color && symbol)
+                    {
+                        // Looks like we've got all the important keys...
+                        // If the title or description were null, that's okay, but set them to a valid NSString
+                        //
+                        title = title ? title : @"";
+                        description = description ? description : @"";
+                        MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
+                        point.title = title;
+                        point.subtitle = description;
+                        point.coordinate = CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue]);
+                        [self addAnnotation:point];
+                    }
+                    else
+                    {
+                        NSLog(@"I'm confused, this simplestyle Point feature is missing important keys: %@",feature);
+                    }
+                }
+                else
+                {
+                    // Ignore Line and Polygon features
+                }
+            }
+        }
+    }
+}
+
+- (void)updateMarkers
+{
+    [self.markersTask cancel];
+    
+    [[NSFileManager defaultManager] createDirectoryAtPath:[NSString stringWithFormat:@"%@/%@", self.cachePath, self.mapID] withIntermediateDirectories:YES attributes:nil error:nil];
+    
+    NSString *markersJSONCachePath = [NSString stringWithFormat:@"%@/%@/%@/markers.geojson", self.cachePath, self.mapID, self.mapID];
+    
+    NSURL *markersJSONURL = ([[NSFileManager defaultManager] fileExistsAtPath:markersJSONCachePath] ? [NSURL fileURLWithPath:markersJSONCachePath] : [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson", _mapID]]);
+    
+    __weak __typeof(self)weakSelf = self;
+
+    self.markersTask = [self.dataSession dataTaskWithURL:markersJSONURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+                         {
+                             if (data)
+                             {
+                                 NSError *parseError;
+                                 NSDictionary *markersJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+                                 
+                                 if (markersJSONDictionary)
+                                 {
+                                     [data writeToFile:markersJSONCachePath atomically:YES];
+                                     dispatch_sync(dispatch_get_main_queue(), ^(void)
+                                                   {
+                                                       [weakSelf addMarkersJSONDictionaryToMap:markersJSONDictionary];
+                                                   });
+                                 }
+                                 else
+                                 {
+                                     NSLog(@"Error parsing simplestyle for map ID %@ - giving up. (%@)", _mapID, parseError);
+                                 }
+                             }
+                             else
+                             {
+                                 NSLog(@"Error downloading simplestyle for map ID %@ - giving up. (%@)", _mapID, error);
+                             }
+                         }];
+    
+    [self.markersTask resume];
+}
+#endif
+
+
 - (void)reloadRenderer
 {
     if ([self rendererForOverlay:self.tileOverlay])
@@ -654,3 +787,13 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 }
 
 @end
+
+
+#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
+#pragma mark - MBXPointAnnotation - MKAnnotation delegate to model a simplestyle point -
+
+@implementation MBXSimpleStyleAnnotation
+
+@end
+#endif
+
