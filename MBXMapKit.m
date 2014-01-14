@@ -56,24 +56,103 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 @end
 
 #ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
-#pragma mark -
+#pragma mark - MBXSimpleStyleAnnotation - MKAnnotation delegate to model a simplestyle point -
 
-/* MBXSimpleStyleAnnotation Notes:
- * 1) The MapBox Core API docs for markers are relevant: https://www.mapbox.com/developers/api/#Markers
- * 2) The Core API docs for simplestyle markers (https://www.mapbox.com/developers/simplestyle/ )
- *    are a bit different than the 1.1.0 simplestyle-spec (https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0 )
- *    MBXSimpleStyleAnnotation follows the Core API docs which match what's currently being served at
- *    https://a.tiles.mapbox.com/v3/{{yourMapID}}/markers.geojson
- * 3) The images for these annotations are meant to be displayed by a generic MKAnnotationView, see
- *    https://developer.apple.com/library/ios/documentation/MapKit/Reference/MKAnnotationView_Class/Reference/Reference.html
- */
-typedef NS_ENUM(NSUInteger,MarkerSizeType) {small, medium, large};
+@implementation MBXSimpleStylePointAnnotation
 
-@interface MBXSimpleStyleAnnotation : MKShape
+@synthesize coordinate = _coordinate;
 
-@property (assign) MarkerSizeType markerSize;
-@property (nonatomic) NSString *markerColor;
-@property (nonatomic) NSString *markerSymbol;
+- (CLLocationCoordinate2D)coordinate
+{
+    return _coordinate;
+}
+
+- (void)setCoordinate:(CLLocationCoordinate2D)coordinate
+{
+    [self willChangeValueForKey:@"coordinate"];
+    _coordinate = coordinate;
+    [self didChangeValueForKey:@"coordinate"];
+}
+
+- (NSString *)makiMarkerStringForSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color
+{
+    // Make a string which follows the MapBox Core API spec for stand-alone markers. This relies on the MapBox API
+    // for error checking rather than trying to do any fancy tricks to determine valid size-symbol-color combinations.
+    // The main advantage of that approach is that new Maki symbols will be available to use as markers as soon as
+    // they are added to the API (i.e. no changes to input validation code here are required).
+    // See https://www.mapbox.com/developers/api/#Stand-alone.markers
+    //
+    NSMutableString *marker = [[NSMutableString alloc] initWithString:@"pin-"];
+    if ([@"small" isEqualToString:size])
+    {
+        [marker appendString:@"s-"];
+    }
+    else if ([@"medium" isEqualToString:size])
+    {
+        [marker appendString:@"m-"];
+    }
+    else if ([@"large" isEqualToString:size])
+    {
+        [marker appendString:@"l-"];
+    }
+    [marker appendFormat:@"%@+",symbol];
+    [marker appendString:[color stringByReplacingOccurrencesOfString:@"#" withString:@""]];
+    [marker appendString:@".png"];
+    return marker;
+}
+
+- (void)addMakiMarkerSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color toMapView:(MBXMapView *)mapView
+{
+    [self.imageTask cancel];
+    
+    [[NSFileManager defaultManager] createDirectoryAtPath:[NSString stringWithFormat:@"%@/maki", mapView.cachePath] withIntermediateDirectories:YES attributes:nil error:nil];
+    
+    NSString *marker = [self makiMarkerStringForSize:size symbol:symbol color:color];
+    NSString *makiPinCachePath = [NSString stringWithFormat:@"%@/maki/%@", mapView.cachePath, marker];
+    NSString *markerDownloadURL = [NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/marker/%@", marker];
+    
+    NSURL *makiPinURL = ([[NSFileManager defaultManager] fileExistsAtPath:makiPinCachePath] ? [NSURL fileURLWithPath:makiPinCachePath] : [NSURL URLWithString:markerDownloadURL]);
+    
+    self.imageTask = [mapView.dataSession dataTaskWithURL:makiPinURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+                      {
+                          // Three responses are likely here (others are possible for all I know)...
+                          // 1) response is an NSURLResponse (no HTTP status code!) for a local cache hit
+                          // 2) response is an NSHTTPURLResponse with HTTP 200 for a successful download
+                          // 3) response is an NSHTTPURLResponse with HTTP 400 for a mal-formed filename
+                          //
+                          if([response isKindOfClass:[NSHTTPURLResponse class]])
+                          {
+                              if ([((NSHTTPURLResponse *)response) statusCode] == 400)
+                              {
+                                  NSLog(@"Loading %@ failed with HTTP 400",markerDownloadURL);
+                                  // At this point, data is set to the API's error message of 'Marker "pin-..." is invalid.'
+                                  // Writing that to cache or setting it as an annotation image will cause problems, so bail out.
+                                  return;
+                              }
+                          }
+                          // For now the error handling strategy is, "If result isn't an HTTP 400, then assume we got a good image."
+                          // So, write it to the cache, add it to the annotation, and add the annotation to the map.
+                          //
+                          if (data)
+                          {
+                              [data writeToFile:makiPinCachePath atomically:YES];
+                              // NOTE: Since the Core API doesn't have an @2x option for markers, this scales markers
+                              // down to half size on retina displays. That means small and medium markers become quite tiny.
+                              //
+                              self.image = [[UIImage alloc] initWithData:data scale:[[UIScreen mainScreen] scale]];
+                              dispatch_sync(dispatch_get_main_queue(), ^(void)
+                                            {
+                                                [mapView addAnnotation:self];
+                                            });
+                          }
+                          else
+                          {
+                              NSLog(@"Error downloading maki marker %@ - giving up. (%@)", markerDownloadURL, error);
+                          }
+                      }];
+    
+    [self.imageTask resume];
+}
 
 @end
 #endif
@@ -323,6 +402,11 @@ typedef NS_ENUM(NSUInteger,MarkerSizeType) {small, medium, large};
     if (selector == @selector(mapView:rendererForOverlay:))
         return [[MBXMapViewDelegate class] methodSignatureForSelector:selector];
 
+#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
+    if (selector == @selector(mapView:viewForAnnotation:))
+        return [[MBXMapViewDelegate class] methodSignatureForSelector:selector];
+#endif
+    
     if ([self.realDelegate respondsToSelector:selector])
         return [(NSObject *)self.realDelegate methodSignatureForSelector:selector];
 
@@ -345,6 +429,11 @@ typedef NS_ENUM(NSUInteger,MarkerSizeType) {small, medium, large};
 {
     if (selector == @selector(mapView:rendererForOverlay:))
         return YES;
+    
+#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
+    if (selector == @selector(mapView:viewForAnnotation:))
+        return YES;
+#endif
 
     return ([self.realDelegate respondsToSelector:selector]);
 }
@@ -381,6 +470,25 @@ typedef NS_ENUM(NSUInteger,MarkerSizeType) {small, medium, large};
     //
     return nil;
 }
+
+#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
+{
+    if ([annotation isKindOfClass:[MBXSimpleStylePointAnnotation class]])
+    {
+        NSString *reuseID = @"makiSimplestyle";
+        MKAnnotationView *view = [mapView dequeueReusableAnnotationViewWithIdentifier:reuseID];
+        if (!view)
+        {
+            view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:reuseID];
+        }
+        view.image = ((MBXSimpleStylePointAnnotation *)annotation).image;
+        view.canShowCallout = YES;
+        return view;
+    }
+    return nil;
+}
+#endif
 
 @end
 
@@ -653,11 +761,11 @@ typedef NS_ENUM(NSUInteger,MarkerSizeType) {small, medium, large};
                         //
                         title = title ? title : @"";
                         description = description ? description : @"";
-                        MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
+                        MBXSimpleStylePointAnnotation *point = [[MBXSimpleStylePointAnnotation alloc] init];
                         point.title = title;
                         point.subtitle = description;
                         point.coordinate = CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue]);
-                        [self addAnnotation:point];
+                        [point addMakiMarkerSize:size symbol:symbol color:color toMapView:self];
                     }
                     else
                     {
@@ -679,7 +787,7 @@ typedef NS_ENUM(NSUInteger,MarkerSizeType) {small, medium, large};
     
     [[NSFileManager defaultManager] createDirectoryAtPath:[NSString stringWithFormat:@"%@/%@", self.cachePath, self.mapID] withIntermediateDirectories:YES attributes:nil error:nil];
     
-    NSString *markersJSONCachePath = [NSString stringWithFormat:@"%@/%@/%@/markers.geojson", self.cachePath, self.mapID, self.mapID];
+    NSString *markersJSONCachePath = [NSString stringWithFormat:@"%@/%@/markers.geojson", self.cachePath, self.mapID];
     
     NSURL *markersJSONURL = ([[NSFileManager defaultManager] fileExistsAtPath:markersJSONCachePath] ? [NSURL fileURLWithPath:markersJSONCachePath] : [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson", _mapID]]);
     
@@ -713,6 +821,7 @@ typedef NS_ENUM(NSUInteger,MarkerSizeType) {small, medium, large};
     
     [self.markersTask resume];
 }
+
 #endif
 
 
@@ -789,11 +898,4 @@ typedef NS_ENUM(NSUInteger,MarkerSizeType) {small, medium, large};
 @end
 
 
-#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
-#pragma mark - MBXPointAnnotation - MKAnnotation delegate to model a simplestyle point -
-
-@implementation MBXSimpleStyleAnnotation
-
-@end
-#endif
 

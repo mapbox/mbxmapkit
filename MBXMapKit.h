@@ -13,7 +13,7 @@
 *  define for MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI. For background information, see
 *  https://github.com/mapbox/mbxmapkit/issues/9 and https://github.com/mapbox/mbxmapkit/issues/5
 */
-#define MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
+//#define MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
 
 @protocol MBXMapViewCaching;
 
@@ -105,3 +105,31 @@
 - (void)mapView:(MBXMapView *)mapView saveCacheData:(NSData *)tileData forMapID:(NSString *)mapID tilePath:(MKTileOverlayPath)path;
 
 @end
+
+#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
+#pragma mark -
+/* MBXSimpleStylePointAnnotation Notes:
+ * 1) The MapBox Core API docs for stand-alone markers are relevant: https://www.mapbox.com/developers/api/#Stand-alone.markers
+ * 2) The Core API docs for simplestyle markers (https://www.mapbox.com/developers/simplestyle/ )
+ *    are a bit different than the 1.1.0 simplestyle-spec (https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0 )
+ *    MBXSimpleStylePointAnnotation follows the Core API docs which match what's currently being served at
+ *    https://a.tiles.mapbox.com/v3/{{yourMapID}}/markers.geojson
+ * 3) The images for these annotations are meant to be displayed by a generic MKAnnotationView, see
+ *    https://developer.apple.com/library/ios/documentation/MapKit/Reference/MKAnnotationView_Class/Reference/Reference.html
+ */
+
+@interface MBXSimpleStylePointAnnotation : MKShape
+
+@property (nonatomic) NSURLSessionTask *imageTask;
+@property (nonatomic) UIImage *image;
+
+/** Load the specified simplestyle marker from local cache or the MapBox Core API, then add it to the mapView.
+*   @param size Simplestyle size: small, medium, or large
+*   @param symbol Simplestyle (Maki) symbol name: anything supported by the MapBox Core API
+*   @param color Simplestyle color string: anythinng supported by the MapBox Core API
+*   @param mapView The mapView to add the marker to if it is successfully loaded
+*/
+- (void)addMakiMarkerSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color toMapView:(MBXMapView *)mapView;
+@end
+
+#endif
