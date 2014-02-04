@@ -15,6 +15,18 @@
 */
 //#define MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
 
+
+/* Setting up a project to use MBXMapKit with online tiles is very simple because no external libraries are required.
+*  However, if you want to use MBTiles for offline maps, you'll need to link to to sqlite by adding libsqlite3.dylib to
+*  the 'Linked Frameworks and Libraries' section of the settings for your build target. To avoid complexity for people
+*  who don't need MBTiles support, the MBTiles code is disabled by default. To enable MBTiles support, just link to
+*  sqlite and uncomment the define for MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3.
+*/
+//#define MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+#import <sqlite3.h>
+#endif
+
 @protocol MBXMapViewCaching;
 
 /** An MBXMapView provides an embeddable map interface, similar to the one provided by Apple's MapKit, with support for MapBox-hosted custom map styles. You use this class to display map information and to manipulate the map contents from your application.
@@ -41,6 +53,26 @@
 *   @param showDefaultBaseLayer Whether to hide or show Apple's default maps below the MapBox map.
 *   @return An initialized map view, or `nil` if a map view was unable to be initialized. */
 - (id)initWithFrame:(CGRect)frame mapID:(NSString *)mapID showDefaultBaseLayer:(BOOL)showDefaultBaseLayer;
+
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+/** Initialize a map view with a given frame and MBTiles file.
+ *
+ *   By default, Apple's maps will be hidden if the MBTiles file contains a full-world map and shown if the MBTiles file contains a map with partial-world coverage. If you have a full-world map with transparency and wish to show Apple's maps below it, use the initWithFrame:mbtilesFile:showDefaultBaseLayer: with a `showDefaultBaseLayer` value of `YES`.
+ *
+ *   If you set a `delegate` on the map view (adopting the `MKMapViewDelegate` protocol), you do not need to return a renderer for `mapView:rendererForOverlay:` in order to render the MapBox overlay. However, if you do implement that delegate method, you should return either a custom `MKTileOverlayRenderer` object or simply `nil` in response to the MapBox overlay in order to ensure proper display.
+ *
+ *   @param frame The map view's frame.
+ *   @param mbtilesFile The path to an MBTiles file.
+ *   @return An initialized map view, or `nil` if a map view was unable to be initialized. */
+- (id)initWithFrame:(CGRect)frame mbtilesPath:(NSString *)mbtilesPath;
+
+/** Initialize a map view with a given frame and MBTiles file while specifying whether or not to load Apple's maps.
+ *   @param frame The map view's frame.
+ *   @param mbtilesFile The path to an MBTiles file.
+ *   @param showDefaultBaseLayer Whether to hide or show Apple's default maps below the MapBox map.
+ *   @return An initialized map view, or `nil` if a map view was unable to be initialized. */
+- (id)initWithFrame:(CGRect)frame mbtilesPath:(NSString *)mbtilesPath showDefaultBaseLayer:(BOOL)showDefaultBaseLayer;
+#endif
 
 /** @name Accessing Map Properties */
 
@@ -132,4 +164,24 @@
 - (void)addMakiMarkerSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color toMapView:(MBXMapView *)mapView;
 @end
 
+#endif
+
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+@interface MBXMapViewTileOverlay : MKTileOverlay
+
+/** Initialize a MapBox online tile overlay layer
+ *  @param tileJSONDictionary The tileJSON dictionary describing the MapBox map to be used
+ *  @param mapView The mapView this overlay will be added to
+ */
+- (id)initWithTileJSONDictionary:(NSDictionary *)tileJSONDictionary mapView:(MBXMapView *)mapView;
+
+/** Initialize an offline MBTiles tile overlay layer
+ *  @param mbtilesPath The local filesystem path to the MBTiles file
+ *  @param useWorldForBounds Set this to YES if you want to have this layer show a blank background (rather than Apple's map
+ *         or any layers which might be beneath it) for tiles which are not included in the MBTiles file
+ *  @param mapView The mapView this overlay will be added to
+ */
+- (id)initWithMBTilesPath:(NSString *)mbtilesPath useWorldForBounds:(BOOL)worldBounds mapView:(MBXMapView *)mapView;
+
+@end
 #endif
