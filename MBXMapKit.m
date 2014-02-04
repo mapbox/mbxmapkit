@@ -46,6 +46,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 @property (nonatomic) MBXMapViewShowDefaultBaseLayerMode showDefaultBaseLayerMode;
 @property (nonatomic) MBXMapViewDelegate *ownedDelegate;
 @property (nonatomic) NSURLSession *dataSession;
+@property (assign) BOOL downloadsHaveBeenCancelled;
 @property (nonatomic) NSURLSessionTask *metadataTask;
 @property (nonatomic) MBXMapViewTileOverlay *tileOverlay;
 @property (nonatomic) BOOL hasInitialCenterCoordinate;
@@ -191,6 +192,12 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
         }
         else
         {
+            
+            if(self.mapView.downloadsHaveBeenCancelled)
+            {
+                // Bail out if somebody called invalidateAndCancel on the dataSession
+                return;
+            }
             // Otherwise, fetch & cache for next time.
             //
             [[self.mapView.dataSession dataTaskWithURL:[self URLForTilePath:path] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
@@ -431,6 +438,22 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
         [self MBXMapView_commonSetupWithMapID:nil showDefaultBaseLayerMode:MBXMapViewShowDefaultBaseLayerNever];
 
     return self;
+}
+
+- (void)cancelDownloadTasks
+{
+#warning this is partially untested
+    // Not sure if this is what lightandshadow68 meant by setting the delegate to nil in this comment:
+    //    https://github.com/mapbox/mbxmapkit/issues/26#issuecomment-33705342
+    // Testing this part will require a sample app which sets the MBXMapView's delegate and which allows the mapview
+    // to be quickly dismissed.
+    [super setDelegate:nil];
+    _ownedDelegate.realDelegate = nil;
+    _ownedDelegate = nil;
+    
+    // This part is tested and works for apps which don't use delegate proxying...
+    [_dataSession invalidateAndCancel];
+    _downloadsHaveBeenCancelled = YES;
 }
 
 - (void)setCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate
