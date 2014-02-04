@@ -522,12 +522,37 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
             //
             [[self.mapView.dataSession dataTaskWithURL:[self URLForTilePath:path] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
             {
+                // Issue #22: Do a couple sanity checks to help ensure we don't write garbage (or empty files) to the cache
+                //
+                NSDictionary *userInfo;
+                if([response isKindOfClass:[NSHTTPURLResponse class]])
+                {
+                    if ([((NSHTTPURLResponse *)response) statusCode] != 200)
+                    {
+                        // Bail out if we got anything other than a 200 (this could be a 404 for a bad tile url, etc)
+                        //
+                        userInfo = @{NSLocalizedDescriptionKey: NSLocalizedString(@"Tile request HTTP status wasn't 200",nil),
+                                     NSLocalizedFailureReasonErrorKey: NSLocalizedString(@"Probably 404 for a bad tile url", nil)
+                                     };
+                        result(nil,[NSError errorWithDomain:@"MBXMapKitErrorDomain" code:-1 userInfo:userInfo]);
+                        return;
+                    }
+                }
+                else
+                {
+                    // Bail out if we didn't get any HTTP response at all (this could be due to airplane mode)
+                    //
+                    userInfo = @{NSLocalizedDescriptionKey: NSLocalizedString(@"Non-HTTP response for tile request",nil),
+                                 NSLocalizedFailureReasonErrorKey: NSLocalizedString(@"Maybe airplane mode is enabled", nil)
+                                 };
+                    result(nil,[NSError errorWithDomain:@"MBXMapKitErrorDomain" code:-2 userInfo:userInfo]);
+                    return;
+                }
+                
+                // By this point, data is pretty likely to contain a valid image...
+                //
                 if (data)
                 {
-                    // TODO: Possibly pay attention to HTTP response headers. Generally,
-                    // though, we're going to assume that the dev knows what they want
-                    // here given the possibility of no network access.
-
                     if ([self.mapView.cachingDelegate respondsToSelector:@selector(mapView:saveCacheData:forMapID:tilePath:)])
                     {
                         // Offer to the caching delegate first.
@@ -593,6 +618,12 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
                 if (attributes[NSFileType] == NSFileTypeRegular && [attributes[NSFileModificationDate] timeIntervalSinceDate:[NSDate date]] < -kMBXMapViewCacheInterval)
                     [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+                else
+                {
+                    // Clean up any empty png files that might be lying around from a caching bug (#22)
+                    if ((attributes[NSFileType] == NSFileTypeRegular) && ([attributes[NSFileSize] integerValue] == 0))
+                        [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+                }
             }
         });
     }
