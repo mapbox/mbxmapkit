@@ -29,6 +29,17 @@
 
 @protocol MBXMapViewCaching;
 
+typedef NS_ENUM(NSUInteger, MBXMapKitSourceQuality) {
+    MBXMapKitSourceQualityFull,    // default
+    MBXMapKitSourceQualityPNG32,   // 32 color indexed PNG
+    MBXMapKitSourceQualityPNG64,   // 64 color indexed PNG
+    MBXMapKitSourceQualityPNG128,  // 128 color indexed PNG
+    MBXMapKitSourceQualityPNG256,  // 256 color indexed PNG
+    MBXMapKitSourceQualityJPEG70,  // 70% quality JPEG
+    MBXMapKitSourceQualityJPEG80,  // 80% quality JPEG
+    MBXMapKitSourceQualityJPEG90,  // 90% quality JPEG
+};
+
 /** An MBXMapView provides an embeddable map interface, similar to the one provided by Apple's MapKit, with support for MapBox-hosted custom map styles. You use this class to display map information and to manipulate the map contents from your application.
 *
 *   @warning Please note that you are responsible for getting permission to use the map data, and for ensuring your use adheres to the relevant terms of use. */
@@ -80,6 +91,9 @@
 *
 *   Upon setting a new map ID, the map view will begin an asynchronous download of the hosted metadata for the map. When the download completes successfully, the map style will change to reflect the new map ID. */
 @property (nonatomic, copy) NSString *mapID;
+
+/** The map tile source quality level. */
+@property (nonatomic, assign) MBXMapKitSourceQuality sourceQuality;
 
 /** @name Manipulating the Visible Portion of the Map */
 
