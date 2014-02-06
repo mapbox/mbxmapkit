@@ -475,6 +475,21 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     [super setVisibleMapRect:mapRect animated:animate];
 }
 
+- (void)setCamera:(MKMapCamera *)camera animated:(BOOL)animated
+{
+    self.hasInitialCenterCoordinate = YES;
+    
+    [super setCamera:camera animated:animated];
+}
+
+- (void)setCamera:(MKMapCamera *)camera
+{
+    self.hasInitialCenterCoordinate = YES;
+    
+    [super setCamera:camera];
+}
+
+
 #if TARGET_OS_IPHONE
 - (void)setVisibleMapRect:(MKMapRect)mapRect edgePadding:(UIEdgeInsets)insets animated:(BOOL)animate
 #else
