@@ -27,6 +27,8 @@ Pod::Spec.new do |m|
     ]
   }
 
+  m.documentation_url = 'https://www.mapbox.com/mbxmapkit/api/'
+
   m.framework = 'MapKit'
 
 end
