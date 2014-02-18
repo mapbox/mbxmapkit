@@ -70,6 +70,14 @@
 /** Set a custom caching delegate. The caching delegate is consulted when map tiles are needed by the rendering system and is notified when new map tiles are downloaded from MapBox. The caching delegate should implement the methods in the MBXMapViewCaching protocol. */
 @property (nonatomic, weak) IBOutlet id <MBXMapViewCaching>cachingDelegate;
 
+/** @name Cleaning up */
+
+/** Stop all outstanding tile download tasks.
+*
+*   This prevents concurrency problems when the mapView is deallocated when its parent view controller is dismissed.
+*/
+- (void)cancelDownloadTasks;
+
 @end
 
 #pragma mark -
