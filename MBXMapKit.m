@@ -42,6 +42,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 @interface MBXMapView ()
 
 - (NSString *)cachePath;
+- (NSString *)qualityExtension;
 
 @property (nonatomic) MBXMapViewShowDefaultBaseLayerMode showDefaultBaseLayerMode;
 @property (nonatomic) MBXMapViewDelegate *ownedDelegate;
@@ -154,13 +155,14 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 - (NSURL *)URLForTilePath:(MKTileOverlayPath)path
 {
-    return [NSURL URLWithString:[NSString stringWithFormat:@"https://%@.tiles.mapbox.com/v3/%@/%ld/%ld/%ld%@.png",
+    return [NSURL URLWithString:[NSString stringWithFormat:@"https://%@.tiles.mapbox.com/v3/%@/%ld/%ld/%ld%@.%@",
                                     [@[ @"a", @"b", @"c", @"d" ] objectAtIndex:(rand() % 4)],
                                     self.mapView.mapID,
                                     (long)path.z,
                                     (long)path.x,
                                     (long)path.y,
-                                    (path.contentScaleFactor > 1.0 ? @"@2x" : @"")]];
+                                    (path.contentScaleFactor > 1.0 ? @"@2x" : @""),
+                                    self.mapView.qualityExtension]];
 }
 
 - (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *tileData, NSError *error))result
@@ -241,13 +243,14 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 - (NSString *)cachePathForTilePath:(MKTileOverlayPath)path
 {
-    return [NSString stringWithFormat:@"%@/%@/%ld_%ld_%ld%@.png",
+    return [NSString stringWithFormat:@"%@/%@/%ld_%ld_%ld%@.%@",
                [self.mapView cachePath],
                self.mapView.mapID,
                (long)path.z,
                (long)path.x,
                (long)path.y,
-               (path.contentScaleFactor > 1.0 ? @"@2x" : @"")];
+               (path.contentScaleFactor > 1.0 ? @"@2x" : @""),
+               self.mapView.qualityExtension];
 }
 
 - (void)sweepCache
@@ -379,6 +382,8 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     _dataSession = [NSURLSession sessionWithConfiguration:sessionConfiguration];
 
     _cacheInterval = kMBXMapViewCacheInterval;
+
+    _sourceQuality = MBXMapKitSourceQualityFull;
 
     _showDefaultBaseLayerMode = mode;
 
@@ -604,6 +609,49 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     self.ownedDelegate.realDelegate = delegate;
     [super setDelegate:self.ownedDelegate];
     [self reloadRenderer];
+}
+
+
+- (NSString *)qualityExtension
+{
+    NSString *qualityExtension;
+
+    switch (self.sourceQuality) {
+        case MBXMapKitSourceQualityPNG32:
+            qualityExtension = @"png32";
+            break;
+
+        case MBXMapKitSourceQualityPNG64:
+            qualityExtension = @"png64";;
+            break;
+
+        case MBXMapKitSourceQualityPNG128:
+            qualityExtension = @"png128";
+            break;
+
+        case MBXMapKitSourceQualityPNG256:
+            qualityExtension = @"png256";
+            break;
+
+        case MBXMapKitSourceQualityJPEG70:
+            qualityExtension = @"jpg70";
+            break;
+
+        case MBXMapKitSourceQualityJPEG80:
+            qualityExtension = @"jpg80";
+            break;
+
+        case MBXMapKitSourceQualityJPEG90:
+            qualityExtension = @"jpg90";
+            break;
+
+        case MBXMapKitSourceQualityFull:
+        default:
+            qualityExtension = @"png";
+            break;
+    }
+
+    return qualityExtension;
 }
 
 - (NSString *)userAgentString
