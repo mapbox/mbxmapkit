@@ -8,7 +8,37 @@
 
 #import <MapKit/MapKit.h>
 
+
+/* If you want to enable support for simplestyle point markers and Maki icons, uncomment the
+*  define for MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI. For background information, see
+*  https://github.com/mapbox/mbxmapkit/issues/9 and https://github.com/mapbox/mbxmapkit/issues/5
+*/
+//#define MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
+
+
+/* Setting up a project to use MBXMapKit with online tiles is very simple because no external libraries are required.
+*  However, if you want to use MBTiles for offline maps, you'll need to link to to sqlite by adding libsqlite3.dylib to
+*  the 'Linked Frameworks and Libraries' section of the settings for your build target. To avoid complexity for people
+*  who don't need MBTiles support, the MBTiles code is disabled by default. To enable MBTiles support, just link to
+*  sqlite and uncomment the define for MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3.
+*/
+//#define MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+#import <sqlite3.h>
+#endif
+
 @protocol MBXMapViewCaching;
+
+typedef NS_ENUM(NSUInteger, MBXMapKitSourceQuality) {
+    MBXMapKitSourceQualityFull,    // default
+    MBXMapKitSourceQualityPNG32,   // 32 color indexed PNG
+    MBXMapKitSourceQualityPNG64,   // 64 color indexed PNG
+    MBXMapKitSourceQualityPNG128,  // 128 color indexed PNG
+    MBXMapKitSourceQualityPNG256,  // 256 color indexed PNG
+    MBXMapKitSourceQualityJPEG70,  // 70% quality JPEG
+    MBXMapKitSourceQualityJPEG80,  // 80% quality JPEG
+    MBXMapKitSourceQualityJPEG90,  // 90% quality JPEG
+};
 
 /** An MBXMapView provides an embeddable map interface, similar to the one provided by Apple's MapKit, with support for MapBox-hosted custom map styles. You use this class to display map information and to manipulate the map contents from your application.
 *
@@ -35,12 +65,35 @@
 *   @return An initialized map view, or `nil` if a map view was unable to be initialized. */
 - (id)initWithFrame:(CGRect)frame mapID:(NSString *)mapID showDefaultBaseLayer:(BOOL)showDefaultBaseLayer;
 
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+/** Initialize a map view with a given frame and MBTiles file.
+ *
+ *   By default, Apple's maps will be hidden if the MBTiles file contains a full-world map and shown if the MBTiles file contains a map with partial-world coverage. If you have a full-world map with transparency and wish to show Apple's maps below it, use the initWithFrame:mbtilesFile:showDefaultBaseLayer: with a `showDefaultBaseLayer` value of `YES`.
+ *
+ *   If you set a `delegate` on the map view (adopting the `MKMapViewDelegate` protocol), you do not need to return a renderer for `mapView:rendererForOverlay:` in order to render the MapBox overlay. However, if you do implement that delegate method, you should return either a custom `MKTileOverlayRenderer` object or simply `nil` in response to the MapBox overlay in order to ensure proper display.
+ *
+ *   @param frame The map view's frame.
+ *   @param mbtilesFile The path to an MBTiles file.
+ *   @return An initialized map view, or `nil` if a map view was unable to be initialized. */
+- (id)initWithFrame:(CGRect)frame mbtilesPath:(NSString *)mbtilesPath;
+
+/** Initialize a map view with a given frame and MBTiles file while specifying whether or not to load Apple's maps.
+ *   @param frame The map view's frame.
+ *   @param mbtilesFile The path to an MBTiles file.
+ *   @param showDefaultBaseLayer Whether to hide or show Apple's default maps below the MapBox map.
+ *   @return An initialized map view, or `nil` if a map view was unable to be initialized. */
+- (id)initWithFrame:(CGRect)frame mbtilesPath:(NSString *)mbtilesPath showDefaultBaseLayer:(BOOL)showDefaultBaseLayer;
+#endif
+
 /** @name Accessing Map Properties */
 
 /** The MapBox map ID for the map view. 
 *
 *   Upon setting a new map ID, the map view will begin an asynchronous download of the hosted metadata for the map. When the download completes successfully, the map style will change to reflect the new map ID. */
 @property (nonatomic, copy) NSString *mapID;
+
+/** The map tile source quality level. */
+@property (nonatomic, assign) MBXMapKitSourceQuality sourceQuality;
 
 /** @name Manipulating the Visible Portion of the Map */
 
@@ -98,3 +151,51 @@
 - (void)mapView:(MBXMapView *)mapView saveCacheData:(NSData *)tileData forMapID:(NSString *)mapID tilePath:(MKTileOverlayPath)path;
 
 @end
+
+#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
+#pragma mark -
+/* MBXSimpleStylePointAnnotation Notes:
+ * 1) The MapBox Core API docs for stand-alone markers are relevant: https://www.mapbox.com/developers/api/#Stand-alone.markers
+ * 2) The Core API docs for simplestyle markers (https://www.mapbox.com/developers/simplestyle/ )
+ *    are a bit different than the 1.1.0 simplestyle-spec (https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0 )
+ *    MBXSimpleStylePointAnnotation follows the Core API docs which match what's currently being served at
+ *    https://a.tiles.mapbox.com/v3/{{yourMapID}}/markers.geojson
+ * 3) The images for these annotations are meant to be displayed by a generic MKAnnotationView, see
+ *    https://developer.apple.com/library/ios/documentation/MapKit/Reference/MKAnnotationView_Class/Reference/Reference.html
+ */
+
+@interface MBXSimpleStylePointAnnotation : MKShape
+
+@property (nonatomic) NSURLSessionTask *imageTask;
+@property (nonatomic) UIImage *image;
+
+/** Load the specified simplestyle marker from local cache or the MapBox Core API, then add it to the mapView.
+*   @param size Simplestyle size: small, medium, or large
+*   @param symbol Simplestyle (Maki) symbol name: anything supported by the MapBox Core API
+*   @param color Simplestyle color string: anythinng supported by the MapBox Core API
+*   @param mapView The mapView to add the marker to if it is successfully loaded
+*/
+- (void)addMakiMarkerSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color toMapView:(MBXMapView *)mapView;
+@end
+
+#endif
+
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+@interface MBXMapViewTileOverlay : MKTileOverlay
+
+/** Initialize a MapBox online tile overlay layer
+ *  @param tileJSONDictionary The tileJSON dictionary describing the MapBox map to be used
+ *  @param mapView The mapView this overlay will be added to
+ */
+- (id)initWithTileJSONDictionary:(NSDictionary *)tileJSONDictionary mapView:(MBXMapView *)mapView;
+
+/** Initialize an offline MBTiles tile overlay layer
+ *  @param mbtilesPath The local filesystem path to the MBTiles file
+ *  @param useWorldForBounds Set this to YES if you want to have this layer show a blank background (rather than Apple's map
+ *         or any layers which might be beneath it) for tiles which are not included in the MBTiles file
+ *  @param mapView The mapView this overlay will be added to
+ */
+- (id)initWithMBTilesPath:(NSString *)mbtilesPath useWorldForBounds:(BOOL)worldBounds mapView:(MBXMapView *)mapView;
+
+@end
+#endif
