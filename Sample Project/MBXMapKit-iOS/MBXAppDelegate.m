@@ -3,7 +3,7 @@
 //  MBXMapKit
 //
 //  Created by Justin R. Miller on 9/4/13.
-//  Copyright (c) 2013 MapBox. All rights reserved.
+//  Copyright (c) 2013-2014 Mapbox. All rights reserved.
 //
 
 #import "MBXAppDelegate.h"

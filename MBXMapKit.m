@@ -3,7 +3,7 @@
 //  MBXMapKit
 //
 //  Created by Justin R. Miller on 9/4/13.
-//  Copyright (c) 2013 MapBox. All rights reserved.
+//  Copyright (c) 2013-2014 Mapbox. All rights reserved.
 //
 
 #import "MBXMapKit.h"
@@ -41,18 +41,18 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 @interface MBXMapView ()
 
-- (NSString *)cachePath;
-
 @property (nonatomic) MBXMapViewShowDefaultBaseLayerMode showDefaultBaseLayerMode;
 @property (nonatomic) MBXMapViewDelegate *ownedDelegate;
 @property (nonatomic) NSURLSession *dataSession;
 @property (nonatomic) NSURLSessionTask *metadataTask;
 @property (nonatomic) MBXMapViewTileOverlay *tileOverlay;
 @property (nonatomic) BOOL hasInitialCenterCoordinate;
+@property (nonatomic) NSString *cachePath;
+@property (nonatomic) NSString *qualityExtension;
 
 @end
 
-#pragma mark - MBXMapViewTileOverlay - Custom overlay fetching tiles from MapBox -
+#pragma mark - MBXMapViewTileOverlay - Custom overlay fetching tiles from Mapbox -
 
 @implementation MBXMapViewTileOverlay
 
@@ -154,13 +154,14 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 - (NSURL *)URLForTilePath:(MKTileOverlayPath)path
 {
-    return [NSURL URLWithString:[NSString stringWithFormat:@"https://%@.tiles.mapbox.com/v3/%@/%ld/%ld/%ld%@.png",
+    return [NSURL URLWithString:[NSString stringWithFormat:@"https://%@.tiles.mapbox.com/v3/%@/%ld/%ld/%ld%@.%@",
                                     [@[ @"a", @"b", @"c", @"d" ] objectAtIndex:(rand() % 4)],
                                     self.mapView.mapID,
                                     (long)path.z,
                                     (long)path.x,
                                     (long)path.y,
-                                    (path.contentScaleFactor > 1.0 ? @"@2x" : @"")]];
+                                    (path.contentScaleFactor > 1.0 ? @"@2x" : @""),
+                                    self.mapView.qualityExtension]];
 }
 
 - (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *tileData, NSError *error))result
@@ -241,13 +242,14 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 - (NSString *)cachePathForTilePath:(MKTileOverlayPath)path
 {
-    return [NSString stringWithFormat:@"%@/%@/%ld_%ld_%ld%@.png",
+    return [NSString stringWithFormat:@"%@/%@/%ld_%ld_%ld%@.%@",
                [self.mapView cachePath],
                self.mapView.mapID,
                (long)path.z,
                (long)path.x,
                (long)path.y,
-               (path.contentScaleFactor > 1.0 ? @"@2x" : @"")];
+               (path.contentScaleFactor > 1.0 ? @"@2x" : @""),
+               self.mapView.qualityExtension];
 }
 
 - (void)sweepCache
@@ -379,6 +381,8 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     _dataSession = [NSURLSession sessionWithConfiguration:sessionConfiguration];
 
     _cacheInterval = kMBXMapViewCacheInterval;
+
+    _imageQuality = MBXMapKitImageQualityFull;
 
     _showDefaultBaseLayerMode = mode;
 
@@ -621,6 +625,50 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     [self reloadRenderer];
 }
 
+
+- (NSString *)qualityExtension
+{
+    NSString *qualityExtension;
+
+    switch (self.imageQuality)
+    {
+        case MBXMapKitImageQualityPNG32:
+            qualityExtension = @"png32";
+            break;
+
+        case MBXMapKitImageQualityPNG64:
+            qualityExtension = @"png64";;
+            break;
+
+        case MBXMapKitImageQualityPNG128:
+            qualityExtension = @"png128";
+            break;
+
+        case MBXMapKitImageQualityPNG256:
+            qualityExtension = @"png256";
+            break;
+
+        case MBXMapKitImageQualityJPEG70:
+            qualityExtension = @"jpg70";
+            break;
+
+        case MBXMapKitImageQualityJPEG80:
+            qualityExtension = @"jpg80";
+            break;
+
+        case MBXMapKitImageQualityJPEG90:
+            qualityExtension = @"jpg90";
+            break;
+
+        case MBXMapKitImageQualityFull:
+        default:
+            qualityExtension = @"png";
+            break;
+    }
+
+    return qualityExtension;
+}
+
 - (NSString *)userAgentString
 {
 #if TARGET_OS_IPHONE
@@ -645,8 +693,6 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 - (NSString *)cachePath
 {
-    static NSString *_cachePath;
-
     if ( ! _cachePath)
         _cachePath = [NSString stringWithFormat:@"%@/%@", [self systemPath], kMBXMapViewCacheFolder];
 
