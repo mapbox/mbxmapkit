@@ -383,7 +383,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
     _cacheInterval = kMBXMapViewCacheInterval;
 
-    _sourceQuality = MBXMapKitSourceQualityFull;
+    _imageQuality = MBXMapKitImageQualityFull;
 
     _showDefaultBaseLayerMode = mode;
 
@@ -616,36 +616,37 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 {
     NSString *qualityExtension;
 
-    switch (self.sourceQuality) {
-        case MBXMapKitSourceQualityPNG32:
+    switch (self.imageQuality)
+    {
+        case MBXMapKitImageQualityPNG32:
             qualityExtension = @"png32";
             break;
 
-        case MBXMapKitSourceQualityPNG64:
+        case MBXMapKitImageQualityPNG64:
             qualityExtension = @"png64";;
             break;
 
-        case MBXMapKitSourceQualityPNG128:
+        case MBXMapKitImageQualityPNG128:
             qualityExtension = @"png128";
             break;
 
-        case MBXMapKitSourceQualityPNG256:
+        case MBXMapKitImageQualityPNG256:
             qualityExtension = @"png256";
             break;
 
-        case MBXMapKitSourceQualityJPEG70:
+        case MBXMapKitImageQualityJPEG70:
             qualityExtension = @"jpg70";
             break;
 
-        case MBXMapKitSourceQualityJPEG80:
+        case MBXMapKitImageQualityJPEG80:
             qualityExtension = @"jpg80";
             break;
 
-        case MBXMapKitSourceQualityJPEG90:
+        case MBXMapKitImageQualityJPEG90:
             qualityExtension = @"jpg90";
             break;
 
-        case MBXMapKitSourceQualityFull:
+        case MBXMapKitImageQualityFull:
         default:
             qualityExtension = @"png";
             break;
