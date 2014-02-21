@@ -227,7 +227,7 @@
 				ORGANIZATIONNAME = MapBox;
 				TargetAttributes = {
 					DD320F6617E3CE5500CD95A9 = {
-						DevelopmentTeam = 4QJUGA28YU;
+						DevelopmentTeam = GJZR2MEM28;
 						SystemCapabilities = {
 							com.apple.Mac = {
 								enabled = 1;
@@ -235,6 +235,7 @@
 						};
 					};
 					DDD5906217D7D086009291B8 = {
+						DevelopmentTeam = GJZR2MEM28;
 						SystemCapabilities = {
 							com.apple.iOS = {
 								enabled = 1;
@@ -474,11 +475,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MBXMapKit-iOS/MBXMapKit-Prefix.pch";
 				HEADER_SEARCH_PATHS = ..;
 				INFOPLIST_FILE = "$(SRCROOT)/MBXMapKit-iOS/MBXMapKit-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -488,11 +492,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MBXMapKit-iOS/MBXMapKit-Prefix.pch";
 				HEADER_SEARCH_PATHS = ..;
 				INFOPLIST_FILE = "$(SRCROOT)/MBXMapKit-iOS/MBXMapKit-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
