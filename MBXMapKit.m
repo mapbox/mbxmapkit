@@ -41,15 +41,14 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 @interface MBXMapView ()
 
-- (NSString *)cachePath;
-- (NSString *)qualityExtension;
-
 @property (nonatomic) MBXMapViewShowDefaultBaseLayerMode showDefaultBaseLayerMode;
 @property (nonatomic) MBXMapViewDelegate *ownedDelegate;
 @property (nonatomic) NSURLSession *dataSession;
 @property (nonatomic) NSURLSessionTask *metadataTask;
 @property (nonatomic) MBXMapViewTileOverlay *tileOverlay;
 @property (nonatomic) BOOL hasInitialCenterCoordinate;
+@property (nonatomic) NSString *cachePath;
+@property (nonatomic) NSString *qualityExtension;
 
 @end
 
@@ -679,8 +678,6 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 - (NSString *)cachePath
 {
-    static NSString *_cachePath;
-
     if ( ! _cachePath)
         _cachePath = [NSString stringWithFormat:@"%@/%@", [self systemPath], kMBXMapViewCacheFolder];
 
