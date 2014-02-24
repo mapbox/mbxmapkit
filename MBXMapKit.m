@@ -198,16 +198,22 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
             //
             [[self.mapView.dataSession dataTaskWithURL:[self URLForTilePath:path] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
             {
-                if ( ! [response isKindOfClass:[NSHTTPURLResponse class]])
+                if (error)
                 {
-                    // Bail because we didn't get an HTTP response, which could be due to airplane mode.
+                    // We got an NSURLSession-level error, so let's bail with it. This also covers airplane mode.
                     //
-                    NSDictionary *userInfo = @{ NSLocalizedDescriptionKey:        NSLocalizedString(@"Non-HTTP response for tile request", nil),
-                                                NSLocalizedFailureReasonErrorKey: NSLocalizedString(@"Airplane mode or another network obstacle likely exists", nil) };
+                    result(nil, error);
+                }
+                else if (((NSHTTPURLResponse *)response).statusCode != 200)
+                {
+                    // We don't want to cache or use non-images, so reject any HTTP-level errors.
+                    //
+                    NSDictionary *userInfo = @{ NSLocalizedDescriptionKey:        [NSString stringWithFormat:@"HTTP %i", ((NSHTTPURLResponse *)response).statusCode],
+                                                NSLocalizedFailureReasonErrorKey: [NSHTTPURLResponse localizedStringForStatusCode:((NSHTTPURLResponse *)response).statusCode] };
 
                     result(nil, [NSError errorWithDomain:MBXMapKitErrorDomain code:-1 userInfo:userInfo]);
                 }
-                else if (data)
+                else
                 {
                     // By this point, data is pretty likely to contain a valid image.
                     //
@@ -230,12 +236,6 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
                     // Return the new tile data.
                     //
                     result(data, nil);
-                }
-                else
-                {
-                    // Return the fetch error directly.
-                    //
-                    result(nil, error);
                 }
             }] resume];
         }
