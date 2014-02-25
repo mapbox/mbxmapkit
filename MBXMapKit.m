@@ -94,7 +94,14 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     }
     [marker appendFormat:@"%@+",symbol];
     [marker appendString:[color stringByReplacingOccurrencesOfString:@"#" withString:@""]];
-    [marker appendString:@".png"];
+    if([UIScreen mainScreen].scale == 2.0)
+    {
+        [marker appendString:@"@2x.png"];
+    }
+    else
+    {
+        [marker appendString:@".png"];
+    }
     return marker;
 }
 
