@@ -47,15 +47,12 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 @property (nonatomic) MBXMapViewDelegate *ownedDelegate;
 @property (nonatomic) NSURLSession *dataSession;
 @property (nonatomic) NSURLSessionTask *metadataTask;
-#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
 @property (nonatomic) NSURLSessionTask *markersTask;
-#endif
 @property (nonatomic) MBXMapViewTileOverlay *tileOverlay;
 @property (nonatomic) BOOL hasInitialCenterCoordinate;
 
 @end
 
-#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
 #pragma mark - MBXSimpleStyleAnnotation - MKAnnotation delegate to model a simplestyle point -
 
 @implementation MBXSimpleStylePointAnnotation
@@ -155,7 +152,6 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 }
 
 @end
-#endif
 
 #pragma mark - MBXMapViewTileOverlay - Custom overlay fetching tiles from MapBox -
 
@@ -402,10 +398,8 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     if (selector == @selector(mapView:rendererForOverlay:))
         return [[MBXMapViewDelegate class] methodSignatureForSelector:selector];
 
-#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
     if (selector == @selector(mapView:viewForAnnotation:))
         return [[MBXMapViewDelegate class] methodSignatureForSelector:selector];
-#endif
     
     if ([self.realDelegate respondsToSelector:selector])
         return [(NSObject *)self.realDelegate methodSignatureForSelector:selector];
@@ -430,10 +424,8 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     if (selector == @selector(mapView:rendererForOverlay:))
         return YES;
     
-#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
     if (selector == @selector(mapView:viewForAnnotation:))
         return YES;
-#endif
 
     return ([self.realDelegate respondsToSelector:selector]);
 }
@@ -471,7 +463,6 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     return nil;
 }
 
-#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
     if ([annotation isKindOfClass:[MBXSimpleStylePointAnnotation class]])
@@ -488,7 +479,6 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     }
     return nil;
 }
-#endif
 
 @end
 
@@ -638,7 +628,6 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     {
         _mapID = [mapID copy];
 
-#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
         if (_mapID)
         {
             [self updateOverlay];
@@ -646,10 +635,6 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
             // that to load since the marker resource location is known (see https://www.mapbox.com/developers/api/#Map.resources )
             [self updateMarkers];
         }
-#else
-        if (_mapID)
-            [self updateOverlay];
-#endif
     }
 }
 
@@ -727,8 +712,6 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     [self.metadataTask resume];
 }
 
-
-#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
 
 - (void)addMarkersJSONDictionaryToMap:(NSDictionary *)markersJSONDictionary
 {
@@ -822,7 +805,6 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     [self.markersTask resume];
 }
 
-#endif
 
 
 - (void)reloadRenderer

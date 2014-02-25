@@ -9,12 +9,6 @@
 #import <MapKit/MapKit.h>
 
 
-/* If you want to enable support for simplestyle point markers and Maki icons, uncomment the
-*  define for MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI. For background information, see
-*  https://github.com/mapbox/mbxmapkit/issues/9 and https://github.com/mapbox/mbxmapkit/issues/5
-*/
-//#define MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
-
 @protocol MBXMapViewCaching;
 
 /** An MBXMapView provides an embeddable map interface, similar to the one provided by Apple's MapKit, with support for MapBox-hosted custom map styles. You use this class to display map information and to manipulate the map contents from your application.
@@ -106,7 +100,6 @@
 
 @end
 
-#ifdef MBXMAPKIT_ENABLE_SIMPLESTYLE_MAKI
 #pragma mark -
 /* MBXSimpleStylePointAnnotation Notes:
  * 1) The MapBox Core API docs for stand-alone markers are relevant: https://www.mapbox.com/developers/api/#Stand-alone.markers
@@ -131,5 +124,3 @@
 */
 - (void)addMakiMarkerSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color toMapView:(MBXMapView *)mapView;
 @end
-
-#endif
