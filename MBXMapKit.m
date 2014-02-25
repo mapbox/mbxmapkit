@@ -15,6 +15,8 @@
 
 NSString *const MBXMapKitErrorDomain = @"MBXMapKitErrorDomain";
 
+NSInteger const MBXMapKitErrorCodeTileLoad = -1;
+
 typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     MBXMapViewShowDefaultBaseLayerNever,
     MBXMapViewShowDefaultBaseLayerAlways,
@@ -204,14 +206,25 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
                     //
                     result(nil, error);
                 }
-                else if (((NSHTTPURLResponse *)response).statusCode != 200)
+                else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
                 {
                     // We don't want to cache or use non-images, so reject any HTTP-level errors.
                     //
-                    NSDictionary *userInfo = @{ NSLocalizedDescriptionKey:        [NSString stringWithFormat:@"HTTP %i", ((NSHTTPURLResponse *)response).statusCode],
-                                                NSLocalizedFailureReasonErrorKey: [NSHTTPURLResponse localizedStringForStatusCode:((NSHTTPURLResponse *)response).statusCode] };
+                    NSString *errorReason = [NSString stringWithFormat:@"HTTP status %i was received", ((NSHTTPURLResponse *)response).statusCode];
 
-                    result(nil, [NSError errorWithDomain:MBXMapKitErrorDomain code:-1 userInfo:userInfo]);
+                    NSDictionary *userInfo = @{ NSLocalizedDescriptionKey        : NSLocalizedString(@"Tile load error", nil),
+                                                NSLocalizedFailureReasonErrorKey : NSLocalizedString(errorReason, nil) };
+
+                    result(nil, [NSError errorWithDomain:MBXMapKitErrorDomain code:MBXMapKitErrorCodeTileLoad userInfo:userInfo]);
+                }
+                else if ( ! [response isKindOfClass:[NSHTTPURLResponse class]])
+                {
+                    // We shouldn't be doing anything with non-HTTP responses.
+                    //
+                    NSDictionary *userInfo = @{ NSLocalizedDescriptionKey        : NSLocalizedString(@"Tile load error", nil),
+                                                NSLocalizedFailureReasonErrorKey : NSLocalizedString(@"The response received was not a valid HTTP response", nil) };
+
+                    result(nil, [NSError errorWithDomain:MBXMapKitErrorDomain code:MBXMapKitErrorCodeTileLoad userInfo:userInfo]);
                 }
                 else
                 {
