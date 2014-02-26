@@ -25,7 +25,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 #pragma mark - Private Interfaces -
 
-@interface MBXMapViewTileOverlay : MKTileOverlay
+@interface MBXMapViewTileOverlay ()
 
 @property (nonatomic, copy) NSDictionary *tileJSONDictionary;
 @property (nonatomic, weak) MBXMapView *mapView;

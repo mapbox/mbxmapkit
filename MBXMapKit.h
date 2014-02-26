@@ -112,3 +112,9 @@ typedef NS_ENUM(NSUInteger, MBXMapKitImageQuality) {
 - (void)mapView:(MBXMapView *)mapView saveCacheData:(NSData *)tileData forMapID:(NSString *)mapID tilePath:(MKTileOverlayPath)path;
 
 @end
+
+#pragma mark -
+
+@interface MBXMapViewTileOverlay : MKTileOverlay
+
+@end
