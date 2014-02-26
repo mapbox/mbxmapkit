@@ -643,7 +643,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
                                             else
                                             {
                                                 // At this point we should have an NSHTTPURLResponse with an HTTP 200, or else an
-                                                // NSURLResponse with the contents of a file frome cache. Both of those are good.
+                                                // NSURLResponse with the contents of a file from cache. Both of those are good.
                                                 //
                                                 NSError *parseError;
 
@@ -769,7 +769,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
                             else
                             {
                                 // At this point we should have an NSHTTPURLResponse with an HTTP 200, or else an
-                                // NSURLResponse with the contents of a file frome cache. Both of those are good.
+                                // NSURLResponse with the contents of a file from cache. Both of those are good.
                                 //
                                 NSError *parseError;
                                 NSDictionary *markersJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
