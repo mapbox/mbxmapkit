@@ -16,9 +16,9 @@
 {
     [super viewDidLoad];
 
-    // iOS project shows use via programmatic view API
+    // Initialize the MBXMapView with the Weekend Picks example map which includes some markers in Washington DC
     //
-    [self.view addSubview:[[MBXMapView alloc] initWithFrame:self.view.bounds mapID:@"justin.map-pgygbwdm"]];
+    [self.view addSubview:[[MBXMapView alloc] initWithFrame:self.view.bounds mapID:@"examples.map-zr0njcqy"]];
 }
 
 @end
