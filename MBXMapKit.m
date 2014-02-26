@@ -424,11 +424,11 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 {
     if ([annotation isKindOfClass:[MBXSimpleStylePointAnnotation class]])
     {
-        NSString *reuseID = @"simplestyle";
-        MKAnnotationView *view = [mapView dequeueReusableAnnotationViewWithIdentifier:reuseID];
+        static NSString *MBXSimpleStyleReuseIdentifier = @"MBXSimpleStyleReuseIdentifier";
+        MKAnnotationView *view = [mapView dequeueReusableAnnotationViewWithIdentifier:MBXSimpleStyleReuseIdentifier];
         if (!view)
         {
-            view = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:reuseID];
+            view = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:MBXSimpleStyleReuseIdentifier];
         }
         view.canShowCallout = YES;
         return view;
