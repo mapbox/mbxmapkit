@@ -117,10 +117,4 @@ typedef NS_ENUM(NSUInteger, MBXMapKitImageQuality) {
 
 @interface MBXMapViewTileOverlay : MKTileOverlay
 
-/** Initialize a MapBox online tile overlay layer
- *  @param tileJSONDictionary The tileJSON dictionary describing the MapBox map to be used
- *  @param mapView The mapView this overlay will be added to
- */
-- (id)initWithTileJSONDictionary:(NSDictionary *)tileJSONDictionary mapView:(MBXMapView *)mapView;
-
 @end
