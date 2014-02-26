@@ -22,7 +22,7 @@
 {
     [super viewDidLoad];
     
-    int whichDemo = 1;
+    int whichDemo = 0;
     switch(whichDemo) {
         case 0:
             [self genericDemo];
