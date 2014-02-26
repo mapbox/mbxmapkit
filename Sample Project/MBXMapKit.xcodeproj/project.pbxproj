@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		019AD8DC187B3A920001B409 /* WorldMapZoom0to4.mbtiles in Resources */ = {isa = PBXBuildFile; fileRef = 019AD8DB187B3A920001B409 /* WorldMapZoom0to4.mbtiles */; };
+		019AD8DE187B41940001B409 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 019AD8DD187B41940001B409 /* libsqlite3.dylib */; };
+		01D96F08187E397C009CCFEF /* USAMapZoom0to6.mbtiles in Resources */ = {isa = PBXBuildFile; fileRef = 01D96F07187E397C009CCFEF /* USAMapZoom0to6.mbtiles */; };
 		DD320F2617E3CD0E00CD95A9 /* MBXViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD320F1A17E3CD0E00CD95A9 /* MBXViewController.m */; };
 		DD320F2817E3CD0E00CD95A9 /* MBXAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DD320F1F17E3CD0E00CD95A9 /* MBXAppDelegate.m */; };
 		DD320F2917E3CD0E00CD95A9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD320F2217E3CD0E00CD95A9 /* InfoPlist.strings */; };
@@ -27,6 +30,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		019AD8DB187B3A920001B409 /* WorldMapZoom0to4.mbtiles */ = {isa = PBXFileReference; lastKnownFileType = file; path = WorldMapZoom0to4.mbtiles; sourceTree = "<group>"; };
+		019AD8DD187B41940001B409 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		01D96F07187E397C009CCFEF /* USAMapZoom0to6.mbtiles */ = {isa = PBXFileReference; lastKnownFileType = file; path = USAMapZoom0to6.mbtiles; sourceTree = "<group>"; };
 		DD320F1A17E3CD0E00CD95A9 /* MBXViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBXViewController.m; path = "MBXMapKit-iOS/MBXViewController.m"; sourceTree = "<group>"; };
 		DD320F1C17E3CD0E00CD95A9 /* MBXMapKit-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "MBXMapKit-Info.plist"; path = "MBXMapKit-iOS/MBXMapKit-Info.plist"; sourceTree = SOURCE_ROOT; };
 		DD320F1D17E3CD0E00CD95A9 /* MBXViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBXViewController.h; path = "MBXMapKit-iOS/MBXViewController.h"; sourceTree = "<group>"; };
@@ -69,6 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				019AD8DE187B41940001B409 /* libsqlite3.dylib in Frameworks */,
 				DDD5906917D7D086009291B8 /* CoreGraphics.framework in Frameworks */,
 				DDD5906717D7D086009291B8 /* Foundation.framework in Frameworks */,
 				DDD5909F17D7D18A009291B8 /* MapKit.framework in Frameworks */,
@@ -140,6 +147,9 @@
 		DDD5905A17D7D086009291B8 = {
 			isa = PBXGroup;
 			children = (
+				019AD8DD187B41940001B409 /* libsqlite3.dylib */,
+				01D96F07187E397C009CCFEF /* USAMapZoom0to6.mbtiles */,
+				019AD8DB187B3A920001B409 /* WorldMapZoom0to4.mbtiles */,
 				DD320F1717E3CC0600CD95A9 /* MBXMapKit iOS Demo */,
 				DD320F6F17E3CE5500CD95A9 /* MBXMapKit Mac Demo */,
 				DDCDA08C17E900D80037CAAD /* MBXMapKit */,
@@ -278,6 +288,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				019AD8DC187B3A920001B409 /* WorldMapZoom0to4.mbtiles in Resources */,
+				01D96F08187E397C009CCFEF /* USAMapZoom0to6.mbtiles in Resources */,
 				DD320F2917E3CD0E00CD95A9 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

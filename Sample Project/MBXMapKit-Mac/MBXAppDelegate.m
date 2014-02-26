@@ -20,9 +20,13 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+#ifdef MBXMAPKIT_ENABLE_MBTILES_WITH_LIBSQLITE3
+    NSLog(@"Can somebody with a Mac Developer program membership figure out if the mbtiles stuff works here?");
+#else
     // Mac project shows use via XIB
     //
     self.mapView.mapID = @"justin.map-pgygbwdm";
+#endif
 }
 
 @end
