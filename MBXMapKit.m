@@ -288,7 +288,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
                 NSString *filePath = [NSString stringWithFormat:@"%@/%@", [self.mapView cachePath], filename];
                 NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
 
-                if (attributes[NSFileType] == NSFileTypeRegular && [attributes[NSFileModificationDate] timeIntervalSinceDate:[NSDate date]] < -kMBXMapViewCacheInterval)
+                if (attributes[NSFileType] == NSFileTypeRegular && [attributes[NSFileModificationDate] timeIntervalSinceDate:[NSDate date]] < -self.mapView.cacheInterval)
                     [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
                 else
                 {
