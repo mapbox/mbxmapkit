@@ -81,6 +81,13 @@ typedef NS_ENUM(NSUInteger, MBXMapKitImageQuality) {
 *   @param mapID The Mapbox map ID. */
 - (void)emptyCacheForMapID:(NSString *)mapID;
 
+/** Remove any locally-cached Mapbox markers for the given map ID.
+ *
+ *   This method has no effect on any caching system managed by a cachingDelegate, but will still remove markers that were previously cached by the default caching system.
+ *
+ *   @param mapID The Mapbox map ID. */
+- (void)emptyMarkerCacheForMapID:(NSString *)mapID;
+
 /** Set a custom caching delegate. The caching delegate is consulted when map tiles are needed by the rendering system and is notified when new map tiles are downloaded from Mapbox. The caching delegate should implement the methods in the MBXMapViewCaching protocol. */
 @property (nonatomic, weak) IBOutlet id <MBXMapViewCaching>cachingDelegate;
 
