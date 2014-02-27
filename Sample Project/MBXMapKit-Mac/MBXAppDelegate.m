@@ -22,7 +22,7 @@
 {
     // Mac project shows use via XIB
     //
-    self.mapView.mapID = @"justin.map-pgygbwdm";
+    self.mapView.mapID = @"examples.map-zr0njcqy";
 }
 
 @end
