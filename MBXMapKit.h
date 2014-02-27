@@ -81,12 +81,18 @@ typedef NS_ENUM(NSUInteger, MBXMapKitImageQuality) {
 *   @param mapID The Mapbox map ID. */
 - (void)emptyCacheForMapID:(NSString *)mapID;
 
-/** Remove any locally-cached Mapbox markers for the given map ID.
+/** Remove any locally-cached Mapbox simplestyle GeoJSON for the given map ID.
  *
- *  This method has no effect on any caching system managed by a cachingDelegate, but will still remove markers that were previously cached by the default caching system.
+ *  This method has no effect on any caching system managed by a cachingDelegate, but will still remove simplestyle GeoJSON that was previously cached by the default caching system.
  *
  *  @param mapID The Mapbox map ID. */
-- (void)emptyMarkerCacheForMapID:(NSString *)mapID;
+- (void)emptySimplestyleCacheForMapID:(NSString *)mapID;
+
+/** Remove any locally-cached Mapbox Marker icons (this applies to all map IDs)
+ *
+ *  This method has no effect on any caching system managed by a cachingDelegate, but will still remove markers icons that were previously cached by the default caching system.
+ */
+- (void)emptyMarkerIconCache;
 
 /** Set a custom caching delegate. The caching delegate is consulted when map tiles are needed by the rendering system and is notified when new map tiles are downloaded from Mapbox. The caching delegate should implement the methods in the MBXMapViewCaching protocol. */
 @property (nonatomic, weak) IBOutlet id <MBXMapViewCaching>cachingDelegate;
@@ -117,5 +123,20 @@ typedef NS_ENUM(NSUInteger, MBXMapKitImageQuality) {
 *   @param mapID The Mapbox map ID.
 *   @param path The path structure that identifies the specific tile downloaded. This structure incorporates the tile’s X-Y coordinate at a given zoom level and scale factor. */
 - (void)mapView:(MBXMapView *)mapView saveCacheData:(NSData *)tileData forMapID:(NSString *)mapID tilePath:(MKTileOverlayPath)path;
+
+@end
+
+#pragma mark -
+
+/** The MBXSimpleStylelPointAnnotation class provides point markers using marker images downloaded from the Mapbox Core API */
+@interface MBXSimpleStylePointAnnotation : MKShape
+
+/** Load the specified marker from local cache or the MapBox Core API, then add it to the mapView.
+ *   @param size The size of the marker: "small", "medium", or "large"
+ *   @param symbol The simplestyle (Maki) symbol name: anything supported by the MapBox Core API
+ *   @param color The simplestyle color string: anythinng supported by the MapBox Core API
+ *   @param mapView The mapView to add the marker to if it is successfully loaded
+ */
+- (void)addMarkerSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color toMapView:(MBXMapView *)mapView;
 
 @end
