@@ -357,7 +357,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
     if (selector == @selector(mapView:viewForAnnotation:))
         return [[MBXMapViewDelegate class] methodSignatureForSelector:selector];
-    
+
     if ([self.realDelegate respondsToSelector:selector])
         return [(NSObject *)self.realDelegate methodSignatureForSelector:selector];
 
@@ -380,7 +380,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 {
     if (selector == @selector(mapView:rendererForOverlay:))
         return YES;
-    
+
     if (selector == @selector(mapView:viewForAnnotation:))
         return YES;
 
@@ -603,7 +603,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
         if (_mapID)
         {
             [self updateOverlay];
-            
+
             // The TileJSON from updateOverlay does include the path to the markers resource, but there's no need to wait around for
             // that to load since the marker resource location is known (see https://www.mapbox.com/developers/api/#Map.resources )
             //
@@ -748,15 +748,15 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 - (void)updateMarkers
 {
     [self.markersTask cancel];
-    
+
     [[NSFileManager defaultManager] createDirectoryAtPath:[NSString stringWithFormat:@"%@/%@", self.cachePath, self.mapID] withIntermediateDirectories:YES attributes:nil error:nil];
-    
+
     NSString *markersJSONCachePath = [NSString stringWithFormat:@"%@/%@/markers.geojson", self.cachePath, self.mapID];
-    
+
     NSURL *markersJSONURL = ([[NSFileManager defaultManager] fileExistsAtPath:markersJSONCachePath] ? [NSURL fileURLWithPath:markersJSONCachePath] : [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson", _mapID]]);
-    
+
     __weak __typeof(self)weakSelf = self;
-    
+
     self.markersTask = [self.dataSession dataTaskWithURL:markersJSONURL
                                        completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
                                        {
