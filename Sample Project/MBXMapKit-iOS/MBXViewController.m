@@ -29,7 +29,7 @@
 
     // In addition to the markers included with the map, add another marker with a custom icon (from the Mapbox Core API)
     //
-    MBXSimpleStylePointAnnotation *marker = [[MBXSimpleStylePointAnnotation alloc] init];
+    MBXPointAnnotation *marker = [[MBXPointAnnotation alloc] init];
     marker.title = @"Santa Cruz Harbor";
     [marker setCoordinate:CLLocationCoordinate2DMake(36.96069, -122.01516)];
     [marker addMarkerSize:@"large" symbol:@"harbor" color:@"#f86767" toMapView:_mapView];

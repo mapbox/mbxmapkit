@@ -59,16 +59,16 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 #pragma mark -
 
-@interface MBXSimpleStylePointAnnotation ()
+@interface MBXPointAnnotation ()
 
 @property (nonatomic) NSURLSessionTask *imageTask;
 @property (nonatomic) UIImage *image;
 
 @end
 
-#pragma mark - MBXSimpleStyleAnnotation - MKAnnotation delegate to model a simplestyle point -
+#pragma mark - MBXMapViewPointAnnotation - MKAnnotation delegate to model a simplestyle point -
 
-@implementation MBXSimpleStylePointAnnotation
+@implementation MBXPointAnnotation
 
 @synthesize coordinate = _coordinate;
 
@@ -504,7 +504,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
-    if ([annotation isKindOfClass:[MBXSimpleStylePointAnnotation class]])
+    if ([annotation isKindOfClass:[MBXPointAnnotation class]])
     {
         static NSString *MBXSimpleStyleReuseIdentifier = @"MBXSimpleStyleReuseIdentifier";
         MKAnnotationView *view = [mapView dequeueReusableAnnotationViewWithIdentifier:MBXSimpleStyleReuseIdentifier];
@@ -512,7 +512,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
         {
             view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:MBXSimpleStyleReuseIdentifier];
         }
-        view.image = ((MBXSimpleStylePointAnnotation *)annotation).image;
+        view.image = ((MBXPointAnnotation *)annotation).image;
         view.canShowCallout = YES;
         return view;
     }
@@ -810,7 +810,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
                         title = (title ? title : @"");
                         description = (description ? description : @"");
 
-                        MBXSimpleStylePointAnnotation *point = [MBXSimpleStylePointAnnotation new];
+                        MBXPointAnnotation *point = [MBXPointAnnotation new];
 
                         point.title      = title;
                         point.subtitle   = description;
