@@ -98,7 +98,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     {
         [marker appendString:@"l-"]; // large
     }
-    if ([size hasPrefix:@"s"])
+    else if ([size hasPrefix:@"s"])
     {
         [marker appendString:@"s-"]; // small
     }
@@ -143,7 +143,10 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
             // At this point we should have an NSHTTPURLResponse with an HTTP 200, or else an
             // NSURLResponse with the contents of a file from cache. Both of those are good.
             //
-            [data writeToFile:makiPinCachePath atomically:YES];
+            if ([response isKindOfClass:[NSHTTPURLResponse class]])
+            {
+                [data writeToFile:makiPinCachePath atomically:YES];
+            }
 
             self.image = [[UIImage alloc] initWithData:data scale:[[UIScreen mainScreen] scale]];
 
@@ -341,12 +344,15 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
                     }
                     else
                     {
-                        // Cache to disk in folders sorted by mapID.
-                        //
-                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void)
+                        if ([response isKindOfClass:[NSHTTPURLResponse class]])
                         {
-                            [data writeToFile:[self cachePathForTilePath:path] atomically:YES];
-                        });
+                            // Cache tiles which came from an HTTP 200 response to disk in folders sorted by mapID.
+                            //
+                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void)
+                            {
+                                [data writeToFile:[self cachePathForTilePath:path] atomically:YES];
+                            });
+                        }
                     }
 
                     // Return the new tile data.
@@ -738,7 +744,12 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
                                                         }
                                                     }
 
-                                                    [data writeToFile:tileJSONCachePath atomically:YES];
+                                                    // Cache the tileJSON only if it came from an HTTP 200 response
+                                                    //
+                                                    if ([response isKindOfClass:[NSHTTPURLResponse class]])
+                                                    {
+                                                        [data writeToFile:tileJSONCachePath atomically:YES];
+                                                    }
 
                                                     dispatch_sync(dispatch_get_main_queue(), ^(void)
                                                     {
@@ -854,7 +865,10 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
                                                if (markersJSONDictionary)
                                                {
-                                                   [data writeToFile:markersJSONCachePath atomically:YES];
+                                                   if ([response isKindOfClass:[NSHTTPURLResponse class]])
+                                                   {
+                                                       [data writeToFile:markersJSONCachePath atomically:YES];
+                                                   }
 
                                                    dispatch_sync(dispatch_get_main_queue(), ^(void)
                                                    {
