@@ -33,7 +33,7 @@
     marker.title = @"Santa Cruz Harbor";
     [marker setCoordinate:CLLocationCoordinate2DMake(36.96069, -122.01516)];
     [marker addMarkerSize:@"large" symbol:@"harbor" color:@"#f86767" toMapView:_mapView];
-    
+
     [self.view addSubview:_mapView];
 }
 

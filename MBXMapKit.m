@@ -127,15 +127,15 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 - (void)addMarkerSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color toMapView:(MBXMapView *)mapView
 {
     [self.imageTask cancel];
-    
+
     [[NSFileManager defaultManager] createDirectoryAtPath:[NSString stringWithFormat:@"%@/markers", mapView.cachePath] withIntermediateDirectories:YES attributes:nil error:nil];
-    
+
     NSString *marker = [self markerStringForSize:size symbol:symbol color:color];
     NSString *makiPinCachePath = [NSString stringWithFormat:@"%@/markers/%@", mapView.cachePath, marker];
     NSString *markerDownloadURL = [NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/marker/%@", marker];
-    
+
     NSURL *makiPinURL = ([[NSFileManager defaultManager] fileExistsAtPath:makiPinCachePath] ? [NSURL fileURLWithPath:makiPinCachePath] : [NSURL URLWithString:markerDownloadURL]);
-    
+
     self.imageTask = [mapView.dataSession dataTaskWithURL:makiPinURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
     {
         if (error)
@@ -159,7 +159,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
             });
         }
     }];
-    
+
     [self.imageTask resume];
 }
 
