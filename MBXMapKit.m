@@ -905,4 +905,12 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     });
 }
 
+- (void)emptyMarkerCacheForMapID:(NSString *)mapID
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void)
+                   {
+                       [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@/markers.geojson", [self cachePath], mapID] error:nil];
+                   });
+}
+
 @end
