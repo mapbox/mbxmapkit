@@ -74,7 +74,7 @@ typedef NS_ENUM(NSUInteger, MBXMapKitImageQuality) {
 *   Changing this property has no effect on any caching system managed by a cachingDelegate, but will trigger the removal of any expired tiles that were previously cached by the default caching system. */
 @property (nonatomic) NSTimeInterval cacheInterval;
 
-/** Remove any locally-cached Mapbox data for the given map ID. This includes map tiles, marker GeoJSON, and marker imagery.
+/** Remove any locally-cached Mapbox data for the given map ID. This includes map tiles and map-specific marker GeoJSON.
 *
 *   This method has no effect on any caching system managed by a cachingDelegate, but will still remove tiles that were previously cached by the default caching system.
 *
