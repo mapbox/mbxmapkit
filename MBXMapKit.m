@@ -604,7 +604,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
         {
             [self updateOverlay];
             
-            // The tileJSON from updateOverlay does include the path to the markers resource, but there's no need to wait around for
+            // The TileJSON from updateOverlay does include the path to the markers resource, but there's no need to wait around for
             // that to load since the marker resource location is known (see https://www.mapbox.com/developers/api/#Map.resources )
             //
             [self updateMarkers];
@@ -695,49 +695,50 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 - (void)addMarkersJSONDictionaryToMap:(NSDictionary *)markersJSONDictionary
 {
-    // Find point features in the markers dictionary (if there are any) and add them to the map...
-    id value;
+    // Find point features in the markers dictionary (if there are any) and add them to the map.
+    //
     id markers = markersJSONDictionary[@"features"];
+
     if (markers && [markers isKindOfClass:[NSArray class]])
     {
-        for(value in (NSArray *)markers)
+        id value;
+
+        for (value in (NSArray *)markers)
         {
-            if([value isKindOfClass:[NSDictionary class]])
+            if ([value isKindOfClass:[NSDictionary class]])
             {
                 NSDictionary *feature = (NSDictionary *)value;
                 NSString *type = feature[@"geometry"][@"type"];
-                if([@"Point" isEqualToString:type])
+
+                if ([@"Point" isEqualToString:type])
                 {
-                    // This is what we were looking for, a simplestyle Point!
+                    // Only handle point features for now.
                     //
-                    NSString *longitude = feature[@"geometry"][@"coordinates"][0];
-                    NSString *latitude = feature[@"geometry"][@"coordinates"][1];
-                    NSString *title = feature[@"properties"][@"title"];
+                    NSString *longitude   = feature[@"geometry"][@"coordinates"][0];
+                    NSString *latitude    = feature[@"geometry"][@"coordinates"][1];
+                    NSString *title       = feature[@"properties"][@"title"];
                     NSString *description = feature[@"properties"][@"description"];
-                    NSString *size = feature[@"properties"][@"marker-size"];
-                    NSString *color = feature[@"properties"][@"marker-color"];
-                    NSString *symbol = feature[@"properties"][@"marker-symbol"];
-                    if(longitude && latitude && size && color && symbol)
+                    NSString *size        = feature[@"properties"][@"marker-size"];
+                    NSString *color       = feature[@"properties"][@"marker-color"];
+                    NSString *symbol      = feature[@"properties"][@"marker-symbol"];
+
+                    if (longitude && latitude && size && color && symbol)
                     {
-                        // Looks like we've got all the important keys...
-                        // If the title or description were null, that's okay, but set them to a valid NSString
-                        //
-                        title = title ? title : @"";
-                        description = description ? description : @"";
-                        MBXSimpleStylePointAnnotation *point = [[MBXSimpleStylePointAnnotation alloc] init];
-                        point.title = title;
-                        point.subtitle = description;
+                        title = (title ? title : @"");
+                        description = (description ? description : @"");
+
+                        MBXSimpleStylePointAnnotation *point = [MBXSimpleStylePointAnnotation new];
+
+                        point.title      = title;
+                        point.subtitle   = description;
                         point.coordinate = CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue]);
+
                         [self addAnnotation:point];
                     }
                     else
                     {
-                        NSLog(@"I'm confused, this simplestyle Point feature is missing important keys: %@",feature);
+                        NSLog(@"This simplestyle Point feature is missing the %@ key", feature);
                     }
-                }
-                else
-                {
-                    // Ignore Line and Polygon features
                 }
             }
         }
@@ -756,39 +757,41 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     
     __weak __typeof(self)weakSelf = self;
     
-    self.markersTask = [self.dataSession dataTaskWithURL:markersJSONURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
-                        {
-                            if (error)
-                            {
-                                NSLog(@"Attempting to load simplestyle geoJSON produced an NSURLSession-level error, %@", error);
-                            }
-                            else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
-                            {
-                                NSLog(@"Attempting to load simplestyle geoJSON failed by receiving an HTTP status %i", ((NSHTTPURLResponse *)response).statusCode);
-                            }
-                            else
-                            {
-                                // At this point we should have an NSHTTPURLResponse with an HTTP 200, or else an
-                                // NSURLResponse with the contents of a file from cache. Both of those are good.
-                                //
-                                NSError *parseError;
-                                NSDictionary *markersJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
-                                
-                                if (markersJSONDictionary)
-                                {
-                                    [data writeToFile:markersJSONCachePath atomically:YES];
-                                    dispatch_sync(dispatch_get_main_queue(), ^(void)
-                                                  {
-                                                      [weakSelf addMarkersJSONDictionaryToMap:markersJSONDictionary];
-                                                  });
-                                }
-                                else
-                                {
-                                    NSLog(@"Error parsing simplestyle for map ID %@ - giving up. (%@)", _mapID, parseError);
-                                }
-                            }
-                        }];
-    
+    self.markersTask = [self.dataSession dataTaskWithURL:markersJSONURL
+                                       completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+                                       {
+                                           if (error)
+                                           {
+                                               NSLog(@"Attempting to load simplestyle geoJSON produced an NSURLSession-level error, %@", error);
+                                           }
+                                           else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
+                                           {
+                                               NSLog(@"Attempting to load simplestyle geoJSON failed by receiving an HTTP status %i", ((NSHTTPURLResponse *)response).statusCode);
+                                           }
+                                           else
+                                           {
+                                               // At this point we should have an NSHTTPURLResponse with an HTTP 200, or else an
+                                               // NSURLResponse with the contents of a file from cache. Both of those are good.
+                                               //
+                                               NSError *parseError;
+                                               NSDictionary *markersJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+
+                                               if (markersJSONDictionary)
+                                               {
+                                                   [data writeToFile:markersJSONCachePath atomically:YES];
+
+                                                   dispatch_sync(dispatch_get_main_queue(), ^(void)
+                                                   {
+                                                       [weakSelf addMarkersJSONDictionaryToMap:markersJSONDictionary];
+                                                   });
+                                               }
+                                               else
+                                               {
+                                                   NSLog(@"Error parsing simplestyle for map ID %@ (%@)", _mapID, parseError);
+                                               }
+                                           }
+                                       }];
+
     [self.markersTask resume];
 }
 
@@ -908,9 +911,9 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 - (void)emptyMarkerCacheForMapID:(NSString *)mapID
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void)
-                   {
-                       [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@/markers.geojson", [self cachePath], mapID] error:nil];
-                   });
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@/markers.geojson", [self cachePath], mapID] error:nil];
+    });
 }
 
 @end
