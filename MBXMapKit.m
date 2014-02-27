@@ -93,34 +93,26 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     // See https://www.mapbox.com/developers/api/#Stand-alone.markers
     //
     NSMutableString *marker = [[NSMutableString alloc] initWithString:@"pin-"];
-    if ([@"small" isEqualToString:size])
+
+    if ([size hasPrefix:@"l"])
     {
-        [marker appendString:@"s-"];
+        [marker appendString:@"l-"]; // large
     }
-    else if ([@"medium" isEqualToString:size])
+    if ([size hasPrefix:@"s"])
     {
-        [marker appendString:@"m-"];
-    }
-    else if ([@"large" isEqualToString:size])
-    {
-        [marker appendString:@"l-"];
+        [marker appendString:@"s-"]; // small
     }
     else
     {
-        // Default to a medium sized icon if the simplestyle GeoJSON specified no size or an unexpected size string
-        //
-        [marker appendString:@"m-"];
+        [marker appendString:@"m-"]; // default to medium
     }
+
     [marker appendFormat:@"%@+",symbol];
+
     [marker appendString:[color stringByReplacingOccurrencesOfString:@"#" withString:@""]];
-    if([UIScreen mainScreen].scale == 2.0)
-    {
-        [marker appendString:@"@2x.png"];
-    }
-    else
-    {
-        [marker appendString:@".png"];
-    }
+
+    [marker appendString:([[UIScreen mainScreen] scale] > 1.0 ? @"@2x.png" : @".png")];
+
     return marker;
 }
 
