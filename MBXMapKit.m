@@ -84,7 +84,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     [self didChangeValueForKey:@"coordinate"];
 }
 
-- (NSString *)markerStringForSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color
++ (NSString *)markerStringForSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color
 {
     // Make a string which follows the MapBox Core API spec for stand-alone markers. This relies on the MapBox API
     // for error checking rather than trying to do any fancy tricks to determine valid size-symbol-color combinations.
@@ -122,7 +122,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
     [[NSFileManager defaultManager] createDirectoryAtPath:[NSString stringWithFormat:@"%@/markers", mapView.cachePath] withIntermediateDirectories:YES attributes:nil error:nil];
 
-    NSString *marker = [self markerStringForSize:size symbol:symbol color:color];
+    NSString *marker = [MBXPointAnnotation markerStringForSize:size symbol:symbol color:color];
     NSString *makiPinCachePath = [NSString stringWithFormat:@"%@/markers/%@", mapView.cachePath, marker];
     NSString *markerDownloadURL = [NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/marker/%@", marker];
 
