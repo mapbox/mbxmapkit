@@ -132,22 +132,24 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     {
         if (error)
         {
-          NSLog(@"Attempting to load marker icon produced an NSURLSession-level error (%@)", error);
+            NSLog(@"Attempting to load marker icon produced an NSURLSession-level error (%@)", error);
         }
         else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
         {
-          NSLog(@"Attempting to load marker icon failed by receiving an HTTP status %i", ((NSHTTPURLResponse *)response).statusCode);
+            NSLog(@"Attempting to load marker icon failed by receiving an HTTP status %i", ((NSHTTPURLResponse *)response).statusCode);
         }
         else
         {
-          // At this point we should have an NSHTTPURLResponse with an HTTP 200, or else an
-          // NSURLResponse with the contents of a file from cache. Both of those are good.
-          //
-          [data writeToFile:makiPinCachePath atomically:YES];
-          self.image = [[UIImage alloc] initWithData:data scale:[[UIScreen mainScreen] scale]];
-          dispatch_sync(dispatch_get_main_queue(), ^(void)
-          {
-            [mapView addAnnotation:self];
+            // At this point we should have an NSHTTPURLResponse with an HTTP 200, or else an
+            // NSURLResponse with the contents of a file from cache. Both of those are good.
+            //
+            [data writeToFile:makiPinCachePath atomically:YES];
+
+            self.image = [[UIImage alloc] initWithData:data scale:[[UIScreen mainScreen] scale]];
+
+            dispatch_sync(dispatch_get_main_queue(), ^(void)
+            {
+                [mapView addAnnotation:self];
             });
         }
     }];
