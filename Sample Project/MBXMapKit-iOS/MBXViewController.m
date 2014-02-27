@@ -16,7 +16,6 @@
 
 @end
 
-
 @implementation MBXViewController
 
 - (void)viewDidLoad
@@ -25,16 +24,18 @@
 
     // Programmatic iOS example: use example map which includes simplestyle markers
     //
-    _mapView = [[MBXMapView alloc] initWithFrame:self.view.bounds mapID:@"examples.map-pgygbwdm"];
+    self.mapView = [[MBXMapView alloc] initWithFrame:self.view.bounds mapID:@"examples.map-pgygbwdm"];
 
     // In addition to the markers included with the map, add another marker with a custom icon from the Mapbox API
     //
     MBXPointAnnotation *marker = [MBXPointAnnotation new];
     marker.title = @"Santa Cruz Harbor";
     marker.coordinate = CLLocationCoordinate2DMake(36.96069, -122.01516);
-    [marker addMarkerSize:@"large" symbol:@"harbor" color:@"#f86767" toMapView:_mapView];
+    [marker addMarkerSize:@"large" symbol:@"harbor" color:@"#f86767" toMapView:self.mapView];
 
-    [self.view addSubview:_mapView];
+    // Add the map to the view hierarchy.
+    //
+    [self.view addSubview:self.mapView];
 }
 
 @end
