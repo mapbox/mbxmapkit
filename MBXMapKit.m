@@ -59,7 +59,10 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 #pragma mark -
 
-@interface MBXSimpleStylePointAnnotation : MKShape
+@interface MBXSimpleStylePointAnnotation ()
+
+@property (nonatomic) NSURLSessionTask *imageTask;
+@property (nonatomic) UIImage *image;
 
 @end
 
@@ -79,6 +82,85 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     [self willChangeValueForKey:@"coordinate"];
     _coordinate = coordinate;
     [self didChangeValueForKey:@"coordinate"];
+}
+
+- (NSString *)markerStringForSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color
+{
+    // Make a string which follows the MapBox Core API spec for stand-alone markers. This relies on the MapBox API
+    // for error checking rather than trying to do any fancy tricks to determine valid size-symbol-color combinations.
+    // The main advantage of that approach is that new Maki symbols will be available to use as markers as soon as
+    // they are added to the API (i.e. no changes to input validation code here are required).
+    // See https://www.mapbox.com/developers/api/#Stand-alone.markers
+    //
+    NSMutableString *marker = [[NSMutableString alloc] initWithString:@"pin-"];
+    if ([@"small" isEqualToString:size])
+    {
+        [marker appendString:@"s-"];
+    }
+    else if ([@"medium" isEqualToString:size])
+    {
+        [marker appendString:@"m-"];
+    }
+    else if ([@"large" isEqualToString:size])
+    {
+        [marker appendString:@"l-"];
+    }
+    else
+    {
+        // Default to a medium sized icon if the simplestyle GeoJSON specified no size or an unexpected size string
+        //
+        [marker appendString:@"m-"];
+    }
+    [marker appendFormat:@"%@+",symbol];
+    [marker appendString:[color stringByReplacingOccurrencesOfString:@"#" withString:@""]];
+    if([UIScreen mainScreen].scale == 2.0)
+    {
+        [marker appendString:@"@2x.png"];
+    }
+    else
+    {
+        [marker appendString:@".png"];
+    }
+    return marker;
+}
+
+- (void)addMarkerSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color toMapView:(MBXMapView *)mapView
+{
+    [self.imageTask cancel];
+    
+    [[NSFileManager defaultManager] createDirectoryAtPath:[NSString stringWithFormat:@"%@/markers", mapView.cachePath] withIntermediateDirectories:YES attributes:nil error:nil];
+    
+    NSString *marker = [self markerStringForSize:size symbol:symbol color:color];
+    NSString *makiPinCachePath = [NSString stringWithFormat:@"%@/markers/%@", mapView.cachePath, marker];
+    NSString *markerDownloadURL = [NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/marker/%@", marker];
+    
+    NSURL *makiPinURL = ([[NSFileManager defaultManager] fileExistsAtPath:makiPinCachePath] ? [NSURL fileURLWithPath:makiPinCachePath] : [NSURL URLWithString:markerDownloadURL]);
+    
+    self.imageTask = [mapView.dataSession dataTaskWithURL:makiPinURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+    {
+        if (error)
+        {
+          NSLog(@"Attempting to load marker icon produced an NSURLSession-level error (%@)", error);
+        }
+        else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
+        {
+          NSLog(@"Attempting to load marker icon failed by receiving an HTTP status %i", ((NSHTTPURLResponse *)response).statusCode);
+        }
+        else
+        {
+          // At this point we should have an NSHTTPURLResponse with an HTTP 200, or else an
+          // NSURLResponse with the contents of a file from cache. Both of those are good.
+          //
+          [data writeToFile:makiPinCachePath atomically:YES];
+          self.image = [[UIImage alloc] initWithData:data scale:[[UIScreen mainScreen] scale]];
+          dispatch_sync(dispatch_get_main_queue(), ^(void)
+          {
+            [mapView addAnnotation:self];
+            });
+        }
+    }];
+    
+    [self.imageTask resume];
 }
 
 @end
@@ -428,8 +510,9 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
         MKAnnotationView *view = [mapView dequeueReusableAnnotationViewWithIdentifier:MBXSimpleStyleReuseIdentifier];
         if (!view)
         {
-            view = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:MBXSimpleStyleReuseIdentifier];
+            view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:MBXSimpleStyleReuseIdentifier];
         }
+        view.image = ((MBXSimpleStylePointAnnotation *)annotation).image;
         view.canShowCallout = YES;
         return view;
     }
@@ -732,12 +815,11 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
                         point.title      = title;
                         point.subtitle   = description;
                         point.coordinate = CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue]);
-
-                        [self addAnnotation:point];
+                        [point addMarkerSize:size symbol:symbol color:color toMapView:self];
                     }
                     else
                     {
-                        NSLog(@"This simplestyle Point feature is missing the %@ key", feature);
+                        NSLog(@"This simplestyle Point feature is missing one or more important keys (%@)", feature);
                     }
                 }
             }
@@ -908,11 +990,19 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
     });
 }
 
-- (void)emptyMarkerCacheForMapID:(NSString *)mapID
+- (void)emptySimplestyleCacheForMapID:(NSString *)mapID
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void)
     {
         [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@/markers.geojson", [self cachePath], mapID] error:nil];
+    });
+}
+
+- (void)emptyMarkerIconCache
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void)
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/markers", [self cachePath]] error:nil];
     });
 }
 
