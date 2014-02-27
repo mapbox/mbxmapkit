@@ -18,7 +18,7 @@
 
     // Programmatic iOS example: use example map which includes simplestyle markers
     //
-    [self.view addSubview:[[MBXMapView alloc] initWithFrame:self.view.bounds mapID:@"examples.map-zr0njcqy"]];
+    [self.view addSubview:[[MBXMapView alloc] initWithFrame:self.view.bounds mapID:@"examples.map-pgygbwdm"]];
 }
 
 @end
