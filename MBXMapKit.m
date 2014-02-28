@@ -147,7 +147,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
         }
         else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
         {
-            NSLog(@"Attempting to load marker icon failed by receiving an HTTP status %i", ((NSHTTPURLResponse *)response).statusCode);
+            NSLog(@"Attempting to load marker icon failed by receiving an HTTP status %li", (long)((NSHTTPURLResponse *)response).statusCode);
         }
         else
         {
@@ -333,7 +333,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
                 {
                     // We don't want to cache or use non-images, so reject any HTTP-level errors.
                     //
-                    NSString *errorReason = [NSString stringWithFormat:@"HTTP status %i was received", ((NSHTTPURLResponse *)response).statusCode];
+                    NSString *errorReason = [NSString stringWithFormat:@"HTTP status %li was received", (long)((NSHTTPURLResponse *)response).statusCode];
 
                     NSDictionary *userInfo = @{ NSLocalizedDescriptionKey        : NSLocalizedString(@"Tile load error", nil),
                                                 NSLocalizedFailureReasonErrorKey : NSLocalizedString(errorReason, nil) };
@@ -737,7 +737,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
                                             }
                                             else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
                                             {
-                                                NSLog(@"Attempting to load tileJSON failed by receiving an HTTP status %i - retrying!", ((NSHTTPURLResponse *)response).statusCode);
+                                                NSLog(@"Attempting to load tileJSON failed by receiving an HTTP status %li - retrying!", (long)((NSHTTPURLResponse *)response).statusCode);
                                                 [weakSelf updateOverlay];
                                             }
                                             else
@@ -870,7 +870,7 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
                                            }
                                            else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
                                            {
-                                               NSLog(@"Attempting to load simplestyle geoJSON failed by receiving an HTTP status %i", ((NSHTTPURLResponse *)response).statusCode);
+                                               NSLog(@"Attempting to load simplestyle geoJSON failed by receiving an HTTP status %li", (long)((NSHTTPURLResponse *)response).statusCode);
                                            }
                                            else
                                            {
