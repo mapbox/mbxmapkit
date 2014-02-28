@@ -62,7 +62,11 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 @interface MBXPointAnnotation ()
 
 @property (nonatomic) NSURLSessionTask *imageTask;
+#if TARGET_OS_IPHONE
 @property (nonatomic) UIImage *image;
+#else
+@property (nonatomic) NSImage *image;
+#endif
 
 @end
 
@@ -111,7 +115,14 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
     [marker appendString:[color stringByReplacingOccurrencesOfString:@"#" withString:@""]];
 
+#if TARGET_OS_IPHONE
     [marker appendString:([[UIScreen mainScreen] scale] > 1.0 ? @"@2x.png" : @".png")];
+#else
+    // Making this smart enough to handle a Retina MacBook with a normal dpi external display is complicated.
+    // For now, just default to @1x images and a 1.0 scale.
+    //
+    [marker appendString:@".png"];
+#endif
 
     return marker;
 }
@@ -147,8 +158,14 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
             {
                 [data writeToFile:makiPinCachePath atomically:YES];
             }
-
+#if TARGET_OS_IPHONE
             self.image = [[UIImage alloc] initWithData:data scale:[[UIScreen mainScreen] scale]];
+#else
+            // Making this smart enough to handle a Retina MacBook with a normal dpi external display is complicated.
+            // For now, just default to @1x images and a 1.0 scale.
+            //
+            self.image = [[NSImage alloc] initWithData:data];
+#endif
 
             dispatch_sync(dispatch_get_main_queue(), ^(void)
             {
