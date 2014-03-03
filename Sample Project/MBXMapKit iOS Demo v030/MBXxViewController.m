@@ -33,6 +33,7 @@
     if ([overlay isKindOfClass:[MBXRasterTileOverlay class]])
     {
         MBXTileOverlayRenderer *renderer = [[MBXTileOverlayRenderer alloc] initWithTileOverlay:overlay];
+        renderer.mapID = ((MBXRasterTileOverlay *)overlay).mapID;
         return renderer;
     }
     return nil;

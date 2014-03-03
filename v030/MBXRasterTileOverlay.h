@@ -7,8 +7,11 @@
 //
 
 #import <MapKit/MapKit.h>
+#import "MBXCacheManagerProtocol.h"
 
 @interface MBXRasterTileOverlay : MKTileOverlay
+
+@property (assign) MBXRasterImageQuality imageQuality;
 
 @property (nonatomic) NSString *mapID;
 

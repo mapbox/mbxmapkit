@@ -10,4 +10,8 @@
 
 @interface MBXTileOverlayRenderer : MKTileOverlayRenderer
 
+@property (nonatomic) NSString *mapID;
+
+- (void)respondToNewTileJSON:(NSNotification *)notification;
+
 @end
