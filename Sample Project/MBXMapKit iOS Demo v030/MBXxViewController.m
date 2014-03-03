@@ -8,7 +8,6 @@
 
 #import "MBXxViewController.h"
 #import "MBXRasterTileOverlay.h"
-#import "MBXTileOverlayRenderer.h"
 
 @interface MBXxViewController ()
 
@@ -32,8 +31,7 @@
 {
     if ([overlay isKindOfClass:[MBXRasterTileOverlay class]])
     {
-        MBXTileOverlayRenderer *renderer = [[MBXTileOverlayRenderer alloc] initWithTileOverlay:overlay];
-        renderer.mapID = ((MBXRasterTileOverlay *)overlay).mapID;
+        MKTileOverlayRenderer *renderer = [[MKTileOverlayRenderer alloc] initWithTileOverlay:overlay];
         return renderer;
     }
     return nil;

@@ -19,7 +19,6 @@
 		014DA20418C45AE000AB33F8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 014DA20318C45AE000AB33F8 /* Images.xcassets */; };
 		014DA22018C45B8400AB33F8 /* MBXCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB21F18C43B2000AD5C27 /* MBXCacheManager.m */; };
 		014DA22218C45B8400AB33F8 /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */; };
-		014DA22418C45B8400AB33F8 /* MBXTileOverlayRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22318C43BAA00AD5C27 /* MBXTileOverlayRenderer.m */; };
 		014DA22618C45B8400AB33F8 /* MBXMBTilesTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22518C43BCD00AD5C27 /* MBXMBTilesTileOverlay.m */; };
 		014DA22818C45B8400AB33F8 /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22718C43CEA00AD5C27 /* MBXPointAnnotation.m */; };
 		DD320F2617E3CD0E00CD95A9 /* MBXViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD320F1A17E3CD0E00CD95A9 /* MBXViewController.m */; };
@@ -61,8 +60,6 @@
 		01BCB21F18C43B2000AD5C27 /* MBXCacheManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXCacheManager.m; sourceTree = "<group>"; };
 		01BCB22018C43B7300AD5C27 /* MBXRasterTileOverlay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXRasterTileOverlay.h; sourceTree = "<group>"; };
 		01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXRasterTileOverlay.m; sourceTree = "<group>"; };
-		01BCB22218C43BAA00AD5C27 /* MBXTileOverlayRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXTileOverlayRenderer.h; sourceTree = "<group>"; };
-		01BCB22318C43BAA00AD5C27 /* MBXTileOverlayRenderer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXTileOverlayRenderer.m; sourceTree = "<group>"; };
 		01BCB22418C43BCD00AD5C27 /* MBXMBTilesTileOverlay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXMBTilesTileOverlay.h; sourceTree = "<group>"; };
 		01BCB22518C43BCD00AD5C27 /* MBXMBTilesTileOverlay.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXMBTilesTileOverlay.m; sourceTree = "<group>"; };
 		01BCB22618C43CEA00AD5C27 /* MBXPointAnnotation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXPointAnnotation.h; sourceTree = "<group>"; };
@@ -174,8 +171,6 @@
 				01BCB21F18C43B2000AD5C27 /* MBXCacheManager.m */,
 				01BCB22018C43B7300AD5C27 /* MBXRasterTileOverlay.h */,
 				01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */,
-				01BCB22218C43BAA00AD5C27 /* MBXTileOverlayRenderer.h */,
-				01BCB22318C43BAA00AD5C27 /* MBXTileOverlayRenderer.m */,
 				01BCB22418C43BCD00AD5C27 /* MBXMBTilesTileOverlay.h */,
 				01BCB22518C43BCD00AD5C27 /* MBXMBTilesTileOverlay.m */,
 				01BCB22618C43CEA00AD5C27 /* MBXPointAnnotation.h */,
@@ -429,7 +424,6 @@
 			files = (
 				014DA22018C45B8400AB33F8 /* MBXCacheManager.m in Sources */,
 				014DA22218C45B8400AB33F8 /* MBXRasterTileOverlay.m in Sources */,
-				014DA22418C45B8400AB33F8 /* MBXTileOverlayRenderer.m in Sources */,
 				014DA22618C45B8400AB33F8 /* MBXMBTilesTileOverlay.m in Sources */,
 				014DA22818C45B8400AB33F8 /* MBXPointAnnotation.m in Sources */,
 				014DA1F518C45AE000AB33F8 /* main.m in Sources */,

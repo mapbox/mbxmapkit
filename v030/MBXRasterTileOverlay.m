@@ -38,52 +38,22 @@
 {
     _mapID = mapID;
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
-        self.tileJSON = [[MBXCacheManager sharedCacheManager] proxyTileJSONForMapID:_mapID withError:nil];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        NSError *error;
+        NSData *data;
+        data = [[MBXCacheManager sharedCacheManager] proxyTileJSONForMapID:_mapID withError:&error];
     });
 
 }
 
 - (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *, NSError *))result
 {
-    // Make the point that we're not blocking the main thread here
-    //
-    assert(![NSThread isMainThread]);
-    
-    NSError *error;
-    NSData *data;
-    data = [_cacheManager proxyTileAtPath:path forMapID:_mapID withQuality:_imageQuality withError:&error];
-
-
-    /*
-
-     NSError *parseError;
-
-     NSDictionary *tileJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
-
-     if (tileJSONDictionary)
-     {
-     for (NSString *requiredKey in @[ @"id", @"minzoom", @"maxzoom", @"bounds", @"center" ])
-     {
-     if ( ! tileJSONDictionary[requiredKey])
-     {
-     NSLog(@"Invalid TileJSON for map ID %@ (missing key '%@')", mapID, requiredKey);
-     }
-     }
-
-
-     self.tileOverlay = [[MBXMapViewTileOverlay alloc] initWithTileJSONDictionary:tileJSONDictionary mapView:self];
-
-     [[NSNotificationCenter defaultCenter] postNotificationName:[self notificationNameForTileJSON] object:self];
-
-     }
-     else
-     {
-     NSLog(@"Error parsing TileJSON for map ID %@ - retrying! (%@)", mapID, parseError);
-     }
-
-     */
-    result(data,error);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        NSError *error;
+        NSData *data;
+        data = [_cacheManager proxyTileAtPath:path forMapID:_mapID withQuality:_imageQuality withError:&error];
+        result(data,error);
+    });
 }
 
 @end
