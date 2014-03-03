@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <MapKit/MapKit.h>
 
 @protocol MBXCacheManagerProtocol <NSObject>
 
@@ -17,7 +18,7 @@
 
 - (NSData *)proxySimplestyleForMapID:(NSString *)mapID withError:(NSError **)error;
 
-- (NSData *)proxyTileAtPath:(MKTileOverlayPath *)path forMapID:(NSString *)mapID withError:(NSError **)error;
+- (NSData *)proxyTileAtPath:(MKTileOverlayPath)path forMapID:(NSString *)mapID withError:(NSError **)error;
 
 - (NSData *)proxyMarkerIcon:(NSString *)markerFilename withError:(NSError **)error;
 

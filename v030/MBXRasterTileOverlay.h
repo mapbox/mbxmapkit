@@ -10,4 +10,6 @@
 
 @interface MBXRasterTileOverlay : MKTileOverlay
 
+@property (nonatomic) NSString *mapID;
+
 @end

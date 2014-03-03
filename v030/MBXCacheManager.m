@@ -14,7 +14,7 @@
 
 + (MBXCacheManager *)sharedCacheManager
 {
-    static MBXCacheManager *sharedCacheManger = nil;
+    static MBXCacheManager *sharedCacheManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedCacheManager = [[self alloc] init];
@@ -27,22 +27,26 @@
 
 - (NSData *)proxyTileJSONForMapID:(NSString *)mapID withError:(NSError **)error
 {
-
+    *error = nil;
+    return nil;
 }
 
 - (NSData *)proxySimplestyleForMapID:(NSString *)mapID withError:(NSError **)error
 {
-
+    *error = nil;
+    return nil;
 }
 
-- (NSData *)proxyTileAtPath:(MKTileOverlayPath *)path forMapID:(NSString *)mapID withError:(NSError **)error
+- (NSData *)proxyTileAtPath:(MKTileOverlayPath)path forMapID:(NSString *)mapID withError:(NSError **)error
 {
-
+    *error = nil;
+    return nil;
 }
 
 - (NSData *)proxyMarkerIcon:(NSString *)markerFilename withError:(NSError **)error
 {
-    
+    *error = nil;
+    return nil;
 }
 
 
