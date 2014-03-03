@@ -171,11 +171,12 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 
 - (NSData *)proxyURL:(NSURL *)url cachePath:(NSString *)cachePath description:(NSString *)description withError:(NSError **)error
 {
-    // Make the point that we're definitely not blocking the main thread here
+    // Make the point that we had better not be blocking the main thread here
     //
     assert(![NSThread isMainThread]);
 
-    // Do a synchronous request for the specified URL
+    // Do a synchronous request for the specified URL. Synchronous is fine, because this should have been wrapped with dispatch_async()
+    // somewhere up the call stack.
     //
     NSData *data;
     NSMutableURLRequest *request;
@@ -332,6 +333,7 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 #endif
 }
 
+
 - (NSString *)systemPath
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
@@ -349,6 +351,8 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 - (void)setCacheInterval:(NSTimeInterval)cacheInterval
 {
     _cacheInterval = cacheInterval;
+    
+    [self sweepCache];
 }
 
 
