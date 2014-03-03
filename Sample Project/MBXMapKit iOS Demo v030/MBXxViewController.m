@@ -26,7 +26,7 @@
 {
     [super viewDidLoad];
 
-    [[MBXCacheManager sharedCacheManager] invalidateMapID:@"examples.map-pgygbwdm"];
+    //[[MBXCacheManager sharedCacheManager] invalidateMapID:@"examples.map-pgygbwdm"];
 
     _rasterOverlay = [[MBXRasterTileOverlay alloc] init];
     _rasterOverlay.mapID = @"examples.map-pgygbwdm";
