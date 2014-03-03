@@ -8,12 +8,15 @@
 
 #import "MBXxViewController.h"
 #import "MBXRasterTileOverlay.h"
+#import "MBXCacheManager.h"
 
 @interface MBXxViewController ()
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 
 @property (nonatomic) MBXRasterTileOverlay *rasterOverlay;
+
+@property (nonatomic) UIActionSheet *actionSheet;
 
 @end
 
@@ -23,10 +26,11 @@
 {
     [super viewDidLoad];
 
+    [[MBXCacheManager sharedCacheManager] invalidateMapID:@"examples.map-pgygbwdm"];
+
     _rasterOverlay = [[MBXRasterTileOverlay alloc] init];
     _rasterOverlay.mapID = @"examples.map-pgygbwdm";
-    [_rasterOverlay addObserver:self forKeyPath:@"center" options:NSKeyValueObservingOptionNew context:nil];
-    [_rasterOverlay addObserver:self forKeyPath:@"centerZoom" options:NSKeyValueObservingOptionNew context:nil];
+    [_rasterOverlay addObserver:self forKeyPath:@"tileJSONDictionary" options:NSKeyValueObservingOptionNew context:nil];
     [_mapView addOverlay:_rasterOverlay];
     _mapView.delegate = self;
 }
@@ -43,15 +47,100 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if([@"center" isEqualToString:keyPath])
+    if([@"tileJSONDictionary" isEqualToString:keyPath] && [object isKindOfClass:[MBXRasterTileOverlay class]])
     {
-        [_mapView setCenterCoordinate:_rasterOverlay.center animated:NO];
-    }
-    else if([@"centerZoom" isEqualToString:keyPath])
-    {
-        [_mapView setRegion:MKCoordinateRegionMake(_rasterOverlay.center, MKCoordinateSpanMake(0, 360 / pow(2, _rasterOverlay.centerZoom) * _mapView.frame.size.width / 256)) animated:NO];
+        CLLocationCoordinate2D center = [(MBXRasterTileOverlay *)object center];
+        NSInteger centerZoom = [(MBXRasterTileOverlay *)object centerZoom];
+        MKCoordinateRegion region = MKCoordinateRegionMake(center, MKCoordinateSpanMake(0, 360 / pow(2, centerZoom) * _mapView.frame.size.width / 256));
+        
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_mapView setRegion:region animated:NO];
+        });
     }
 }
 
+- (UIActionSheet *)universalActionSheet
+{
+    return [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"OSM world map",@"OSM over Apple satellite",@"Terrain under Apple labels",@"Tilemill bounded region",@"Tilemill region over Apple",@"Tilemill transparent over Apple", nil];
+}
+
+- (IBAction)iPadInfoButtonAction:(id)sender {
+    if(_actionSheet.visible) {
+        [_actionSheet dismissWithClickedButtonIndex:_actionSheet.cancelButtonIndex animated:YES];
+        _actionSheet = nil;
+    } else {
+        _actionSheet = [self universalActionSheet];
+        [_actionSheet showFromRect:((UIButton *)sender).frame inView:self.view animated:YES];
+    }
+}
+
+- (IBAction)iPhoneInfoButtonAction:(id)sender {
+    if(_actionSheet.visible) {
+        [_actionSheet dismissWithClickedButtonIndex:_actionSheet.cancelButtonIndex animated:YES];
+        _actionSheet = nil;
+    } else {
+        _actionSheet = [self universalActionSheet];
+        [_actionSheet showFromRect:((UIButton *)sender).frame inView:self.view animated:YES];
+    }
+}
+
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch(buttonIndex) {
+        case 0:
+            // OSM world map
+            _mapView.mapType = MKMapTypeStandard;
+            [_mapView removeOverlays:_mapView.overlays];
+            _rasterOverlay.canReplaceMapContent = YES;
+            _rasterOverlay.mapID = @"examples.map-pgygbwdm";
+            [_mapView addOverlay:_rasterOverlay];
+            break;
+        case 1:
+            // OSM over Apple satellite
+            _mapView.mapType = MKMapTypeSatellite;
+            [_mapView removeOverlays:_mapView.overlays];
+            _rasterOverlay.canReplaceMapContent = NO;
+            _rasterOverlay.mapID = @"justin.map-9tlo4knw";
+            [_mapView addOverlay:_rasterOverlay];
+            break;
+        case 2:
+            // Terrain under Apple labels
+            _mapView.mapType = MKMapTypeStandard;
+            [_mapView removeOverlays:_mapView.overlays];
+            _rasterOverlay.canReplaceMapContent = YES;
+            _rasterOverlay.mapID = @"justin.map-mf07hryq";
+            [_mapView insertOverlay:_rasterOverlay atIndex:0 level:MKOverlayLevelAboveRoads];
+            break;
+        case 3:
+            // Tilemill bounded region
+#warning this doesn't work right yet
+            _mapView.mapType = MKMapTypeStandard;
+            [_mapView removeOverlays:_mapView.overlays];
+            _rasterOverlay.canReplaceMapContent = YES;
+            _rasterOverlay.useTileJSONBoundsInsteadOfMapRectWorld = YES;
+            _rasterOverlay.mapID = @"justin.NACIS2012";
+            [_mapView addOverlay:_rasterOverlay];
+            break;
+        case 4:
+            // Tilemill region over Apple
+#warning this doesn't work right yet
+            _mapView.mapType = MKMapTypeStandard;
+            [_mapView removeOverlays:_mapView.overlays];
+            _rasterOverlay.canReplaceMapContent = YES;
+            _rasterOverlay.useTileJSONBoundsInsteadOfMapRectWorld = YES;
+            _rasterOverlay.mapID = @"justin.clp-2011-11-03-1200";
+            [_mapView addOverlay:_rasterOverlay];
+            break;
+        case 5:
+            // Tilemill transparent over Apple
+            _mapView.mapType = MKMapTypeStandard;
+            [_mapView removeOverlays:_mapView.overlays];
+            _rasterOverlay.canReplaceMapContent = NO;
+            _rasterOverlay.mapID = @"justin.pdx_meters";
+            [_mapView addOverlay:_rasterOverlay];
+            break;
+    }
+}
 
 @end

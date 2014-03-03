@@ -7,12 +7,8 @@
 //
 
 #import "MBXRasterTileOverlay.h"
-#import "MBXCacheManager.h"
 
 @interface MBXRasterTileOverlay ()
-
-@property (nonatomic) MBXCacheManager *cacheManager;
-@property (nonatomic) NSData *TileJSON;
 
 @end
 
@@ -41,7 +37,7 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
         NSError *error;
         NSData *data;
-        data = [[MBXCacheManager sharedCacheManager] proxyTileJSONForMapID:_mapID withError:&error];
+        data = [_cacheManager proxyTileJSONForMapID:_mapID withError:&error];
 
         // Someone might want to manually configure the zoom limits, center, etc, so check first before stomping
         // all over the existing configuration
@@ -52,37 +48,45 @@
             {
                 NSError *parseError;
                 NSDictionary *tileJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
-                if (tileJSONDictionary[@"minzoom"])
+                if(tileJSONDictionary && !parseError)
                 {
-                    self.minimumZ = [tileJSONDictionary[@"minzoom"] integerValue];
+                    if (tileJSONDictionary[@"minzoom"])
+                    {
+                        self.minimumZ = [tileJSONDictionary[@"minzoom"] integerValue];
+                    }
+                    if (tileJSONDictionary[@"maxzoom"])
+                    {
+                        self.maximumZ = [tileJSONDictionary[@"maxzoom"] integerValue];
+                    }
+                    if (tileJSONDictionary[@"center"])
+                    {
+                        self.centerZoom = [tileJSONDictionary[@"center"][2] integerValue];
+                        self.center = CLLocationCoordinate2DMake([tileJSONDictionary[@"center"][1] doubleValue], [tileJSONDictionary[@"center"][0] doubleValue]);
+                    }
+
+                    [self setTileJSONDictionary:tileJSONDictionary];
                 }
-                if (tileJSONDictionary[@"maxzoom"])
+                else
                 {
-                    self.maximumZ = [tileJSONDictionary[@"maxzoom"] integerValue];
+                    NSLog(@"There was a problem parsing TileJSON for map ID %@ - (%@)",_mapID,error?error:@"");
                 }
-                if (tileJSONDictionary[@"center"])
-                {
-                    self.centerZoom = [tileJSONDictionary[@"center"][2] integerValue];
-                    self.center = CLLocationCoordinate2DMake([tileJSONDictionary[@"center"][1] doubleValue], [tileJSONDictionary[@"center"][0] doubleValue]);
-                    //[self setCenterCoordinate:center zoomLevel:centerZoom animated:NO];
-                }
+            }
+            else
+            {
+                NSLog(@"There was a problem fetching TileJSON for map ID %@ - (%@)",_mapID,error?error:@"");
             }
         }
     });
 }
 
-- (void)setCenterZoom:(NSInteger)centerZoom
+- (void)setTileJSONDictionary:(NSDictionary *)tileJSONDictionary
 {
-    [self willChangeValueForKey:@"centerZoom"];
-    _centerZoom = centerZoom;
-    [self didChangeValueForKey:@"centerZoom"];
-}
-
-- (void)setCenter:(CLLocationCoordinate2D)center
-{
-    [self willChangeValueForKey:@"center"];
-    _center = center;
-    [self didChangeValueForKey:@"center"];
+    // This is KVO compliant so that interested view controllers, tile overlay renderers, etc can
+    // be notified when the tileJSON changes.
+    //
+    [self willChangeValueForKey:@"tileJSONDictionary"];
+    _tileJSONDictionary = tileJSONDictionary;
+    [self didChangeValueForKey:@"tileJSONDictionary"];
 }
 
 

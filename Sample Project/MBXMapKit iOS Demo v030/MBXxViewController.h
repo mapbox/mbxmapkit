@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 
-@interface MBXxViewController : UIViewController <MKMapViewDelegate>
+@interface MBXxViewController : UIViewController <MKMapViewDelegate, UIActionSheetDelegate>
 
 @end

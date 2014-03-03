@@ -20,12 +20,26 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lNd-ae-Kxf">
+                                <rect key="frame" x="287" y="535" width="22" height="22"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="22" id="3uV-8Q-eFG"/>
+                                    <constraint firstAttribute="width" constant="22" id="rTj-Lm-1MV"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <connections>
+                                    <action selector="iPhoneInfoButtonAction:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="b3L-Q4-C2s"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="e1u-Kk-xWn" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="5LY-gA-hey"/>
+                            <constraint firstAttribute="trailing" secondItem="lNd-ae-Kxf" secondAttribute="trailing" constant="11" id="BtG-me-lF4"/>
                             <constraint firstItem="L5Y-cU-ekA" firstAttribute="top" secondItem="e1u-Kk-xWn" secondAttribute="bottom" id="Y0Q-nj-svb"/>
                             <constraint firstItem="e1u-Kk-xWn" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="d91-pe-MDT"/>
+                            <constraint firstItem="L5Y-cU-ekA" firstAttribute="top" secondItem="lNd-ae-Kxf" secondAttribute="bottom" constant="11" id="lBH-c7-Dmx"/>
                             <constraint firstAttribute="trailing" secondItem="e1u-Kk-xWn" secondAttribute="trailing" id="maD-KC-Ciq"/>
                         </constraints>
                     </view>
