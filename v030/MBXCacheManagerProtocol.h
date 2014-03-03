@@ -23,11 +23,6 @@ typedef NS_ENUM(NSUInteger, MBXRasterImageQuality) {
 };
 
 
-#pragma mark - Methods for broadcasting TileJSON availability
-
-- (NSString *)notificationNameForTileJSON;
-
-
 #pragma mark - Methods for proxying resources through the cache
 
 - (NSData *)proxyTileJSONForMapID:(NSString *)mapID withError:(NSError **)error;

@@ -42,9 +42,49 @@
         NSError *error;
         NSData *data;
         data = [[MBXCacheManager sharedCacheManager] proxyTileJSONForMapID:_mapID withError:&error];
-    });
 
+        // Someone might want to manually configure the zoom limits, center, etc, so check first before stomping
+        // all over the existing configuration
+        //
+        if(!_inhibitTileJSON) {
+
+            if (data && !error)
+            {
+                NSError *parseError;
+                NSDictionary *tileJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+                if (tileJSONDictionary[@"minzoom"])
+                {
+                    self.minimumZ = [tileJSONDictionary[@"minzoom"] integerValue];
+                }
+                if (tileJSONDictionary[@"maxzoom"])
+                {
+                    self.maximumZ = [tileJSONDictionary[@"maxzoom"] integerValue];
+                }
+                if (tileJSONDictionary[@"center"])
+                {
+                    self.centerZoom = [tileJSONDictionary[@"center"][2] integerValue];
+                    self.center = CLLocationCoordinate2DMake([tileJSONDictionary[@"center"][1] doubleValue], [tileJSONDictionary[@"center"][0] doubleValue]);
+                    //[self setCenterCoordinate:center zoomLevel:centerZoom animated:NO];
+                }
+            }
+        }
+    });
 }
+
+- (void)setCenterZoom:(NSInteger)centerZoom
+{
+    [self willChangeValueForKey:@"centerZoom"];
+    _centerZoom = centerZoom;
+    [self didChangeValueForKey:@"centerZoom"];
+}
+
+- (void)setCenter:(CLLocationCoordinate2D)center
+{
+    [self willChangeValueForKey:@"center"];
+    _center = center;
+    [self didChangeValueForKey:@"center"];
+}
+
 
 - (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *, NSError *))result
 {

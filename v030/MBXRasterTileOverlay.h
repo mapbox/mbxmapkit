@@ -15,4 +15,10 @@
 
 @property (nonatomic) NSString *mapID;
 
+@property (assign) BOOL inhibitTileJSON;
+
+@property (nonatomic) NSInteger centerZoom;
+
+@property (nonatomic) CLLocationCoordinate2D center;
+
 @end

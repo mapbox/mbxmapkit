@@ -34,15 +34,6 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
     return sharedCacheManager;
 }
 
-#pragma mark - Methods for broadcasting TileJSON availability
-
-- (NSString *)notificationNameForTileJSON
-{
-    static NSString *tileJSONNotificationName = @"MBXNewTileJSONAvailable";
-    return tileJSONNotificationName;
-}
-
-
 #pragma mark - Methods for proxying resources through the cache
 
 - (NSData *)proxyTileJSONForMapID:(NSString *)mapID withError:(NSError **)error
