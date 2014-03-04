@@ -84,58 +84,56 @@
     }
 }
 
+- (void)resetMapViewAndRasterOverlayDefaults
+{
+    _mapView.mapType = MKMapTypeStandard;
+    [_mapView removeOverlays:_mapView.overlays];
+    _mapView.scrollEnabled = YES;
+    _mapView.zoomEnabled = YES;
+    _rasterOverlay.canReplaceMapContent = YES;
+}
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     switch(buttonIndex) {
         case 0:
             // OSM world map
-            _mapView.mapType = MKMapTypeStandard;
-            [_mapView removeOverlays:_mapView.overlays];
-            _rasterOverlay.canReplaceMapContent = YES;
+            [self resetMapViewAndRasterOverlayDefaults];
             _rasterOverlay.mapID = @"examples.map-pgygbwdm";
             [_mapView addOverlay:_rasterOverlay];
             break;
         case 1:
             // OSM over Apple satellite
+            [self resetMapViewAndRasterOverlayDefaults];
             _mapView.mapType = MKMapTypeSatellite;
-            [_mapView removeOverlays:_mapView.overlays];
             _rasterOverlay.canReplaceMapContent = NO;
             _rasterOverlay.mapID = @"justin.map-9tlo4knw";
             [_mapView addOverlay:_rasterOverlay];
             break;
         case 2:
             // Terrain under Apple labels
-            _mapView.mapType = MKMapTypeStandard;
-            [_mapView removeOverlays:_mapView.overlays];
-            _rasterOverlay.canReplaceMapContent = YES;
+            [self resetMapViewAndRasterOverlayDefaults];
             _rasterOverlay.mapID = @"justin.map-mf07hryq";
             [_mapView insertOverlay:_rasterOverlay atIndex:0 level:MKOverlayLevelAboveRoads];
             break;
         case 3:
-            // Tilemill bounded region
-#warning this doesn't work right yet
-            _mapView.mapType = MKMapTypeStandard;
-            [_mapView removeOverlays:_mapView.overlays];
-            _rasterOverlay.canReplaceMapContent = YES;
-            _rasterOverlay.useTileJSONBoundsInsteadOfMapRectWorld = YES;
+            // Tilemill bounded region (scroll & zoom limited to programmatic control only)
+            [self resetMapViewAndRasterOverlayDefaults];
+            _mapView.scrollEnabled = NO;
+            _mapView.zoomEnabled = NO;
             _rasterOverlay.mapID = @"justin.NACIS2012";
             [_mapView addOverlay:_rasterOverlay];
             break;
         case 4:
             // Tilemill region over Apple
-#warning this doesn't work right yet
-            _mapView.mapType = MKMapTypeStandard;
-            [_mapView removeOverlays:_mapView.overlays];
-            _rasterOverlay.canReplaceMapContent = YES;
-            _rasterOverlay.useTileJSONBoundsInsteadOfMapRectWorld = YES;
+            [self resetMapViewAndRasterOverlayDefaults];
+            _rasterOverlay.canReplaceMapContent = NO;
             _rasterOverlay.mapID = @"justin.clp-2011-11-03-1200";
             [_mapView addOverlay:_rasterOverlay];
             break;
         case 5:
             // Tilemill transparent over Apple
-            _mapView.mapType = MKMapTypeStandard;
-            [_mapView removeOverlays:_mapView.overlays];
+            [self resetMapViewAndRasterOverlayDefaults];
             _rasterOverlay.canReplaceMapContent = NO;
             _rasterOverlay.mapID = @"justin.pdx_meters";
             [_mapView addOverlay:_rasterOverlay];

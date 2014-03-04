@@ -178,12 +178,19 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
     data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&err];
     if (err)
     {
-        NSLog(@"Attempting to load %@ produced an NSURLSession-level error (%@)", description, err);
+        NSLog(@"Attempting to load %@ produced an NSURLConnection-level error (%@)", description, err);
     }
     else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
     {
-        NSLog(@"Attempting to load %@ failed by receiving an HTTP status %li", description, (long)((NSHTTPURLResponse *)response).statusCode);
+        // Tile 404's can happen a lot, so don't clutter the log with them, but do log things which aren't tile 404's.
+        //
+        if (! ([@"Tile" isEqualToString:description] && ((NSHTTPURLResponse *)response).statusCode == 404))
+        {
+            NSLog(@"Attempting to load %@ failed by receiving an HTTP status %li", description, (long)((NSHTTPURLResponse *)response).statusCode);
+        }
 
+        // On the other hand, return an appropriate NSError for any HTTP response other than 200.
+        //
         NSString *errorReason = [NSString stringWithFormat:@"HTTP status %li was received", (long)((NSHTTPURLResponse *)response).statusCode];
 
         NSDictionary *userInfo = @{ NSLocalizedDescriptionKey        : NSLocalizedString(@"HTTP status error", nil),

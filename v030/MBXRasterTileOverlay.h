@@ -23,11 +23,10 @@
 
 @property (assign) BOOL inhibitTileJSON;
 @property (assign) BOOL inhibitSimplestyle;
-@property (assign) BOOL useTileJSONBoundsInsteadOfMapRectWorld;
 
 @property (nonatomic) NSDictionary *tileJSONDictionary;
 
-@property (atomic, assign) NSInteger centerZoom;
-@property (atomic, assign) CLLocationCoordinate2D center;
+@property (assign) NSInteger centerZoom;
+@property (assign) CLLocationCoordinate2D center;
 
 @end
