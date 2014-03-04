@@ -12,7 +12,8 @@
       width:60px;
       height:60px;
       }
-
+.mask-right { left:auto; right:-1px; }
+.z1 { z-index:1; }
 .install > div        { display:none; }
 .install:target > div { display:block; }
 

@@ -17,28 +17,50 @@ navigation:
     hash: retina_support
 ---
 
-<div class='row6 contain fill-white round-top clip contain keyline-bottom'>
-  <div class='pad4y center'>
-    <h2>MapBox to iOS 7 with One Line of Code</h2>
-  </div>
+<div class='row6 contain fill-grey round-top clip clearfix keyline-all'>
+  <div id='map' class='row6 round-top col12 pin-top'></div>
 
-  <div class='wireframe clip mobile-splash col4 margin4'>
-    <div class='keyline-bottom center pad2y'>
-      <span class='dot fill-darken1'></span>
+  <div class='round-top mask-top pin-top row3 col12 fill-lighten3'></div>
+  <div class='mask-left pin-bottom row3 col4 fill-lighten3'></div>
+  <div class='mask-right pin-bottom row3 col4 fill-lighten3'></div>
+
+  <div class='z1 contain'>
+    <div class='pad2y center'>
+      <h2>MapBox to iOS 7 with One Line of Code</h2>
     </div>
-    <div class='body fill-darken0 col12 row4'>
+
+    <div class='wireframe z1 contain clip mobile-splash col4 margin4'>
+      <div class='keyline-bottom center pad2y fill-white'>
+        <span class='dot fill-darken1'></span>
+      </div>
+      <div class='body col12 row4'>
+      </div>
     </div>
   </div>
 </div>
-<div class='space-bottom2 pad2 quiet fill-white prose round-bottom center clearfix'>
+
+<div class='space-bottom2 pad2 quiet keyline-bottom keyline-left keyline-right fill-white prose round-bottom center clearfix'>
   <div class='col10 margin1'>
     <p>A small <a href='https://github.com/mapbox/mbxmapkit/blob/master/CHANGELOG.md'>open source</a> library for building map applications on the Apple platform. Provides highly flexible visual styling &amp; offline use for iPhone, iPad, and Mac devices. </p>
   </div>
 </div>
 
+<script>
+var map = L.mapbox.map('map', 'examples.map-9ijuk24y', {
+  zoomControl: false,
+  infoControl: false
+}).setView([38.9209, -77.0263], 15);
+
+</script>
+
 <div id='installation' class='keyline-all fill-darken0 space-bottom round'>
   <div class='pad1y pad2x keyline-bottom strong small clearfix'>
-    <span class='fill-darken1 pad1x round dark inline fr'>Mapbox iOS SDK {{site.version}}</span>
+
+    <div class='fr'><!--
+      --><span class='fill-darken1 pad1x round-left dark inline'>MBXMapKit</span><!--
+      --><a class='pad1x inline round-right keyline-left quiet dark fill-darken2' href='https://github.com/mapbox/mbxmapkit/releases'>{{site.version}}</a>
+    </div>
+
     Installation <em class='quiet'>Supports iOS versions 7.0+ &amp; OSX versions 10.9+</em>
   </div>
   <nav class='fill-white round-bottom'>
