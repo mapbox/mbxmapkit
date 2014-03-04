@@ -1,0 +1,77 @@
+---
+layout: default
+class: fill-light
+fullwidth: true
+---
+
+<link href='{{site.url}}/css/docs.css' rel='stylesheet' />
+<link href='{{site.baseurl}}/site.css' rel='stylesheet' />
+<script src='{{site.url}}/js/docs.js'></script>
+
+<!--Fixed sidebar navigation-->
+<div class='docnav hide-mobile'>
+  <div class='limiter'><div class='col3 contain'>
+    <nav class='scroll-styled quiet-scroll'>
+
+      {% if page.section == 'mapboxmbx-overview' %}
+         <div class='space-bottom'>
+          <a class='block quiet active strong small truncate' href='{{site.baseurl}}/'>Overview</a>
+        </div>
+        {% for heading in page.navigation %}
+          <div class='space-bottom'>
+            <a class='small block quiet truncate' href='#{{heading.title|replace:' ','_'}}'><strong>{{heading.title}}</strong></a>
+          {% for item in heading.items %}
+            <a class='small block truncate' href='#{{item.hash}}'>{{item.text}}</a>
+          {% endfor %}
+          </div>
+        {% endfor %}
+      {% elsif page.section == 'mapboxmbx-api' %}
+         <div class='space-bottom'>
+           <a class='block quiet active strong small truncate' href='{{site.baseurl}}/api/'>API {{site.version}}</a>
+        </div>
+        {% for heading in page.navigation %}
+          <div class='space-bottom1'>
+            <a class='block quiet small truncate' href='#{{heading[0]|replace:' ','_'}}'><strong>{{heading[0]}}</strong></a>
+          {% for item in heading[1] %}
+            <a class='block small truncate' href='#{{item|replace:' ','_'}}'>{{item | replace:'-class','' | replace:'-protocol',''}}</a>
+          {% endfor %}
+          </div>
+        {% endfor %}
+      {% endif %}
+    </nav>
+  </div></div>
+</div>
+
+<div class='limiter clearfix'>
+  <div class='pad2y'>
+    <nav class='contain margin3 col9 fill-purple space-bottom round small'>
+      <div class='col3 dark round-left keyline-right pad2y pad1x center truncate'>
+        <strong class='icon mobile'>MBXMapKit</strong>
+      </div>
+      <div class='col6 dark tabs mobile-cols pad1'><!--
+        --><a class='col6 {% if page.url == "/index.html" %} active{% endif %}' href='{{site.baseurl}}/'>Overview</a><!--
+        --><a class='col6 {% if page.url contains "api" %} active{% endif %}' href='{{site.baseurl}}/api/'>API</a>
+      </div>
+      <div id='docs-search' class='col3 pad1 keyline-left'>
+        <fieldset class='col12 with-icon dark'>
+          <span class='icon search'></span>
+          <input type='text' class='col12 round minimal' />
+        </fieldset>
+      </div>
+    </nav>
+  </div>
+  <div class='contain margin3 col9'>
+    {{content}}
+  </div>
+</div>
+
+<script>
+$('#docs-search input').swiftype({
+    autocompleteContainingElement: $('#docs-search'),
+    //filters: {
+      //page: {
+        //type: ['mapbox-api', 'mapbox-docs']
+      //}
+    //}
+});
+</script>

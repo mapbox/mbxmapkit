@@ -1,7 +1,5 @@
 api: https://www.mapbox.com
 url: https://www.mapbox.com
-permalink: /:categories/:title
 baseurl: /mbxmapkit
-title: MBXMapKit
-description: One-line MapBox integration with MapKit on iOS and OS X
+version: v0.1.0
 pygments: true
