@@ -42,5 +42,6 @@ typedef NS_ENUM(NSUInteger, MBXRasterImageQuality) {
 
 - (void)invalidateMarkerIcons;
 
+- (void)sweepCache;
 
 @end

@@ -35,6 +35,11 @@
     _mapView.delegate = self;
 }
 
+- (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered
+{
+    [[MBXCacheManager sharedCacheManager] sweepCache];
+}
+
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay
 {
     if ([overlay isKindOfClass:[MBXRasterTileOverlay class]])

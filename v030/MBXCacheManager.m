@@ -34,33 +34,19 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
     return sharedCacheManager;
 }
 
+
 #pragma mark - Methods for proxying resources through the cache
 
 - (NSData *)proxyTileJSONForMapID:(NSString *)mapID withError:(NSError **)error
 {
     // Attempt to fetch some TileJSON from the cache if it's available, or by downloading it if not
     //
-    NSString *cacheDirectory;
-    NSString *tileJSONCachePath;
-    NSURL *tileJSONURL;
-
-    cacheDirectory = [NSString stringWithFormat:@"%@/%@", self.cachePath, mapID];
-    [[NSFileManager defaultManager] createDirectoryAtPath:cacheDirectory withIntermediateDirectories:YES attributes:nil error:nil];
-
-    tileJSONCachePath = [NSString stringWithFormat:@"%@/%@/%@.json", self.cachePath, mapID, mapID];
-
-    if ([[NSFileManager defaultManager] fileExistsAtPath:tileJSONCachePath])
-    {
-        tileJSONURL = [NSURL fileURLWithPath:tileJSONCachePath];
-    }
-    else
-    {
-        tileJSONURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@.json", mapID]];
-    }
-
-    NSData *data = [self proxyURL:tileJSONURL cachePath:tileJSONCachePath description:@"TileJSON" withError:error];
-    [self sweepCache];
-    return data;
+    return [self proxyResourceForMapID:mapID
+                           description:@"TileJSON"
+                     relativeCachePath:[NSString stringWithFormat:@"%@/%@.json", mapID, mapID]
+                             urlString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@.json", mapID]
+                                 error:error
+            ];
 }
 
 
@@ -68,26 +54,12 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 {
     // Attempt to fetch some simplestyle from the cache if it's available, or by downloading it if not
     //
-    NSString *cacheDirectory;
-    NSString *simplestyleCachePath;
-    NSURL *simplestyleURL;
-
-    cacheDirectory = [NSString stringWithFormat:@"%@/%@", self.cachePath, mapID];
-    [[NSFileManager defaultManager] createDirectoryAtPath:cacheDirectory withIntermediateDirectories:YES attributes:nil error:nil];
-
-    simplestyleCachePath = [NSString stringWithFormat:@"%@/%@/markers.json", self.cachePath, mapID];
-
-    if ([[NSFileManager defaultManager] fileExistsAtPath:simplestyleCachePath])
-    {
-        simplestyleURL = [NSURL fileURLWithPath:simplestyleCachePath];
-    }
-    else
-    {
-        simplestyleURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson", mapID]];
-    }
-
-    NSData *data = [self proxyURL:simplestyleURL cachePath:simplestyleCachePath description:@"Simplestyle" withError:error];
-    return data;
+    return [self proxyResourceForMapID:mapID
+                           description:@"Simplestyle"
+                     relativeCachePath:[NSString stringWithFormat:@"%@/markers.json", mapID ]
+                             urlString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson", mapID]
+                                 error:error
+            ];
 }
 
 
@@ -96,27 +68,12 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 
     // Attempt to fetch a tile from the cache if it's available, or by downloading it if not
     //
-    NSString *cacheDirectory;
-    NSString *tileCachePath;
-    NSURL *tileURL;
-
-
-    cacheDirectory = [NSString stringWithFormat:@"%@/%@", self.cachePath, mapID];
-    [[NSFileManager defaultManager] createDirectoryAtPath:cacheDirectory withIntermediateDirectories:YES attributes:nil error:nil];
-
-    tileCachePath = [self cachePathForTilePath:path mapID:mapID withQuality:imageQuality];
-
-    if ([[NSFileManager defaultManager] fileExistsAtPath:tileCachePath])
-    {
-        tileURL = [NSURL fileURLWithPath:tileCachePath];
-    }
-    else
-    {
-        tileURL = [self URLForTilePath:path withMapID:mapID withQuality:imageQuality];
-    }
-
-    NSData *data = [self proxyURL:tileURL cachePath:tileCachePath description:@"Tile" withError:error];
-    return data;
+    return [self proxyResourceForMapID:mapID
+                           description:@"Tile"
+                     relativeCachePath:[self relativeCachePathForTilePath:path mapID:mapID withQuality:imageQuality]
+                             urlString:[self URLStringForTilePath:path mapID:mapID quality:imageQuality]
+                                 error:error
+            ];
 }
 
 
@@ -140,6 +97,7 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
     });
 }
 
+
 - (void)invalidateSimplestyleForMapID:(NSString *)mapID
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void)
@@ -147,6 +105,7 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
         [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@/markers.geojson", [self cachePath], mapID] error:nil];
     });
 }
+
 
 - (void)invalidateMarkerIcons
 {
@@ -157,8 +116,59 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 }
 
 
+- (void)sweepCache
+{
+    NSDirectoryEnumerator *cacheEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:[self  cachePath]];
+    NSString *filename;
+
+    while ((filename = [cacheEnumerator nextObject]))
+    {
+        NSString *filePath = [NSString stringWithFormat:@"%@/%@", [self cachePath], filename];
+        NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
+
+        if (attributes[NSFileType] == NSFileTypeRegular && [attributes[NSFileModificationDate] timeIntervalSinceDate:[NSDate date]] < (-(_cacheInterval)))
+            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+        else
+        {
+            // Clean up any empty cache files that might be lying around from previous bugs
+            //
+            if ((attributes[NSFileType] == NSFileTypeRegular) && ([attributes[NSFileSize] integerValue] == 0))
+                [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+        }
+    }
+}
+
+
+
 
 #pragma mark - Private implementation methods
+
+- (NSData *)proxyResourceForMapID:(NSString *)mapID description:(NSString *)description relativeCachePath:(NSString *)path urlString:(NSString *)urlString error:(NSError **)error
+{
+    // Attempt to fetch a resource from the cache if it's available, or by downloading it if not
+    //
+    NSString *cacheDirectory;
+    NSString *resourceCachePath;
+    NSURL *resourceURL;
+
+    cacheDirectory = [NSString stringWithFormat:@"%@/%@", self.cachePath, mapID];
+    [[NSFileManager defaultManager] createDirectoryAtPath:cacheDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+
+    resourceCachePath = [NSString stringWithFormat:@"%@/%@", self.cachePath, path];
+
+    if ([[NSFileManager defaultManager] fileExistsAtPath:resourceCachePath])
+    {
+        resourceURL = [NSURL fileURLWithPath:resourceCachePath];
+    }
+    else
+    {
+        resourceURL = [NSURL URLWithString:urlString];
+    }
+
+    NSData *data = [self proxyURL:resourceURL cachePath:resourceCachePath description:description withError:error];
+    return data;
+}
+
 
 - (NSData *)proxyURL:(NSURL *)url cachePath:(NSString *)cachePath description:(NSString *)description withError:(NSError **)error
 {
@@ -220,7 +230,6 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 }
 
 
-
 - (NSString *)qualityExtensionForImageQuality:(MBXRasterImageQuality)imageQuality
 {
     NSString *qualityExtension;
@@ -265,51 +274,28 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 }
 
 
-- (NSURL *)URLForTilePath:(MKTileOverlayPath)path withMapID:(NSString *)mapID withQuality:(MBXRasterImageQuality)imageQuality
+- (NSString *)URLStringForTilePath:(MKTileOverlayPath)path mapID:(NSString *)mapID quality:(MBXRasterImageQuality)imageQuality
 {
-    return [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/%ld/%ld/%ld%@.%@",
-                                 mapID,
-                                 (long)path.z,
-                                 (long)path.x,
-                                 (long)path.y,
-                                 (path.contentScaleFactor > 1.0 ? @"@2x" : @""),
-                                 [self qualityExtensionForImageQuality:imageQuality]]];
+    return [NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/%ld/%ld/%ld%@.%@",
+            mapID,
+            (long)path.z,
+            (long)path.x,
+            (long)path.y,
+            (path.contentScaleFactor > 1.0 ? @"@2x" : @""),
+            [self qualityExtensionForImageQuality:imageQuality]
+    ];
 }
 
 
-- (NSString *)cachePathForTilePath:(MKTileOverlayPath)path mapID:(NSString *)mapID withQuality:(MBXRasterImageQuality)imageQuality
+- (NSString *)relativeCachePathForTilePath:(MKTileOverlayPath)path mapID:(NSString *)mapID withQuality:(MBXRasterImageQuality)imageQuality
 {
-    return [NSString stringWithFormat:@"%@/%@/%ld_%ld_%ld%@.%@",
-            [self cachePath],
+    return [NSString stringWithFormat:@"%@/%ld_%ld_%ld%@.%@",
             mapID,
             (long)path.z,
             (long)path.x,
             (long)path.y,
             (path.contentScaleFactor > 1.0 ? @"@2x" : @""),
             [self qualityExtensionForImageQuality:imageQuality]];
-}
-
-
-- (void)sweepCache
-{
-    NSDirectoryEnumerator *cacheEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:[self  cachePath]];
-    NSString *filename;
-
-    while ((filename = [cacheEnumerator nextObject]))
-    {
-        NSString *filePath = [NSString stringWithFormat:@"%@/%@", [self cachePath], filename];
-        NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
-
-        if (attributes[NSFileType] == NSFileTypeRegular && [attributes[NSFileModificationDate] timeIntervalSinceDate:[NSDate date]] < (-(_cacheInterval)))
-            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-        else
-        {
-            // Clean up any empty cache files that might be lying around from previous bugs
-            //
-            if ((attributes[NSFileType] == NSFileTypeRegular) && ([attributes[NSFileSize] integerValue] == 0))
-            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-        }
-    }
 }
 
 
@@ -344,15 +330,6 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 
     return path;
 }
-
-
-- (void)setCacheInterval:(NSTimeInterval)cacheInterval
-{
-    _cacheInterval = cacheInterval;
-    
-    [self sweepCache];
-}
-
 
 
 @end
