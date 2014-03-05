@@ -139,7 +139,7 @@ typedef NS_ENUM(NSUInteger, MBXMapKitImageQuality) {
 /** The MBXPointAnnotation class provides point markers using marker images downloaded from the [Mapbox Markers API](https://www.mapbox.com/developers/api/static/#markers). */
 @interface MBXPointAnnotation : MKShape
 
-/** Load a Mapbox marker, then add it to a map view.
+/** Asynchronously load a Mapbox marker, then add it to a map view.
 *   @param size The size of the marker (small, medium, or large).
 *   @param symbol The [Maki](http://mapbox.com/maki) symbol name to show on the marker.
 *   @param color The color of the marker as an RGB hex string.
