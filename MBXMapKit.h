@@ -127,7 +127,7 @@ typedef NS_ENUM(NSUInteger, MBXMapKitImageQuality) {
 
 #pragma mark -
 
-/** The MBXMapViewPointAnnotation class provides point markers using marker images downloaded from the [Mapbox Markers API](https://www.mapbox.com/developers/api/static/#markers). */
+/** The MBXPointAnnotation class provides point markers using marker images downloaded from the [Mapbox Markers API](https://www.mapbox.com/developers/api/static/#markers). */
 @interface MBXPointAnnotation : MKShape
 
 /** Load a Mapbox marker, then add it to a map view.
