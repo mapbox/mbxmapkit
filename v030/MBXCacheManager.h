@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "MBXCacheManagerProtocol.h"
 
-#define kMBXMapViewCacheFolder   @"MBXMapViewCache"
+#define kMBXMapViewCacheFolder   @"MBXMapKitCache"
 #define kMBXMapViewCacheInterval 60 * 60 * 24 * 7
 
 @interface MBXCacheManager : NSObject <MBXCacheManagerProtocol>

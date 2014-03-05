@@ -50,6 +50,9 @@
     _mapID = mapID;
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+
+        [_cacheManager prepareCacheForMapID:_mapID];
+
         NSError *error;
         NSData *data;
         data = [_cacheManager proxyTileJSONForMapID:_mapID withError:&error];
