@@ -5,7 +5,7 @@ Changelog
 #### March 5, 2014
 
 - Support for [simplestyle GeoJSON](https://www.mapbox.com/developers/api/maps/#geojson) markers bundled with Mapbox online maps.
-- New `MBXMapViewPointAnnotation` class supporting the [Mapbox markers API](https://www.mapbox.com/developers/api/static/#markers).
+- New `MBXPointAnnotation` class supporting the [Mapbox markers API](https://www.mapbox.com/developers/api/static/#markers).
 - Added support for the [Mapbox image quality API](https://www.mapbox.com/developers/api/static/#format).
 - Added handling for the `-initWithFrame:` default initializer.
 - Updated example map to one that includes server-side markers.
