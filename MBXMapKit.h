@@ -10,15 +10,24 @@
 
 @protocol MBXMapViewCaching;
 
+/** Map tile image quality options. */
 typedef NS_ENUM(NSUInteger, MBXMapKitImageQuality) {
-    MBXMapKitImageQualityFull,   // default
-    MBXMapKitImageQualityPNG32,  // 32 color indexed PNG
-    MBXMapKitImageQualityPNG64,  // 64 color indexed PNG
-    MBXMapKitImageQualityPNG128, // 128 color indexed PNG
-    MBXMapKitImageQualityPNG256, // 256 color indexed PNG
-    MBXMapKitImageQualityJPEG70, // 70% quality JPEG
-    MBXMapKitImageQualityJPEG80, // 80% quality JPEG
-    MBXMapKitImageQualityJPEG90, // 90% quality JPEG
+    /** Full image quality. */
+    MBXMapKitImageQualityFull,
+    /** 32 color indexed PNG. */
+    MBXMapKitImageQualityPNG32,
+    /** 64 color indexed PNG. */
+    MBXMapKitImageQualityPNG64,
+    /** 128 color indexed PNG. */
+    MBXMapKitImageQualityPNG128,
+    /** 256 color indexed PNG. */
+    MBXMapKitImageQualityPNG256,
+    /** 70% quality JPEG. */
+    MBXMapKitImageQualityJPEG70,
+    /** 80% quality JPEG. */
+    MBXMapKitImageQualityJPEG80,
+    /** 90% quality JPEG. */
+    MBXMapKitImageQualityJPEG90,
 };
 
 /** An MBXMapView provides an embeddable map interface, similar to the one provided by Apple's MapKit, with support for Mapbox-hosted custom map styles. You use this class to display map information and to manipulate the map contents from your application.
@@ -53,7 +62,7 @@ typedef NS_ENUM(NSUInteger, MBXMapKitImageQuality) {
 *   Upon setting a new map ID, the map view will begin an asynchronous download of the hosted metadata for the map. When the download completes successfully, the map style will change to reflect the new map ID. */
 @property (nonatomic, copy) NSString *mapID;
 
-/** The Mapbox map tile image quality level. */
+/** The Mapbox map tile image quality level. The default is `MBXMapKitImageQualityFull`. */
 @property (nonatomic, assign) MBXMapKitImageQuality imageQuality;
 
 /** @name Manipulating the Visible Portion of the Map */
@@ -127,10 +136,10 @@ typedef NS_ENUM(NSUInteger, MBXMapKitImageQuality) {
 
 #pragma mark -
 
-/** The MBXMapViewPointAnnotation class provides point markers using marker images downloaded from the [Mapbox Markers API](https://www.mapbox.com/developers/api/#Markers). */
+/** The MBXPointAnnotation class provides point markers using marker images downloaded from the [Mapbox Markers API](https://www.mapbox.com/developers/api/static/#markers). */
 @interface MBXPointAnnotation : MKShape
 
-/** Load a Mapbox marker, then add it to a map view.
+/** Asynchronously load a Mapbox marker, then add it to a map view.
 *   @param size The size of the marker (small, medium, or large).
 *   @param symbol The [Maki](http://mapbox.com/maki) symbol name to show on the marker.
 *   @param color The color of the marker as an RGB hex string.

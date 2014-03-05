@@ -1,7 +1,7 @@
 MBXMapKit
 ---------
 
-MBXMapKit is a simple, two-file library allowing one-line integration of MapBox custom maps into Apple's MapKit on iOS 7.0+ and OS X 10.9+. No submodules, no linking, no delegates, no resources -- just drag two files into your project and start using `MBXMapView` in place of `MKMapView`. 
+MBXMapKit is a simple, two-file library allowing one-line integration of Mapbox custom maps into Apple's MapKit on iOS 7.0+ and OS X 10.9+. No submodules, no linking, no delegates, no resources -- just drag two files into your project and start using `MBXMapView` in place of `MKMapView`. 
 
 Requirements: 
 
@@ -13,4 +13,4 @@ Requirements:
 
 Check out the [overview guide](http://mapbox.com/mbxmapkit/) or the [API docs](http://mapbox.com/mbxmapkit/api/) for more details. 
 
-You might also be interested in the [MapBox iOS SDK](http://mapbox.com/mapbox-ios-sdk/), which is a ground-up rewrite meant as a replacement for Apple's MapKit, not based on it. If you've always wished MapKit was open source for complete customizability, the MapBox iOS SDK is for you. 
+You might also be interested in the [Mapbox iOS SDK](http://mapbox.com/mapbox-ios-sdk/), which is a ground-up rewrite meant as a replacement for Apple's MapKit, not based on it. If you've always wished MapKit was open source for complete customizability, the Mapbox iOS SDK is for you. 
