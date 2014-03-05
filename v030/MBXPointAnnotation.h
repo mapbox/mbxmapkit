@@ -10,4 +10,10 @@
 
 @interface MBXPointAnnotation : MKShape
 
+#if TARGET_OS_IPHONE
+@property (nonatomic) UIImage *image;
+#else
+@property (nonatomic) NSImage *image;
+#endif
+
 @end

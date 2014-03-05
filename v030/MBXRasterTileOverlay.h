@@ -10,6 +10,15 @@
 #import "MBXCacheManagerProtocol.h"
 #import "MBXCacheManager.h"
 
+@class MBXRasterTileOverlay;
+
+@protocol MBXRasterTileOverlayDelegate <NSObject>
+
+- (void)didParseTileJSONForTileOverlay:(MBXRasterTileOverlay *)rasterOverlay;
+
+@end
+
+
 @interface MBXRasterTileOverlay : MKTileOverlay
 
 @property (assign) MBXRasterImageQuality imageQuality;
@@ -22,11 +31,12 @@
 @property (nonatomic) id<MBXCacheManagerProtocol> cacheManager;
 
 @property (assign) BOOL inhibitTileJSON;
-@property (assign) BOOL inhibitSimplestyle;
 
 @property (nonatomic) NSDictionary *tileJSONDictionary;
 
 @property (assign) NSInteger centerZoom;
 @property (assign) CLLocationCoordinate2D center;
+
+@property (weak,nonatomic) id<MBXRasterTileOverlayDelegate> delegate;
 
 @end

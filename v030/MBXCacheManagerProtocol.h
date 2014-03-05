@@ -33,7 +33,7 @@ typedef NS_ENUM(NSUInteger, MBXRasterImageQuality) {
 
 - (NSData *)proxyTileAtPath:(MKTileOverlayPath)path forMapID:(NSString *)mapID withQuality:(MBXRasterImageQuality)imageQuality withError:(NSError **)error;
 
-- (NSData *)proxyMarkerIcon:(NSString *)markerFilename withError:(NSError **)error;
+- (NSData *)proxyMarkerIconSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color error:(NSError **)error;
 
 
 #pragma mark - Methods for invalidating portions of the cache

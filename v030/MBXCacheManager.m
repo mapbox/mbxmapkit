@@ -114,14 +114,47 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
             ];
 }
 
-
-- (NSData *)proxyMarkerIcon:(NSString *)markerFilename withError:(NSError **)error
+- (NSData *)proxyMarkerIconSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color error:(NSError **)error
 {
+    // Make a string which follows the MapBox Core API spec for stand-alone markers. This relies on the MapBox API
+    // for error checking rather than trying to do any fancy tricks to determine valid size-symbol-color combinations.
+    // The main advantage of that approach is that new Maki symbols will be available to use as markers as soon as
+    // they are added to the API (i.e. no changes to input validation code here are required).
+    // See https://www.mapbox.com/developers/api/#Stand-alone.markers
+    //
+    NSMutableString *marker = [[NSMutableString alloc] initWithString:@"pin-"];
+
+    if ([size hasPrefix:@"l"])
+    {
+        [marker appendString:@"l-"]; // large
+    }
+    else if ([size hasPrefix:@"s"])
+    {
+        [marker appendString:@"s-"]; // small
+    }
+    else
+    {
+        [marker appendString:@"m-"]; // default to medium
+    }
+
+    [marker appendFormat:@"%@+",symbol];
+
+    [marker appendString:[color stringByReplacingOccurrencesOfString:@"#" withString:@""]];
+
+#if TARGET_OS_IPHONE
+    [marker appendString:([[UIScreen mainScreen] scale] > 1.0 ? @"@2x.png" : @".png")];
+#else
+    // Making this smart enough to handle a Retina MacBook with a normal dpi external display is complicated.
+    // For now, just default to @1x images and a 1.0 scale.
+    //
+    [marker appendString:@".png"];
+#endif
+
     // Attempt to fetch a marker icon from the cache if it's available, or by downloading it if not
     //
     return [self proxyResourceDescription:@"Marker icon"
-                        relativeCachePath:[NSString stringWithFormat:@"markers/%@", markerFilename]
-                                urlString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/marker/%@", markerFilename]
+                        relativeCachePath:[NSString stringWithFormat:@"markers/%@", marker]
+                                urlString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/marker/%@", marker]
                                     error:error
             ];
 }

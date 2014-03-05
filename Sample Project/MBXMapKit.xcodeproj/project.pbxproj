@@ -21,6 +21,7 @@
 		014DA22218C45B8400AB33F8 /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */; };
 		014DA22618C45B8400AB33F8 /* MBXMBTilesTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22518C43BCD00AD5C27 /* MBXMBTilesTileOverlay.m */; };
 		014DA22818C45B8400AB33F8 /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22718C43CEA00AD5C27 /* MBXPointAnnotation.m */; };
+		01B8947C18C7190900CCEBEC /* MBXSimplestyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B8947B18C7190900CCEBEC /* MBXSimplestyle.m */; };
 		DD320F2617E3CD0E00CD95A9 /* MBXViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD320F1A17E3CD0E00CD95A9 /* MBXViewController.m */; };
 		DD320F2817E3CD0E00CD95A9 /* MBXAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DD320F1F17E3CD0E00CD95A9 /* MBXAppDelegate.m */; };
 		DD320F2917E3CD0E00CD95A9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD320F2217E3CD0E00CD95A9 /* InfoPlist.strings */; };
@@ -56,6 +57,8 @@
 		014DA20018C45AE000AB33F8 /* MBXxViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXxViewController.h; sourceTree = "<group>"; };
 		014DA20118C45AE000AB33F8 /* MBXxViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXxViewController.m; sourceTree = "<group>"; };
 		014DA20318C45AE000AB33F8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		01B8947A18C7190900CCEBEC /* MBXSimplestyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXSimplestyle.h; sourceTree = "<group>"; };
+		01B8947B18C7190900CCEBEC /* MBXSimplestyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXSimplestyle.m; sourceTree = "<group>"; };
 		01BCB21E18C43B2000AD5C27 /* MBXCacheManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXCacheManager.h; sourceTree = "<group>"; };
 		01BCB21F18C43B2000AD5C27 /* MBXCacheManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXCacheManager.m; sourceTree = "<group>"; };
 		01BCB22018C43B7300AD5C27 /* MBXRasterTileOverlay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXRasterTileOverlay.h; sourceTree = "<group>"; };
@@ -171,6 +174,8 @@
 				01BCB21F18C43B2000AD5C27 /* MBXCacheManager.m */,
 				01BCB22018C43B7300AD5C27 /* MBXRasterTileOverlay.h */,
 				01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */,
+				01B8947A18C7190900CCEBEC /* MBXSimplestyle.h */,
+				01B8947B18C7190900CCEBEC /* MBXSimplestyle.m */,
 				01BCB22418C43BCD00AD5C27 /* MBXMBTilesTileOverlay.h */,
 				01BCB22518C43BCD00AD5C27 /* MBXMBTilesTileOverlay.m */,
 				01BCB22618C43CEA00AD5C27 /* MBXPointAnnotation.h */,
@@ -427,6 +432,7 @@
 				014DA22618C45B8400AB33F8 /* MBXMBTilesTileOverlay.m in Sources */,
 				014DA22818C45B8400AB33F8 /* MBXPointAnnotation.m in Sources */,
 				014DA1F518C45AE000AB33F8 /* main.m in Sources */,
+				01B8947C18C7190900CCEBEC /* MBXSimplestyle.m in Sources */,
 				014DA20218C45AE000AB33F8 /* MBXxViewController.m in Sources */,
 				014DA1F918C45AE000AB33F8 /* MBXxAppDelegate.m in Sources */,
 			);
@@ -719,6 +725,7 @@
 				014DA21918C45AE000AB33F8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		DD320F9517E3CE5500CD95A9 /* Build configuration list for PBXNativeTarget "MBXMapKit Mac" */ = {
 			isa = XCConfigurationList;

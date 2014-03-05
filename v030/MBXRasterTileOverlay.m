@@ -118,6 +118,12 @@
                     // mapView's view controller needs in order to know when center and centerZoom are available.
                     //
                     [self setTileJSONDictionary:tileJSONDictionary];
+                    if (_delegate)
+                    {
+                        dispatch_async(dispatch_get_main_queue(), ^(void){
+                            [_delegate didParseTileJSONForTileOverlay:self];
+                        });
+                    }
                 }
                 else
                 {
@@ -134,12 +140,7 @@
 
 - (void)setTileJSONDictionary:(NSDictionary *)tileJSONDictionary
 {
-    // This is KVO compliant so that interested view controllers, tile overlay renderers, etc can
-    // be notified when the tileJSON changes.
-    //
-    [self willChangeValueForKey:@"tileJSONDictionary"];
     _tileJSONDictionary = tileJSONDictionary;
-    [self didChangeValueForKey:@"tileJSONDictionary"];
 }
 
 

@@ -13,9 +13,8 @@
 @interface MBXxViewController ()
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
-
 @property (nonatomic) MBXRasterTileOverlay *rasterOverlay;
-
+@property (nonatomic) MBXSimplestyle *simplestyle;
 @property (nonatomic) UIActionSheet *actionSheet;
 
 @end
@@ -29,16 +28,23 @@
     //[[MBXCacheManager sharedCacheManager] clearEntireCache];
 
     _rasterOverlay = [[MBXRasterTileOverlay alloc] init];
+    _rasterOverlay.delegate = self;
     _rasterOverlay.mapID = @"examples.map-pgygbwdm";
-    [_rasterOverlay addObserver:self forKeyPath:@"tileJSONDictionary" options:NSKeyValueObservingOptionNew context:nil];
+
+    _simplestyle = [[MBXSimplestyle alloc] init];
+    _simplestyle.delegate = self;
+    _simplestyle.mapID = @"examples.map-pgygbwdm";
+
     [_mapView addOverlay:_rasterOverlay];
     _mapView.delegate = self;
 }
+
 
 - (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered
 {
     [[MBXCacheManager sharedCacheManager] sweepCache];
 }
+
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay
 {
@@ -50,24 +56,43 @@
     return nil;
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
-    if([@"tileJSONDictionary" isEqualToString:keyPath] && [object isKindOfClass:[MBXRasterTileOverlay class]])
+    if ([annotation isKindOfClass:[MBXPointAnnotation class]])
     {
-        CLLocationCoordinate2D center = [(MBXRasterTileOverlay *)object center];
-        NSInteger centerZoom = [(MBXRasterTileOverlay *)object centerZoom];
-        MKCoordinateRegion region = MKCoordinateRegionMake(center, MKCoordinateSpanMake(0, 360 / pow(2, centerZoom) * _mapView.frame.size.width / 256));
-        
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [_mapView setRegion:region animated:NO];
-        });
+        static NSString *MBXSimpleStyleReuseIdentifier = @"MBXSimpleStyleReuseIdentifier";
+        MKAnnotationView *view = [mapView dequeueReusableAnnotationViewWithIdentifier:MBXSimpleStyleReuseIdentifier];
+        if (!view)
+        {
+            view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:MBXSimpleStyleReuseIdentifier];
+        }
+        view.image = ((MBXPointAnnotation *)annotation).image;
+        view.canShowCallout = YES;
+        return view;
     }
+    return nil;
 }
+
+
+- (void)didParseTileJSONForTileOverlay:(MBXRasterTileOverlay *)rasterOverlay
+{
+    MKCoordinateRegion region = MKCoordinateRegionMake(rasterOverlay.center, MKCoordinateSpanMake(0, 360 / pow(2, rasterOverlay.centerZoom) * _mapView.frame.size.width / 256));
+    [_mapView setRegion:region animated:NO];
+}
+
+
+- (void)didParseSimplestylePoint:(MBXPointAnnotation *)pointAnnotation
+{
+    [_mapView addAnnotation:pointAnnotation];
+}
+
 
 - (UIActionSheet *)universalActionSheet
 {
     return [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"OSM world map",@"OSM over Apple satellite",@"Terrain under Apple labels",@"Tilemill bounded region",@"Tilemill region over Apple",@"Tilemill transparent over Apple", nil];
 }
+
 
 - (IBAction)iPadInfoButtonAction:(id)sender {
     if(_actionSheet.visible) {
@@ -79,6 +104,7 @@
     }
 }
 
+
 - (IBAction)iPhoneInfoButtonAction:(id)sender {
     if(_actionSheet.visible) {
         [_actionSheet dismissWithClickedButtonIndex:_actionSheet.cancelButtonIndex animated:YES];
@@ -89,14 +115,30 @@
     }
 }
 
+
 - (void)resetMapViewAndRasterOverlayDefaults
 {
     _mapView.mapType = MKMapTypeStandard;
+
+    // Set up a new tile overlay to account for the possibility that there are still tiles or TileJSON being downloaded
+    //
+    _rasterOverlay.delegate = nil;
     [_mapView removeOverlays:_mapView.overlays];
+    _rasterOverlay = [[MBXRasterTileOverlay alloc] init];
+    _rasterOverlay.delegate = self;
+
+    // Set up a new simplestyle object to account for the possibility that there are still point icons being downloaded
+    //
+    _simplestyle.delegate = nil;
+    [_mapView removeAnnotations:_mapView.annotations];
+    _simplestyle = [[MBXSimplestyle alloc] init];
+    _simplestyle.delegate = self;
+
     _mapView.scrollEnabled = YES;
     _mapView.zoomEnabled = YES;
     _rasterOverlay.canReplaceMapContent = YES;
 }
+
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -104,7 +146,7 @@
         case 0:
             // OSM world map
             [self resetMapViewAndRasterOverlayDefaults];
-            _rasterOverlay.mapID = @"examples.map-pgygbwdm";
+            _rasterOverlay.mapID = _simplestyle.mapID = @"examples.map-pgygbwdm";
             [_mapView addOverlay:_rasterOverlay];
             break;
         case 1:
