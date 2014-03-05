@@ -42,12 +42,16 @@
 
 - (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered
 {
+    // Schedule cache sweeps to occur each time a batch of tiles finishes rendering
+    //
     [[MBXCacheManager sharedCacheManager] sweepCache];
 }
 
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay
 {
+    // This is required boilerplate code to connect tile overlay layers with suitable renderers
+    //
     if ([overlay isKindOfClass:[MBXRasterTileOverlay class]])
     {
         MKTileOverlayRenderer *renderer = [[MKTileOverlayRenderer alloc] initWithTileOverlay:overlay];
@@ -59,6 +63,8 @@
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
+    // Required boilerplate code to connect annotations with suitable views
+    //
     if ([annotation isKindOfClass:[MBXPointAnnotation class]])
     {
         static NSString *MBXSimpleStyleReuseIdentifier = @"MBXSimpleStyleReuseIdentifier";
@@ -75,8 +81,10 @@
 }
 
 
-- (void)didParseTileJSONForTileOverlay:(MBXRasterTileOverlay *)rasterOverlay
+- (void)didLoadTileJSONForTileOverlay:(MBXRasterTileOverlay *)rasterOverlay
 {
+    // This required delegate callback is for centering the map once the TileJSON has been loaded
+    //
     MKCoordinateRegion region = MKCoordinateRegionMake(rasterOverlay.center, MKCoordinateSpanMake(0, 360 / pow(2, rasterOverlay.centerZoom) * _mapView.frame.size.width / 256));
     [_mapView setRegion:region animated:NO];
 }
@@ -84,17 +92,39 @@
 
 - (void)didParseSimplestylePoint:(MBXPointAnnotation *)pointAnnotation
 {
+    // This required delegate callback is for adding points to an MKMapView when they are successfully parsed from the simplestyle
+    //
     [_mapView addAnnotation:pointAnnotation];
+}
+
+
+- (void)didFailToLoadTileJSONForMapID:(NSString *)mapID withError:(NSError *)error
+{
+    // This optional delegate callback is for handling situations when something goes wrong with the TileJSON
+    //
+    NSLog(@"Delegate received notification of TileJSON loading failure - (%@)",error?error:@"");
+}
+
+
+- (void)didFailToLoadSimplestyleForMapID:(NSString *)mapID withError:(NSError *)error
+{
+    // This optional delegate callback is for handling situations when something goes wrong with the simplestyle
+    //
+    NSLog(@"Delegate received notification of Simplestyle loading failure - (%@)",error?error:@"");
 }
 
 
 - (UIActionSheet *)universalActionSheet
 {
+    // Demo app: This is the list of options for selecting which map should be shown by the demo app
+    //
     return [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"OSM world map",@"OSM over Apple satellite",@"Terrain under Apple labels",@"Tilemill bounded region",@"Tilemill region over Apple",@"Tilemill transparent over Apple", nil];
 }
 
 
 - (IBAction)iPadInfoButtonAction:(id)sender {
+    // Demo app: This responds to the info button from the iPad storyboard getting pressed
+    //
     if(_actionSheet.visible) {
         [_actionSheet dismissWithClickedButtonIndex:_actionSheet.cancelButtonIndex animated:YES];
         _actionSheet = nil;
@@ -106,6 +136,8 @@
 
 
 - (IBAction)iPhoneInfoButtonAction:(id)sender {
+    // Demo app: This responds to the info button from the iPhone storyboard getting pressed
+    //
     if(_actionSheet.visible) {
         [_actionSheet dismissWithClickedButtonIndex:_actionSheet.cancelButtonIndex animated:YES];
         _actionSheet = nil;
@@ -118,6 +150,12 @@
 
 - (void)resetMapViewAndRasterOverlayDefaults
 {
+    // Demo app: This method prepares the MKMapView to switch overlays. Note that the specific order
+    // in which things happen is quite important. One of the goals here is to fully disconnect old
+    // tile overlays, annotations, and simplestyle prior to adding their new replacements. The
+    // consequences of not doing that could potentially include stuff like EXEC_BAD_ACCESS, so it's
+    // good to handle these things carefully.
+    //
     _mapView.mapType = MKMapTypeStandard;
 
     // Set up a new tile overlay to account for the possibility that there are still tiles or TileJSON being downloaded
@@ -142,6 +180,8 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    // Demo app: This switches between maps in response to action sheet selections
+    //
     switch(buttonIndex) {
         case 0:
             // OSM world map

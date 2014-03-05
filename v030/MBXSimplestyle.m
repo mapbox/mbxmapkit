@@ -45,7 +45,13 @@
             }
             else
             {
-                NSLog(@"Error parsing simplestyle for map ID %@ (%@)", _mapID, parseError);
+                if ([_delegate respondsToSelector:@selector(didFailToLoadSimplestyleForMapID:withError:)]) {
+                    [_delegate didFailToLoadSimplestyleForMapID:_mapID withError:parseError];
+                }
+                else
+                {
+                    NSLog(@"Error parsing simplestyle for map ID %@ (%@)", _mapID, parseError);
+                }
             }
 
         }

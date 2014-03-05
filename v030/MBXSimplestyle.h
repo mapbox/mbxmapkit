@@ -14,6 +14,10 @@
 
 - (void)didParseSimplestylePoint:(MBXPointAnnotation *)pointAnnotation;
 
+@optional
+
+- (void)didFailToLoadSimplestyleForMapID:(NSString *)mapID withError:(NSError *)error;
+
 @end
 
 

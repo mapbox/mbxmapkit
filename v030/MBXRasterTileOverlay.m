@@ -29,19 +29,9 @@
 
 - (MKMapRect)boundingMapRect
 {
-    // This stuff doesn't work, possibly due to MKMapKit bugs. I'm leaving it here in case somebody wants to
-    // uncomment it and experiment further with the not-working-ness
-    /*
-    if (_tileJSONDictionary && !_inhibitTileJSON)
-    {
-        return _mapRectForRegion;
-    }
-    else
-    {
-        return MKMapRectWorld;
-    }
-     */
-
+    // Note: If you're wondering why this doesn't return a MapRect calculated from the TileJSON's bounds, it's been
+    // tried and it doesn't work, possibly due to an MKMapKit bug. The main symptom is unpredictable visual glitching
+    //
     return MKMapRectWorld;
 }
 
@@ -88,32 +78,6 @@
                     _center.longitude = [tileJSONDictionary[@"center"][0] doubleValue];
 
 
-                    // This stuff MapRect stuff doesn't work, possibly due to MKMapKit bugs. I'm leaving it here
-                    // in case somebody wants to uncomment it and experiment further with the not-working-ness
-                    //
-                    /*
-                    // Theoretically, converting the map bounds (latitude & longitude) to an MKMapRect (projected
-                    // coordinates) allows -boundingMapRect to return something more specific than MKMapRectWorld,
-                    // which should cut down on 404's for regional maps.
-                    //
-                    CLLocationCoordinate2D nw;
-                    CLLocationCoordinate2D se;
-
-                    nw.latitude = [tileJSONDictionary[@"bounds"][3] doubleValue];
-                    nw.longitude = [tileJSONDictionary[@"bounds"][0] doubleValue];
-
-                    se.latitude = [tileJSONDictionary[@"bounds"][1] doubleValue];
-                    se.longitude = [tileJSONDictionary[@"bounds"][2] doubleValue];
-
-                    MKMapPoint nwPoint = MKMapPointForCoordinate(nw);
-                    MKMapPoint sePoint = MKMapPointForCoordinate(se);
-
-                    MKMapSize size = MKMapSizeMake(sePoint.x - nwPoint.x, sePoint.y - nwPoint.y);
-                    
-                    _mapRectForRegion = MKMapRectMake(nwPoint.x, nwPoint.y, size.width, size.height);
-                     */
-
-
                     // Save the TileJSON, primarily for the purpose of triggering a KVO notification, which the
                     // mapView's view controller needs in order to know when center and centerZoom are available.
                     //
@@ -121,18 +85,30 @@
                     if (_delegate)
                     {
                         dispatch_async(dispatch_get_main_queue(), ^(void){
-                            [_delegate didParseTileJSONForTileOverlay:self];
+                            [_delegate didLoadTileJSONForTileOverlay:self];
                         });
                     }
                 }
                 else
                 {
-                    NSLog(@"There was a problem parsing TileJSON for map ID %@ - (%@)",_mapID,error?error:@"");
+                    if ([_delegate respondsToSelector:@selector(didFailToLoadTileJSONForMapID:withError:)]) {
+                        [_delegate didFailToLoadTileJSONForMapID:mapID withError:parseError];
+                    }
+                    else
+                    {
+                        NSLog(@"There was a problem parsing TileJSON for map ID %@ - (%@)",_mapID,parseError?parseError:@"");
+                    }
                 }
             }
             else
             {
-                NSLog(@"There was a problem fetching TileJSON for map ID %@ - (%@)",_mapID,error?error:@"");
+                if ([_delegate respondsToSelector:@selector(didFailToLoadTileJSONForMapID:withError:)]) {
+                    [_delegate didFailToLoadTileJSONForMapID:mapID withError:error];
+                }
+                else
+                {
+                    NSLog(@"There was a problem fetching TileJSON for map ID %@ - (%@)",_mapID,error?error:@"");
+                }
             }
         }
     });
