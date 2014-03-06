@@ -7,10 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <MapKit/MapKit.h>
-#import "MBXSimplestyle.h"
-#import "MBXRasterTileOverlay.h"
 
-@interface MBXxViewController : UIViewController <MKMapViewDelegate, UIActionSheetDelegate, MBXRasterTileOverlayDelegate, MBXSimplestyleDelegate>
+@interface MBXxViewController : UIViewController <UIActionSheetDelegate>
 
 @end

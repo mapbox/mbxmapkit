@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0112ACE118C8F2DF00DD495C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0112ACAA18C8F0EA00DD495C /* Cocoa.framework */; };
+		0112ACE718C8F2DF00DD495C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0112ACE518C8F2DF00DD495C /* InfoPlist.strings */; };
+		0112ACE918C8F2DF00DD495C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0112ACE818C8F2DF00DD495C /* main.m */; };
+		0112ACED18C8F2DF00DD495C /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0112ACEB18C8F2DF00DD495C /* Credits.rtf */; };
+		0112ACF018C8F2DF00DD495C /* MBXzAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0112ACEF18C8F2DF00DD495C /* MBXzAppDelegate.m */; };
+		0112ACF318C8F2DF00DD495C /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0112ACF118C8F2DF00DD495C /* MainMenu.xib */; };
+		0112ACF518C8F2DF00DD495C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0112ACF418C8F2DF00DD495C /* Images.xcassets */; };
 		014DA1E918C45AE000AB33F8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 014DA1E818C45AE000AB33F8 /* Foundation.framework */; };
 		014DA1EB18C45AE000AB33F8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 014DA1EA18C45AE000AB33F8 /* CoreGraphics.framework */; };
 		014DA1ED18C45AE000AB33F8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 014DA1EC18C45AE000AB33F8 /* UIKit.framework */; };
@@ -21,7 +28,15 @@
 		014DA22218C45B8400AB33F8 /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */; };
 		014DA22618C45B8400AB33F8 /* MBXMBTilesTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22518C43BCD00AD5C27 /* MBXMBTilesTileOverlay.m */; };
 		014DA22818C45B8400AB33F8 /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22718C43CEA00AD5C27 /* MBXPointAnnotation.m */; };
+		01B4553C18C8F310002D4B57 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD320F9B17E3CF8E00CD95A9 /* MapKit.framework */; };
 		01B8947C18C7190900CCEBEC /* MBXSimplestyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B8947B18C7190900CCEBEC /* MBXSimplestyle.m */; };
+		01ED214318C90543002726DD /* MBXCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB21F18C43B2000AD5C27 /* MBXCacheManager.m */; };
+		01ED214418C90543002726DD /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */; };
+		01ED214518C90543002726DD /* MBXSimplestyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B8947B18C7190900CCEBEC /* MBXSimplestyle.m */; };
+		01ED214618C90543002726DD /* MBXMBTilesTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22518C43BCD00AD5C27 /* MBXMBTilesTileOverlay.m */; };
+		01ED214718C90543002726DD /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22718C43CEA00AD5C27 /* MBXPointAnnotation.m */; };
+		01ED214E18C909AA002726DD /* MBXStandardDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01ED214D18C909AA002726DD /* MBXStandardDelegate.m */; };
+		01ED214F18C909AA002726DD /* MBXStandardDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01ED214D18C909AA002726DD /* MBXStandardDelegate.m */; };
 		DD320F2617E3CD0E00CD95A9 /* MBXViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD320F1A17E3CD0E00CD95A9 /* MBXViewController.m */; };
 		DD320F2817E3CD0E00CD95A9 /* MBXAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DD320F1F17E3CD0E00CD95A9 /* MBXAppDelegate.m */; };
 		DD320F2917E3CD0E00CD95A9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD320F2217E3CD0E00CD95A9 /* InfoPlist.strings */; };
@@ -42,6 +57,21 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0112ACAA18C8F0EA00DD495C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		0112ACAD18C8F0EA00DD495C /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		0112ACAE18C8F0EA00DD495C /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		0112ACAF18C8F0EA00DD495C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		0112ACC918C8F0EA00DD495C /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		0112ACE018C8F2DF00DD495C /* MBXMapKit Mac Demo v030.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MBXMapKit Mac Demo v030.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0112ACE418C8F2DF00DD495C /* MBXMapKit Mac Demo v030-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MBXMapKit Mac Demo v030-Info.plist"; sourceTree = "<group>"; };
+		0112ACE618C8F2DF00DD495C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		0112ACE818C8F2DF00DD495C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		0112ACEA18C8F2DF00DD495C /* MBXMapKit Mac Demo v030-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MBXMapKit Mac Demo v030-Prefix.pch"; sourceTree = "<group>"; };
+		0112ACEC18C8F2DF00DD495C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		0112ACEE18C8F2DF00DD495C /* MBXzAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXzAppDelegate.h; sourceTree = "<group>"; };
+		0112ACEF18C8F2DF00DD495C /* MBXzAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXzAppDelegate.m; sourceTree = "<group>"; };
+		0112ACF218C8F2DF00DD495C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		0112ACF418C8F2DF00DD495C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		014DA1E618C45AE000AB33F8 /* MBXMapKit iOS Demo v030.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MBXMapKit iOS Demo v030.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		014DA1E818C45AE000AB33F8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		014DA1EA18C45AE000AB33F8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -68,6 +98,8 @@
 		01BCB22618C43CEA00AD5C27 /* MBXPointAnnotation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXPointAnnotation.h; sourceTree = "<group>"; };
 		01BCB22718C43CEA00AD5C27 /* MBXPointAnnotation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXPointAnnotation.m; sourceTree = "<group>"; };
 		01BCB22818C44DBB00AD5C27 /* MBXCacheManagerProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXCacheManagerProtocol.h; sourceTree = "<group>"; };
+		01ED214C18C909AA002726DD /* MBXStandardDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXStandardDelegate.h; sourceTree = "<group>"; };
+		01ED214D18C909AA002726DD /* MBXStandardDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXStandardDelegate.m; sourceTree = "<group>"; };
 		DD320F1A17E3CD0E00CD95A9 /* MBXViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBXViewController.m; path = "MBXMapKit-iOS/MBXViewController.m"; sourceTree = "<group>"; };
 		DD320F1C17E3CD0E00CD95A9 /* MBXMapKit-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "MBXMapKit-Info.plist"; path = "MBXMapKit-iOS/MBXMapKit-Info.plist"; sourceTree = SOURCE_ROOT; };
 		DD320F1D17E3CD0E00CD95A9 /* MBXViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBXViewController.h; path = "MBXMapKit-iOS/MBXViewController.h"; sourceTree = "<group>"; };
@@ -97,6 +129,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0112ACDD18C8F2DF00DD495C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01B4553C18C8F310002D4B57 /* MapKit.framework in Frameworks */,
+				0112ACE118C8F2DF00DD495C /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		014DA1E318C45AE000AB33F8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -130,12 +171,49 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0112ACAC18C8F0EA00DD495C /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0112ACAD18C8F0EA00DD495C /* AppKit.framework */,
+				0112ACAE18C8F0EA00DD495C /* CoreData.framework */,
+				0112ACAF18C8F0EA00DD495C /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		0112ACE218C8F2DF00DD495C /* MBXMapKit Mac Demo v030 */ = {
+			isa = PBXGroup;
+			children = (
+				0112ACEE18C8F2DF00DD495C /* MBXzAppDelegate.h */,
+				0112ACEF18C8F2DF00DD495C /* MBXzAppDelegate.m */,
+				0112ACF118C8F2DF00DD495C /* MainMenu.xib */,
+				0112ACF418C8F2DF00DD495C /* Images.xcassets */,
+				0112ACE318C8F2DF00DD495C /* Supporting Files */,
+			);
+			path = "MBXMapKit Mac Demo v030";
+			sourceTree = "<group>";
+		};
+		0112ACE318C8F2DF00DD495C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				0112ACE418C8F2DF00DD495C /* MBXMapKit Mac Demo v030-Info.plist */,
+				0112ACE518C8F2DF00DD495C /* InfoPlist.strings */,
+				0112ACE818C8F2DF00DD495C /* main.m */,
+				0112ACEA18C8F2DF00DD495C /* MBXMapKit Mac Demo v030-Prefix.pch */,
+				0112ACEB18C8F2DF00DD495C /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		014DA1E718C45AE000AB33F8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				014DA1E818C45AE000AB33F8 /* Foundation.framework */,
 				014DA1EA18C45AE000AB33F8 /* CoreGraphics.framework */,
 				014DA1EC18C45AE000AB33F8 /* UIKit.framework */,
+				0112ACAA18C8F0EA00DD495C /* Cocoa.framework */,
+				0112ACC918C8F0EA00DD495C /* XCTest.framework */,
+				0112ACAC18C8F0EA00DD495C /* Other Frameworks */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -170,6 +248,8 @@
 			isa = PBXGroup;
 			children = (
 				01BCB22818C44DBB00AD5C27 /* MBXCacheManagerProtocol.h */,
+				01ED214C18C909AA002726DD /* MBXStandardDelegate.h */,
+				01ED214D18C909AA002726DD /* MBXStandardDelegate.m */,
 				01BCB21E18C43B2000AD5C27 /* MBXCacheManager.h */,
 				01BCB21F18C43B2000AD5C27 /* MBXCacheManager.m */,
 				01BCB22018C43B7300AD5C27 /* MBXRasterTileOverlay.h */,
@@ -249,6 +329,7 @@
 				DD320F1717E3CC0600CD95A9 /* MBXMapKit iOS Demo */,
 				DD320F6F17E3CE5500CD95A9 /* MBXMapKit Mac Demo */,
 				014DA1EE18C45AE000AB33F8 /* MBXMapKit iOS Demo v030 */,
+				0112ACE218C8F2DF00DD495C /* MBXMapKit Mac Demo v030 */,
 				DDCDA08C17E900D80037CAAD /* MBXMapKit */,
 				014DA1E718C45AE000AB33F8 /* Frameworks */,
 				DDD5906417D7D086009291B8 /* Products */,
@@ -261,6 +342,7 @@
 				DDD5906317D7D086009291B8 /* MBXMapKit iOS.app */,
 				DD320F6717E3CE5500CD95A9 /* MBXMapKit Mac.app */,
 				014DA1E618C45AE000AB33F8 /* MBXMapKit iOS Demo v030.app */,
+				0112ACE018C8F2DF00DD495C /* MBXMapKit Mac Demo v030.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -291,6 +373,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		0112ACDF18C8F2DF00DD495C /* MBXMapKit Mac Demo v030 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0112AD0718C8F2E000DD495C /* Build configuration list for PBXNativeTarget "MBXMapKit Mac Demo v030" */;
+			buildPhases = (
+				0112ACDC18C8F2DF00DD495C /* Sources */,
+				0112ACDD18C8F2DF00DD495C /* Frameworks */,
+				0112ACDE18C8F2DF00DD495C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MBXMapKit Mac Demo v030";
+			productName = "MBXMapKit Mac Demo v030";
+			productReference = 0112ACE018C8F2DF00DD495C /* MBXMapKit Mac Demo v030.app */;
+			productType = "com.apple.product-type.application";
+		};
 		014DA1E518C45AE000AB33F8 /* MBXMapKit iOS Demo v030 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 014DA21C18C45AE000AB33F8 /* Build configuration list for PBXNativeTarget "MBXMapKit iOS Demo v030" */;
@@ -352,6 +451,9 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = MapBox;
 				TargetAttributes = {
+					0112ACDF18C8F2DF00DD495C = {
+						DevelopmentTeam = GJZR2MEM28;
+					};
 					DD320F6617E3CE5500CD95A9 = {
 						DevelopmentTeam = GJZR2MEM28;
 						SystemCapabilities = {
@@ -386,11 +488,23 @@
 				DDD5906217D7D086009291B8 /* MBXMapKit iOS */,
 				DD320F6617E3CE5500CD95A9 /* MBXMapKit Mac */,
 				014DA1E518C45AE000AB33F8 /* MBXMapKit iOS Demo v030 */,
+				0112ACDF18C8F2DF00DD495C /* MBXMapKit Mac Demo v030 */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		0112ACDE18C8F2DF00DD495C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0112ACE718C8F2DF00DD495C /* InfoPlist.strings in Resources */,
+				0112ACF518C8F2DF00DD495C /* Images.xcassets in Resources */,
+				0112ACED18C8F2DF00DD495C /* Credits.rtf in Resources */,
+				0112ACF318C8F2DF00DD495C /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		014DA1E418C45AE000AB33F8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -423,6 +537,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0112ACDC18C8F2DF00DD495C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01ED214318C90543002726DD /* MBXCacheManager.m in Sources */,
+				01ED214418C90543002726DD /* MBXRasterTileOverlay.m in Sources */,
+				01ED214518C90543002726DD /* MBXSimplestyle.m in Sources */,
+				01ED214F18C909AA002726DD /* MBXStandardDelegate.m in Sources */,
+				01ED214618C90543002726DD /* MBXMBTilesTileOverlay.m in Sources */,
+				01ED214718C90543002726DD /* MBXPointAnnotation.m in Sources */,
+				0112ACE918C8F2DF00DD495C /* main.m in Sources */,
+				0112ACF018C8F2DF00DD495C /* MBXzAppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		014DA1E218C45AE000AB33F8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -431,6 +560,7 @@
 				014DA22218C45B8400AB33F8 /* MBXRasterTileOverlay.m in Sources */,
 				014DA22618C45B8400AB33F8 /* MBXMBTilesTileOverlay.m in Sources */,
 				014DA22818C45B8400AB33F8 /* MBXPointAnnotation.m in Sources */,
+				01ED214E18C909AA002726DD /* MBXStandardDelegate.m in Sources */,
 				014DA1F518C45AE000AB33F8 /* main.m in Sources */,
 				01B8947C18C7190900CCEBEC /* MBXSimplestyle.m in Sources */,
 				014DA20218C45AE000AB33F8 /* MBXxViewController.m in Sources */,
@@ -462,6 +592,30 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		0112ACE518C8F2DF00DD495C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0112ACE618C8F2DF00DD495C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		0112ACEB18C8F2DF00DD495C /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0112ACEC18C8F2DF00DD495C /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		0112ACF118C8F2DF00DD495C /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0112ACF218C8F2DF00DD495C /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
 		014DA1F118C45AE000AB33F8 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -522,6 +676,59 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		0112AD0818C8F2E000DD495C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MBXMapKit Mac Demo v030/MBXMapKit Mac Demo v030-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				INFOPLIST_FILE = "MBXMapKit Mac Demo v030/MBXMapKit Mac Demo v030-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		0112AD0918C8F2E000DD495C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MBXMapKit Mac Demo v030/MBXMapKit Mac Demo v030-Prefix.pch";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				INFOPLIST_FILE = "MBXMapKit Mac Demo v030/MBXMapKit Mac Demo v030-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 		014DA21818C45AE000AB33F8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -718,6 +925,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0112AD0718C8F2E000DD495C /* Build configuration list for PBXNativeTarget "MBXMapKit Mac Demo v030" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0112AD0818C8F2E000DD495C /* Debug */,
+				0112AD0918C8F2E000DD495C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		014DA21C18C45AE000AB33F8 /* Build configuration list for PBXNativeTarget "MBXMapKit iOS Demo v030" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

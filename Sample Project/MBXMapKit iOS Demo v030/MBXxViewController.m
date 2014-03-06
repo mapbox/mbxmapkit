@@ -7,6 +7,9 @@
 //
 
 #import "MBXxViewController.h"
+#import <MapKit/MapKit.h>
+#import "MBXStandardDelegate.h"
+#import "MBXSimplestyle.h"
 #import "MBXRasterTileOverlay.h"
 #import "MBXCacheManager.h"
 
@@ -15,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (nonatomic) MBXRasterTileOverlay *rasterOverlay;
 @property (nonatomic) MBXSimplestyle *simplestyle;
+@property (nonatomic) MBXStandardDelegate *standardDelegate;
 @property (nonatomic) UIActionSheet *actionSheet;
 
 @end
@@ -27,103 +31,36 @@
 
     //[[MBXCacheManager sharedCacheManager] clearEntireCache];
 
+    // Configure the mapView to use boilerplate delegate callbacks for managing tile overlay layers,
+    // TileJSON map centering, and adding simplestyle markers. To customize your app, you can subclass
+    // or replace the MBXStandardDelegate instance.
+    //
+    _standardDelegate = [[MBXStandardDelegate alloc] init];
+    _standardDelegate.mapView = _mapView;
+    _mapView.delegate = _standardDelegate;
+
     _rasterOverlay = [[MBXRasterTileOverlay alloc] init];
-    _rasterOverlay.delegate = self;
+    _rasterOverlay.delegate = _standardDelegate;
     _rasterOverlay.mapID = @"examples.map-pgygbwdm";
 
     _simplestyle = [[MBXSimplestyle alloc] init];
-    _simplestyle.delegate = self;
+    _simplestyle.delegate = _standardDelegate;
     _simplestyle.mapID = @"examples.map-pgygbwdm";
 
     [_mapView addOverlay:_rasterOverlay];
-    _mapView.delegate = self;
-}
-
-
-- (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered
-{
-    // Schedule cache sweeps to occur each time a batch of tiles finishes rendering
-    //
-    [[MBXCacheManager sharedCacheManager] sweepCache];
-}
-
-
-- (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay
-{
-    // This is required boilerplate code to connect tile overlay layers with suitable renderers
-    //
-    if ([overlay isKindOfClass:[MBXRasterTileOverlay class]])
-    {
-        MKTileOverlayRenderer *renderer = [[MKTileOverlayRenderer alloc] initWithTileOverlay:overlay];
-        return renderer;
-    }
-    return nil;
-}
-
-
-- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
-{
-    // Required boilerplate code to connect annotations with suitable views
-    //
-    if ([annotation isKindOfClass:[MBXPointAnnotation class]])
-    {
-        static NSString *MBXSimpleStyleReuseIdentifier = @"MBXSimpleStyleReuseIdentifier";
-        MKAnnotationView *view = [mapView dequeueReusableAnnotationViewWithIdentifier:MBXSimpleStyleReuseIdentifier];
-        if (!view)
-        {
-            view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:MBXSimpleStyleReuseIdentifier];
-        }
-        view.image = ((MBXPointAnnotation *)annotation).image;
-        view.canShowCallout = YES;
-        return view;
-    }
-    return nil;
-}
-
-
-- (void)didLoadTileJSONForTileOverlay:(MBXRasterTileOverlay *)rasterOverlay
-{
-    // This required delegate callback is for centering the map once the TileJSON has been loaded
-    //
-    MKCoordinateRegion region = MKCoordinateRegionMake(rasterOverlay.center, MKCoordinateSpanMake(0, 360 / pow(2, rasterOverlay.centerZoom) * _mapView.frame.size.width / 256));
-    [_mapView setRegion:region animated:NO];
-}
-
-
-- (void)didParseSimplestylePoint:(MBXPointAnnotation *)pointAnnotation
-{
-    // This required delegate callback is for adding points to an MKMapView when they are successfully parsed from the simplestyle
-    //
-    [_mapView addAnnotation:pointAnnotation];
-}
-
-
-- (void)didFailToLoadTileJSONForMapID:(NSString *)mapID withError:(NSError *)error
-{
-    // This optional delegate callback is for handling situations when something goes wrong with the TileJSON
-    //
-    NSLog(@"Delegate received notification of TileJSON loading failure - (%@)",error?error:@"");
-}
-
-
-- (void)didFailToLoadSimplestyleForMapID:(NSString *)mapID withError:(NSError *)error
-{
-    // This optional delegate callback is for handling situations when something goes wrong with the simplestyle
-    //
-    NSLog(@"Delegate received notification of Simplestyle loading failure - (%@)",error?error:@"");
 }
 
 
 - (UIActionSheet *)universalActionSheet
 {
-    // Demo app: This is the list of options for selecting which map should be shown by the demo app
+    // This is the list of options for selecting which map should be shown by the demo app
     //
     return [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"OSM world map",@"OSM over Apple satellite",@"Terrain under Apple labels",@"Tilemill bounded region",@"Tilemill region over Apple",@"Tilemill transparent over Apple", nil];
 }
 
 
 - (IBAction)iPadInfoButtonAction:(id)sender {
-    // Demo app: This responds to the info button from the iPad storyboard getting pressed
+    // This responds to the info button from the iPad storyboard getting pressed
     //
     if(_actionSheet.visible) {
         [_actionSheet dismissWithClickedButtonIndex:_actionSheet.cancelButtonIndex animated:YES];
@@ -136,7 +73,7 @@
 
 
 - (IBAction)iPhoneInfoButtonAction:(id)sender {
-    // Demo app: This responds to the info button from the iPhone storyboard getting pressed
+    // This responds to the info button from the iPhone storyboard getting pressed
     //
     if(_actionSheet.visible) {
         [_actionSheet dismissWithClickedButtonIndex:_actionSheet.cancelButtonIndex animated:YES];
@@ -150,7 +87,7 @@
 
 - (void)resetMapViewAndRasterOverlayDefaults
 {
-    // Demo app: This method prepares the MKMapView to switch overlays. Note that the specific order
+    // This method prepares the MKMapView to switch overlays. Note that the specific order
     // in which things happen is quite important. One of the goals here is to fully disconnect old
     // tile overlays, annotations, and simplestyle prior to adding their new replacements. The
     // consequences of not doing that could potentially include stuff like EXEC_BAD_ACCESS, so it's
@@ -163,14 +100,14 @@
     _rasterOverlay.delegate = nil;
     [_mapView removeOverlays:_mapView.overlays];
     _rasterOverlay = [[MBXRasterTileOverlay alloc] init];
-    _rasterOverlay.delegate = self;
+    _rasterOverlay.delegate = _standardDelegate;
 
     // Set up a new simplestyle object to account for the possibility that there are still point icons being downloaded
     //
     _simplestyle.delegate = nil;
     [_mapView removeAnnotations:_mapView.annotations];
     _simplestyle = [[MBXSimplestyle alloc] init];
-    _simplestyle.delegate = self;
+    _simplestyle.delegate = _standardDelegate;
 
     _mapView.scrollEnabled = YES;
     _mapView.zoomEnabled = YES;
