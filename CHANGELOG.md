@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+### 0.2.1
+#### March 6, 2014
+
+- Fixed a bug where a user-set map view delegate wasn't consulted for annotation views.
+
 ### 0.2.0
 #### March 5, 2014
 
