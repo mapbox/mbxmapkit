@@ -521,19 +521,33 @@ typedef NS_ENUM(NSUInteger, MBXMapViewShowDefaultBaseLayerMode) {
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
-    if ([annotation isKindOfClass:[MBXPointAnnotation class]])
+    // First, give the user set delegate an opportunity to provide a view for this annotation
+    //
+    MKAnnotationView *view = nil;
+    if ([self.realDelegate respondsToSelector:@selector(mapView:viewForAnnotation:)])
     {
-        static NSString *MBXSimpleStyleReuseIdentifier = @"MBXSimpleStyleReuseIdentifier";
-        MKAnnotationView *view = [mapView dequeueReusableAnnotationViewWithIdentifier:MBXSimpleStyleReuseIdentifier];
-        if (!view)
-        {
-            view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:MBXSimpleStyleReuseIdentifier];
-        }
-        view.image = ((MBXPointAnnotation *)annotation).image;
-        view.canShowCallout = YES;
-        return view;
+        view = [self.realDelegate mapView:mapView viewForAnnotation:annotation];
     }
-    return nil;
+
+    // If the user-set delegate provided no view (i.e. returned nil or didn't implement mapView:viewForAnnotation:),
+    // and the annotation is one of ours (i.e. a simplestyle piont), provide an appropriate view.
+    //
+    if(!view)
+    {
+        if ([annotation isKindOfClass:[MBXPointAnnotation class]])
+        {
+            static NSString *MBXSimpleStyleReuseIdentifier = @"MBXSimpleStyleReuseIdentifier";
+            view = [mapView dequeueReusableAnnotationViewWithIdentifier:MBXSimpleStyleReuseIdentifier];
+            if (!view)
+            {
+                view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:MBXSimpleStyleReuseIdentifier];
+            }
+            view.image = ((MBXPointAnnotation *)annotation).image;
+            view.canShowCallout = YES;
+        }
+    }
+
+    return view;
 }
 
 @end
