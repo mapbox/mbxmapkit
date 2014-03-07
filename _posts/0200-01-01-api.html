@@ -32,7 +32,7 @@ navigation:
 					<div class="section-overview">
 						<a title="Overview" name="overview"></a>
 						<h3 class="subtitle subtitle-overview">Overview</h3>
-						<p>An MBXMapView provides an embeddable map interface, similar to the one provided by Apple&rsquo;s MapKit, with support for MapBox-hosted custom map styles. You use this class to display map information and to manipulate the map contents from your application.</p><div class="warning"><p><strong>Warning:</strong> Please note that you are responsible for getting permission to use the map data, and for ensuring your use adheres to the relevant terms of use.</p></div>
+						<p>An MBXMapView provides an embeddable map interface, similar to the one provided by Apple&rsquo;s MapKit, with support for Mapbox-hosted custom map styles. You use this class to display map information and to manipulate the map contents from your application.</p><div class="warning"><p><strong>Warning:</strong> Please note that you are responsible for getting permission to use the map data, and for ensuring your use adheres to the relevant terms of use.</p></div>
 					</div>
 					
 					
@@ -51,7 +51,7 @@ navigation:
 							<li>
 	<span class="tooltip">
 		<code><a href="#//api/name/initWithFrame:mapID:">&ndash;&nbsp;initWithFrame:mapID:</a></code>
-		<span class="tooltip"><p>Initialize a map view with a given frame and MapBox map ID.</p></span>
+		<span class="tooltip"><p>Initialize a map view with a given frame and Mapbox map ID.</p></span>
 	</span>
 	
 	
@@ -73,7 +73,7 @@ navigation:
 							<li>
 	<span class="tooltip">
 		<code><a href="#//api/name/mapID">&nbsp;&nbsp;mapID</a></code>
-		<span class="tooltip"><p>The MapBox map ID for the map view.</p></span>
+		<span class="tooltip"><p>The Mapbox map ID for the map view.</p></span>
 	</span>
 	<span class="task-item-suffix">property</span>
 	
@@ -103,21 +103,21 @@ navigation:
 							<li>
 	<span class="tooltip">
 		<code><a href="#//api/name/cacheInterval">&nbsp;&nbsp;cacheInterval</a></code>
-		<span class="tooltip"><p>Change the cache duration for MapBox tiles for all maps. The default behavior is to cache tiles for one week.</p></span>
+		<span class="tooltip"><p>Change the cache duration for Mapbox tiles for all maps. The default behavior is to cache tiles for one week.</p></span>
 	</span>
 	<span class="task-item-suffix">property</span>
 	
 </li><li>
 	<span class="tooltip">
 		<code><a href="#//api/name/emptyCacheForMapID:">&ndash;&nbsp;emptyCacheForMapID:</a></code>
-		<span class="tooltip"><p>Remove any locally-cached MapBox tiles for the given map ID.</p></span>
+		<span class="tooltip"><p>Remove any locally-cached Mapbox tiles for the given map ID.</p></span>
 	</span>
 	
 	
 </li><li>
 	<span class="tooltip">
 		<code><a href="#//api/name/cachingDelegate">&nbsp;&nbsp;cachingDelegate</a></code>
-		<span class="tooltip"><p>Set a custom caching delegate. The caching delegate is consulted when map tiles are needed by the rendering system and is notified when new map tiles are downloaded from MapBox. The caching delegate should implement the methods in the <a href="#MBXMapViewCaching-protocol">MBXMapViewCaching</a> protocol.</p></span>
+		<span class="tooltip"><p>Set a custom caching delegate. The caching delegate is consulted when map tiles are needed by the rendering system and is notified when new map tiles are downloaded from Mapbox. The caching delegate should implement the methods in the <a href="#MBXMapViewCaching-protocol">MBXMapViewCaching</a> protocol.</p></span>
 	</span>
 	<span class="task-item-suffix">property</span>
 	
@@ -141,7 +141,7 @@ navigation:
 	
 	
 	<div class="method-subsection brief-description">
-		<p>Change the cache duration for MapBox tiles for all maps. The default behavior is to cache tiles for one week.</p>
+		<p>Change the cache duration for Mapbox tiles for all maps. The default behavior is to cache tiles for one week.</p>
 	</div>		
 	
 	
@@ -156,7 +156,7 @@ navigation:
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>Change the cache duration for MapBox tiles for all maps. The default behavior is to cache tiles for one week.</p>
+		<p>Change the cache duration for Mapbox tiles for all maps. The default behavior is to cache tiles for one week.</p>
 
 <p>Changing this property has no effect on any caching system managed by a <a href="#//api/name/cachingDelegate">cachingDelegate</a>, but will trigger the removal of any expired tiles that were previously cached by the default caching system.</p>
 	</div>
@@ -182,7 +182,7 @@ navigation:
 	
 	
 	<div class="method-subsection brief-description">
-		<p>Set a custom caching delegate. The caching delegate is consulted when map tiles are needed by the rendering system and is notified when new map tiles are downloaded from MapBox. The caching delegate should implement the methods in the <a href="#MBXMapViewCaching-protocol">MBXMapViewCaching</a> protocol.</p>
+		<p>Set a custom caching delegate. The caching delegate is consulted when map tiles are needed by the rendering system and is notified when new map tiles are downloaded from Mapbox. The caching delegate should implement the methods in the <a href="#MBXMapViewCaching-protocol">MBXMapViewCaching</a> protocol.</p>
 	</div>		
 	
 	
@@ -197,7 +197,7 @@ navigation:
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>Set a custom caching delegate. The caching delegate is consulted when map tiles are needed by the rendering system and is notified when new map tiles are downloaded from MapBox. The caching delegate should implement the methods in the <a href="#MBXMapViewCaching-protocol">MBXMapViewCaching</a> protocol.</p>
+		<p>Set a custom caching delegate. The caching delegate is consulted when map tiles are needed by the rendering system and is notified when new map tiles are downloaded from Mapbox. The caching delegate should implement the methods in the <a href="#MBXMapViewCaching-protocol">MBXMapViewCaching</a> protocol.</p>
 	</div>
 	
 	
@@ -221,7 +221,7 @@ navigation:
 	
 	
 	<div class="method-subsection brief-description">
-		<p>The MapBox map ID for the map view.</p>
+		<p>The Mapbox map ID for the map view.</p>
 	</div>		
 	
 	
@@ -236,7 +236,7 @@ navigation:
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>The MapBox map ID for the map view.</p>
+		<p>The Mapbox map ID for the map view.</p>
 
 <p>Upon setting a new map ID, the map view will begin an asynchronous download of the hosted metadata for the map. When the download completes successfully, the map style will change to reflect the new map ID.</p>
 	</div>
@@ -272,7 +272,7 @@ navigation:
 	
 	
 	<div class="method-subsection brief-description">
-		<p>Remove any locally-cached MapBox tiles for the given map ID.</p>
+		<p>Remove any locally-cached Mapbox tiles for the given map ID.</p>
 	</div>		
 	
 	
@@ -284,7 +284,7 @@ navigation:
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>mapID</em></dt>
-			<dd><p>The MapBox map ID.</p></dd>
+			<dd><p>The Mapbox map ID.</p></dd>
 		</dl>
 		
 	</div>
@@ -297,7 +297,7 @@ navigation:
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>Remove any locally-cached MapBox tiles for the given map ID.</p>
+		<p>Remove any locally-cached Mapbox tiles for the given map ID.</p>
 
 <p>This method has no effect on any caching system managed by a <a href="#//api/name/cachingDelegate">cachingDelegate</a>, but will still remove tiles that were previously cached by the default caching system.</p>
 	</div>
@@ -323,7 +323,7 @@ navigation:
 	
 	
 	<div class="method-subsection brief-description">
-		<p>Initialize a map view with a given frame and MapBox map ID.</p>
+		<p>Initialize a map view with a given frame and Mapbox map ID.</p>
 	</div>		
 	
 	
@@ -340,7 +340,7 @@ navigation:
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>mapID</em></dt>
-			<dd><p>The MapBox map ID.</p></dd>
+			<dd><p>The Mapbox map ID.</p></dd>
 		</dl>
 		
 	</div>
@@ -358,7 +358,7 @@ navigation:
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>Initialize a map view with a given frame and MapBox map ID.</p>
+		<p>Initialize a map view with a given frame and Mapbox map ID.</p>
 
 <p>By default, Apple&rsquo;s maps will be hidden if the map ID represents a full-world map and shown if the map ID represents a map with partial-world coverage. If you have a full-world map with transparency and wish to show Apple&rsquo;s maps below it, use the <a href="#//api/name/initWithFrame:mapID:showDefaultBaseLayer:">initWithFrame:mapID:showDefaultBaseLayer:</a> with a <code>showDefaultBaseLayer</code> value of <code>YES</code>.</p>
 	</div>
@@ -401,12 +401,12 @@ navigation:
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>mapID</em></dt>
-			<dd><p>The MapBox map ID.</p></dd>
+			<dd><p>The Mapbox map ID.</p></dd>
 		</dl>
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>showDefaultBaseLayer</em></dt>
-			<dd><p>Whether to hide or show Apple&rsquo;s default maps below the MapBox map.</p></dd>
+			<dd><p>Whether to hide or show Apple&rsquo;s default maps below the Mapbox map.</p></dd>
 		</dl>
 		
 	</div>
@@ -527,7 +527,7 @@ navigation:
 					<div class="section-overview">
 						<a title="Overview" name="overview"></a>
 						<h3 class="subtitle subtitle-overview">Overview</h3>
-						<p>The MBXMapViewCaching protocol defines a set of optional methods that you can use to customize the MapBox tile caching behavior by using an external caching system.</p>
+						<p>The MBXMapViewCaching protocol defines a set of optional methods that you can use to customize the Mapbox tile caching behavior by using an external caching system.</p>
 					</div>
 					
 					
@@ -606,7 +606,7 @@ navigation:
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>mapID</em></dt>
-			<dd><p>The MapBox map ID.</p></dd>
+			<dd><p>The Mapbox map ID.</p></dd>
 		</dl>
 		
 		<dl class="argument-def parameter-def">
@@ -675,7 +675,7 @@ navigation:
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>mapID</em></dt>
-			<dd><p>The MapBox map ID.</p></dd>
+			<dd><p>The Mapbox map ID.</p></dd>
 		</dl>
 		
 		<dl class="argument-def parameter-def">
