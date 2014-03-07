@@ -2,6 +2,7 @@
 layout: default
 class: fill-light
 fullwidth: true
+section: mbxmapkit
 ---
 
 <link href='{{site.url}}/css/docs.css' rel='stylesheet' />
@@ -13,7 +14,7 @@ fullwidth: true
   <div class='limiter'><div class='col3 contain'>
     <nav class='scroll-styled quiet-scroll'>
 
-      {% if page.section == 'mapboxmbx-overview' %}
+      {% if page.category == 'overview' %}
          <div class='space-bottom'>
           <a class='block quiet active strong small truncate' href='{{site.baseurl}}/'>Overview</a>
         </div>
@@ -25,7 +26,7 @@ fullwidth: true
           {% endfor %}
           </div>
         {% endfor %}
-      {% elsif page.section == 'mapboxmbx-api' %}
+      {% elsif page.category == 'api' %}
          <div class='space-bottom'>
            <a class='block quiet active strong small truncate' href='{{site.baseurl}}/api/'>API {{site.version}}</a>
         </div>
@@ -60,7 +61,7 @@ fullwidth: true
       </div>
     </nav>
   </div>
-  <div class='contain margin3 col9'>
+  <div class='contain margin3 col9' data-swiftype-index=true>
     {{content}}
   </div>
 </div>
@@ -68,10 +69,10 @@ fullwidth: true
 <script>
 $('#docs-search input').swiftype({
     autocompleteContainingElement: $('#docs-search'),
-    //filters: {
-      //page: {
-        //type: ['mapbox-api', 'mapbox-docs']
-      //}
-    //}
+    filters: {
+      page: {
+        type: ['mbxmapkit']
+      }
+    }
 });
 </script>
