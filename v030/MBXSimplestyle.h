@@ -10,13 +10,15 @@
 #import "MBXCacheManagerProtocol.h"
 #import "MBXPointAnnotation.h"
 
+@class MBXSimplestyle;
+
 @protocol MBXSimplestyleDelegate <NSObject>
 
-- (void)didParseSimplestylePoint:(MBXPointAnnotation *)pointAnnotation;
+- (void)MBXSimplestyle:(MBXSimplestyle *)simplestyle didParsePoint:(MBXPointAnnotation *)pointAnnotation;
 
 @optional
 
-- (void)didFailToLoadSimplestyleForMapID:(NSString *)mapID withError:(NSError *)error;
+- (void)MBXSimplestyle:(MBXSimplestyle *)simplestyle didFailToLoadMapID:(NSString *)mapID withError:(NSError *)error;
 
 @end
 

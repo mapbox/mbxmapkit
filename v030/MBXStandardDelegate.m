@@ -51,12 +51,12 @@
 }
 
 
-- (void)didLoadTileJSONForTileOverlay:(MBXRasterTileOverlay *)rasterOverlay
+- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMapID:(NSString *)mapID
 {
     // This required delegate callback is for centering the map once the TileJSON has been loaded
     //
     if(_mapView) {
-        MKCoordinateRegion region = MKCoordinateRegionMake(rasterOverlay.center, MKCoordinateSpanMake(0, 360 / pow(2, rasterOverlay.centerZoom) * _mapView.frame.size.width / 256));
+        MKCoordinateRegion region = MKCoordinateRegionMake(overlay.center, MKCoordinateSpanMake(0, 360 / pow(2, overlay.centerZoom) * _mapView.frame.size.width / 256));
         [_mapView setRegion:region animated:NO];
     }
     else
@@ -66,7 +66,7 @@
 }
 
 
-- (void)didParseSimplestylePoint:(MBXPointAnnotation *)pointAnnotation
+- (void)MBXSimplestyle:(MBXSimplestyle *)simplestyle didParsePoint:(MBXPointAnnotation *)pointAnnotation
 {
     // This required delegate callback is for adding points to an MKMapView when they are successfully parsed from the simplestyle
     //
@@ -80,15 +80,15 @@
 }
 
 
-- (void)didFailToLoadTileJSONForMapID:(NSString *)mapID withError:(NSError *)error
+- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didFailToLoadMapID:(NSString *)mapID withError:(NSError *)error
 {
     // This optional delegate callback is for handling situations when something goes wrong with the TileJSON
     //
-    NSLog(@"Delegate received notification of TileJSON loading failure - (%@)",error?error:@"");
+    NSLog(@"Failed to load TileJSON for map ID %@ - (%@)",mapID, error?error:@"");
 }
 
 
-- (void)didFailToLoadSimplestyleForMapID:(NSString *)mapID withError:(NSError *)error
+- (void)MBXSimplestyle:(MBXSimplestyle *)simplestyle didFailToLoadMapID:(NSString *)mapID withError:(NSError *)error
 {
     // This optional delegate callback is for handling situations when something goes wrong with the simplestyle
     //

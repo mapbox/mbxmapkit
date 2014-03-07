@@ -14,11 +14,11 @@
 
 @protocol MBXRasterTileOverlayDelegate <NSObject>
 
-- (void)didLoadTileJSONForTileOverlay:(MBXRasterTileOverlay *)rasterOverlay;
+- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMapID:(NSString *)mapID;
 
 @optional
 
-- (void)didFailToLoadTileJSONForMapID:(NSString *)mapID withError:(NSError *)error;
+- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didFailToLoadMapID:(NSString *)mapID withError:(NSError *)error;
 
 @end
 

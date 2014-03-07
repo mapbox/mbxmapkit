@@ -85,14 +85,14 @@
                     if (_delegate)
                     {
                         dispatch_async(dispatch_get_main_queue(), ^(void){
-                            [_delegate didLoadTileJSONForTileOverlay:self];
+                            [_delegate MBXRasterTileOverlay:self didLoadMapID:_mapID];
                         });
                     }
                 }
                 else
                 {
-                    if ([_delegate respondsToSelector:@selector(didFailToLoadTileJSONForMapID:withError:)]) {
-                        [_delegate didFailToLoadTileJSONForMapID:mapID withError:parseError];
+                    if ([_delegate respondsToSelector:@selector(MBXRasterTileOverlay:didFailToLoadMapID:withError:)]) {
+                        [_delegate MBXRasterTileOverlay:self didFailToLoadMapID:_mapID withError:parseError];
                     }
                     else
                     {
@@ -102,8 +102,8 @@
             }
             else
             {
-                if ([_delegate respondsToSelector:@selector(didFailToLoadTileJSONForMapID:withError:)]) {
-                    [_delegate didFailToLoadTileJSONForMapID:mapID withError:error];
+                if ([_delegate respondsToSelector:@selector(MBXRasterTileOverlay:didFailToLoadMapID:withError:)]) {
+                    [_delegate MBXRasterTileOverlay:self didFailToLoadMapID:_mapID withError:error];
                 }
                 else
                 {

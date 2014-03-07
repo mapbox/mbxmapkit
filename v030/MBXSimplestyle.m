@@ -45,8 +45,8 @@
             }
             else
             {
-                if ([_delegate respondsToSelector:@selector(didFailToLoadSimplestyleForMapID:withError:)]) {
-                    [_delegate didFailToLoadSimplestyleForMapID:_mapID withError:parseError];
+                if ([_delegate respondsToSelector:@selector(MBXSimplestyle:didFailToLoadMapID:withError:)]) {
+                    [_delegate MBXSimplestyle:self didFailToLoadMapID:_mapID withError:parseError];
                 }
                 else
                 {
@@ -114,7 +114,7 @@
                                 if (_delegate)
                                 {
                                     dispatch_async(dispatch_get_main_queue(), ^(void){
-                                        [_delegate didParseSimplestylePoint:point];
+                                        [_delegate MBXSimplestyle:self didParsePoint:point];
                                     });
                                 }
                             }
