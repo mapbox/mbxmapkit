@@ -1,42 +1,8 @@
 ---
-layout: default
-section: developers
+layout: pages
+category: api
 ---
 
-{% include header.html %}
-
-<div class='keyline-all clearfix'>
-  <div class='col3'>
-    <div class='pad2 keyline-bottom'>
-      <fieldset class='search with-icon'>
-        <span class='icon search'></span>
-        <input class='stretch' type='text' placeholder='Filter'>
-      </fieldset>
-    </div>
-    {% if page.navigation %}
-    {% for heading in page.navigation %}
-      <nav class='doc-nav anchors'>
-        <a class='pad1y pad2x col12 keyline-bottom truncate' href='#{{heading[0]|replace:' ','_'}}'><strong>{{heading[0]}}</strong></a>
-      {% for item in heading[1] %}
-        <a class='pad1y pad2x col12 keyline-bottom truncate' href='#{{item|replace:' ','_'}}'>{{item | replace:'-class','' | replace:'-protocol',''}}</a>
-      {% endfor %}
-      </nav>
-    {% endfor %}
-    {% endif %}
-  </div>
-  <div id='docs' class='col9 prose keyline-left'>
-    <div class='doc pad4'>
-      {{content}}
-    </div>
-    <div class='keyline-top pad2 small center'>
-      The code and documentation to <a href='https://github.com/mapbox/mbxmapkit'>mbxmapkit is hosted on GitHub</a> where you can contribute changes and improvements.
-    </div>
-  </div>
+<div class='prose pad2 doc round fill-white keyline-all'>
+{{content}}
 </div>
-
-{% include developers-footer.html %}
-
-<script>
-  var docs = new Docs();
-  docs.bindSearch($('.search input'), $('.doc-nav'));
-</script>

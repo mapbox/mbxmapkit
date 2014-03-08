@@ -1,7 +1,5 @@
 api: https://122e4e-mapbox.global.ssl.fastly.net
 url: https://122e4e-mapbox.global.ssl.fastly.net
-permalink: /:categories/:title
 baseurl: /mbxmapkit
-title: MBXMapKit
-description: One-line MapBox integration with MapKit on iOS and OS X
+version: v0.2.1
 pygments: true

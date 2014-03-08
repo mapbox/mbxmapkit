@@ -7,11 +7,8 @@ YAML="\
 title: MBXMapKit `git tag | sort -r | sed -n '1p'`
 layout: api
 permalink: /api
-categories: api
 navigation:"
-CONTENT="\
-<p>Welcome to the MBXMapKit API documentation. Here you can find details on the classes, protocols, and other parts of the library.</p>
-"
+CONTENT=""
 
 scrape() {
   FR=`grep -n "$HTMLTOP" $1 | grep -o [0-9]*`
@@ -38,9 +35,9 @@ echo -e "$CONTENT" | \
   # Simplify CSS.
   sed 's,class="title ,class=",' | \
   sed 's,class="section ,class=",' | \
-  # Add an id to <h1>'s so they can be looked up by anchor links.
-  sed '/Class Reference/s,<h1 class="title-header">\([^<]*\)</h1>,<h1 class="title-header" id="\1-class">\1</h1>,' | \
-  sed '/Protocol Reference/s,<h1 class="title-header">\([^<]*\)</h1>,<h1 class="title-header" id="\1-protocol">\1</h1>,' | \
+  # Add an id to <h2>'s so they can be looked up by anchor links.
+  sed '/Class Reference/s,<h2>\([^<]*\)</h2>,<h2 id="\1-class">\1</h2>,' | \
+  sed '/Protocol Reference/s,<h2>\([^<]*\)</h2>,<h2 id="\1-protocol">\1</h2>,' | \
   # Replace links to class/protocol pages with anchor links. Avoids http:// urls.
   sed 's,<a href="[^#\"]*Classes[^\"]*">\([^<]*\)</a>,<a href="#\1-class">\1</a>,g' | \
   sed 's,<a href="[^#\"]*Protocols[^\"]*">\([^<]*\)</a>,<a href="#\1-protocol">\1</a>,g' | \
