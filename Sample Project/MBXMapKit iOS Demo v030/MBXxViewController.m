@@ -171,9 +171,6 @@
 
 - (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered
 {
-    // Schedule cache sweeps to occur each time a batch of tiles finishes rendering
-    //
-    [[MBXCacheManager sharedCacheManager] sweepCache];
 }
 
 

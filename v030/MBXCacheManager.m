@@ -8,13 +8,6 @@
 
 #import "MBXCacheManager.h"
 
-@interface MBXCacheManager ()
-
-@property (nonatomic) NSString *cachePath;
-
-@end
-
-
 @implementation MBXCacheManager
 
 NSString *const MBXMapKitErrorDomain = @"MBXMapKitErrorDomain";
@@ -36,29 +29,6 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 
 
 #pragma mark - Methods for proxying resources through the cache
-
-- (void)prepareCacheForMapID:(NSString *)mapID
-{
-    // Make sure the necessary cache directories are in place
-    //
-    NSString *path = [NSString stringWithFormat:@"%@/%@", self.cachePath, mapID];
-    NSError *error;
-
-    [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error];
-    if (error && error.code != NSFileWriteFileExistsError)
-    {
-        // NSFileWriteFileExistsError is fine because it just means the directory already existed, but other errors are bad.
-        //
-        NSLog(@"There was an error creating a cache directory - (%@)",error);
-    }
-
-    path = [NSString stringWithFormat:@"%@/markers", self.cachePath];
-    [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error];
-    if (error && error.code != NSFileWriteFileExistsError)
-    {
-        NSLog(@"There was an error creating a cache directory - (%@)",error);
-    }
-}
 
 
 - (NSData *)proxyTileJSONForMapID:(NSString *)mapID withError:(NSError **)error
@@ -164,65 +134,22 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 
 - (void)clearMapID:(NSString *)mapID
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void)
-    {
-        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", [self cachePath], mapID] error:nil];
-    });
 }
 
 
 - (void)clearSimplestyleForMapID:(NSString *)mapID
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void)
-    {
-        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@/markers.geojson", [self cachePath], mapID] error:nil];
-    });
 }
 
 
 - (void)clearMarkerIcons
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void)
-    {
-        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/markers", [self cachePath]] error:nil];
-    });
 }
 
 
 - (void)clearEntireCache
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void)
-    {
-        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@", [self cachePath]] error:nil];
-    });
 }
-
-
-- (void)sweepCache
-{
-    NSDirectoryEnumerator *cacheEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:[self  cachePath]];
-    NSString *filename;
-
-    while ((filename = [cacheEnumerator nextObject]))
-    {
-        NSString *filePath = [NSString stringWithFormat:@"%@/%@", [self cachePath], filename];
-        NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
-
-        if (attributes[NSFileType] == NSFileTypeRegular && [[NSDate date] timeIntervalSinceDate:attributes[NSFileModificationDate]] < _cacheInterval)
-        {
-            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-            NSLog(@"removing %@",filePath);
-        }
-        else
-        {
-            // Clean up any empty cache files that might be lying around from previous bugs
-            //
-            if ((attributes[NSFileType] == NSFileTypeRegular) && ([attributes[NSFileSize] integerValue] == 0))
-                [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-        }
-    }
-}
-
 
 
 
@@ -236,17 +163,9 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 
     // Determine if this is a cache hit. If so, request the file from cache. Otherwise, request the file by HTTP.
     //
-    NSString *resourceCachePath = [NSString stringWithFormat:@"%@/%@", self.cachePath, relativeCachePath];
     NSURL *url;
 
-    if ([[NSFileManager defaultManager] fileExistsAtPath:resourceCachePath])
-    {
-        url = [NSURL fileURLWithPath:resourceCachePath];
-    }
-    else
-    {
-        url = [NSURL URLWithString:urlString];
-    }
+    url = [NSURL URLWithString:urlString];
 
     // Do a synchronous request for the specified URL. Synchronous is fine, because this should have been wrapped with dispatch_async()
     // somewhere up the call stack.
@@ -279,17 +198,6 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
                                     NSLocalizedFailureReasonErrorKey : NSLocalizedString(errorReason, nil) };
 
         err = [NSError errorWithDomain:MBXMapKitErrorDomain code:MBXMapKitErrorCodeHTTPStatus userInfo:userInfo];
-    }
-    else
-    {
-        // At this point we should have an NSHTTPURLResponse with an HTTP 200, or else an
-        // NSURLResponse with the contents of a file from cache. Both of those are good.
-        // Cache the tileJSON only if it came from an HTTP 200 response.
-        //
-        if ([response isKindOfClass:[NSHTTPURLResponse class]])
-        {
-            [data writeToFile:resourceCachePath atomically:YES];
-        }
     }
 
     // De-refrencing a null pointer is bad, so make sure we don't do that.
@@ -346,15 +254,6 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 }
 
 
-- (NSString *)cachePath
-{
-    if ( ! _cachePath)
-        _cachePath = [NSString stringWithFormat:@"%@/%@", [self systemPath], kMBXMapViewCacheFolder];
-
-    return _cachePath;
-}
-
-
 - (NSString *)userAgentString
 {
 #if TARGET_OS_IPHONE
@@ -362,20 +261,6 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 #else
     return [NSString stringWithFormat:@"MBXMapKit (OS X/%@)", [[NSProcessInfo processInfo] operatingSystemVersionString]];
 #endif
-}
-
-
-- (NSString *)systemPath
-{
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-
-    NSString *path = ([paths count] ? paths[0] : NSTemporaryDirectory());
-
-#if ! TARGET_OS_IPHONE
-    path = [NSString stringWithFormat:@"%@/%@", path, [[NSProcessInfo processInfo] processName]];
-#endif
-
-    return path;
 }
 
 

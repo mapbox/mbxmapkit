@@ -25,8 +25,6 @@ typedef NS_ENUM(NSUInteger, MBXRasterImageQuality) {
 
 #pragma mark - Methods for proxying resources through the cache
 
-- (void)prepareCacheForMapID:(NSString *)mapID;
-
 - (NSData *)proxyTileJSONForMapID:(NSString *)mapID withError:(NSError **)error;
 
 - (NSData *)proxySimplestyleForMapID:(NSString *)mapID withError:(NSError **)error;
@@ -45,7 +43,5 @@ typedef NS_ENUM(NSUInteger, MBXRasterImageQuality) {
 - (void)clearMarkerIcons;
 
 - (void)clearEntireCache;
-
-- (void)sweepCache;
 
 @end
