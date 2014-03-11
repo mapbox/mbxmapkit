@@ -10,15 +10,13 @@
 
 @implementation MBXCacheManager
 
-#pragma mark - Notification string constants for cache statistics
+#pragma mark - Notification strings for cache statistics
 
-NSString const *MBXNotificationCacheHit = @"MBXNotificationCacheHit";
+NSString * const MBXNotificationCacheHit = @"MBXNotificationCacheHit";
 
-NSString const *MBXNotificationPersistentDataHit = @"MBXNotificationPersistentDataHit";
+NSString * const MBXNotificationHTTPSuccess = @"MBXNotificationHTTPSuccess";
 
-NSString const *MBXNotificationHTTPSuccess = @"MBXNotificationHTTPSuccess";
-
-NSString const *MBXNotificationHTTPFail = @"MBXNotificationHTTPFail";
+NSString * const MBXNotificationHTTPFailure = @"MBXNotificationHTTPFailure";
 
 
 #pragma mark - Constants for the MBXMapKit error domain
@@ -159,11 +157,7 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
     //
     assert(![NSThread isMainThread]);
 
-    // Determine if this is a cache hit. If so, request the file from cache. Otherwise, request the file by HTTP.
-    //
-    NSURL *url;
-
-    url = [NSURL URLWithString:urlString];
+    NSURL *url = [NSURL URLWithString:urlString];
 
     // Do a synchronous request for the specified URL. Synchronous is fine, because this should have been wrapped with dispatch_async()
     // somewhere up the call stack.
@@ -196,6 +190,14 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
                                     NSLocalizedFailureReasonErrorKey : NSLocalizedString(errorReason, nil) };
 
         err = [NSError errorWithDomain:MBXMapKitErrorDomain code:MBXMapKitErrorCodeHTTPStatus userInfo:userInfo];
+
+        [[NSNotificationCenter defaultCenter] postNotificationName:MBXNotificationHTTPFailure object:self];
+    }
+    else
+    {
+        // Reaching this point means we should have received a successful HTTP request
+        //
+        [[NSNotificationCenter defaultCenter] postNotificationName:MBXNotificationHTTPSuccess object:self];
     }
 
     // De-refrencing a null pointer is bad, so make sure we don't do that.

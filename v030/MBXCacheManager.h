@@ -9,18 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "MBXCacheManagerProtocol.h"
 
-extern NSString const *kMBXNotificationCacheHit;
-extern NSString const *kMBXNotificationPersistentDataHit;
-extern NSString const *kMBXNotificationHTTPSuccess;
-extern NSString const *kMBXNotificationHTTPFail;
+extern NSString * const MBXNotificationCacheHit;
+extern NSString * const MBXNotificationHTTPSuccess;
+extern NSString * const MBXNotificationHTTPFailure;
 
 @interface MBXCacheManager : NSObject <MBXCacheManagerProtocol>
-
-
-#pragma mark - Cache configuration
-
-@property (nonatomic) NSTimeInterval cacheInterval;
-
 
 #pragma mark - Shared cache manager singelton
 

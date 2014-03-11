@@ -19,6 +19,10 @@
 @property (nonatomic) MBXSimplestyle *simplestyle;
 @property (nonatomic) UIActionSheet *actionSheet;
 
+@property (nonatomic) NSInteger cacheHitCount;
+@property (nonatomic) NSInteger httpSuccessCount;
+@property (nonatomic) NSInteger httpFailureCount;
+
 @end
 
 @implementation MBXxViewController
@@ -29,6 +33,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    [self addCacheAndNetworkNotifications];
 
     //[[MBXCacheManager sharedCacheManager] clearEntireCache];
 
@@ -47,6 +53,49 @@
     _simplestyle.mapID = @"examples.map-pgygbwdm";
 
     [_mapView addOverlay:_rasterOverlay];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self removeCacheAndNetworkNotifications];
+}
+
+
+#pragma mark - Notification stuff to collect cache and network statistics
+
+- (void)addCacheAndNetworkNotifications
+{
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    NSOperationQueue *queue = [NSOperationQueue mainQueue];
+
+    // Add notification observers to collect statistics about resources loaded from the cache and over network connections
+    //
+    [center addObserverForName:MBXNotificationCacheHit object:nil queue:queue usingBlock:^(NSNotification *note){
+        self.cacheHitCount += 1;
+    }];
+
+    [center addObserverForName:MBXNotificationHTTPSuccess object:nil queue:queue usingBlock:^(NSNotification *note){
+        self.httpSuccessCount += 1;
+    }];
+
+    [center addObserverForName:MBXNotificationHTTPFailure object:nil queue:queue usingBlock:^(NSNotification *note){
+        self.httpFailureCount += 1;
+    }];
+}
+
+
+- (void)removeCacheAndNetworkNotifications
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
+- (void)logCacheAndNetworkStats
+{
+    NSLog(@"\n  cache hits:%i\n  HTTP Success:%i\n  HTTP Failure:%i",
+          self.cacheHitCount,
+          self.httpSuccessCount,
+          self.httpFailureCount);
 }
 
 
@@ -171,6 +220,9 @@
 
 - (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered
 {
+    // Show cache and network statistics each time the map finishes loading
+    //
+    [self logCacheAndNetworkStats];
 }
 
 
