@@ -92,10 +92,16 @@
 
 - (void)logCacheAndNetworkStats
 {
+    // Show how many tile, TileJSON, simplestyle, or marker resources were loaded since the last log entry
+    //
     NSLog(@"\n  cache hits:%i\n  HTTP Success:%i\n  HTTP Failure:%i",
           self.cacheHitCount,
           self.httpSuccessCount,
           self.httpFailureCount);
+
+    self.cacheHitCount = 0;
+    self.httpSuccessCount = 0;
+    self.httpFailureCount = 0;
 }
 
 
