@@ -10,6 +10,19 @@
 
 @implementation MBXCacheManager
 
+#pragma mark - Notification string constants for cache statistics
+
+NSString const *MBXNotificationCacheHit = @"MBXNotificationCacheHit";
+
+NSString const *MBXNotificationPersistentDataHit = @"MBXNotificationPersistentDataHit";
+
+NSString const *MBXNotificationHTTPSuccess = @"MBXNotificationHTTPSuccess";
+
+NSString const *MBXNotificationHTTPFail = @"MBXNotificationHTTPFail";
+
+
+#pragma mark - Constants for the MBXMapKit error domain
+
 NSString *const MBXMapKitErrorDomain = @"MBXMapKitErrorDomain";
 
 NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
@@ -36,7 +49,6 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
     // Attempt to fetch some TileJSON from the cache if it's available, or by downloading it if not
     //
     return [self proxyResourceDescription:@"TileJSON"
-                        relativeCachePath:[NSString stringWithFormat:@"%@/%@.json", mapID, mapID]
                                 urlString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@.json", mapID]
                                     error:error
             ];
@@ -48,7 +60,6 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
     // Attempt to fetch some simplestyle from the cache if it's available, or by downloading it if not
     //
     return [self proxyResourceDescription:@"Simplestyle"
-                        relativeCachePath:[NSString stringWithFormat:@"%@/markers.json", mapID]
                                 urlString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson", mapID]
                                     error:error
             ];
@@ -57,17 +68,6 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 
 - (NSData *)proxyTileAtPath:(MKTileOverlayPath)path forMapID:(NSString *)mapID withQuality:(MBXRasterImageQuality)imageQuality withError:(NSError **)error
 {
-    // Attempt to fetch a tile from the cache if it's available, or by downloading it if not
-    //
-    NSString *cachePath = [NSString stringWithFormat:@"%@/%ld_%ld_%ld%@.%@",
-                           mapID,
-                           (long)path.z,
-                           (long)path.x,
-                           (long)path.y,
-                           (path.contentScaleFactor > 1.0 ? @"@2x" : @""),
-                           [self qualityExtensionForImageQuality:imageQuality]
-                           ];
-
     NSString *urlString = [NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/%ld/%ld/%ld%@.%@",
                            mapID,
                            (long)path.z,
@@ -78,7 +78,6 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
                            ];
 
     return [self proxyResourceDescription:@"Tile"
-                        relativeCachePath:cachePath
                                 urlString:urlString
                                     error:error
             ];
@@ -123,7 +122,6 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
     // Attempt to fetch a marker icon from the cache if it's available, or by downloading it if not
     //
     return [self proxyResourceDescription:@"Marker icon"
-                        relativeCachePath:[NSString stringWithFormat:@"markers/%@", marker]
                                 urlString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/marker/%@", marker]
                                     error:error
             ];
@@ -155,7 +153,7 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 
 #pragma mark - Private implementation methods
 
-- (NSData *)proxyResourceDescription:(NSString *)description relativeCachePath:(NSString *)relativeCachePath urlString:(NSString *)urlString error:(NSError **)error
+- (NSData *)proxyResourceDescription:(NSString *)description urlString:(NSString *)urlString error:(NSError **)error
 {
     // Make the point that we had better not be blocking the main thread here
     //

@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "MBXCacheManagerProtocol.h"
 
+extern NSString const *kMBXNotificationCacheHit;
+extern NSString const *kMBXNotificationPersistentDataHit;
+extern NSString const *kMBXNotificationHTTPSuccess;
+extern NSString const *kMBXNotificationHTTPFail;
 
 @interface MBXCacheManager : NSObject <MBXCacheManagerProtocol>
 

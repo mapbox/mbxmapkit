@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 
+
 @protocol MBXCacheManagerProtocol <NSObject>
 
 typedef NS_ENUM(NSUInteger, MBXRasterImageQuality) {
