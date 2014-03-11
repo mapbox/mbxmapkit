@@ -8,7 +8,6 @@
 
 #import "MBXzAppDelegate.h"
 #import <MapKit/MapKit.h>
-#import "MBXStandardDelegate.h"
 #import "MBXSimplestyle.h"
 #import "MBXRasterTileOverlay.h"
 #import "MBXCacheManager.h"
@@ -20,12 +19,13 @@
 @property (weak) IBOutlet MKMapView *mapView;
 @property (nonatomic) MBXRasterTileOverlay *rasterOverlay;
 @property (nonatomic) MBXSimplestyle *simplestyle;
-@property (nonatomic) MBXStandardDelegate *standardDelegate;
 
 
 @end
 
 @implementation MBXzAppDelegate
+
+#pragma mark - Initialization
 
 - (void)applicationWillFinishLaunching:(NSNotification *)notification
 {
@@ -35,20 +35,17 @@
     
     //[[MBXCacheManager sharedCacheManager] clearEntireCache];
 
-    // Configure the mapView to use boilerplate delegate callbacks for managing tile overlay layers,
-    // TileJSON map centering, and adding simplestyle markers. To customize your app, you can subclass
-    // or replace the MBXStandardDelegate instance.
+    // Configure the mapView to use delegate callbacks for managing tile overlay layers, map centering, and adding
+    // adding markers.
     //
-    _standardDelegate = [[MBXStandardDelegate alloc] init];
-    _standardDelegate.mapView = _mapView;
-    _mapView.delegate = _standardDelegate;
+    _mapView.delegate = self;
 
     _rasterOverlay = [[MBXRasterTileOverlay alloc] init];
-    _rasterOverlay.delegate = _standardDelegate;
+    _rasterOverlay.delegate = self;
     _rasterOverlay.mapID = @"examples.map-pgygbwdm";
 
     _simplestyle = [[MBXSimplestyle alloc] init];
-    _simplestyle.delegate = _standardDelegate;
+    _simplestyle.delegate = self;
     _simplestyle.mapID = @"examples.map-pgygbwdm";
 
     [_mapView addOverlay:_rasterOverlay];
@@ -60,6 +57,8 @@
     [_popupButton addItemsWithTitles:titles];
 }
 
+
+#pragma mark - Things for switching between maps
 
 - (void)resetMapViewAndRasterOverlayDefaults
 {
@@ -76,14 +75,14 @@
     _rasterOverlay.delegate = nil;
     [_mapView removeOverlays:_mapView.overlays];
     _rasterOverlay = [[MBXRasterTileOverlay alloc] init];
-    _rasterOverlay.delegate = _standardDelegate;
+    _rasterOverlay.delegate = self;
 
     // Set up a new simplestyle object to account for the possibility that there are still point icons being downloaded
     //
     _simplestyle.delegate = nil;
     [_mapView removeAnnotations:_mapView.annotations];
     _simplestyle = [[MBXSimplestyle alloc] init];
-    _simplestyle.delegate = _standardDelegate;
+    _simplestyle.delegate = self;
 
     _mapView.scrollEnabled = YES;
     _mapView.zoomEnabled = YES;
@@ -142,6 +141,94 @@
                 break;
         }
     }
+}
+
+
+#pragma mark - Delegate protocol implementations (customize as needed)
+
+- (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered
+{
+    // Schedule cache sweeps to occur each time a batch of tiles finishes rendering
+    //
+    [[MBXCacheManager sharedCacheManager] sweepCache];
+}
+
+
+- (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay
+{
+    // This is boilerplate code to connect tile overlay layers with suitable renderers
+    //
+    if ([overlay isKindOfClass:[MBXRasterTileOverlay class]])
+    {
+        MKTileOverlayRenderer *renderer = [[MKTileOverlayRenderer alloc] initWithTileOverlay:overlay];
+        return renderer;
+    }
+    return nil;
+}
+
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
+{
+    // This is boilerplate code to connect annotations with suitable views
+    //
+    if ([annotation isKindOfClass:[MBXPointAnnotation class]])
+    {
+        static NSString *MBXSimpleStyleReuseIdentifier = @"MBXSimpleStyleReuseIdentifier";
+        MKAnnotationView *view = [mapView dequeueReusableAnnotationViewWithIdentifier:MBXSimpleStyleReuseIdentifier];
+        if (!view)
+        {
+            view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:MBXSimpleStyleReuseIdentifier];
+        }
+        view.image = ((MBXPointAnnotation *)annotation).image;
+        view.canShowCallout = YES;
+        return view;
+    }
+    return nil;
+}
+
+
+- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMapID:(NSString *)mapID
+{
+    // This is for centering the map once the TileJSON has been loaded
+    //
+    if(_mapView) {
+        MKCoordinateRegion region = MKCoordinateRegionMake(overlay.center, MKCoordinateSpanMake(0, 360 / pow(2, overlay.centerZoom) * _mapView.frame.size.width / 256));
+        [_mapView setRegion:region animated:NO];
+    }
+    else
+    {
+        NSLog(@"Warning: the mapView property is not set (didLoadTileJSONForTileOverlay:)");
+    }
+}
+
+
+- (void)MBXSimplestyle:(MBXSimplestyle *)simplestyle didParsePoint:(MBXPointAnnotation *)pointAnnotation
+{
+    // This is for adding points to an MKMapView when they are successfully parsed from the simplestyle
+    //
+    if(_mapView) {
+        [_mapView addAnnotation:pointAnnotation];
+    }
+    else
+    {
+        NSLog(@"Warning: the mapView property is not set (didParseSimplestylePoint:)");
+    }
+}
+
+
+- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didFailToLoadMapID:(NSString *)mapID withError:(NSError *)error
+{
+    // This is for handling situations when something goes wrong with the TileJSON
+    //
+    NSLog(@"Failed to load TileJSON for map ID %@ - (%@)",mapID, error?error:@"");
+}
+
+
+- (void)MBXSimplestyle:(MBXSimplestyle *)simplestyle didFailToLoadMapID:(NSString *)mapID withError:(NSError *)error
+{
+    // This is for handling situations when something goes wrong with the simplestyle
+    //
+    NSLog(@"Delegate received notification of Simplestyle loading failure - (%@)",error?error:@"");
 }
 
 

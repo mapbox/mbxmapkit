@@ -28,21 +28,19 @@
 		014DA22218C45B8400AB33F8 /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */; };
 		014DA22618C45B8400AB33F8 /* MBXMBTilesTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22518C43BCD00AD5C27 /* MBXMBTilesTileOverlay.m */; };
 		014DA22818C45B8400AB33F8 /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22718C43CEA00AD5C27 /* MBXPointAnnotation.m */; };
-		01B4553C18C8F310002D4B57 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD320F9B17E3CF8E00CD95A9 /* MapKit.framework */; };
 		01B8947C18C7190900CCEBEC /* MBXSimplestyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B8947B18C7190900CCEBEC /* MBXSimplestyle.m */; };
+		01DCA2F018CFAA77002E5125 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01DCA2EF18CFAA77002E5125 /* MapKit.framework */; };
+		01DCA2F118CFAABA002E5125 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01DCA2EF18CFAA77002E5125 /* MapKit.framework */; };
 		01ED214318C90543002726DD /* MBXCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB21F18C43B2000AD5C27 /* MBXCacheManager.m */; };
 		01ED214418C90543002726DD /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */; };
 		01ED214518C90543002726DD /* MBXSimplestyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B8947B18C7190900CCEBEC /* MBXSimplestyle.m */; };
 		01ED214618C90543002726DD /* MBXMBTilesTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22518C43BCD00AD5C27 /* MBXMBTilesTileOverlay.m */; };
 		01ED214718C90543002726DD /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22718C43CEA00AD5C27 /* MBXPointAnnotation.m */; };
-		01ED214E18C909AA002726DD /* MBXStandardDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01ED214D18C909AA002726DD /* MBXStandardDelegate.m */; };
-		01ED214F18C909AA002726DD /* MBXStandardDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01ED214D18C909AA002726DD /* MBXStandardDelegate.m */; };
 		DD320F2617E3CD0E00CD95A9 /* MBXViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD320F1A17E3CD0E00CD95A9 /* MBXViewController.m */; };
 		DD320F2817E3CD0E00CD95A9 /* MBXAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DD320F1F17E3CD0E00CD95A9 /* MBXAppDelegate.m */; };
 		DD320F2917E3CD0E00CD95A9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD320F2217E3CD0E00CD95A9 /* InfoPlist.strings */; };
 		DD320F2A17E3CD0E00CD95A9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DD320F2417E3CD0E00CD95A9 /* main.m */; };
 		DD320F6A17E3CE5500CD95A9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD320F6917E3CE5500CD95A9 /* Cocoa.framework */; };
-		DD320F9C17E3CF8E00CD95A9 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD320F9B17E3CF8E00CD95A9 /* MapKit.framework */; };
 		DD33A42717E8D8C2009B3EB1 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = DD33A41E17E8D8C2009B3EB1 /* Credits.rtf */; };
 		DD33A42817E8D8C2009B3EB1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD33A42017E8D8C2009B3EB1 /* InfoPlist.strings */; };
 		DD33A42917E8D8C2009B3EB1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DD33A42217E8D8C2009B3EB1 /* main.m */; };
@@ -98,8 +96,7 @@
 		01BCB22618C43CEA00AD5C27 /* MBXPointAnnotation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXPointAnnotation.h; sourceTree = "<group>"; };
 		01BCB22718C43CEA00AD5C27 /* MBXPointAnnotation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXPointAnnotation.m; sourceTree = "<group>"; };
 		01BCB22818C44DBB00AD5C27 /* MBXCacheManagerProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXCacheManagerProtocol.h; sourceTree = "<group>"; };
-		01ED214C18C909AA002726DD /* MBXStandardDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXStandardDelegate.h; sourceTree = "<group>"; };
-		01ED214D18C909AA002726DD /* MBXStandardDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXStandardDelegate.m; sourceTree = "<group>"; };
+		01DCA2EF18CFAA77002E5125 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/MapKit.framework; sourceTree = DEVELOPER_DIR; };
 		DD320F1A17E3CD0E00CD95A9 /* MBXViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBXViewController.m; path = "MBXMapKit-iOS/MBXViewController.m"; sourceTree = "<group>"; };
 		DD320F1C17E3CD0E00CD95A9 /* MBXMapKit-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "MBXMapKit-Info.plist"; path = "MBXMapKit-iOS/MBXMapKit-Info.plist"; sourceTree = SOURCE_ROOT; };
 		DD320F1D17E3CD0E00CD95A9 /* MBXViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBXViewController.h; path = "MBXMapKit-iOS/MBXViewController.h"; sourceTree = "<group>"; };
@@ -110,7 +107,6 @@
 		DD320F2417E3CD0E00CD95A9 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "MBXMapKit-iOS/main.m"; sourceTree = SOURCE_ROOT; };
 		DD320F6717E3CE5500CD95A9 /* MBXMapKit Mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MBXMapKit Mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD320F6917E3CE5500CD95A9 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
-		DD320F9B17E3CF8E00CD95A9 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/MapKit.framework; sourceTree = DEVELOPER_DIR; };
 		DD33A41F17E8D8C2009B3EB1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = "MBXMapKit-Mac/en.lproj/Credits.rtf"; sourceTree = SOURCE_ROOT; };
 		DD33A42117E8D8C2009B3EB1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "MBXMapKit-Mac/en.lproj/InfoPlist.strings"; sourceTree = SOURCE_ROOT; };
 		DD33A42217E8D8C2009B3EB1 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "MBXMapKit-Mac/main.m"; sourceTree = SOURCE_ROOT; };
@@ -133,7 +129,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01B4553C18C8F310002D4B57 /* MapKit.framework in Frameworks */,
+				01DCA2F118CFAABA002E5125 /* MapKit.framework in Frameworks */,
 				0112ACE118C8F2DF00DD495C /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -152,8 +148,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01DCA2F018CFAA77002E5125 /* MapKit.framework in Frameworks */,
 				DD320F6A17E3CE5500CD95A9 /* Cocoa.framework in Frameworks */,
-				DD320F9C17E3CF8E00CD95A9 /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,6 +204,7 @@
 		014DA1E718C45AE000AB33F8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				01DCA2EF18CFAA77002E5125 /* MapKit.framework */,
 				014DA1E818C45AE000AB33F8 /* Foundation.framework */,
 				014DA1EA18C45AE000AB33F8 /* CoreGraphics.framework */,
 				014DA1EC18C45AE000AB33F8 /* UIKit.framework */,
@@ -248,8 +245,6 @@
 			isa = PBXGroup;
 			children = (
 				01BCB22818C44DBB00AD5C27 /* MBXCacheManagerProtocol.h */,
-				01ED214C18C909AA002726DD /* MBXStandardDelegate.h */,
-				01ED214D18C909AA002726DD /* MBXStandardDelegate.m */,
 				01BCB21E18C43B2000AD5C27 /* MBXCacheManager.h */,
 				01BCB21F18C43B2000AD5C27 /* MBXCacheManager.m */,
 				01BCB22018C43B7300AD5C27 /* MBXRasterTileOverlay.h */,
@@ -281,7 +276,6 @@
 			isa = PBXGroup;
 			children = (
 				DD320F6917E3CE5500CD95A9 /* Cocoa.framework */,
-				DD320F9B17E3CF8E00CD95A9 /* MapKit.framework */,
 			);
 			name = Frameworks;
 			path = ..;
@@ -453,6 +447,11 @@
 				TargetAttributes = {
 					0112ACDF18C8F2DF00DD495C = {
 						DevelopmentTeam = GJZR2MEM28;
+						SystemCapabilities = {
+							com.apple.Mac = {
+								enabled = 1;
+							};
+						};
 					};
 					DD320F6617E3CE5500CD95A9 = {
 						DevelopmentTeam = GJZR2MEM28;
@@ -544,7 +543,6 @@
 				01ED214318C90543002726DD /* MBXCacheManager.m in Sources */,
 				01ED214418C90543002726DD /* MBXRasterTileOverlay.m in Sources */,
 				01ED214518C90543002726DD /* MBXSimplestyle.m in Sources */,
-				01ED214F18C909AA002726DD /* MBXStandardDelegate.m in Sources */,
 				01ED214618C90543002726DD /* MBXMBTilesTileOverlay.m in Sources */,
 				01ED214718C90543002726DD /* MBXPointAnnotation.m in Sources */,
 				0112ACE918C8F2DF00DD495C /* main.m in Sources */,
@@ -560,7 +558,6 @@
 				014DA22218C45B8400AB33F8 /* MBXRasterTileOverlay.m in Sources */,
 				014DA22618C45B8400AB33F8 /* MBXMBTilesTileOverlay.m in Sources */,
 				014DA22818C45B8400AB33F8 /* MBXPointAnnotation.m in Sources */,
-				01ED214E18C909AA002726DD /* MBXStandardDelegate.m in Sources */,
 				014DA1F518C45AE000AB33F8 /* main.m in Sources */,
 				01B8947C18C7190900CCEBEC /* MBXSimplestyle.m in Sources */,
 				014DA20218C45AE000AB33F8 /* MBXxViewController.m in Sources */,
