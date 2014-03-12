@@ -7,40 +7,78 @@
 //
 
 #import <MapKit/MapKit.h>
-#import "MBXCacheManagerProtocol.h"
-#import "MBXCacheManager.h"
+#import "MBXPointAnnotation.h"
 
 @class MBXRasterTileOverlay;
 
+#pragma mark - Image quality constants
+
+typedef NS_ENUM(NSUInteger, MBXRasterImageQuality) {
+    MBXRasterImageQualityFull,   // default
+    MBXRasterImageQualityPNG32,  // 32 color indexed PNG
+    MBXRasterImageQualityPNG64,  // 64 color indexed PNG
+    MBXRasterImageQualityPNG128, // 128 color indexed PNG
+    MBXRasterImageQualityPNG256, // 256 color indexed PNG
+    MBXRasterImageQualityJPEG70, // 70% quality JPEG
+    MBXRasterImageQualityJPEG80, // 80% quality JPEG
+    MBXRasterImageQualityJPEG90  // 90% quality JPEG
+};
+
+
+#pragma mark - Notification strings for cache and network statistics
+
+extern NSString * const MBXNotificationTypeCacheHit;
+extern NSString * const MBXNotificationTypeHTTPSuccess;
+extern NSString * const MBXNotificationTypeHTTPFailure;
+extern NSString * const MBXNotificationTypeNetworkFailure;
+extern NSString * const MBXNotificationUserInfoKeyError;
+
+
+#pragma mark - Constants for the MBXMapKit error domain
+
+extern NSString *const MBXMapKitErrorDomain;
+extern NSInteger const MBXMapKitErrorCodeHTTPStatus;
+extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
+
+
+#pragma mark - Delegate callbacks for asynchronous loading of map metadata and markers
+
 @protocol MBXRasterTileOverlayDelegate <NSObject>
-
-- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMapID:(NSString *)mapID;
-
 @optional
 
-- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didFailToLoadMapID:(NSString *)mapID withError:(NSError *)error;
+- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMetadata:(NSDictionary *)metadata;
+- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMarker:(MBXPointAnnotation *)marker;
+- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didFailLoadingMetadataWithError:(NSError *)error;
+- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didFailLoadingMarkersWithError:(NSError *)error;
 
 @end
 
 
+#pragma mark -
+
 @interface MBXRasterTileOverlay : MKTileOverlay
 
-@property (assign) MBXRasterImageQuality imageQuality;
 
-@property (nonatomic) NSString *mapID;
+#pragma mark - Map tile overlay layer initialization and configuration
 
-// Note how gets set to a default in init, but after that it can be changed to
-// anything that implements MBXCacheManagerProtocol
-//
-@property (nonatomic) id<MBXCacheManagerProtocol> cacheManager;
-
-@property (assign) BOOL inhibitTileJSON;
-
-@property (nonatomic) NSDictionary *tileJSONDictionary;
-
-@property (assign) NSInteger centerZoom;
-@property (assign) CLLocationCoordinate2D center;
+- (id)initWithMapID:(NSString *)mapID;
+- (id)initWithMapID:(NSString *)mapID loadMetadata:(BOOL)loadMetadata loadMarkers:(BOOL)loadMarkers;
+- (id)initWithMapID:(NSString *)mapID loadMetadata:(BOOL)loadMetadata loadMarkers:(BOOL)loadMarkers imageQuality:(MBXRasterImageQuality)imageQuality;
 
 @property (weak,nonatomic) id<MBXRasterTileOverlayDelegate> delegate;
+
+
+#pragma mark - Read-only properties to check initialized values
+
+@property (readonly,nonatomic) NSString *mapID;
+@property (readonly,nonatomic) CLLocationCoordinate2D center;
+@property (readonly,nonatomic) NSInteger centerZoom;
+
+
+#pragma mark - Methods for invalidating cached metadata and markers
+
+- (void)clearCachedMetadata;
+- (void)clearCachedMarkers;
+
 
 @end

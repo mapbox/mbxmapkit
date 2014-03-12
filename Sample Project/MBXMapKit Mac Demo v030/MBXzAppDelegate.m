@@ -24,6 +24,7 @@
 @property (nonatomic) NSInteger httpSuccessCount;
 @property (nonatomic) NSInteger httpFailureCount;
 @property (nonatomic) NSInteger networkFailureCount;
+@property (nonatomic) BOOL showStatisticsLog;
 
 @end
 
@@ -37,7 +38,18 @@
     // a delay which can let Apple's map show briefly while the Mapbox layer gets added
     //
 
+    // Configure the cache
+    //
+    NSUInteger memoryCapacity = 4 * 1024 * 1024;
+    NSUInteger diskCapacity = 20 * 1024 * 1024;
+    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:memoryCapacity diskCapacity:diskCapacity diskPath:nil];
+    [NSURLCache setSharedURLCache:URLCache];
+
+
+    // Configure cache and network statistics logging
+    //
     [self addCacheAndNetworkNotifications];
+    self.showStatisticsLog = NO;
 
     //[[MBXCacheManager sharedCacheManager] clearEntireCache];
 
@@ -78,19 +90,19 @@
 
     // Add notification observers to collect statistics about resources loaded from the cache and over network connections
     //
-    [center addObserverForName:MBXNotificationCacheHit object:nil queue:queue usingBlock:^(NSNotification *note){
+    [center addObserverForName:MBXNotificationTypeCacheHit object:nil queue:queue usingBlock:^(NSNotification *note){
         self.cacheHitCount += 1;
     }];
 
-    [center addObserverForName:MBXNotificationHTTPSuccess object:nil queue:queue usingBlock:^(NSNotification *note){
+    [center addObserverForName:MBXNotificationTypeHTTPSuccess object:nil queue:queue usingBlock:^(NSNotification *note){
         self.httpSuccessCount += 1;
     }];
 
-    [center addObserverForName:MBXNotificationHTTPFailure object:nil queue:queue usingBlock:^(NSNotification *note){
+    [center addObserverForName:MBXNotificationTypeHTTPFailure object:nil queue:queue usingBlock:^(NSNotification *note){
         self.httpFailureCount += 1;
     }];
 
-    [center addObserverForName:MBXNotificationNetworkFailure object:nil queue:queue usingBlock:^(NSNotification *note){
+    [center addObserverForName:MBXNotificationTypeNetworkFailure object:nil queue:queue usingBlock:^(NSNotification *note){
         self.networkFailureCount += 1;
     }];
 }
@@ -106,18 +118,21 @@
 {
     // Show how many tile, TileJSON, simplestyle, or marker resources were loaded since the last log entry
     //
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        NSLog(@"\n-- Cache:%ld -- HTTP OK:%ld -- HTTP Fail:%ld -- Network Fail:%ld --",
-              (long)self.cacheHitCount,
-              (long)self.httpSuccessCount,
-              (long)self.httpFailureCount,
-              (long)self.networkFailureCount);
+    if(self.showStatisticsLog)
+    {
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            NSLog(@"\n-- Cache:%ld -- HTTP OK:%ld -- HTTP Fail:%ld -- Network Fail:%ld --",
+                  (long)self.cacheHitCount,
+                  (long)self.httpSuccessCount,
+                  (long)self.httpFailureCount,
+                  (long)self.networkFailureCount);
 
-        self.cacheHitCount = 0;
-        self.httpSuccessCount = 0;
-        self.httpFailureCount = 0;
-        self.networkFailureCount = 0;
-    }];
+            self.cacheHitCount = 0;
+            self.httpSuccessCount = 0;
+            self.httpFailureCount = 0;
+            self.networkFailureCount = 0;
+        }];
+    }
 }
 
 

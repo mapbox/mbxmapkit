@@ -24,16 +24,12 @@
 		014DA1FF18C45AE000AB33F8 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 014DA1FD18C45AE000AB33F8 /* Main_iPad.storyboard */; };
 		014DA20218C45AE000AB33F8 /* MBXxViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 014DA20118C45AE000AB33F8 /* MBXxViewController.m */; };
 		014DA20418C45AE000AB33F8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 014DA20318C45AE000AB33F8 /* Images.xcassets */; };
-		014DA22018C45B8400AB33F8 /* MBXCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB21F18C43B2000AD5C27 /* MBXCacheManager.m */; };
 		014DA22218C45B8400AB33F8 /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */; };
 		014DA22618C45B8400AB33F8 /* MBXMBTilesTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22518C43BCD00AD5C27 /* MBXMBTilesTileOverlay.m */; };
 		014DA22818C45B8400AB33F8 /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22718C43CEA00AD5C27 /* MBXPointAnnotation.m */; };
-		01B8947C18C7190900CCEBEC /* MBXSimplestyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B8947B18C7190900CCEBEC /* MBXSimplestyle.m */; };
 		01DCA2F018CFAA77002E5125 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01DCA2EF18CFAA77002E5125 /* MapKit.framework */; };
 		01DCA2F118CFAABA002E5125 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01DCA2EF18CFAA77002E5125 /* MapKit.framework */; };
-		01ED214318C90543002726DD /* MBXCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB21F18C43B2000AD5C27 /* MBXCacheManager.m */; };
 		01ED214418C90543002726DD /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */; };
-		01ED214518C90543002726DD /* MBXSimplestyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B8947B18C7190900CCEBEC /* MBXSimplestyle.m */; };
 		01ED214618C90543002726DD /* MBXMBTilesTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22518C43BCD00AD5C27 /* MBXMBTilesTileOverlay.m */; };
 		01ED214718C90543002726DD /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22718C43CEA00AD5C27 /* MBXPointAnnotation.m */; };
 		DD320F2617E3CD0E00CD95A9 /* MBXViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD320F1A17E3CD0E00CD95A9 /* MBXViewController.m */; };
@@ -67,7 +63,7 @@
 		0112ACEA18C8F2DF00DD495C /* MBXMapKit Mac Demo v030-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MBXMapKit Mac Demo v030-Prefix.pch"; sourceTree = "<group>"; };
 		0112ACEC18C8F2DF00DD495C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		0112ACEE18C8F2DF00DD495C /* MBXzAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXzAppDelegate.h; sourceTree = "<group>"; };
-		0112ACEF18C8F2DF00DD495C /* MBXzAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXzAppDelegate.m; sourceTree = "<group>"; };
+		0112ACEF18C8F2DF00DD495C /* MBXzAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MBXzAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		0112ACF218C8F2DF00DD495C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		0112ACF418C8F2DF00DD495C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		014DA1E618C45AE000AB33F8 /* MBXMapKit iOS Demo v030.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MBXMapKit iOS Demo v030.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -83,19 +79,14 @@
 		014DA1FB18C45AE000AB33F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
 		014DA1FE18C45AE000AB33F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
 		014DA20018C45AE000AB33F8 /* MBXxViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXxViewController.h; sourceTree = "<group>"; };
-		014DA20118C45AE000AB33F8 /* MBXxViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXxViewController.m; sourceTree = "<group>"; };
+		014DA20118C45AE000AB33F8 /* MBXxViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MBXxViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		014DA20318C45AE000AB33F8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		01B8947A18C7190900CCEBEC /* MBXSimplestyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXSimplestyle.h; sourceTree = "<group>"; };
-		01B8947B18C7190900CCEBEC /* MBXSimplestyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXSimplestyle.m; sourceTree = "<group>"; };
-		01BCB21E18C43B2000AD5C27 /* MBXCacheManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXCacheManager.h; sourceTree = "<group>"; };
-		01BCB21F18C43B2000AD5C27 /* MBXCacheManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXCacheManager.m; sourceTree = "<group>"; };
 		01BCB22018C43B7300AD5C27 /* MBXRasterTileOverlay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXRasterTileOverlay.h; sourceTree = "<group>"; };
 		01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXRasterTileOverlay.m; sourceTree = "<group>"; };
 		01BCB22418C43BCD00AD5C27 /* MBXMBTilesTileOverlay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXMBTilesTileOverlay.h; sourceTree = "<group>"; };
 		01BCB22518C43BCD00AD5C27 /* MBXMBTilesTileOverlay.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXMBTilesTileOverlay.m; sourceTree = "<group>"; };
 		01BCB22618C43CEA00AD5C27 /* MBXPointAnnotation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXPointAnnotation.h; sourceTree = "<group>"; };
 		01BCB22718C43CEA00AD5C27 /* MBXPointAnnotation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXPointAnnotation.m; sourceTree = "<group>"; };
-		01BCB22818C44DBB00AD5C27 /* MBXCacheManagerProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXCacheManagerProtocol.h; sourceTree = "<group>"; };
 		01DCA2EF18CFAA77002E5125 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/MapKit.framework; sourceTree = DEVELOPER_DIR; };
 		DD320F1A17E3CD0E00CD95A9 /* MBXViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBXViewController.m; path = "MBXMapKit-iOS/MBXViewController.m"; sourceTree = "<group>"; };
 		DD320F1C17E3CD0E00CD95A9 /* MBXMapKit-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "MBXMapKit-Info.plist"; path = "MBXMapKit-iOS/MBXMapKit-Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -244,13 +235,8 @@
 		01BCB21C18C43A6A00AD5C27 /* v030 */ = {
 			isa = PBXGroup;
 			children = (
-				01BCB22818C44DBB00AD5C27 /* MBXCacheManagerProtocol.h */,
-				01BCB21E18C43B2000AD5C27 /* MBXCacheManager.h */,
-				01BCB21F18C43B2000AD5C27 /* MBXCacheManager.m */,
 				01BCB22018C43B7300AD5C27 /* MBXRasterTileOverlay.h */,
 				01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */,
-				01B8947A18C7190900CCEBEC /* MBXSimplestyle.h */,
-				01B8947B18C7190900CCEBEC /* MBXSimplestyle.m */,
 				01BCB22418C43BCD00AD5C27 /* MBXMBTilesTileOverlay.h */,
 				01BCB22518C43BCD00AD5C27 /* MBXMBTilesTileOverlay.m */,
 				01BCB22618C43CEA00AD5C27 /* MBXPointAnnotation.h */,
@@ -540,9 +526,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01ED214318C90543002726DD /* MBXCacheManager.m in Sources */,
 				01ED214418C90543002726DD /* MBXRasterTileOverlay.m in Sources */,
-				01ED214518C90543002726DD /* MBXSimplestyle.m in Sources */,
 				01ED214618C90543002726DD /* MBXMBTilesTileOverlay.m in Sources */,
 				01ED214718C90543002726DD /* MBXPointAnnotation.m in Sources */,
 				0112ACE918C8F2DF00DD495C /* main.m in Sources */,
@@ -554,12 +538,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				014DA22018C45B8400AB33F8 /* MBXCacheManager.m in Sources */,
 				014DA22218C45B8400AB33F8 /* MBXRasterTileOverlay.m in Sources */,
 				014DA22618C45B8400AB33F8 /* MBXMBTilesTileOverlay.m in Sources */,
 				014DA22818C45B8400AB33F8 /* MBXPointAnnotation.m in Sources */,
 				014DA1F518C45AE000AB33F8 /* main.m in Sources */,
-				01B8947C18C7190900CCEBEC /* MBXSimplestyle.m in Sources */,
 				014DA20218C45AE000AB33F8 /* MBXxViewController.m in Sources */,
 				014DA1F918C45AE000AB33F8 /* MBXxAppDelegate.m in Sources */,
 			);
