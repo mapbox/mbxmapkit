@@ -22,6 +22,7 @@
 @property (nonatomic) NSInteger cacheHitCount;
 @property (nonatomic) NSInteger httpSuccessCount;
 @property (nonatomic) NSInteger httpFailureCount;
+@property (nonatomic) NSInteger networkFailureCount;
 
 @end
 
@@ -81,6 +82,10 @@
     [center addObserverForName:MBXNotificationHTTPFailure object:nil queue:queue usingBlock:^(NSNotification *note){
         self.httpFailureCount += 1;
     }];
+
+    [center addObserverForName:MBXNotificationNetworkFailure object:nil queue:queue usingBlock:^(NSNotification *note){
+        self.networkFailureCount += 1;
+    }];
 }
 
 
@@ -94,14 +99,18 @@
 {
     // Show how many tile, TileJSON, simplestyle, or marker resources were loaded since the last log entry
     //
-    NSLog(@"\n  cache hits:%i\n  HTTP Success:%i\n  HTTP Failure:%i",
-          self.cacheHitCount,
-          self.httpSuccessCount,
-          self.httpFailureCount);
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        NSLog(@"\n-- Cache:%ld -- HTTP OK:%ld -- HTTP Fail:%ld -- Network Fail:%ld --",
+              (long)self.cacheHitCount,
+              (long)self.httpSuccessCount,
+              (long)self.httpFailureCount,
+              (long)self.networkFailureCount);
 
-    self.cacheHitCount = 0;
-    self.httpSuccessCount = 0;
-    self.httpFailureCount = 0;
+        self.cacheHitCount = 0;
+        self.httpSuccessCount = 0;
+        self.httpFailureCount = 0;
+        self.networkFailureCount = 0;
+    }];
 }
 
 

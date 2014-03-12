@@ -18,6 +18,8 @@ NSString * const MBXNotificationHTTPSuccess = @"MBXNotificationHTTPSuccess";
 
 NSString * const MBXNotificationHTTPFailure = @"MBXNotificationHTTPFailure";
 
+NSString * const MBXNotificationNetworkFailure = @"MBXNotificationNetworkFailure";
+
 
 #pragma mark - Constants for the MBXMapKit error domain
 
@@ -172,6 +174,8 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
     if (err)
     {
         NSLog(@"Attempting to load %@ produced an NSURLConnection-level error (%@)", description, err);
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:MBXNotificationNetworkFailure object:self];
     }
     else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
     {

@@ -12,6 +12,7 @@
 extern NSString * const MBXNotificationCacheHit;
 extern NSString * const MBXNotificationHTTPSuccess;
 extern NSString * const MBXNotificationHTTPFailure;
+extern NSString * const MBXNotificationNetworkFailure;
 
 @interface MBXCacheManager : NSObject <MBXCacheManagerProtocol>
 
