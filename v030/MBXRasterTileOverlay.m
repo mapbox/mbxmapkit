@@ -39,13 +39,14 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
 #pragma mark - Properties for asynchronous downloading of metadata and markers
 
 @property (nonatomic) NSURLSession *dataSession;
-@property (nonatomic) NSURLSession *markerIconDataSession;
 @property (nonatomic) NSDictionary *tileJSONDictionary;
 @property (nonatomic) NSDictionary *simplestyleJSONDictionary;
 @property (nonatomic) BOOL sessionHasBeenInvalidated;
 @property (nonatomic) NSURL *metadataURL;
 @property (nonatomic) NSURL *markersURL;
 @property (nonatomic) NSMutableArray *mutableMarkers;
+@property (nonatomic) NSInteger activeMarkerIconRequests;
+@property (nonatomic) BOOL allMarkerIconRequestsHaveBeenDispatched;
 
 @end
 
@@ -107,7 +108,6 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
     config.URLCache = [NSURLCache sharedURLCache];
     config.HTTPAdditionalHeaders = @{ @"User-Agent" : userAgent };
     _dataSession = [NSURLSession sessionWithConfiguration:config];
-    _markerIconDataSession = [NSURLSession sessionWithConfiguration:config];
 
 
     // Save the map configuration
@@ -131,6 +131,7 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
     }
     if(markers)
     {
+        _mutableMarkers = [[NSMutableArray alloc] init];
         [self asyncLoadMarkers];
     }
 }
@@ -141,7 +142,6 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
     _delegate = nil;
     _sessionHasBeenInvalidated = YES;
     [_dataSession invalidateAndCancel];
-    [_markerIconDataSession invalidateAndCancel];
 }
 
 
@@ -173,29 +173,19 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
                                        [self qualityExtensionForImageQuality:_imageQuality]
                                        ]];
 
-    NSURLSessionDataTask *dataTask;
-    dataTask = [self.dataSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+    void(^dataBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error)
     {
-        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-        if (error)
-        {
-            [center postNotificationName:MBXNotificationTypeNetworkFailure object:self];
-        }
-        else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
-        {
-            error = [self statusErrorFromHTTPResponse:response];
-            [center postNotificationName:MBXNotificationTypeHTTPFailure object:self];
-        }
-        else
-        {
-            [center postNotificationName:MBXNotificationTypeHTTPSuccess object:self];
-        }
+        // No special actions need to be taken here
+    };
 
+    void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
+    {
         // Invoke the loadTileAtPath's completion handler
         //
         result(data, error);
-    }];
-    [dataTask resume];
+    };
+
+    [self asyncLoadURL:url dataBlock:dataBlock completionHandler:completionHandler];
 }
 
 
@@ -203,8 +193,164 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
 
 - (void)asyncLoadMarkers
 {
+    // This block is run only if data for the URL is successfully retrieved
+    //
+    void(^dataBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error)
+    {
+        id markers;
+        id value;
+        NSDictionary *simplestyleJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
+        if(!*error)
+        {
+            // Find point features in the markers dictionary (if there are any) and add them to the map.
+            //
+            markers = simplestyleJSONDictionary[@"features"];
+
+            if (markers && [markers isKindOfClass:[NSArray class]])
+            {
+                for (value in (NSArray *)markers)
+                {
+                    if ([value isKindOfClass:[NSDictionary class]])
+                    {
+                        NSDictionary *feature = (NSDictionary *)value;
+                        NSString *type = feature[@"geometry"][@"type"];
+
+                        if ([@"Point" isEqualToString:type])
+                        {
+                            // Only handle point features for now.
+                            //
+                            NSString *longitude   = feature[@"geometry"][@"coordinates"][0];
+                            NSString *latitude    = feature[@"geometry"][@"coordinates"][1];
+                            NSString *title       = feature[@"properties"][@"title"];
+                            NSString *description = feature[@"properties"][@"description"];
+                            NSString *size        = feature[@"properties"][@"marker-size"];
+                            NSString *color       = feature[@"properties"][@"marker-color"];
+                            NSString *symbol      = feature[@"properties"][@"marker-symbol"];
+
+                            if (longitude && latitude && size && color && symbol)
+                            {
+                                // Keep track of how many marker icons are submitted to the download queue
+                                //
+                                _activeMarkerIconRequests += 1;
+
+                                MBXPointAnnotation *point = [MBXPointAnnotation new];
+                                point.title      = title;
+                                point.subtitle   = description;
+                                point.coordinate = CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue]);
+
+                                NSURL *markerURL = [self markerIconURLForSize:size symbol:symbol color:color];
+                                [self asyncLoadMarkerURL:(NSURL *)markerURL point:point];
+                            }
+                            else
+                            {
+                                *error = [self dictionaryErrorMissingImportantKeysFor:@"Markers"];
+                            }
+                        }
+                    }
+                    // This is the last line of the loop
+                }
+                _allMarkerIconRequestsHaveBeenDispatched = YES;
+            }
+        }
+    };
+
+    // This block runs at the end of all error handling and data processing associated with the URL
+    //
+    void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
+    {
+        if(error) {
+            // At this point, if error isn't nil, that means something went wrong with parsing the
+            // markers, but some of them may still load successfully
+            //
+            NSLog(@"There was a problem loading the markers - %@",error);
+        }
+    };
+
+    [self asyncLoadURL:_markersURL dataBlock:dataBlock completionHandler:completionHandler];
+}
+
+
+- (void)asyncLoadMarkerURL:(NSURL *)url point:(MBXPointAnnotation *)point
+{
+    // This block is run only if data for the URL is successfully retrieved
+    //
+    void(^dataBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error){
+
+#if TARGET_OS_IPHONE
+        point.image = [[UIImage alloc] initWithData:data scale:[[UIScreen mainScreen] scale]];
+#else
+        point.image = [[NSImage alloc] initWithData:data];
+#endif
+
+        // Add the annotation for this marker icon to the collection of point annotations
+        // and update the count of marker icons in the download queue
+        //
+        [_mutableMarkers addObject:point];
+        _activeMarkerIconRequests -= 1;
+    };
+
+    // This block runs at the end of all error handling and data processing associated with the URL
+    //
+    void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
+    {
+        if(_allMarkerIconRequestsHaveBeenDispatched && _activeMarkerIconRequests <= 0)
+        {
+            _markers = [NSArray arrayWithArray:_mutableMarkers];
+            [_delegate MBXRasterTileOverlay:self didLoadMarkers:_markers withError:error];
+        }
+    };
+
+    [self asyncLoadURL:url dataBlock:dataBlock completionHandler:completionHandler];
+}
+
+
+- (void)asyncLoadMetadata
+{
+    // This block is run only if data for the URL is successfully retrieved
+    //
+    void(^dataBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error)
+    {
+        _tileJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
+        if(!*error)
+        {
+            if (_tileJSONDictionary
+                && _tileJSONDictionary[@"minzoom"]
+                && _tileJSONDictionary[@"maxzoom"]
+                && _tileJSONDictionary[@"center"] && [_tileJSONDictionary[@"center"] count] == 3
+                && _tileJSONDictionary[@"bounds"] && [_tileJSONDictionary[@"bounds"] count] == 4)
+            {
+                self.minimumZ = [_tileJSONDictionary[@"minzoom"] integerValue];
+                self.maximumZ = [_tileJSONDictionary[@"maxzoom"] integerValue];
+
+                _centerZoom = [_tileJSONDictionary[@"center"][2] integerValue];
+                _center.latitude = [_tileJSONDictionary[@"center"][1] doubleValue];
+                _center.longitude = [_tileJSONDictionary[@"center"][0] doubleValue];
+
+            }
+            else
+            {
+                *error = [self dictionaryErrorMissingImportantKeysFor:@"Metadata"];
+            }
+        }
+    };
+
+    // This block runs at the end of all error handling and data processing associated with the URL
+    //
+    void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
+    {
+        [_delegate MBXRasterTileOverlay:self didLoadMetadata:_tileJSONDictionary withError:error];
+    };
+
+    [self asyncLoadURL:_metadataURL dataBlock:dataBlock completionHandler:completionHandler];
+}
+
+
+- (void)asyncLoadURL:(NSURL *)url dataBlock:(void(^)(NSData *,NSError **))dataBlock completionHandler:(void (^)(NSData *, NSError *))completionHandler
+{
+    // This method exists to encapsulte some boilderplate network code which is needed for every data session task.
+    //
     NSURLSessionDataTask *task;
-    task = [self.dataSession dataTaskWithURL:_markersURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+    task = [_dataSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
     {
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
         if (error)
@@ -220,60 +366,41 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
         {
             [center postNotificationName:MBXNotificationTypeHTTPSuccess object:self];
 
-            NSError *parseError;
-            id markers;
-            id value;
-            NSDictionary *simplestyleJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
-            if(!parseError)
-            {
-                // Find point features in the markers dictionary (if there are any) and add them to the map.
-                //
-                markers = simplestyleJSONDictionary[@"features"];
-
-                if (markers && [markers isKindOfClass:[NSArray class]])
-                {
-                    for (value in (NSArray *)markers)
-                    {
-                        if ([value isKindOfClass:[NSDictionary class]])
-                        {
-                            NSDictionary *feature = (NSDictionary *)value;
-                            NSString *type = feature[@"geometry"][@"type"];
-
-                            if ([@"Point" isEqualToString:type])
-                            {
-                                // Only handle point features for now.
-                                //
-                                NSString *longitude   = feature[@"geometry"][@"coordinates"][0];
-                                NSString *latitude    = feature[@"geometry"][@"coordinates"][1];
-                                NSString *title       = feature[@"properties"][@"title"];
-                                NSString *description = feature[@"properties"][@"description"];
-                                NSString *size        = feature[@"properties"][@"marker-size"];
-                                NSString *color       = feature[@"properties"][@"marker-color"];
-                                NSString *symbol      = feature[@"properties"][@"marker-symbol"];
-
-                                if (longitude && latitude && size && color && symbol)
-                                {
-                                    MBXPointAnnotation *point = [MBXPointAnnotation new];
-                                    point.title      = title;
-                                    point.subtitle   = description;
-                                    point.coordinate = CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue]);
-
-                                    NSURL *markerURL = [self markerIconURLForSize:size symbol:symbol color:color];
-                                    [self asyncLoadMarkerURL:(NSURL *)markerURL point:point];
-                                }
-                                else
-                                {
-                                    parseError = [self dictionaryErrorMissingImportantKeysFor:@"Metadata"];
-                                }
-                            }
-                        } // End  of for(...)
-                    }
-                }
-            }
-
+            // Since the URL was successfully retrieved, invoke the block to process its data
+            //
+            dataBlock(data,&error);
         }
+        completionHandler(data,error);
     }];
     [task resume];
+}
+
+
+#pragma mark - Helper methods
+
+- (NSError *)statusErrorFromHTTPResponse:(NSURLResponse *)response
+{
+    // Return an appropriate NSError for any HTTP response other than 200.
+    //
+    NSString *errorReason = [NSString stringWithFormat:@"HTTP status %li was received", (long)((NSHTTPURLResponse *)response).statusCode];
+
+    NSDictionary *userInfo = @{ NSLocalizedDescriptionKey        : NSLocalizedString(@"HTTP status error", nil),
+                                NSLocalizedFailureReasonErrorKey : NSLocalizedString(errorReason, nil) };
+
+    return [NSError errorWithDomain:MBXMapKitErrorDomain code:MBXMapKitErrorCodeHTTPStatus userInfo:userInfo];
+}
+
+
+- (NSError *)dictionaryErrorMissingImportantKeysFor:(NSString *)dictionaryName
+{
+    // Return an appropriate NSError for to indicate that a JSON dictionary was missing important keys.
+    //
+    NSString *errorReason = [NSString stringWithFormat:@"The %@ dictionary is missing important keys", dictionaryName];
+
+    NSDictionary *userInfo = @{ NSLocalizedDescriptionKey        : NSLocalizedString(@"Dictionary missing keys error", nil),
+                                NSLocalizedFailureReasonErrorKey : NSLocalizedString(errorReason, nil) };
+
+    return [NSError errorWithDomain:MBXMapKitErrorDomain code:MBXMapKitErrorCodeDictionaryMissingKeys userInfo:userInfo];
 }
 
 
@@ -312,143 +439,6 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
 
     return [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/marker/%@", marker]];
 }
-
-
-- (void)asyncLoadMarkerURL:(NSURL *)url point:(MBXPointAnnotation *)point
-{
-    NSURLSessionDataTask *task;
-    task = [self.markerIconDataSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
-    {
-        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-        if (error)
-        {
-            [center postNotificationName:MBXNotificationTypeNetworkFailure object:self];
-        }
-        else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
-        {
-            [center postNotificationName:MBXNotificationTypeHTTPFailure object:self];
-            error = [self statusErrorFromHTTPResponse:response];
-        }
-        else
-        {
-            [center postNotificationName:MBXNotificationTypeHTTPSuccess object:self];
-
-#if TARGET_OS_IPHONE
-            point.image = [[UIImage alloc] initWithData:data scale:[[UIScreen mainScreen] scale]];
-#else
-            point.image = [[NSImage alloc] initWithData:data];
-#endif
-
-            [self.mutableMarkers addObject:point];
-        }
-    }];
-    [task resume];
-}
-
-
-- (void)asyncLoadURL:(NSURL *)url usingSession:(NSURLSession *)session successCompletionHandler:(void(^)())success
-{
-    NSURLSessionDataTask *task;
-    task = [session dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
-    {
-        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-        if (error)
-        {
-            [center postNotificationName:MBXNotificationTypeNetworkFailure object:self];
-        }
-        else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
-        {
-            [center postNotificationName:MBXNotificationTypeHTTPFailure object:self];
-            error = [self statusErrorFromHTTPResponse:response];
-        }
-        else
-        {
-            [center postNotificationName:MBXNotificationTypeHTTPSuccess object:self];
-
-            // Invoke the completion handler
-            //
-            success();
-        }
-    }];
-    [task resume];
-}
-
-
-- (void)asyncLoadMetadata
-{
-    NSURLSessionDataTask *task;
-    task = [self.dataSession dataTaskWithURL:_metadataURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
-    {
-        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-        if (error)
-        {
-            [center postNotificationName:MBXNotificationTypeNetworkFailure object:self];
-        }
-        else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
-        {
-            [center postNotificationName:MBXNotificationTypeHTTPFailure object:self];
-            error = [self statusErrorFromHTTPResponse:response];
-        }
-        else
-        {
-            [center postNotificationName:MBXNotificationTypeHTTPSuccess object:self];
-            _tileJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-            if(!error)
-            {
-                if (_tileJSONDictionary
-                    && _tileJSONDictionary[@"minzoom"]
-                    && _tileJSONDictionary[@"maxzoom"]
-                    && _tileJSONDictionary[@"center"] && [_tileJSONDictionary[@"center"] count] == 3
-                    && _tileJSONDictionary[@"bounds"] && [_tileJSONDictionary[@"bounds"] count] == 4)
-                {
-                    self.minimumZ = [_tileJSONDictionary[@"minzoom"] integerValue];
-                    self.maximumZ = [_tileJSONDictionary[@"maxzoom"] integerValue];
-
-                    _centerZoom = [_tileJSONDictionary[@"center"][2] integerValue];
-                    _center.latitude = [_tileJSONDictionary[@"center"][1] doubleValue];
-                    _center.longitude = [_tileJSONDictionary[@"center"][0] doubleValue];
-
-                }
-                else
-                {
-                    error = [self dictionaryErrorMissingImportantKeysFor:@"Metadata"];
-                }
-            }
-        }
-        [_delegate MBXRasterTileOverlay:self didLoadMetadata:_tileJSONDictionary withError:error];
-
-    }];
-    [task resume];
-}
-
-
-#pragma mark - Helper methods
-
-- (NSError *)statusErrorFromHTTPResponse:(NSURLResponse *)response
-{
-    // Return an appropriate NSError for any HTTP response other than 200.
-    //
-    NSString *errorReason = [NSString stringWithFormat:@"HTTP status %li was received", (long)((NSHTTPURLResponse *)response).statusCode];
-
-    NSDictionary *userInfo = @{ NSLocalizedDescriptionKey        : NSLocalizedString(@"HTTP status error", nil),
-                                NSLocalizedFailureReasonErrorKey : NSLocalizedString(errorReason, nil) };
-
-    return [NSError errorWithDomain:MBXMapKitErrorDomain code:MBXMapKitErrorCodeHTTPStatus userInfo:userInfo];
-}
-
-
-- (NSError *)dictionaryErrorMissingImportantKeysFor:(NSString *)dictionaryName
-{
-    // Return an appropriate NSError for to indicate that a JSON dictionary was missing important keys.
-    //
-    NSString *errorReason = [NSString stringWithFormat:@"The %@ dictionary is missing important keys", dictionaryName];
-
-    NSDictionary *userInfo = @{ NSLocalizedDescriptionKey        : NSLocalizedString(@"Dictionary missing keys error", nil),
-                                NSLocalizedFailureReasonErrorKey : NSLocalizedString(errorReason, nil) };
-
-    return [NSError errorWithDomain:MBXMapKitErrorDomain code:MBXMapKitErrorCodeDictionaryMissingKeys userInfo:userInfo];
-}
-
 
 
 - (NSString *)qualityExtensionForImageQuality:(MBXRasterImageQuality)imageQuality
