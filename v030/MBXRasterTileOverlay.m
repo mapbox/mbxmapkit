@@ -135,6 +135,7 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
     {
         _didFinishLoadingMetadata = YES;
     }
+
     if(markers)
     {
         _mutableMarkers = [[NSMutableArray alloc] init];
@@ -381,10 +382,12 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
 
 - (void)asyncLoadURL:(NSURL *)url dataBlock:(void(^)(NSData *,NSError **))dataBlock completionHandler:(void (^)(NSData *, NSError *))completionHandler
 {
-    // This method exists to encapsulte some boilderplate network code which is needed for every data session task.
+    // This method exists to encapsulte the boilderplate network code (check HTTP status, etc)
+    // which is needed for every data session task.
     //
     NSURLSessionDataTask *task;
-    task = [_dataSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
+    task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
     {
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
         if (error)

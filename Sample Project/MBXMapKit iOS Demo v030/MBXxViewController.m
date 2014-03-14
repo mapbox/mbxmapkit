@@ -38,7 +38,7 @@
     NSUInteger memoryCapacity = 4 * 1024 * 1024;
     NSUInteger diskCapacity = 40 * 1024 * 1024;
     NSURLCache *urlCache = [[NSURLCache alloc] initWithMemoryCapacity:memoryCapacity diskCapacity:diskCapacity diskPath:nil];
-    //[URLCache removeAllCachedResponses];
+    //[urlCache removeAllCachedResponses];
     [NSURLCache setSharedURLCache:urlCache];
 
     // Configure cache and network statistics logging
@@ -107,7 +107,7 @@
     if(self.showStatisticsLog)
     {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            NSLog(@"\n-- HTTP OK:%ld -- HTTP Fail:%ld -- Network Fail:%ld --",
+            NSLog(@"-- HTTP OK:%ld -- HTTP Fail:%ld -- Network Fail:%ld --",
                   (long)self.httpSuccessCount,
                   (long)self.httpFailureCount,
                   (long)self.networkFailureCount);
@@ -242,7 +242,7 @@
 
 #pragma mark - MKMapViewDelegate protocol implementation
 
-- (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered
+- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
     // Show cache and network statistics each time the map finishes loading
     //
