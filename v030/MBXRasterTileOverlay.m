@@ -278,11 +278,11 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
             // the fact that some of the markers probably didn't load properly.
             //
             _markerIconLoaderMayInitiateDelegateCallback = NO;
-            [_delegate MBXRasterTileOverlay:self didLoadMarkers:nil withError:error];
+            [_delegate tileOverlay:self didLoadMarkers:nil withError:error];
 
             _didFinishLoadingMarkers = YES;
             if(_didFinishLoadingMetadata) {
-                [_delegate MBXRasterTileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
+                [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
             }
         }
     };
@@ -317,11 +317,11 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
         if(_markerIconLoaderMayInitiateDelegateCallback && _activeMarkerIconRequests <= 0)
         {
             _markers = [NSArray arrayWithArray:_mutableMarkers];
-            [_delegate MBXRasterTileOverlay:self didLoadMarkers:_markers withError:error];
+            [_delegate tileOverlay:self didLoadMarkers:_markers withError:error];
 
             _didFinishLoadingMarkers = YES;
             if(_didFinishLoadingMetadata) {
-                [_delegate MBXRasterTileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
+                [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
             }
         }
     };
@@ -364,11 +364,11 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
     //
     void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
     {
-        [_delegate MBXRasterTileOverlay:self didLoadMetadata:_tileJSONDictionary withError:error];
+        [_delegate tileOverlay:self didLoadMetadata:_tileJSONDictionary withError:error];
 
         _didFinishLoadingMetadata = YES;
         if(_didFinishLoadingMarkers) {
-            [_delegate MBXRasterTileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
+            [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
         }
     };
 

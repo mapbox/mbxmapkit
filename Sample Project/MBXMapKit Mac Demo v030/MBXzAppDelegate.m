@@ -258,7 +258,7 @@
 
 #pragma mark - MBXRasterTileOverlay delegate protocol implementation
 
-- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMetadata:(NSDictionary *)metadata withError:(NSError *)error
+- (void)tileOverlay:(MBXRasterTileOverlay *)overlay didLoadMetadata:(NSDictionary *)metadata withError:(NSError *)error
 {
     // This delegate callback is for centering the map once the map metadata has been loaded
     //
@@ -281,7 +281,7 @@
 }
 
 
-- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMarkers:(NSArray *)markers withError:(NSError *)error
+- (void)tileOverlay:(MBXRasterTileOverlay *)overlay didLoadMarkers:(NSArray *)markers withError:(NSError *)error
 {
     // This delegate callback is for adding map markers to an MKMapView once all the markers for the tile overlay have loaded
     //
@@ -300,7 +300,7 @@
     }
 }
 
-- (void)MBXRasterTileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:(MBXRasterTileOverlay *)overlay
+- (void)tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:(MBXRasterTileOverlay *)overlay
 {
     [_progressIndicator stopAnimation:self];
 }
