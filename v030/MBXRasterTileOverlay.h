@@ -25,14 +25,6 @@ typedef NS_ENUM(NSUInteger, MBXRasterImageQuality) {
 };
 
 
-#pragma mark - Notification strings for cache and network statistics
-
-extern NSString * const MBXNotificationTypeCacheHit;
-extern NSString * const MBXNotificationTypeHTTPSuccess;
-extern NSString * const MBXNotificationTypeHTTPFailure;
-extern NSString * const MBXNotificationTypeNetworkFailure;
-
-
 #pragma mark - Constants for the MBXMapKit error domain
 
 extern NSString *const MBXMapKitErrorDomain;

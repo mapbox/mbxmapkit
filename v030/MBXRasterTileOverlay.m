@@ -8,14 +8,6 @@
 
 #import "MBXRasterTileOverlay.h"
 
-#pragma mark - Notification strings for cache and network statistics
-
-NSString * const MBXNotificationTypeCacheHit = @"com.mapbox.mbxmapkit.stats.cacheHit";
-NSString * const MBXNotificationTypeHTTPSuccess = @"com.mapbox.mbxmapkit.stats.httpSuccess";
-NSString * const MBXNotificationTypeHTTPFailure = @"com.mapbox.mbxmapkit.stats.httpFailure";
-NSString * const MBXNotificationTypeNetworkFailure = @"com.mapbox.mbxmapkit.stats.networkFailure";
-
-
 #pragma mark - Constants for the MBXMapKit error domain
 
 NSString *const MBXMapKitErrorDomain = @"MBXMapKitErrorDomain";
@@ -382,31 +374,28 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
 
 - (void)asyncLoadURL:(NSURL *)url dataBlock:(void(^)(NSData *,NSError **))dataBlock completionHandler:(void (^)(NSData *, NSError *))completionHandler
 {
-    // This method exists to encapsulte the boilderplate network code (check HTTP status, etc)
-    // which is needed for every data session task.
+    // This method exists to:
+    // 1. Encapsulte the boilderplate network code for checking HTTP status which is needed for every data session task
+    // 2. Provide a single configuration point where it is possible to set breakpoints and adjust the caching policy for all HTTP requests
     //
     NSURLSessionDataTask *task;
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
     task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
     {
-        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-        if (error)
+        if (!error)
         {
-            [center postNotificationName:MBXNotificationTypeNetworkFailure object:self];
+            if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
+            {
+                error = [self statusErrorFromHTTPResponse:response];
+            }
+            else
+            {
+                // Since the URL was successfully retrieved, invoke the block to process its data
+                //
+                dataBlock(data,&error);
+            }
         }
-        else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
-        {
-            [center postNotificationName:MBXNotificationTypeHTTPFailure object:self];
-            error = [self statusErrorFromHTTPResponse:response];
-        }
-        else
-        {
-            [center postNotificationName:MBXNotificationTypeHTTPSuccess object:self];
 
-            // Since the URL was successfully retrieved, invoke the block to process its data
-            //
-            dataBlock(data,&error);
-        }
         completionHandler(data,error);
     }];
     [task resume];

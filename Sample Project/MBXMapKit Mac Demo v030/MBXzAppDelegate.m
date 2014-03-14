@@ -18,12 +18,6 @@
 @property (nonatomic) MBXRasterTileOverlay *rasterOverlay;
 @property (weak) IBOutlet NSProgressIndicator *progressIndicator;
 
-@property (nonatomic) NSInteger cacheHitCount;
-@property (nonatomic) NSInteger httpSuccessCount;
-@property (nonatomic) NSInteger httpFailureCount;
-@property (nonatomic) NSInteger networkFailureCount;
-@property (nonatomic) BOOL showStatisticsLog;
-
 @end
 
 @implementation MBXzAppDelegate
@@ -44,11 +38,6 @@
     //[URLCache removeAllCachedResponses];
     [NSURLCache setSharedURLCache:urlCache];
 
-    // Configure cache and network statistics logging
-    //
-    [self addCacheAndNetworkNotifications];
-    self.showStatisticsLog = YES;
-
 
     // Configure the mapView to use delegate callbacks for managing tile overlay layers, map centering, and adding
     // adding markers.
@@ -67,65 +56,6 @@
     NSArray *titles = [NSArray arrayWithObjects:@"OSM world map",@"OSM over Apple satellite",@"Terrain under Apple labels",@"Tilemill bounded region",@"Tilemill region over Apple",@"Tilemill transparent over Apple", nil];
     [_popupButton removeAllItems];
     [_popupButton addItemsWithTitles:titles];
-}
-
-- (void)applicationWillResignActive:(NSNotification *)notification
-{
-    [self removeCacheAndNetworkNotifications];
-}
-
-
-#pragma mark - Notification stuff to collect cache and network statistics
-
-- (void)addCacheAndNetworkNotifications
-{
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    NSOperationQueue *queue = [NSOperationQueue mainQueue];
-
-    // Add notification observers to collect statistics about resources loaded from the cache and over network connections
-    //
-    [center addObserverForName:MBXNotificationTypeCacheHit object:nil queue:queue usingBlock:^(NSNotification *note){
-        self.cacheHitCount += 1;
-    }];
-
-    [center addObserverForName:MBXNotificationTypeHTTPSuccess object:nil queue:queue usingBlock:^(NSNotification *note){
-        self.httpSuccessCount += 1;
-    }];
-
-    [center addObserverForName:MBXNotificationTypeHTTPFailure object:nil queue:queue usingBlock:^(NSNotification *note){
-        self.httpFailureCount += 1;
-    }];
-
-    [center addObserverForName:MBXNotificationTypeNetworkFailure object:nil queue:queue usingBlock:^(NSNotification *note){
-        self.networkFailureCount += 1;
-    }];
-}
-
-
-- (void)removeCacheAndNetworkNotifications
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-
-- (void)logCacheAndNetworkStats
-{
-    // Show how many tile, TileJSON, simplestyle, or marker resources were loaded since the last log entry
-    //
-    if(self.showStatisticsLog)
-    {
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            NSLog(@"\n-- HTTP OK:%ld -- HTTP Fail:%ld -- Network Fail:%ld --",
-                  (long)self.httpSuccessCount,
-                  (long)self.httpFailureCount,
-                  (long)self.networkFailureCount);
-
-            self.cacheHitCount = 0;
-            self.httpSuccessCount = 0;
-            self.httpFailureCount = 0;
-            self.networkFailureCount = 0;
-        }];
-    }
 }
 
 
@@ -216,12 +146,6 @@
 
 
 #pragma mark - MKMapViewDelegate protocol implementation
-
-- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
-{
-    [self logCacheAndNetworkStats];
-}
-
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay
 {
