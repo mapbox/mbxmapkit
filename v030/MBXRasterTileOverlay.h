@@ -31,7 +31,6 @@ extern NSString * const MBXNotificationTypeCacheHit;
 extern NSString * const MBXNotificationTypeHTTPSuccess;
 extern NSString * const MBXNotificationTypeHTTPFailure;
 extern NSString * const MBXNotificationTypeNetworkFailure;
-extern NSString * const MBXNotificationUserInfoKeyError;
 
 
 #pragma mark - Constants for the MBXMapKit error domain
@@ -44,12 +43,9 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 #pragma mark - Delegate callbacks for asynchronous loading of map metadata and markers
 
 @protocol MBXRasterTileOverlayDelegate <NSObject>
-@optional
 
-- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMetadata:(NSDictionary *)metadata;
-- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMarker:(MBXPointAnnotation *)marker;
-- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didFailLoadingMetadataWithError:(NSError *)error;
-- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didFailLoadingMarkersWithError:(NSError *)error;
+- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMetadata:(NSDictionary *)metadata withError:(NSError *)error;
+- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMarkers:(NSArray *)markers withError:(NSError *)error;
 
 @end
 
@@ -62,10 +58,12 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 #pragma mark - Map tile overlay layer initialization and configuration
 
 - (id)initWithMapID:(NSString *)mapID;
-- (id)initWithMapID:(NSString *)mapID loadMetadata:(BOOL)loadMetadata loadMarkers:(BOOL)loadMarkers;
-- (id)initWithMapID:(NSString *)mapID loadMetadata:(BOOL)loadMetadata loadMarkers:(BOOL)loadMarkers imageQuality:(MBXRasterImageQuality)imageQuality;
+- (id)initWithMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers;
+- (id)initWithMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers imageQuality:(MBXRasterImageQuality)imageQuality;
 
 @property (weak,nonatomic) id<MBXRasterTileOverlayDelegate> delegate;
+
+- (void)invalidateAndCancel;
 
 
 #pragma mark - Read-only properties to check initialized values
@@ -73,6 +71,7 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 @property (readonly,nonatomic) NSString *mapID;
 @property (readonly,nonatomic) CLLocationCoordinate2D center;
 @property (readonly,nonatomic) NSInteger centerZoom;
+@property (readonly,nonatomic) NSArray *markers;
 
 
 #pragma mark - Methods for invalidating cached metadata and markers

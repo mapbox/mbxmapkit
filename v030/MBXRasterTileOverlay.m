@@ -10,11 +10,10 @@
 
 #pragma mark - Notification strings for cache and network statistics
 
-NSString * const MBXNotificationTypeCacheHit = @"MBXNotificationTypeCacheHit";
-NSString * const MBXNotificationTypeHTTPSuccess = @"MBXNotificationTypeHTTPSuccess";
-NSString * const MBXNotificationTypeHTTPFailure = @"MBXNotificationTypeHTTPFailure";
-NSString * const MBXNotificationTypeNetworkFailure = @"MBXNotificationTypeNetworkFailure";
-NSString * const MBXNotificationUserInfoKeyError = @"MBXNotificationUserInfoKeyError";
+NSString * const MBXNotificationTypeCacheHit = @"com.mapbox.mbxmapkit.stats.cacheHit";
+NSString * const MBXNotificationTypeHTTPSuccess = @"com.mapbox.mbxmapkit.stats.httpSuccess";
+NSString * const MBXNotificationTypeHTTPFailure = @"com.mapbox.mbxmapkit.stats.httpFailure";
+NSString * const MBXNotificationTypeNetworkFailure = @"com.mapbox.mbxmapkit.stats.networkFailure";
 
 
 #pragma mark - Constants for the MBXMapKit error domain
@@ -34,18 +33,24 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
 @property (readwrite,nonatomic) MBXRasterImageQuality imageQuality;
 @property (readwrite,nonatomic) CLLocationCoordinate2D center;
 @property (readwrite,nonatomic) NSInteger centerZoom;
+@property (readwrite,nonatomic) NSArray *markers;
 
 
 #pragma mark - Properties for asynchronous downloading of metadata and markers
 
 @property (nonatomic) NSURLSession *dataSession;
+@property (nonatomic) NSURLSession *markerIconDataSession;
 @property (nonatomic) NSDictionary *tileJSONDictionary;
 @property (nonatomic) NSDictionary *simplestyleJSONDictionary;
+@property (nonatomic) BOOL sessionHasBeenInvalidated;
+@property (nonatomic) NSURL *metadataURL;
+@property (nonatomic) NSURL *markersURL;
+@property (nonatomic) NSMutableArray *mutableMarkers;
 
 @end
 
 
-#pragma mark -
+#pragma mark - MBXRasterTileOverlay, a subclass of MKTileOverlay
 
 @implementation MBXRasterTileOverlay
 
@@ -55,55 +60,39 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
 - (id)initWithMapID:(NSString *)mapID;
 {
     self = [super init];
-
     if (self)
     {
-        [self configureRasterTileOverlayMapID:mapID
-                                 loadMetadata:YES
-                                  loadMarkers:YES
-                                 imageQuality:MBXRasterImageQualityFull
-         ];
+        [self setupMapID:mapID metadata:YES markers:YES imageQuality:MBXRasterImageQualityFull];
     }
-
     return self;
 }
 
-- (id)initWithMapID:(NSString *)mapID loadMetadata:(BOOL)loadMetadata loadMarkers:(BOOL)loadMarkers
+
+- (id)initWithMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers
 {
     self = [super init];
-
     if (self)
     {
-        [self configureRasterTileOverlayMapID:mapID
-                                 loadMetadata:loadMetadata
-                                  loadMarkers:loadMarkers
-                                 imageQuality:MBXRasterImageQualityFull
-         ];
+        [self setupMapID:mapID metadata:metadata markers:markers imageQuality:MBXRasterImageQualityFull];
     }
-
     return self;
 }
 
-- (id)initWithMapID:(NSString *)mapID loadMetadata:(BOOL)loadMetadata loadMarkers:(BOOL)loadMarkers imageQuality:(MBXRasterImageQuality)imageQuality
+
+- (id)initWithMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers imageQuality:(MBXRasterImageQuality)imageQuality
 {
     self = [super init];
-
     if (self)
     {
-        [self configureRasterTileOverlayMapID:mapID
-                                 loadMetadata:loadMetadata
-                                  loadMarkers:loadMarkers
-                                 imageQuality:imageQuality
-         ];
+        [self setupMapID:mapID metadata:metadata markers:markers imageQuality:imageQuality];
     }
-
     return self;
 }
 
 
-- (void)configureRasterTileOverlayMapID:(NSString *)mapID loadMetadata:(BOOL)loadMetadata loadMarkers:(BOOL)loadMarkers imageQuality:(MBXRasterImageQuality)imageQuality
+- (void)setupMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers imageQuality:(MBXRasterImageQuality)imageQuality
 {
-    // Configure the NSURLSession
+    // Configure the NSURLSessions
     //
     NSString *userAgent;
 #if TARGET_OS_IPHONE
@@ -118,12 +107,15 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
     config.URLCache = [NSURLCache sharedURLCache];
     config.HTTPAdditionalHeaders = @{ @"User-Agent" : userAgent };
     _dataSession = [NSURLSession sessionWithConfiguration:config];
+    _markerIconDataSession = [NSURLSession sessionWithConfiguration:config];
 
 
     // Save the map configuration
     //
     _mapID = mapID;
     _imageQuality = imageQuality;
+    _metadataURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@.json", _mapID]];
+    _markersURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson", _mapID]];
 
 
     // Default to covering up Apple's map
@@ -133,14 +125,23 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
 
     // Initiate asynchronous metadata and marker loading
     //
-    if(loadMetadata)
+    if(metadata)
     {
         [self asyncLoadMetadata];
     }
-    if(loadMarkers)
+    if(markers)
     {
         [self asyncLoadMarkers];
     }
+}
+
+
+- (void)invalidateAndCancel
+{
+    _delegate = nil;
+    _sessionHasBeenInvalidated = YES;
+    [_dataSession invalidateAndCancel];
+    [_markerIconDataSession invalidateAndCancel];
 }
 
 
@@ -156,6 +157,13 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
 
 - (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *, NSError *))result
 {
+    if (_sessionHasBeenInvalidated)
+    {
+        // If an invalidateAndCancel has been called on this tile overlay layer's data session, bail out immediately.
+        //
+        return;
+    }
+
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/%ld/%ld/%ld%@.%@",
                                        _mapID,
                                        (long)path.z,
@@ -169,41 +177,23 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
     dataTask = [self.dataSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
     {
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-        NSError *statusError;
         if (error)
         {
-            // Reaching this point means there is a networking problem such as airplane mode being turned on.
-            //
-            [center postNotificationName:MBXNotificationTypeNetworkFailure object:self userInfo:@{ @"error" : error }];
+            [center postNotificationName:MBXNotificationTypeNetworkFailure object:self];
         }
         else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
         {
-            // Reaching this point means the HTTP response was HTTP, but not an HTTP 200.
-            //
-            statusError = [self statusErrorFromHTTPResponse:response];
-            [center postNotificationName:MBXNotificationTypeHTTPFailure object:self  userInfo:@{ @"error" : statusError }];
+            error = [self statusErrorFromHTTPResponse:response];
+            [center postNotificationName:MBXNotificationTypeHTTPFailure object:self];
         }
         else
         {
-            // Reaching this point means should mean the request was successful
-            //
             [center postNotificationName:MBXNotificationTypeHTTPSuccess object:self];
         }
 
         // Invoke the loadTileAtPath's completion handler
         //
-        if(statusError)
-        {
-            result(data, statusError);
-        }
-        else if(error)
-        {
-            result(data, error);
-        }
-        else
-        {
-            result(data, nil);
-        }
+        result(data, error);
     }];
     [dataTask resume];
 }
@@ -213,125 +203,84 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
 
 - (void)asyncLoadMarkers
 {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson", _mapID]];
-    NSURLSessionDataTask *dataTask;
-    dataTask = [self.dataSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+    NSURLSessionDataTask *task;
+    task = [self.dataSession dataTaskWithURL:_markersURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
     {
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-        NSError *statusError;
         if (error)
         {
-            // Reaching this point means there is a networking problem such as airplane mode being turned on.
-            //
-            [center postNotificationName:MBXNotificationTypeNetworkFailure object:self userInfo:@{ @"error" : error }];
-
-            if([_delegate respondsToSelector:@selector(MBXRasterTileOverlay:didFailLoadingMarkersWithError:)])
-            {
-                [_delegate MBXRasterTileOverlay:self didFailLoadingMarkersWithError:error];
-            }
+            [center postNotificationName:MBXNotificationTypeNetworkFailure object:self];
         }
         else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
         {
-            // Reaching this point means the HTTP response was HTTP, but not an HTTP 200.
-            //
-            statusError = [self statusErrorFromHTTPResponse:response];
-            [center postNotificationName:MBXNotificationTypeHTTPFailure object:self  userInfo:@{ @"error" : statusError }];
-
-            if([_delegate respondsToSelector:@selector(MBXRasterTileOverlay:didFailLoadingMarkersWithError:)])
-            {
-                [_delegate MBXRasterTileOverlay:self didFailLoadingMarkersWithError:statusError];
-            }
+            [center postNotificationName:MBXNotificationTypeHTTPFailure object:self];
+            error = [self statusErrorFromHTTPResponse:response];
         }
         else
         {
-            // Reaching this point means should mean the request was successful
-            //
             [center postNotificationName:MBXNotificationTypeHTTPSuccess object:self];
 
             NSError *parseError;
             id markers;
+            id value;
             NSDictionary *simplestyleJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
             if(!parseError)
             {
+                // Find point features in the markers dictionary (if there are any) and add them to the map.
+                //
                 markers = simplestyleJSONDictionary[@"features"];
-            }
-            else
-            {
-                if ([_delegate respondsToSelector:@selector(MBXRasterTileOverlay:didFailLoadingMarkersWithError:)]) {
-                    [_delegate MBXRasterTileOverlay:self didFailLoadingMarkersWithError:parseError];
-                }
-            }
 
-            // Find point features in the markers dictionary (if there are any) and add them to the map.
-            //
-            if (markers && [markers isKindOfClass:[NSArray class]])
-            {
-                id value;
-
-                for (value in (NSArray *)markers)
+                if (markers && [markers isKindOfClass:[NSArray class]])
                 {
-                    if ([value isKindOfClass:[NSDictionary class]])
+                    for (value in (NSArray *)markers)
                     {
-                        NSDictionary *feature = (NSDictionary *)value;
-                        NSString *type = feature[@"geometry"][@"type"];
-
-                        if ([@"Point" isEqualToString:type])
+                        if ([value isKindOfClass:[NSDictionary class]])
                         {
-                            // Only handle point features for now.
-                            //
-                            NSString *longitude   = feature[@"geometry"][@"coordinates"][0];
-                            NSString *latitude    = feature[@"geometry"][@"coordinates"][1];
-                            NSString *title       = feature[@"properties"][@"title"];
-                            NSString *description = feature[@"properties"][@"description"];
-                            NSString *size        = feature[@"properties"][@"marker-size"];
-                            NSString *color       = feature[@"properties"][@"marker-color"];
-                            NSString *symbol      = feature[@"properties"][@"marker-symbol"];
+                            NSDictionary *feature = (NSDictionary *)value;
+                            NSString *type = feature[@"geometry"][@"type"];
 
-                            if (longitude && latitude && size && color && symbol)
+                            if ([@"Point" isEqualToString:type])
                             {
-                                title = (title ? title : @"");
-                                description = (description ? description : @"");
+                                // Only handle point features for now.
+                                //
+                                NSString *longitude   = feature[@"geometry"][@"coordinates"][0];
+                                NSString *latitude    = feature[@"geometry"][@"coordinates"][1];
+                                NSString *title       = feature[@"properties"][@"title"];
+                                NSString *description = feature[@"properties"][@"description"];
+                                NSString *size        = feature[@"properties"][@"marker-size"];
+                                NSString *color       = feature[@"properties"][@"marker-color"];
+                                NSString *symbol      = feature[@"properties"][@"marker-symbol"];
 
-                                MBXPointAnnotation *point = [MBXPointAnnotation new];
+                                if (longitude && latitude && size && color && symbol)
+                                {
+                                    MBXPointAnnotation *point = [MBXPointAnnotation new];
+                                    point.title      = title;
+                                    point.subtitle   = description;
+                                    point.coordinate = CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue]);
 
-                                point.title      = title;
-                                point.subtitle   = description;
-                                point.coordinate = CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue]);
-
-                                [self asyncLoadMarkerIconSize:size symbol:symbol color:color point:point];
-                            }
-                            else
-                            {
-                                if ([_delegate respondsToSelector:@selector(MBXRasterTileOverlay:didFailLoadingMarkersWithError:)]) {
-                                    if(parseError)
-                                    {
-                                        [_delegate MBXRasterTileOverlay:self didFailLoadingMetadataWithError:parseError];
-                                    }
-                                    else
-                                    {
-                                        NSError *keysError = [self dictionaryErrorMissingImportantKeysFor:@"Metadata"];
-                                        [_delegate MBXRasterTileOverlay:self didFailLoadingMetadataWithError:keysError];
-                                    }
+                                    NSURL *markerURL = [self markerIconURLForSize:size symbol:symbol color:color];
+                                    [self asyncLoadMarkerURL:(NSURL *)markerURL point:point];
+                                }
+                                else
+                                {
+                                    parseError = [self dictionaryErrorMissingImportantKeysFor:@"Metadata"];
                                 }
                             }
-                        }
+                        } // End  of for(...)
                     }
                 }
             }
 
         }
     }];
-    [dataTask resume];
+    [task resume];
 }
 
 
-- (void)asyncLoadMarkerIconSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color point:(MBXPointAnnotation *)point
+- (NSURL *)markerIconURLForSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color
 {
     // Make a string which follows the MapBox Core API spec for stand-alone markers. This relies on the MapBox API
-    // for error checking rather than trying to do any fancy tricks to determine valid size-symbol-color combinations.
-    // The main advantage of that approach is that new Maki symbols will be available to use as markers as soon as
-    // they are added to the API (i.e. no changes to input validation code here are required).
-    // See https://www.mapbox.com/developers/api/#Stand-alone.markers
+    // for error checking.
     //
     NSMutableString *marker = [[NSMutableString alloc] initWithString:@"pin-"];
 
@@ -361,153 +310,115 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
     [marker appendString:@".png"];
 #endif
 
-    // Attempt to fetch a marker icon from the cache if it's available, or by downloading it if not
-    //
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/marker/%@", marker]];
-    NSURLSessionDataTask *dataTask;
-    dataTask = [self.dataSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+    return [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/marker/%@", marker]];
+}
+
+
+- (void)asyncLoadMarkerURL:(NSURL *)url point:(MBXPointAnnotation *)point
+{
+    NSURLSessionDataTask *task;
+    task = [self.markerIconDataSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
     {
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-        NSError *statusError;
         if (error)
         {
-            // Reaching this point means there is a networking problem such as airplane mode being turned on.
-            //
-            [center postNotificationName:MBXNotificationTypeNetworkFailure object:self userInfo:@{ @"error" : error }];
-
-            if([_delegate respondsToSelector:@selector(MBXRasterTileOverlay:didFailLoadingMarkersWithError:)])
-            {
-                [_delegate MBXRasterTileOverlay:self didFailLoadingMarkersWithError:error];
-            }
+            [center postNotificationName:MBXNotificationTypeNetworkFailure object:self];
         }
         else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
         {
-            // Reaching this point means the HTTP response was HTTP, but not an HTTP 200.
-            //
-            statusError = [self statusErrorFromHTTPResponse:response];
-            [center postNotificationName:MBXNotificationTypeHTTPFailure object:self  userInfo:@{ @"error" : statusError }];
-
-            if([_delegate respondsToSelector:@selector(MBXRasterTileOverlay:didFailLoadingMarkersWithError:)])
-            {
-                [_delegate MBXRasterTileOverlay:self didFailLoadingMarkersWithError:statusError];
-            }
+            [center postNotificationName:MBXNotificationTypeHTTPFailure object:self];
+            error = [self statusErrorFromHTTPResponse:response];
         }
         else
         {
-            // Reaching this point means should mean the request was successful
-            //
             [center postNotificationName:MBXNotificationTypeHTTPSuccess object:self];
 
 #if TARGET_OS_IPHONE
             point.image = [[UIImage alloc] initWithData:data scale:[[UIScreen mainScreen] scale]];
 #else
-            // Making this smart enough to handle a Retina MacBook with a normal dpi external display is complicated.
-            // For now, just default to @1x images and a 1.0 scale.
-            //
             point.image = [[NSImage alloc] initWithData:data];
 #endif
 
-            if ([_delegate respondsToSelector:@selector(MBXRasterTileOverlay:didLoadMarker:)])
-            {
-                [_delegate MBXRasterTileOverlay:self didLoadMarker:point];
-            }
+            [self.mutableMarkers addObject:point];
         }
     }];
-    [dataTask resume];
+    [task resume];
 }
 
 
+- (void)asyncLoadURL:(NSURL *)url usingSession:(NSURLSession *)session successCompletionHandler:(void(^)())success
+{
+    NSURLSessionDataTask *task;
+    task = [session dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+    {
+        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+        if (error)
+        {
+            [center postNotificationName:MBXNotificationTypeNetworkFailure object:self];
+        }
+        else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
+        {
+            [center postNotificationName:MBXNotificationTypeHTTPFailure object:self];
+            error = [self statusErrorFromHTTPResponse:response];
+        }
+        else
+        {
+            [center postNotificationName:MBXNotificationTypeHTTPSuccess object:self];
 
+            // Invoke the completion handler
+            //
+            success();
+        }
+    }];
+    [task resume];
+}
 
 
 - (void)asyncLoadMetadata
 {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@.json", _mapID]];
-
-    NSURLSessionDataTask *dataTask;
-    dataTask = [self.dataSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+    NSURLSessionDataTask *task;
+    task = [self.dataSession dataTaskWithURL:_metadataURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
     {
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-        NSError *statusError;
         if (error)
         {
-            // Reaching this point means there is a networking problem such as airplane mode being turned on.
-            //
-            [center postNotificationName:MBXNotificationTypeNetworkFailure object:self userInfo:@{ @"error" : error }];
-
-            if([_delegate respondsToSelector:@selector(MBXRasterTileOverlay:didFailLoadingMetadataWithError:)])
-            {
-                [_delegate MBXRasterTileOverlay:self didFailLoadingMetadataWithError:error];
-            }
+            [center postNotificationName:MBXNotificationTypeNetworkFailure object:self];
         }
         else if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
         {
-            // Reaching this point means the HTTP response was HTTP, but not an HTTP 200.
-            //
-            statusError = [self statusErrorFromHTTPResponse:response];
-            [center postNotificationName:MBXNotificationTypeHTTPFailure object:self  userInfo:@{ @"error" : statusError }];
-
-            if([_delegate respondsToSelector:@selector(MBXRasterTileOverlay:didFailLoadingMetadataWithError:)])
-            {
-                [_delegate MBXRasterTileOverlay:self didFailLoadingMetadataWithError:statusError];
-            }
+            [center postNotificationName:MBXNotificationTypeHTTPFailure object:self];
+            error = [self statusErrorFromHTTPResponse:response];
         }
         else
         {
-            // Reaching this point means should mean the request was successful
-            //
             [center postNotificationName:MBXNotificationTypeHTTPSuccess object:self];
-            NSError *parseError;
-            NSDictionary *tileJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
-            if(
-               !parseError
-               && tileJSONDictionary
-               && tileJSONDictionary[@"minzoom"]
-               && tileJSONDictionary[@"maxzoom"]
-               && tileJSONDictionary[@"center"] && [tileJSONDictionary[@"center"] count] == 3
-               && tileJSONDictionary[@"bounds"] && [tileJSONDictionary[@"bounds"] count] == 4
-               )
+            _tileJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+            if(!error)
             {
-                // Setting these zoom limits theoretically might help to cut down on 404's for zoom levels that aren't part
-                // of the hosted map
-                //
-                self.minimumZ = [tileJSONDictionary[@"minzoom"] integerValue];
-                self.maximumZ = [tileJSONDictionary[@"maxzoom"] integerValue];
-
-                // Setting the center coordinate and zoom level allows view controllers to center the map
-                // on the hosted map's default view, as configured in the map editor.
-                //
-                _centerZoom = [tileJSONDictionary[@"center"][2] integerValue];
-                _center.latitude = [tileJSONDictionary[@"center"][1] doubleValue];
-                _center.longitude = [tileJSONDictionary[@"center"][0] doubleValue];
-
-
-                // Save the TileJSON.
-                //
-                [self setTileJSONDictionary:tileJSONDictionary];
-                if ([_delegate respondsToSelector:@selector(MBXRasterTileOverlay:didLoadMetadata:)])
+                if (_tileJSONDictionary
+                    && _tileJSONDictionary[@"minzoom"]
+                    && _tileJSONDictionary[@"maxzoom"]
+                    && _tileJSONDictionary[@"center"] && [_tileJSONDictionary[@"center"] count] == 3
+                    && _tileJSONDictionary[@"bounds"] && [_tileJSONDictionary[@"bounds"] count] == 4)
                 {
-                    [_delegate MBXRasterTileOverlay:self didLoadMetadata:tileJSONDictionary];
+                    self.minimumZ = [_tileJSONDictionary[@"minzoom"] integerValue];
+                    self.maximumZ = [_tileJSONDictionary[@"maxzoom"] integerValue];
+
+                    _centerZoom = [_tileJSONDictionary[@"center"][2] integerValue];
+                    _center.latitude = [_tileJSONDictionary[@"center"][1] doubleValue];
+                    _center.longitude = [_tileJSONDictionary[@"center"][0] doubleValue];
+
                 }
-            }
-            else
-            {
-                if([_delegate respondsToSelector:@selector(MBXRasterTileOverlay:didFailLoadingMetadataWithError:)])
+                else
                 {
-                    if(parseError)
-                    {
-                        [_delegate MBXRasterTileOverlay:self didFailLoadingMetadataWithError:parseError];
-                    }
-                    else
-                    {
-                        NSError *keysError = [self dictionaryErrorMissingImportantKeysFor:@"Metadata"];
-                        [_delegate MBXRasterTileOverlay:self didFailLoadingMetadataWithError:keysError];
-                    }
+                    error = [self dictionaryErrorMissingImportantKeysFor:@"Metadata"];
                 }
             }
         }
+        [_delegate MBXRasterTileOverlay:self didLoadMetadata:_tileJSONDictionary withError:error];
+
     }];
-    [dataTask resume];
+    [task resume];
 }
 
 
@@ -588,12 +499,14 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
 
 - (void)clearCachedMetadata
 {
-
+    NSURLRequest *request = [NSURLRequest requestWithURL:_metadataURL];
+    [_dataSession.configuration.URLCache removeCachedResponseForRequest:request];
 }
 
 - (void)clearCachedMarkers
 {
-
+    NSURLRequest *request = [NSURLRequest requestWithURL:_markersURL];
+    [_dataSession.configuration.URLCache removeCachedResponseForRequest:request];
 }
 
 

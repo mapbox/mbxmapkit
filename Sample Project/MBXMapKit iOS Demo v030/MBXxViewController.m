@@ -37,9 +37,9 @@
     //
     NSUInteger memoryCapacity = 4 * 1024 * 1024;
     NSUInteger diskCapacity = 40 * 1024 * 1024;
-    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:memoryCapacity diskCapacity:diskCapacity diskPath:nil];
+    NSURLCache *urlCache = [[NSURLCache alloc] initWithMemoryCapacity:memoryCapacity diskCapacity:diskCapacity diskPath:nil];
     //[URLCache removeAllCachedResponses];
-    [NSURLCache setSharedURLCache:URLCache];
+    [NSURLCache setSharedURLCache:urlCache];
 
     // Configure cache and network statistics logging
     //
@@ -157,27 +157,27 @@
 
 - (void)resetMapViewAndRasterOverlayDefaults
 {
-    // This method prepares the MKMapView to switch overlays. Note that the specific order
-    // in which things happen is quite important. One of the goals here is to fully disconnect old
-    // tile overlays, annotations, and simplestyle prior to adding their new replacements. The
-    // consequences of not doing that could potentially include stuff like EXEC_BAD_ACCESS, so it's
-    // good to handle these things carefully.
+    // Reset the MKMapView to some reasonable defaults.
     //
     _mapView.mapType = MKMapTypeStandard;
-
-    // Set up a new tile overlay to account for the possibility that there are still tiles or TileJSON being downloaded
-    //
-    _rasterOverlay.delegate = nil;
-    [_mapView removeOverlays:_mapView.overlays];
-
     _mapView.scrollEnabled = YES;
     _mapView.zoomEnabled = YES;
+
+    // Make sure that any downloads (tiles, metadata, marker icons) which might be in progress for
+    // the old tile overlay are stopped, and remove the overlay and its markers from the MKMapView.
+    // The invalidation step is necessary to avoid the possibility of visual glitching or crashes due to
+    // delegate callbacks or asynchronous completion handlers getting invoked for downloads which might
+    // be still in progress.
+    //
+    [_mapView removeAnnotations:_rasterOverlay.markers];
+    [_mapView removeOverlay:_rasterOverlay];
+    [_rasterOverlay invalidateAndCancel];
 }
 
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    // Demo app: This switches between maps in response to action sheet selections
+    // This switches between maps in response to action sheet selections
     //
     switch(buttonIndex) {
         case 0:
@@ -191,7 +191,7 @@
             // OSM over Apple satellite
             [self resetMapViewAndRasterOverlayDefaults];
             _mapView.mapType = MKMapTypeSatellite;
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.map-9tlo4knw" loadMetadata:YES loadMarkers:NO];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.map-9tlo4knw" metadata:YES markers:NO];
             _rasterOverlay.delegate = self;
             _rasterOverlay.canReplaceMapContent = NO;
             [_mapView addOverlay:_rasterOverlay];
@@ -199,7 +199,7 @@
         case 2:
             // Terrain under Apple labels
             [self resetMapViewAndRasterOverlayDefaults];
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.map-mf07hryq" loadMetadata:YES loadMarkers:NO];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.map-mf07hryq" metadata:YES markers:NO];
             _rasterOverlay.delegate = self;
             [_mapView insertOverlay:_rasterOverlay atIndex:0 level:MKOverlayLevelAboveRoads];
             break;
@@ -208,14 +208,14 @@
             [self resetMapViewAndRasterOverlayDefaults];
             _mapView.scrollEnabled = NO;
             _mapView.zoomEnabled = NO;
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.NACIS2012" loadMetadata:YES loadMarkers:NO];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.NACIS2012" metadata:YES markers:NO];
             _rasterOverlay.delegate = self;
             [_mapView addOverlay:_rasterOverlay];
             break;
         case 4:
             // Tilemill region over Apple
             [self resetMapViewAndRasterOverlayDefaults];
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.clp-2011-11-03-1200" loadMetadata:YES loadMarkers:NO];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.clp-2011-11-03-1200" metadata:YES markers:NO];
             _rasterOverlay.delegate = self;
             _rasterOverlay.canReplaceMapContent = NO;
             [_mapView addOverlay:_rasterOverlay];
@@ -223,7 +223,7 @@
         case 5:
             // Tilemill transparent over Apple
             [self resetMapViewAndRasterOverlayDefaults];
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.pdx_meters" loadMetadata:YES loadMarkers:NO];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.pdx_meters" metadata:YES markers:NO];
             _rasterOverlay.delegate = self;
             _rasterOverlay.canReplaceMapContent = NO;
             [_mapView addOverlay:_rasterOverlay];
@@ -275,54 +275,48 @@
 }
 
 
-- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMetadata:(NSDictionary *)metadata
+- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMetadata:(NSDictionary *)metadata withError:(NSError *)error
 {
-    // This required delegate callback is for centering the map once the TileJSON has been loaded
+    // This delegate callback is for centering the map once the map metadata has been loaded
     //
-    if(_mapView) {
+    if (!_mapView)
+    {
+        NSLog(@"Warning: the mapView property is not set (didLoadMetadata:)");
+    }
+    else if (error)
+    {
+        NSLog(@"Failed to load metadata for map ID %@ - (%@)", overlay.mapID, error?error:@"");
+    }
+    else
+    {
         MKCoordinateRegion region = MKCoordinateRegionMake(overlay.center, MKCoordinateSpanMake(0, 360 / pow(2, overlay.centerZoom) * _mapView.frame.size.width / 256));
         
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [_mapView setRegion:region animated:NO];
         });
     }
-    else
-    {
-        NSLog(@"Warning: the mapView property is not set (didLoadMetadata:)");
-    }
 }
 
 
-- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMarker:(MBXPointAnnotation *)marker
+- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMarkers:(NSArray *)markers withError:(NSError *)error
 {
-    // This required delegate callback is for adding map markers, one at a time, to an MKMapView as soon as they are loaded
+    // This delegate callback is for adding map markers to an MKMapView once all the markers for the tile overlay have loaded
     //
-    if(_mapView) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [_mapView addAnnotation:marker];
-        });
-    }
-    else
-    {
+    if(!_mapView) {
         NSLog(@"Warning: the mapView property is not set (didLoadMarker:)");
     }
+    else if (error)
+    {
+        NSLog(@"Failed to load markers for map ID %@ - (%@)", overlay.mapID, error?error:@"");
+    }
+    else
+    {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_mapView addAnnotations:markers];
+        });
+    }
 }
 
-
-- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didFailLoadingMetadataWithError:(NSError *)error
-{
-    // This optional delegate callback is for handling situations when something goes wrong with loading the map metadata
-    //
-    NSLog(@"Failed to load metadata for map ID %@ - (%@)", overlay.mapID, error?error:@"");
-}
-
-
-- (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didFailLoadingMarkersWithError:(NSError *)error
-{
-    // This optional delegate callback is for handling situations when something goes wrong with loading the map markers
-    //
-    NSLog(@"Failed to load markers for map ID %@ - (%@)", overlay.mapID, error?error:@"");
-}
 
 
 @end
