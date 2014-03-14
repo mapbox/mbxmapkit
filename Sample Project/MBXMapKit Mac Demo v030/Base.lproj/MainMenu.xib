@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
-        <plugIn identifier="com.apple.MapKitIBPlugin" version="3338"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5053"/>
+        <plugIn identifier="com.apple.MapKitIBPlugin" version="5053"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -681,6 +681,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="480" height="330"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     </mapView>
+                    <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="uAR-7B-utQ">
+                        <rect key="frame" x="271" y="336" width="16" height="16"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    </progressIndicator>
                 </subviews>
                 <constraints>
                     <constraint firstItem="v7J-6P-d6g" firstAttribute="top" secondItem="372" secondAttribute="top" constant="5" id="0jz-Ll-5j9"/>
@@ -696,6 +700,7 @@
             <connections>
                 <outlet property="mapView" destination="NvD-eI-ap1" id="kB9-j5-G3O"/>
                 <outlet property="popupButton" destination="v7J-6P-d6g" id="ObD-Ve-hWx"/>
+                <outlet property="progressIndicator" destination="uAR-7B-utQ" id="p5E-tN-8CO"/>
                 <outlet property="window" destination="371" id="532"/>
             </connections>
         </customObject>

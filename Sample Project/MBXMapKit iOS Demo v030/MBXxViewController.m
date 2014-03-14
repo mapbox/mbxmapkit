@@ -54,6 +54,8 @@
     _mapView.pitchEnabled = NO;
     _mapView.delegate = self;
 
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+
     _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm"];
     _rasterOverlay.delegate = self;
     [_mapView addOverlay:_rasterOverlay];
@@ -157,6 +159,10 @@
 
 - (void)resetMapViewAndRasterOverlayDefaults
 {
+    // Show the network activity spinner
+    //
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+
     // Reset the MKMapView to some reasonable defaults.
     //
     _mapView.mapType = MKMapTypeStandard;
@@ -174,6 +180,8 @@
     [_rasterOverlay invalidateAndCancel];
 }
 
+
+#pragma mark - UIActionSheetDelegate protocol implementation
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -232,7 +240,7 @@
 }
 
 
-#pragma mark - Delegate protocol implementations (customize as needed)
+#pragma mark - MKMapViewDelegate protocol implementation
 
 - (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered
 {
@@ -274,6 +282,8 @@
     return nil;
 }
 
+
+#pragma mark - MBXRasterTileOverlayDelegate implementation
 
 - (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMetadata:(NSDictionary *)metadata withError:(NSError *)error
 {
@@ -317,6 +327,9 @@
     }
 }
 
-
+- (void)MBXRasterTileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:(MBXRasterTileOverlay *)overlay
+{
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+}
 
 @end

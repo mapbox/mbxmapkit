@@ -16,6 +16,7 @@
 @property (weak) IBOutlet NSPopUpButton *popupButton;
 @property (weak) IBOutlet MKMapView *mapView;
 @property (nonatomic) MBXRasterTileOverlay *rasterOverlay;
+@property (weak) IBOutlet NSProgressIndicator *progressIndicator;
 
 @property (nonatomic) NSInteger cacheHitCount;
 @property (nonatomic) NSInteger httpSuccessCount;
@@ -56,6 +57,7 @@
     _mapView.pitchEnabled = NO;
     _mapView.delegate = self;
 
+    [_progressIndicator startAnimation:self];
     _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm"];
     _rasterOverlay.delegate = self;
     [_mapView addOverlay:_rasterOverlay];
@@ -131,6 +133,10 @@
 
 - (void)resetMapViewAndRasterOverlayDefaults
 {
+    // Start the progress spinner
+    //
+    [_progressIndicator startAnimation:self];
+
     // Reset the MKMapView to some reasonable defaults.
     //
     _mapView.mapType = MKMapTypeStandard;
@@ -209,7 +215,7 @@
 }
 
 
-#pragma mark - Delegate protocol implementations (customize as needed)
+#pragma mark - MKMapViewDelegate protocol implementation
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
@@ -249,6 +255,8 @@
     return nil;
 }
 
+
+#pragma mark - MBXRasterTileOverlay delegate protocol implementation
 
 - (void)MBXRasterTileOverlay:(MBXRasterTileOverlay *)overlay didLoadMetadata:(NSDictionary *)metadata withError:(NSError *)error
 {
@@ -290,6 +298,11 @@
             [_mapView addAnnotations:markers];
         });
     }
+}
+
+- (void)MBXRasterTileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:(MBXRasterTileOverlay *)overlay
+{
+    [_progressIndicator stopAnimation:self];
 }
 
 

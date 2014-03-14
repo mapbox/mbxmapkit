@@ -46,7 +46,9 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
 @property (nonatomic) NSURL *markersURL;
 @property (nonatomic) NSMutableArray *mutableMarkers;
 @property (nonatomic) NSInteger activeMarkerIconRequests;
-@property (nonatomic) BOOL allMarkerIconRequestsHaveBeenDispatched;
+@property (nonatomic) BOOL markerIconLoaderMayInitiateDelegateCallback;
+@property (nonatomic) BOOL didFinishLoadingMetadata;
+@property (nonatomic) BOOL didFinishLoadingMarkers;
 
 @end
 
@@ -129,10 +131,18 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
     {
         [self asyncLoadMetadata];
     }
+    else
+    {
+        _didFinishLoadingMetadata = YES;
+    }
     if(markers)
     {
         _mutableMarkers = [[NSMutableArray alloc] init];
         [self asyncLoadMarkers];
+    }
+    else
+    {
+        _didFinishLoadingMarkers = YES;
     }
 }
 
@@ -154,6 +164,7 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
     //
     return MKMapRectWorld;
 }
+
 
 - (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *, NSError *))result
 {
@@ -239,7 +250,7 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
                                 point.coordinate = CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue]);
 
                                 NSURL *markerURL = [self markerIconURLForSize:size symbol:symbol color:color];
-                                [self asyncLoadMarkerURL:(NSURL *)markerURL point:point];
+                                [self asyncLoadMarkerIconURL:(NSURL *)markerURL point:point];
                             }
                             else
                             {
@@ -249,7 +260,7 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
                     }
                     // This is the last line of the loop
                 }
-                _allMarkerIconRequestsHaveBeenDispatched = YES;
+                _markerIconLoaderMayInitiateDelegateCallback = YES;
             }
         }
     };
@@ -259,10 +270,20 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
     void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
     {
         if(error) {
-            // At this point, if error isn't nil, that means something went wrong with parsing the
-            // markers, but some of them may still load successfully
+            // At this point, it's possible there was an HTTP or network error. It could also be the
+            // case that some of the the markers are in the process of successfully loading their icons,
+            // but there was a problem with some of the marker JSON (e.g. a bug in the Mapbox API). This
+            // takes the fail early and fail hard approach. Any error whatsoever will prevent all the
+            // markers from being given to the delegate. The alternative would be to quietly overlook
+            // the fact that some of the markers probably didn't load properly.
             //
-            NSLog(@"There was a problem loading the markers - %@",error);
+            _markerIconLoaderMayInitiateDelegateCallback = NO;
+            [_delegate MBXRasterTileOverlay:self didLoadMarkers:nil withError:error];
+
+            _didFinishLoadingMarkers = YES;
+            if(_didFinishLoadingMetadata) {
+                [_delegate MBXRasterTileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
+            }
         }
     };
 
@@ -270,7 +291,7 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
 }
 
 
-- (void)asyncLoadMarkerURL:(NSURL *)url point:(MBXPointAnnotation *)point
+- (void)asyncLoadMarkerIconURL:(NSURL *)url point:(MBXPointAnnotation *)point
 {
     // This block is run only if data for the URL is successfully retrieved
     //
@@ -293,10 +314,15 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
     //
     void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
     {
-        if(_allMarkerIconRequestsHaveBeenDispatched && _activeMarkerIconRequests <= 0)
+        if(_markerIconLoaderMayInitiateDelegateCallback && _activeMarkerIconRequests <= 0)
         {
             _markers = [NSArray arrayWithArray:_mutableMarkers];
             [_delegate MBXRasterTileOverlay:self didLoadMarkers:_markers withError:error];
+
+            _didFinishLoadingMarkers = YES;
+            if(_didFinishLoadingMetadata) {
+                [_delegate MBXRasterTileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
+            }
         }
     };
 
@@ -339,6 +365,11 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
     void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
     {
         [_delegate MBXRasterTileOverlay:self didLoadMetadata:_tileJSONDictionary withError:error];
+
+        _didFinishLoadingMetadata = YES;
+        if(_didFinishLoadingMarkers) {
+            [_delegate MBXRasterTileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
+        }
     };
 
     [self asyncLoadURL:_metadataURL dataBlock:dataBlock completionHandler:completionHandler];
