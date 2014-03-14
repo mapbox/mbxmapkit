@@ -260,7 +260,6 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
                     }
                     // This is the last line of the loop
                 }
-                _markerIconLoaderMayInitiateDelegateCallback = YES;
             }
         }
     };
@@ -284,6 +283,10 @@ NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
             if(_didFinishLoadingMetadata) {
                 [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
             }
+        }
+        else
+        {
+            _markerIconLoaderMayInitiateDelegateCallback = YES;
         }
     };
 
