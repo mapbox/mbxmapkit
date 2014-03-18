@@ -1,5 +1,5 @@
 //
-//  MBXOfflineMapDownloadTask.h
+//  MBXBatchDownloadTask.h
 //  MBXMapKit
 //
 //  Created by Will Snook on 3/17/14.
@@ -17,32 +17,34 @@ extern NSInteger const MBXMapKitErrorDownloadTaskCanceled;
 
 #pragma mark - Delegate protocol for progress updates
 
-@class MBXOfflineMapDownloadTask;
+@class MBXBatchDownloadTask;
 @class MBXOfflineMapDatabase;
-@protocol MBXOfflineMapDownloadTaskDelegate
 
-- (void)mapDownloadTask:(MBXOfflineMapDownloadTask *)mapDownloadTask totalFilesExpectedToWrite:(NSUInteger)totalFilesExpectedToWrite;
+@protocol MBXBatchDownloadTaskDelegate
 
-- (void)mapDownloadTask:(MBXOfflineMapDownloadTask *)mapDownloadTask totalFilesWritten:(NSUInteger)totalFilesWritten totalFilesExpectedToWrite:(NSUInteger)totalFilesExpectedToWrite;
+- (void)batchDownloadTask:(MBXBatchDownloadTask *)batchDownloadTask totalFilesExpectedToWrite:(NSUInteger)totalFilesExpectedToWrite;
 
-- (void)mapDownloadTask:(MBXOfflineMapDownloadTask *)mapDownloadTask didCompleteWithError:(NSError *)error;
+- (void)batchDownloadTask:(MBXBatchDownloadTask *)batchDownloadTask totalFilesWritten:(NSUInteger)totalFilesWritten totalFilesExpectedToWrite:(NSUInteger)totalFilesExpectedToWrite;
+
+- (void)batchDownloadTask:(MBXBatchDownloadTask *)batchDownloadTask didCompleteWithError:(NSError *)error;
 
 @end
 
 
 #pragma mark - 
 
-@interface MBXOfflineMapDownloadTask : NSObject
+@interface MBXBatchDownloadTask : NSObject
+
 
 #pragma mark - Class methods to manage download tasks
 
-+ (MBXOfflineMapDownloadTask *)downloadTaskForMapID:(NSString *)mapID offlineMapRegion:(MKCoordinateRegion)offlineMapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ;
++ (MBXBatchDownloadTask *)downloadTaskForMapID:(NSString *)mapID offlineMapRegion:(MKCoordinateRegion)offlineMapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ;
 
 + (NSArray *)tasksInProgress;
 
 + (NSArray *)completedTasks;
 
-+ (MBXOfflineMapDatabase *)databaseForMapID:(NSString *)mapID;
++ (MBXBatchDownloadTask *)taskForMapID:(NSString *)mapID;
 
 
 #pragma mark - Instance properties and methods
@@ -53,11 +55,11 @@ extern NSInteger const MBXMapKitErrorDownloadTaskCanceled;
 @property (readonly, nonatomic) NSInteger maximumZ;
 
 @property (readonly, nonatomic) MBXOfflineMapDatabase *mapDatabase;
+@property (readonly, nonatomic) BOOL taskComplete;
 
 - (void)cancel;
 - (void)resume;
 - (void)suspend;
-@property (readonly, nonatomic) BOOL taskComplete;
 
 
 @end

@@ -31,8 +31,8 @@
 		01DCA2F118CFAABA002E5125 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01DCA2EF18CFAA77002E5125 /* MapKit.framework */; };
 		01E5625F18D7C80E00C281E2 /* MBXOfflineMapDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E5625E18D7C80E00C281E2 /* MBXOfflineMapDatabase.m */; };
 		01E5626018D7C80E00C281E2 /* MBXOfflineMapDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E5625E18D7C80E00C281E2 /* MBXOfflineMapDatabase.m */; };
-		01E5626318D7E23C00C281E2 /* MBXOfflineMapDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E5626218D7E23C00C281E2 /* MBXOfflineMapDownloadTask.m */; };
-		01E5626418D7E23C00C281E2 /* MBXOfflineMapDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E5626218D7E23C00C281E2 /* MBXOfflineMapDownloadTask.m */; };
+		01E5626318D7E23C00C281E2 /* MBXBatchDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E5626218D7E23C00C281E2 /* MBXBatchDownloadTask.m */; };
+		01E5626418D7E23C00C281E2 /* MBXBatchDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E5626218D7E23C00C281E2 /* MBXBatchDownloadTask.m */; };
 		01E5626F18D7EB4600C281E2 /* MBXErrorCodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E5626E18D7EB4600C281E2 /* MBXErrorCodes.m */; };
 		01E5627018D7EB4600C281E2 /* MBXErrorCodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E5626E18D7EB4600C281E2 /* MBXErrorCodes.m */; };
 		01ED214418C90543002726DD /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */; };
@@ -96,8 +96,8 @@
 		01DCA2EF18CFAA77002E5125 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/MapKit.framework; sourceTree = DEVELOPER_DIR; };
 		01E5625D18D7C80E00C281E2 /* MBXOfflineMapDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXOfflineMapDatabase.h; sourceTree = "<group>"; };
 		01E5625E18D7C80E00C281E2 /* MBXOfflineMapDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXOfflineMapDatabase.m; sourceTree = "<group>"; };
-		01E5626118D7E23C00C281E2 /* MBXOfflineMapDownloadTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXOfflineMapDownloadTask.h; sourceTree = "<group>"; };
-		01E5626218D7E23C00C281E2 /* MBXOfflineMapDownloadTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXOfflineMapDownloadTask.m; sourceTree = "<group>"; };
+		01E5626118D7E23C00C281E2 /* MBXBatchDownloadTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXBatchDownloadTask.h; sourceTree = "<group>"; };
+		01E5626218D7E23C00C281E2 /* MBXBatchDownloadTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXBatchDownloadTask.m; sourceTree = "<group>"; };
 		01E5626E18D7EB4600C281E2 /* MBXErrorCodes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXErrorCodes.m; sourceTree = "<group>"; };
 		DD320F1A17E3CD0E00CD95A9 /* MBXViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBXViewController.m; path = "MBXMapKit-iOS/MBXViewController.m"; sourceTree = "<group>"; };
 		DD320F1C17E3CD0E00CD95A9 /* MBXMapKit-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "MBXMapKit-Info.plist"; path = "MBXMapKit-iOS/MBXMapKit-Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -249,8 +249,8 @@
 				01E5626E18D7EB4600C281E2 /* MBXErrorCodes.m */,
 				01BCB22018C43B7300AD5C27 /* MBXRasterTileOverlay.h */,
 				01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */,
-				01E5626118D7E23C00C281E2 /* MBXOfflineMapDownloadTask.h */,
-				01E5626218D7E23C00C281E2 /* MBXOfflineMapDownloadTask.m */,
+				01E5626118D7E23C00C281E2 /* MBXBatchDownloadTask.h */,
+				01E5626218D7E23C00C281E2 /* MBXBatchDownloadTask.m */,
 				01E5625D18D7C80E00C281E2 /* MBXOfflineMapDatabase.h */,
 				01E5625E18D7C80E00C281E2 /* MBXOfflineMapDatabase.m */,
 				01BCB22418C43BCD00AD5C27 /* MBXMBTilesTileOverlay.h */,
@@ -546,7 +546,7 @@
 				01E5627018D7EB4600C281E2 /* MBXErrorCodes.m in Sources */,
 				01ED214618C90543002726DD /* MBXMBTilesTileOverlay.m in Sources */,
 				01E5626018D7C80E00C281E2 /* MBXOfflineMapDatabase.m in Sources */,
-				01E5626418D7E23C00C281E2 /* MBXOfflineMapDownloadTask.m in Sources */,
+				01E5626418D7E23C00C281E2 /* MBXBatchDownloadTask.m in Sources */,
 				01ED214718C90543002726DD /* MBXPointAnnotation.m in Sources */,
 				0112ACE918C8F2DF00DD495C /* main.m in Sources */,
 				0112ACF018C8F2DF00DD495C /* MBXzAppDelegate.m in Sources */,
@@ -559,7 +559,7 @@
 			files = (
 				014DA22218C45B8400AB33F8 /* MBXRasterTileOverlay.m in Sources */,
 				01E5626F18D7EB4600C281E2 /* MBXErrorCodes.m in Sources */,
-				01E5626318D7E23C00C281E2 /* MBXOfflineMapDownloadTask.m in Sources */,
+				01E5626318D7E23C00C281E2 /* MBXBatchDownloadTask.m in Sources */,
 				014DA22618C45B8400AB33F8 /* MBXMBTilesTileOverlay.m in Sources */,
 				014DA22818C45B8400AB33F8 /* MBXPointAnnotation.m in Sources */,
 				01E5625F18D7C80E00C281E2 /* MBXOfflineMapDatabase.m in Sources */,

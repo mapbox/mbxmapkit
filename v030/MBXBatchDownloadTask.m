@@ -1,16 +1,16 @@
 //
-//  MBXOfflineMapDownloadTask.m
+//  MBXBatchDownloadTask.m
 //  MBXMapKit
 //
 //  Created by Will Snook on 3/17/14.
 //  Copyright (c) 2014 MapBox. All rights reserved.
 //
 
-#import "MBXOfflineMapDownloadTask.h"
+#import "MBXBatchDownloadTask.h"
 
 #pragma mark -
 
-@interface MBXOfflineMapDownloadTask ()
+@interface MBXBatchDownloadTask ()
 
 @property (readwrite, nonatomic) NSString *mapID;
 @property (readwrite, nonatomic) MKCoordinateRegion mapRegion;
@@ -24,12 +24,12 @@
 
 #pragma mark -
 
-@implementation MBXOfflineMapDownloadTask
+@implementation MBXBatchDownloadTask
 
 
 #pragma mark - Class Methods
 
-+ (MBXOfflineMapDownloadTask *)downloadTaskForMapID:(NSString *)mapID offlineMapRegion:(MKCoordinateRegion)offlineMapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ
++ (MBXBatchDownloadTask *)downloadTaskForMapID:(NSString *)mapID offlineMapRegion:(MKCoordinateRegion)offlineMapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ
 {
     return nil;
 }
@@ -47,7 +47,7 @@
 }
 
 
-+ (MBXOfflineMapDatabase *)databaseForMapID:(NSString *)mapID
++ (MBXBatchDownloadTask *)taskForMapID:(NSString *)mapID
 {
     return nil;
 }
