@@ -8,16 +8,11 @@
 
 #import "MBXRasterTileOverlay.h"
 
-#pragma mark - Constants for the MBXMapKit error domain
-
-NSString *const MBXMapKitErrorDomain = @"MBXMapKitErrorDomain";
-NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
-NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
-
 
 #pragma mark -
 
 @interface MBXRasterTileOverlay ()
+
 
 #pragma mark - Private read-write backing properties for public read-only properties
 
