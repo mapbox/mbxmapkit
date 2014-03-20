@@ -9,11 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 
-#pragma mark - Error constants
-
-extern NSString *const MBXMapKitErrorDomain;
-extern NSInteger const MBXMapKitErrorOfflineMapHasNoDataForKey;
-
 
 #pragma mark -
 
@@ -27,6 +22,6 @@ extern NSInteger const MBXMapKitErrorOfflineMapHasNoDataForKey;
 @property (readonly, nonatomic) NSInteger minimumZ;
 @property (readonly, nonatomic) NSInteger maximumZ;
 
-- (NSData *)dataForKey:(NSString *)key withError:(NSError *)error;
+- (NSData *)dataForKey:(NSString *)key withError:(NSError **)error;
 
 @end

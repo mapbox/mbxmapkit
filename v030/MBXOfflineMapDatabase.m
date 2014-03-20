@@ -7,6 +7,8 @@
 //
 
 #import "MBXOfflineMapDatabase.h"
+#import "MBXError.h"
+
 
 #pragma mark -
 
@@ -24,8 +26,13 @@
 
 @implementation MBXOfflineMapDatabase
 
-- (NSData *)dataForKey:(NSString *)key withError:(NSError *)error
+- (NSData *)dataForKey:(NSString *)key withError:(NSError **)error
 {
+    if(*error != NULL)
+    {
+        NSString *reason = [NSString stringWithFormat:@"The offline database has no value for the key %@",key];
+        *error = [MBXError errorWithCode:MBXMapKitErrorOfflineMapHasNoDataForKey reason:reason description:@"No offline data for key error"];
+    }
     return nil;
 }
 

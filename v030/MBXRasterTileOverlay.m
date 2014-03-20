@@ -7,6 +7,7 @@
 //
 
 #import "MBXRasterTileOverlay.h"
+#import "MBXError.h"
 
 
 #pragma mark -
@@ -403,12 +404,9 @@
 {
     // Return an appropriate NSError for any HTTP response other than 200.
     //
-    NSString *errorReason = [NSString stringWithFormat:@"HTTP status %li was received", (long)((NSHTTPURLResponse *)response).statusCode];
+    NSString *reason = [NSString stringWithFormat:@"HTTP status %li was received", (long)((NSHTTPURLResponse *)response).statusCode];
 
-    NSDictionary *userInfo = @{ NSLocalizedDescriptionKey        : NSLocalizedString(@"HTTP status error", nil),
-                                NSLocalizedFailureReasonErrorKey : NSLocalizedString(errorReason, nil) };
-
-    return [NSError errorWithDomain:MBXMapKitErrorDomain code:MBXMapKitErrorCodeHTTPStatus userInfo:userInfo];
+    return [MBXError errorWithCode:MBXMapKitErrorCodeHTTPStatus reason:reason description:@"HTTP status error"];
 }
 
 
@@ -416,12 +414,9 @@
 {
     // Return an appropriate NSError for to indicate that a JSON dictionary was missing important keys.
     //
-    NSString *errorReason = [NSString stringWithFormat:@"The %@ dictionary is missing important keys", dictionaryName];
+    NSString *reason = [NSString stringWithFormat:@"The %@ dictionary is missing important keys", dictionaryName];
 
-    NSDictionary *userInfo = @{ NSLocalizedDescriptionKey        : NSLocalizedString(@"Dictionary missing keys error", nil),
-                                NSLocalizedFailureReasonErrorKey : NSLocalizedString(errorReason, nil) };
-
-    return [NSError errorWithDomain:MBXMapKitErrorDomain code:MBXMapKitErrorCodeDictionaryMissingKeys userInfo:userInfo];
+    return [MBXError errorWithCode:MBXMapKitErrorCodeDictionaryMissingKeys reason:reason description:@"Dictionary missing keys error"];
 }
 
 
