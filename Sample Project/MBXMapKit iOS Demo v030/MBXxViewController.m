@@ -104,10 +104,6 @@
 
 - (void)resetMapViewAndRasterOverlayDefaults
 {
-    // Show the network activity spinner
-    //
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-
     // Reset the MKMapView to some reasonable defaults.
     //
     _mapView.mapType = MKMapTypeStandard;
@@ -124,6 +120,7 @@
     [_mapView removeAnnotations:_rasterOverlay.markers];
     [_mapView removeOverlay:_rasterOverlay];
     [_rasterOverlay invalidateAndCancel];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
 
@@ -137,6 +134,7 @@
         case 0:
             // OSM world map
             [self resetMapViewAndRasterOverlayDefaults];
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
             _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm"];
             _rasterOverlay.delegate = self;
             [_mapView addOverlay:_rasterOverlay];
@@ -145,6 +143,7 @@
             // OSM over Apple satellite
             [self resetMapViewAndRasterOverlayDefaults];
             _mapView.mapType = MKMapTypeSatellite;
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
             _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.map-9tlo4knw" metadata:YES markers:NO];
             _rasterOverlay.delegate = self;
             _rasterOverlay.canReplaceMapContent = NO;
@@ -153,6 +152,7 @@
         case 2:
             // Terrain under Apple labels
             [self resetMapViewAndRasterOverlayDefaults];
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
             _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.map-mf07hryq" metadata:YES markers:NO];
             _rasterOverlay.delegate = self;
             [_mapView insertOverlay:_rasterOverlay atIndex:0 level:MKOverlayLevelAboveRoads];
@@ -162,6 +162,7 @@
             [self resetMapViewAndRasterOverlayDefaults];
             _mapView.scrollEnabled = NO;
             _mapView.zoomEnabled = NO;
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
             _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.NACIS2012" metadata:YES markers:NO];
             _rasterOverlay.delegate = self;
             [_mapView addOverlay:_rasterOverlay];
@@ -169,6 +170,7 @@
         case 4:
             // Tilemill region over Apple
             [self resetMapViewAndRasterOverlayDefaults];
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
             _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.clp-2011-11-03-1200" metadata:YES markers:NO];
             _rasterOverlay.delegate = self;
             _rasterOverlay.canReplaceMapContent = NO;
@@ -177,6 +179,7 @@
         case 5:
             // Tilemill transparent over Apple
             [self resetMapViewAndRasterOverlayDefaults];
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
             _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.pdx_meters" metadata:YES markers:NO];
             _rasterOverlay.delegate = self;
             _rasterOverlay.canReplaceMapContent = NO;
@@ -185,7 +188,8 @@
         case 6:
             // Offline Map Downloader
             [self resetMapViewAndRasterOverlayDefaults];
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm" metadata:NO markers:NO];
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm" metadata:YES markers:NO];
             _rasterOverlay.delegate = self;
             [_mapView addOverlay:_rasterOverlay];
             _offlineMapDownloadControlsView.hidden = NO;
@@ -215,8 +219,8 @@
 
 
 - (IBAction)offlineMapButtonActionCancel:(id)sender {
-    NSString *title = @"Cancel?";
-    NSString *message = @"This action will discard the partially downloaded map data. Are you sure you want to cancel?";
+    NSString *title = @"Are you sure you want to cancel?";
+    NSString *message = @"Canceling an offline map download permanently deletes its partially downloaded map data. This action cannot be undone.";
     UIAlertView *areYouSure = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:nil otherButtonTitles:@"No", @"Yes", nil];
     [areYouSure show];
 
@@ -226,7 +230,7 @@
 {
     // For the are you sure you want to cancel alert dialog, do the cancel action if the answer was "Yes"
     //
-    if([alertView.title isEqualToString:@"Cancel?"])
+    if([alertView.title isEqualToString:@"Are you sure you want to cancel?"])
     {
         if([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Yes"])
         {
