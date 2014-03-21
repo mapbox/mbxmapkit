@@ -12,6 +12,12 @@
 #import "MBXOfflineMapDownloader.h"
 #import "MBXOfflineMapDatabase.h"
 
+// Uncommenting this define will enable logging messages for everything in the MKMapViewDelegate
+// protocol related to loading a map, for the purpose of helping to diagnose and work around MKMapKit bugs
+//
+#define ENABLE_VERBOSE_MKMAPVIEW_LOGGING
+
+
 @interface MBXxViewController ()
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
@@ -316,6 +322,10 @@
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay
 {
+#ifdef ENABLE_VERBOSE_MKMAPVIEW_LOGGING
+    NSLog(@"mapView:rendererForOverlay:");
+#endif
+
     // This is boilerplate code to connect tile overlay layers with suitable renderers
     //
     if ([overlay isKindOfClass:[MBXRasterTileOverlay class]])
@@ -329,6 +339,10 @@
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
+#ifdef ENABLE_VERBOSE_MKMAPVIEW_LOGGING
+    NSLog(@"mapView:viewForAnnotation:");
+#endif
+
     // This is boilerplate code to connect annotations with suitable views
     //
     if ([annotation isKindOfClass:[MBXPointAnnotation class]])
@@ -345,6 +359,58 @@
     }
     return nil;
 }
+
+
+#ifdef ENABLE_VERBOSE_MKMAPVIEW_LOGGING
+
+- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
+{
+    NSLog(@"mapView:regionWillChangeAnimated:");
+}
+
+- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
+{
+    NSLog(@"mapView:regionDidChangeAnimated:");
+}
+
+- (void)mapViewWillStartLoadingMap:(MKMapView *)mapView
+{
+    NSLog(@"mapViewWillStartLoadingMap:");
+}
+
+- (void)mapViewDidFinishLoadingMap:(MKMapView *)mapView
+{
+    NSLog(@"mapViewDidFinishLoadingMap:");
+}
+
+- (void)mapViewDidFailLoadingMap:(MKMapView *)mapView withError:(NSError *)error
+{
+    NSLog(@"mapViewDidFailLoadingMap:withError:");
+}
+
+- (void)mapViewWillStartRenderingMap:(MKMapView *)mapView
+{
+    NSLog(@"mapViewWillStartRenderingMap:");
+}
+
+- (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered
+{
+    NSLog(@"mapViewDidFinishRenderingMap:fullyRendered:");
+}
+
+- (void)mapView:(MKMapView *)mapView didAddOverlayRenderers:(NSArray *)renderers
+{
+    NSLog(@"mapView:didAddOverlayRenderers:");
+}
+
+- (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
+{
+    NSLog(@"mapView:didAddAnnotationViews:");
+}
+
+
+
+#endif
 
 
 #pragma mark - MBXRasterTileOverlayDelegate implementation
