@@ -16,7 +16,7 @@
 @property (weak) IBOutlet NSPopUpButton *popupButton;
 @property (weak) IBOutlet MKMapView *mapView;
 @property (nonatomic) MBXRasterTileOverlay *rasterOverlay;
-@property (weak) IBOutlet NSProgressIndicator *progressIndicator;
+@property (weak) IBOutlet NSProgressIndicator *networkInUseSpinner;
 
 @end
 
@@ -46,7 +46,7 @@
     _mapView.pitchEnabled = NO;
     _mapView.delegate = self;
 
-    [_progressIndicator startAnimation:self];
+    [_networkInUseSpinner startAnimation:self];
     _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm"];
     _rasterOverlay.delegate = self;
     [_mapView addOverlay:_rasterOverlay];
@@ -65,7 +65,7 @@
 {
     // Start the progress spinner
     //
-    [_progressIndicator startAnimation:self];
+    [_networkInUseSpinner startAnimation:self];
 
     // Reset the MKMapView to some reasonable defaults.
     //
@@ -226,7 +226,7 @@
 
 - (void)tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:(MBXRasterTileOverlay *)overlay
 {
-    [_progressIndicator stopAnimation:self];
+    [_networkInUseSpinner stopAnimation:self];
 }
 
 

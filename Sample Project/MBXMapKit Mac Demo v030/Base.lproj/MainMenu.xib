@@ -699,8 +699,8 @@
         <customObject id="494" customClass="MBXzAppDelegate">
             <connections>
                 <outlet property="mapView" destination="NvD-eI-ap1" id="kB9-j5-G3O"/>
+                <outlet property="networkInUseSpinner" destination="uAR-7B-utQ" id="oaw-LV-fJZ"/>
                 <outlet property="popupButton" destination="v7J-6P-d6g" id="ObD-Ve-hWx"/>
-                <outlet property="progressIndicator" destination="uAR-7B-utQ" id="p5E-tN-8CO"/>
                 <outlet property="window" destination="371" id="532"/>
             </connections>
         </customObject>

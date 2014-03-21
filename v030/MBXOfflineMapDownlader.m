@@ -7,6 +7,7 @@
 //
 
 #import "MBXOfflineMapDownloader.h"
+#import "MBXOfflineMapDatabase.h"
 
 
 #pragma mark -
@@ -20,6 +21,11 @@
 @property (readwrite, nonatomic) MBXOfflineMapDownloaderState state;
 
 @property (nonatomic) id<MBXOfflineMapDownloaderDelegate> delegate;
+
+@property (nonatomic) NSUInteger totalFilesWritten;
+@property (nonatomic) NSUInteger totalFilesExpectedToWrite;
+
+@property (nonatomic) NSTimer *fakeProgressTimer;
 
 @end
 
@@ -58,9 +64,57 @@
     return self;
 }
 
+- (void)notifyDelegateOfStateChange
+{
+    if([_delegate respondsToSelector:@selector(offlineMapDownloader:stateChangedTo:)])
+    {
+        [_delegate offlineMapDownloader:self stateChangedTo:_state];
+    }
+}
+
+
+- (void)fakeProgressTimerAction:(NSTimer *)timer
+{
+    if(_totalFilesWritten <= _totalFilesExpectedToWrite)
+    {
+        // Do some fake work
+        //
+        _totalFilesWritten += 1;
+    }
+
+    // Notify the delegate about our fake progress
+    //
+    if([_delegate respondsToSelector:@selector(offlineMapDownloader:totalFilesWritten:totalFilesExpectedToWrite:)])
+    {
+        [_delegate offlineMapDownloader:self totalFilesWritten:_totalFilesWritten totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
+    }
+
+    if(_totalFilesWritten >= _totalFilesExpectedToWrite)
+    {
+        // Fake work is complete, so clean up and notify the delegate
+        //
+        [timer invalidate];
+
+        if([_delegate respondsToSelector:@selector(offlineMapDownloader:didCompleteOfflineMapDatabase:withError:)])
+        {
+            MBXOfflineMapDatabase *mapDatabase = [[MBXOfflineMapDatabase alloc] init];
+            [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:mapDatabase withError:nil];
+        }
+
+        _state = MBXOfflineMapDownloaderStateAvailable;
+        [self notifyDelegateOfStateChange];
+    }
+}
+
+
 
 - (void)beginDownloadingMapID:(NSString *)mapID mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ
 {
+    // This assert might seem a little harsh, but your code that initiates these state changes needs to be really solid, or
+    // your UI is likely to get severely messed up in mysterious and frustrating ways (been there done that).
+    //
+    assert(_state == MBXOfflineMapDownloaderStateAvailable);
+
     // Start a download job to retrieve all the resources needed for using the specified map offline
     //
     _mapID = mapID;
@@ -68,47 +122,81 @@
     _minimumZ = minimumZ;
     _maximumZ = maximumZ;
     _state = MBXOfflineMapDownloaderStateRunning;
+    [self notifyDelegateOfStateChange];
+
+    // Fake like we're doing some work to facilitate testing the progress indicator GUI
+    //
+    _totalFilesExpectedToWrite = 100;
+    _totalFilesWritten = 0;
+    if([_delegate respondsToSelector:@selector(offlineMapDownloader:totalFilesExpectedToWrite:)])
+    {
+        [_delegate offlineMapDownloader:self totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
+    }
+
+    [_fakeProgressTimer invalidate];
+    _fakeProgressTimer = [NSTimer scheduledTimerWithTimeInterval:0.314 target:self selector:@selector(fakeProgressTimerAction:) userInfo:nil repeats:YES];
 }
 
 
 - (void)cancel
 {
+    // This assert might seem a little harsh, but your code that initiates these state changes needs to be really solid, or
+    // your UI is likely to get severely messed up in mysterious and frustrating ways (been there done that).
+    //
+    assert(_state == MBXOfflineMapDownloaderStateRunning || _state == MBXOfflineMapDownloaderStateSuspended);
+
     // Stop a download job and discard the associated files
     //
     _state = MBXOfflineMapDownloaderStateCanceling;
+    [self notifyDelegateOfStateChange];
+
+    // Stop the fake timer
+    //
+    [_fakeProgressTimer invalidate];
+
+    // Notify the delegate
+    //
+    if([_delegate respondsToSelector:@selector(offlineMapDownloader:didCompleteOfflineMapDatabase:withError:)])
+    {
+        NSError *canceled = [MBXError errorWithCode:MBXMapKitErrorDownloadingCanceled reason:@"The download job was canceled" description:@"Download canceled"];
+        [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:nil withError:canceled];
+    }
+
+    _state = MBXOfflineMapDownloaderStateAvailable;
+    [self notifyDelegateOfStateChange];
 }
 
 
 - (void)resume
 {
-    if(_state == MBXOfflineMapDownloaderStateSuspended)
-    {
-        // Resume a previously suspended download job
-        //
-        _state = MBXOfflineMapDownloaderStateRunning;
-    }
-    else
-    {
-        // Complain about how it isn't possible to resume unless there is a suspended download job
-        //
-        if([_delegate respondsToSelector:@selector(offlineMapDownloader:didCompleteOfflineMapDatabase:withError:)])
-        {
-            NSError *error = [MBXError errorWithCode:MBXMapKitErrorNothingToDo
-                                              reason:@"The offline map downloader can only resume when it has a suspended map download to finish, but it doesn't have one of those right now."
-                                         description:@"Nothing to do error"];
-            [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:nil withError:error];
-        }
-    }
+    // This assert might seem a little harsh, but your code that initiates these state changes needs to be really solid, or
+    // your UI is likely to get severely messed up in mysterious and frustrating ways (been there done that).
+    //
+    assert(_state == MBXOfflineMapDownloaderStateSuspended);
+
+    // Resume a previously suspended download job
+    //
+    [_fakeProgressTimer invalidate];
+    _fakeProgressTimer = [NSTimer scheduledTimerWithTimeInterval:0.314 target:self selector:@selector(fakeProgressTimerAction:) userInfo:nil repeats:YES];
+
+    _state = MBXOfflineMapDownloaderStateRunning;
+    [self notifyDelegateOfStateChange];
 }
 
 
 - (void)suspend
 {
+    // This assert might seem a little harsh, but your code that initiates these state changes needs to be really solid, or
+    // your UI is likely to get severely messed up in mysterious and frustrating ways (been there done that).
+    //
+    assert(_state == MBXOfflineMapDownloaderStateRunning);
+
     // Stop a download job and preserve the necessary state to resume later
     //
+    [_fakeProgressTimer invalidate];
     _state = MBXOfflineMapDownloaderStateSuspended;
+    [self notifyDelegateOfStateChange];
 }
-
 
 
 @end
