@@ -293,10 +293,8 @@
 
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader totalFilesExpectedToWrite:(NSUInteger)totalFilesExpectedToWrite
 {
-    dispatch_async(dispatch_get_main_queue(), ^(void){
-        [_offlineMapProgress setProgress:0.0 animated:NO];
-        _offlineMapProgressView.hidden = NO;
-    });
+    [_offlineMapProgress setProgress:0.0 animated:NO];
+    _offlineMapProgressView.hidden = NO;
 }
 
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader totalFilesWritten:(NSUInteger)totalFilesWritten totalFilesExpectedToWrite:(NSUInteger)totalFilesExpectedToWrite
@@ -304,17 +302,13 @@
     if (totalFilesExpectedToWrite != 0)
     {
         float progress = ((float)totalFilesWritten) / ((float)totalFilesExpectedToWrite);
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [_offlineMapProgress setProgress:progress animated:YES];
-        });
+        [_offlineMapProgress setProgress:progress animated:YES];
     }
 }
 
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader didCompleteOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase withError:(NSError *)error
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        _offlineMapProgressView.hidden = YES;
-    });
+    _offlineMapProgressView.hidden = YES;
 }
 
 
@@ -431,9 +425,7 @@
     {
         MKCoordinateRegion region = MKCoordinateRegionMake(overlay.center, MKCoordinateSpanMake(0, 360 / pow(2, overlay.centerZoom) * _mapView.frame.size.width / 256));
         
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [_mapView setRegion:region animated:NO];
-        });
+        [_mapView setRegion:region animated:NO];
     }
 }
 
@@ -451,9 +443,7 @@
     }
     else
     {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [_mapView addAnnotations:markers];
-        });
+        [_mapView addAnnotations:markers];
     }
 }
 

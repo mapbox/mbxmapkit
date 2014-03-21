@@ -68,7 +68,9 @@
 {
     if([_delegate respondsToSelector:@selector(offlineMapDownloader:stateChangedTo:)])
     {
-        [_delegate offlineMapDownloader:self stateChangedTo:_state];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_delegate offlineMapDownloader:self stateChangedTo:_state];
+        });
     }
 }
 
@@ -86,7 +88,9 @@
     //
     if([_delegate respondsToSelector:@selector(offlineMapDownloader:totalFilesWritten:totalFilesExpectedToWrite:)])
     {
-        [_delegate offlineMapDownloader:self totalFilesWritten:_totalFilesWritten totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_delegate offlineMapDownloader:self totalFilesWritten:_totalFilesWritten totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
+        });
     }
 
     if(_totalFilesWritten >= _totalFilesExpectedToWrite)
@@ -98,7 +102,9 @@
         if([_delegate respondsToSelector:@selector(offlineMapDownloader:didCompleteOfflineMapDatabase:withError:)])
         {
             MBXOfflineMapDatabase *mapDatabase = [[MBXOfflineMapDatabase alloc] init];
-            [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:mapDatabase withError:nil];
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:mapDatabase withError:nil];
+            });
         }
 
         _state = MBXOfflineMapDownloaderStateAvailable;
@@ -130,7 +136,9 @@
     _totalFilesWritten = 0;
     if([_delegate respondsToSelector:@selector(offlineMapDownloader:totalFilesExpectedToWrite:)])
     {
-        [_delegate offlineMapDownloader:self totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_delegate offlineMapDownloader:self totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
+        });
     }
 
     [_fakeProgressTimer invalidate];
@@ -159,7 +167,9 @@
     if([_delegate respondsToSelector:@selector(offlineMapDownloader:didCompleteOfflineMapDatabase:withError:)])
     {
         NSError *canceled = [MBXError errorWithCode:MBXMapKitErrorDownloadingCanceled reason:@"The download job was canceled" description:@"Download canceled"];
-        [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:nil withError:canceled];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:nil withError:canceled];
+        });
     }
 
     _state = MBXOfflineMapDownloaderStateAvailable;

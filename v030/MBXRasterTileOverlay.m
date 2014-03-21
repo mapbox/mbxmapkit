@@ -266,11 +266,15 @@
             // the fact that some of the markers probably didn't load properly.
             //
             _markerIconLoaderMayInitiateDelegateCallback = NO;
-            [_delegate tileOverlay:self didLoadMarkers:nil withError:error];
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                [_delegate tileOverlay:self didLoadMarkers:nil withError:error];
+            });
 
             _didFinishLoadingMarkers = YES;
             if(_didFinishLoadingMetadata) {
-                [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
+                });
             }
         }
         else
@@ -309,11 +313,15 @@
         if(_markerIconLoaderMayInitiateDelegateCallback && _activeMarkerIconRequests <= 0)
         {
             _markers = [NSArray arrayWithArray:_mutableMarkers];
-            [_delegate tileOverlay:self didLoadMarkers:_markers withError:error];
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                [_delegate tileOverlay:self didLoadMarkers:_markers withError:error];
+            });
 
             _didFinishLoadingMarkers = YES;
             if(_didFinishLoadingMetadata) {
-                [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
+                });
             }
         }
     };
@@ -356,11 +364,15 @@
     //
     void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
     {
-        [_delegate tileOverlay:self didLoadMetadata:_tileJSONDictionary withError:error];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_delegate tileOverlay:self didLoadMetadata:_tileJSONDictionary withError:error];
+        });
 
         _didFinishLoadingMetadata = YES;
         if(_didFinishLoadingMarkers) {
-            [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
+            });
         }
     };
 
