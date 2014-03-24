@@ -12,11 +12,6 @@
 #import "MBXOfflineMapDownloader.h"
 #import "MBXOfflineMapDatabase.h"
 
-// Uncommenting this define will enable logging messages for everything in the MKMapViewDelegate
-// protocol related to loading a map, for the purpose of helping to diagnose and work around MKMapKit bugs
-//
-#define ENABLE_VERBOSE_MKMAPVIEW_LOGGING
-
 
 @interface MBXxViewController ()
 
@@ -31,6 +26,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *offlineMapButtonBegin;
 @property (weak, nonatomic) IBOutlet UIButton *offlineMapButtonCancel;
 @property (weak, nonatomic) IBOutlet UIButton *offlineMapButtonSuspendResume;
+
+@property (nonatomic) BOOL viewHasFinishedLoading;
 
 @end
 
@@ -69,6 +66,10 @@
     _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm"];
     _rasterOverlay.delegate = self;
     [_mapView addOverlay:_rasterOverlay];
+
+    // This enables us to assert that delegate callbacks aren't getting called before initialization is complete
+    //
+    _viewHasFinishedLoading = YES;
 }
 
 
@@ -262,6 +263,9 @@
 
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader stateChangedTo:(MBXOfflineMapDownloaderState)state
 {
+    assert([NSThread isMainThread]);
+    assert(_viewHasFinishedLoading);
+
     switch (state)
     {
         case MBXOfflineMapDownloaderStateAvailable:
@@ -293,12 +297,18 @@
 
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader totalFilesExpectedToWrite:(NSUInteger)totalFilesExpectedToWrite
 {
+    assert([NSThread isMainThread]);
+    assert(_viewHasFinishedLoading);
+
     [_offlineMapProgress setProgress:0.0 animated:NO];
     _offlineMapProgressView.hidden = NO;
 }
 
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader totalFilesWritten:(NSUInteger)totalFilesWritten totalFilesExpectedToWrite:(NSUInteger)totalFilesExpectedToWrite
 {
+    assert([NSThread isMainThread]);
+    assert(_viewHasFinishedLoading);
+
     if (totalFilesExpectedToWrite != 0)
     {
         float progress = ((float)totalFilesWritten) / ((float)totalFilesExpectedToWrite);
@@ -308,6 +318,9 @@
 
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader didCompleteOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase withError:(NSError *)error
 {
+    assert([NSThread isMainThread]);
+    assert(_viewHasFinishedLoading);
+
     _offlineMapProgressView.hidden = YES;
 }
 
@@ -316,10 +329,6 @@
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay
 {
-#ifdef ENABLE_VERBOSE_MKMAPVIEW_LOGGING
-    NSLog(@"mapView:rendererForOverlay:");
-#endif
-
     // This is boilerplate code to connect tile overlay layers with suitable renderers
     //
     if ([overlay isKindOfClass:[MBXRasterTileOverlay class]])
@@ -333,10 +342,6 @@
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
-#ifdef ENABLE_VERBOSE_MKMAPVIEW_LOGGING
-    NSLog(@"mapView:viewForAnnotation:");
-#endif
-
     // This is boilerplate code to connect annotations with suitable views
     //
     if ([annotation isKindOfClass:[MBXPointAnnotation class]])
@@ -355,69 +360,16 @@
 }
 
 
-#ifdef ENABLE_VERBOSE_MKMAPVIEW_LOGGING
-
-- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
-{
-    NSLog(@"mapView:regionWillChangeAnimated:");
-}
-
-- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
-{
-    NSLog(@"mapView:regionDidChangeAnimated:");
-}
-
-- (void)mapViewWillStartLoadingMap:(MKMapView *)mapView
-{
-    NSLog(@"mapViewWillStartLoadingMap:");
-}
-
-- (void)mapViewDidFinishLoadingMap:(MKMapView *)mapView
-{
-    NSLog(@"mapViewDidFinishLoadingMap:");
-}
-
-- (void)mapViewDidFailLoadingMap:(MKMapView *)mapView withError:(NSError *)error
-{
-    NSLog(@"mapViewDidFailLoadingMap:withError:");
-}
-
-- (void)mapViewWillStartRenderingMap:(MKMapView *)mapView
-{
-    NSLog(@"mapViewWillStartRenderingMap:");
-}
-
-- (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered
-{
-    NSLog(@"mapViewDidFinishRenderingMap:fullyRendered:");
-}
-
-- (void)mapView:(MKMapView *)mapView didAddOverlayRenderers:(NSArray *)renderers
-{
-    NSLog(@"mapView:didAddOverlayRenderers:");
-}
-
-- (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
-{
-    NSLog(@"mapView:didAddAnnotationViews:");
-}
-
-
-
-#endif
-
-
 #pragma mark - MBXRasterTileOverlayDelegate implementation
 
 - (void)tileOverlay:(MBXRasterTileOverlay *)overlay didLoadMetadata:(NSDictionary *)metadata withError:(NSError *)error
 {
+    assert(_mapView);
+    assert([NSThread isMainThread]);
+
     // This delegate callback is for centering the map once the map metadata has been loaded
     //
-    if (!_mapView)
-    {
-        NSLog(@"Warning: the mapView property is not set (didLoadMetadata:)");
-    }
-    else if (error)
+    if (error)
     {
         NSLog(@"Failed to load metadata for map ID %@ - (%@)", overlay.mapID, error?error:@"");
     }
@@ -432,12 +384,12 @@
 
 - (void)tileOverlay:(MBXRasterTileOverlay *)overlay didLoadMarkers:(NSArray *)markers withError:(NSError *)error
 {
+    assert(_mapView);
+    assert([NSThread isMainThread]);
+
     // This delegate callback is for adding map markers to an MKMapView once all the markers for the tile overlay have loaded
     //
-    if(!_mapView) {
-        NSLog(@"Warning: the mapView property is not set (didLoadMarker:)");
-    }
-    else if (error)
+    if (error)
     {
         NSLog(@"Failed to load markers for map ID %@ - (%@)", overlay.mapID, error?error:@"");
     }
@@ -449,6 +401,8 @@
 
 - (void)tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:(MBXRasterTileOverlay *)overlay
 {
+    assert([NSThread isMainThread]);
+
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
