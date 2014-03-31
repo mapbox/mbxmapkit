@@ -11,6 +11,6 @@ Requirements:
 
 [![](https://raw.github.com/mapbox/mbxmapkit/packaging/screenshot.png)]()
 
-Check out the [overview guide](http://mapbox.com/mbxmapkit/) or the [API docs](http://mapbox.com/mbxmapkit/api/) for more details. 
+Check out the [overview guide](http://mapbox.com/mbxmapkit/) for more details. 
 
 You might also be interested in the [Mapbox iOS SDK](http://mapbox.com/mapbox-ios-sdk/), which is a ground-up rewrite meant as a replacement for Apple's MapKit, not based on it. If you've always wished MapKit was open source for complete customizability, the Mapbox iOS SDK is for you. 
