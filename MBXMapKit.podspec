@@ -18,7 +18,7 @@ Pod::Spec.new do |m|
 
   m.requires_arc = true
 
-  m.documentation_url = 'https://www.mapbox.com/mbxmapkit/api/'
+  m.documentation_url = 'https://www.mapbox.com/mbxmapkit'
 
   m.framework = 'MapKit'
 
