@@ -650,10 +650,11 @@
         <window title="MBXMapKit Mac Demo v030" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="335" y="390" width="480" height="360"/>
+            <rect key="contentRect" x="335" y="390" width="719" height="360"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <value key="minSize" type="size" width="719" height="360"/>
             <view key="contentView" id="372">
-                <rect key="frame" x="0.0" y="0.0" width="480" height="360"/>
+                <rect key="frame" x="0.0" y="0.0" width="719" height="360"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="v7J-6P-d6g">
@@ -678,11 +679,51 @@
                         </connections>
                     </popUpButton>
                     <mapView translatesAutoresizingMaskIntoConstraints="NO" id="NvD-eI-ap1">
-                        <rect key="frame" x="0.0" y="0.0" width="480" height="330"/>
+                        <rect key="frame" x="0.0" y="0.0" width="719" height="330"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     </mapView>
                     <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="uAR-7B-utQ">
                         <rect key="frame" x="271" y="336" width="16" height="16"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    </progressIndicator>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZDE-uH-fuO">
+                        <rect key="frame" x="455" y="327" width="75" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Begin" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="I96-XA-98D">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="beginButtonAction:" target="494" id="BXv-nr-GFb"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bcz-cs-hpU">
+                        <rect key="frame" x="530" y="327" width="82" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="aU3-vG-0Ic">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cancelButtonAction:" target="494" id="f4Q-DU-oH9"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NF4-AT-CLy">
+                        <rect key="frame" x="612" y="327" width="93" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Suspend" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4Mx-JN-Kza">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="suspendResumeButtonAction:" target="494" id="VKh-k1-Yhq"/>
+                        </connections>
+                    </button>
+                    <progressIndicator fixedFrame="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="R5a-9G-tJ0">
+                        <rect key="frame" x="304" y="334" width="149" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     </progressIndicator>
                 </subviews>
@@ -700,6 +741,10 @@
             <connections>
                 <outlet property="mapView" destination="NvD-eI-ap1" id="kB9-j5-G3O"/>
                 <outlet property="networkInUseSpinner" destination="uAR-7B-utQ" id="oaw-LV-fJZ"/>
+                <outlet property="offlineMapButtonBegin" destination="ZDE-uH-fuO" id="2nO-gN-H7o"/>
+                <outlet property="offlineMapButtonCancel" destination="bcz-cs-hpU" id="dRB-Gk-5KQ"/>
+                <outlet property="offlineMapButtonSuspendResume" destination="NF4-AT-CLy" id="PfT-KS-P8X"/>
+                <outlet property="offlineMapProgress" destination="R5a-9G-tJ0" id="HhR-oL-R1h"/>
                 <outlet property="popupButton" destination="v7J-6P-d6g" id="ObD-Ve-hWx"/>
                 <outlet property="window" destination="371" id="532"/>
             </connections>

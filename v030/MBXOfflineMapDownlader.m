@@ -116,9 +116,6 @@
 
 - (void)beginDownloadingMapID:(NSString *)mapID mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ
 {
-    // This assert might seem a little harsh, but your code that initiates these state changes needs to be really solid, or
-    // your UI is likely to get severely messed up in mysterious and frustrating ways (been there done that).
-    //
     assert(_state == MBXOfflineMapDownloaderStateAvailable);
 
     // Start a download job to retrieve all the resources needed for using the specified map offline
@@ -148,9 +145,6 @@
 
 - (void)cancel
 {
-    // This assert might seem a little harsh, but your code that initiates these state changes needs to be really solid, or
-    // your UI is likely to get severely messed up in mysterious and frustrating ways (been there done that).
-    //
     assert(_state == MBXOfflineMapDownloaderStateRunning || _state == MBXOfflineMapDownloaderStateSuspended);
 
     // Stop a download job and discard the associated files
@@ -179,9 +173,6 @@
 
 - (void)resume
 {
-    // This assert might seem a little harsh, but your code that initiates these state changes needs to be really solid, or
-    // your UI is likely to get severely messed up in mysterious and frustrating ways (been there done that).
-    //
     assert(_state == MBXOfflineMapDownloaderStateSuspended);
 
     // Resume a previously suspended download job
@@ -196,9 +187,6 @@
 
 - (void)suspend
 {
-    // This assert might seem a little harsh, but your code that initiates these state changes needs to be really solid, or
-    // your UI is likely to get severely messed up in mysterious and frustrating ways (been there done that).
-    //
     assert(_state == MBXOfflineMapDownloaderStateRunning);
 
     // Stop a download job and preserve the necessary state to resume later

@@ -212,7 +212,8 @@
 
 #pragma mark - Offline map download controls
 
-- (IBAction)offlineMapButtonActionHelp:(id)sender {
+- (IBAction)offlineMapButtonActionHelp:(id)sender
+{
     NSString *title = @"Offline Map Downloader Help";
     NSString *message = @"Arrange the map to show the region you want to download for offline use, then press [Begin]. [Suspend] stops the downloading in such a way that you can [Resume] it later. [Cancel] stops the download and discards the partially downloaded files.";
     UIAlertView *help = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
@@ -220,18 +221,19 @@
 }
 
 
-- (IBAction)offlineMapButtonActionBegin:(id)sender {
+- (IBAction)offlineMapButtonActionBegin:(id)sender
+{
     [[MBXOfflineMapDownloader sharedOfflineMapDownloader] beginDownloadingMapID:_rasterOverlay.mapID mapRegion:_mapView.region minimumZ:_rasterOverlay.minimumZ maximumZ:_rasterOverlay.maximumZ];
 }
 
 
-- (IBAction)offlineMapButtonActionCancel:(id)sender {
+- (IBAction)offlineMapButtonActionCancel:(id)sender
+{
     NSString *title = @"Are you sure you want to cancel?";
     NSString *message = @"Canceling an offline map download permanently deletes its partially downloaded map data. This action cannot be undone.";
     UIAlertView *areYouSure = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:nil otherButtonTitles:@"No", @"Yes", nil];
     [areYouSure show];
-
-    }
+}
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {

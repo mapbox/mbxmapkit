@@ -18,6 +18,11 @@
 @property (nonatomic) MBXRasterTileOverlay *rasterOverlay;
 @property (weak) IBOutlet NSProgressIndicator *networkInUseSpinner;
 
+@property (weak) IBOutlet NSButton *offlineMapButtonBegin;
+@property (weak) IBOutlet NSButton *offlineMapButtonCancel;
+@property (weak) IBOutlet NSButton *offlineMapButtonSuspendResume;
+@property (weak) IBOutlet NSProgressIndicator *offlineMapProgress;
+
 @end
 
 @implementation MBXzAppDelegate
@@ -53,9 +58,20 @@
 
     // Configure the popup button for selecting which map to show
     //
-    NSArray *titles = [NSArray arrayWithObjects:@"OSM world map",@"OSM over Apple satellite",@"Terrain under Apple labels",@"Tilemill bounded region",@"Tilemill region over Apple",@"Tilemill transparent over Apple", nil];
+    NSArray *titles = [NSArray arrayWithObjects:@"OSM world map",@"OSM over Apple satellite",@"Terrain under Apple labels",@"Tilemill bounded region",@"Tilemill region over Apple",@"Tilemill transparent over Apple", @"Offline Map Downloader", @"Offline Map Viewer", nil];
     [_popupButton removeAllItems];
     [_popupButton addItemsWithTitles:titles];
+
+
+    // Configure the offline map download controls and progress bar
+    [_offlineMapButtonBegin setHidden:YES];
+    [_offlineMapButtonCancel setHidden:YES];
+    [_offlineMapButtonSuspendResume setHidden:YES];
+    [_offlineMapProgress setHidden:YES];
+    [[MBXOfflineMapDownloader sharedOfflineMapDownloader] setDelegate:self];
+    [_offlineMapProgress setMinValue:0.0];
+    [_offlineMapProgress setMaxValue:1.0];
+    [_offlineMapProgress setDoubleValue:0.0];
 }
 
 
@@ -82,6 +98,11 @@
     [_mapView removeAnnotations:_rasterOverlay.markers];
     [_mapView removeOverlay:_rasterOverlay];
     [_rasterOverlay invalidateAndCancel];
+
+    // Hide offline map download controls
+    [_offlineMapButtonBegin setHidden:YES];
+    [_offlineMapButtonCancel setHidden:YES];
+    [_offlineMapButtonSuspendResume setHidden:YES];
 }
 
 
@@ -140,9 +161,119 @@
                 _rasterOverlay.canReplaceMapContent = NO;
                 [_mapView addOverlay:_rasterOverlay];
                 break;
+            case 6:
+                // Offline Map Downloader
+                [self resetMapViewAndRasterOverlayDefaults];
+                _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm" metadata:YES markers:NO];
+                _rasterOverlay.delegate = self;
+                [_mapView addOverlay:_rasterOverlay];
+                [_offlineMapButtonBegin setHidden:NO];
+                [_offlineMapButtonCancel setHidden:NO];
+                [_offlineMapButtonSuspendResume setHidden:NO];
+                [self offlineMapDownloader:[MBXOfflineMapDownloader sharedOfflineMapDownloader] stateChangedTo:[[MBXOfflineMapDownloader sharedOfflineMapDownloader] state]];
+                break;
+            case 7:
+                // Offline Map Viewer
+                [self resetMapViewAndRasterOverlayDefaults];
+                break;
         }
     }
 }
+
+
+#pragma mark - Offline map download controls
+
+- (IBAction)beginButtonAction:(NSButton *)sender {
+    [[MBXOfflineMapDownloader sharedOfflineMapDownloader] beginDownloadingMapID:_rasterOverlay.mapID mapRegion:_mapView.region minimumZ:_rasterOverlay.minimumZ maximumZ:_rasterOverlay.maximumZ];
+}
+
+
+- (IBAction)cancelButtonAction:(NSButton *)sender {
+    NSString *title = @"Are you sure you want to cancel?";
+    NSString *message = @"Canceling an offline map download permanently deletes its partially downloaded map data. This action cannot be undone.";
+    NSAlert *areYouSure = [NSAlert alertWithMessageText:title defaultButton:@"No" alternateButton:@"Yes" otherButton:nil informativeTextWithFormat:message,nil];
+    [areYouSure setAlertStyle:NSWarningAlertStyle];
+    if([areYouSure runModal] == NSAlertAlternateReturn)
+    {
+        // Alternate choice = "yes, I'm sure I want to cancel"
+        [[MBXOfflineMapDownloader sharedOfflineMapDownloader] cancel];
+    }
+}
+
+
+- (IBAction)suspendResumeButtonAction:(NSButton *)sender {
+    if ([[MBXOfflineMapDownloader sharedOfflineMapDownloader] state] == MBXOfflineMapDownloaderStateSuspended)
+    {
+        [[MBXOfflineMapDownloader sharedOfflineMapDownloader] resume];
+    }
+    else
+    {
+        [[MBXOfflineMapDownloader sharedOfflineMapDownloader] suspend];
+    }
+}
+
+
+#pragma mark - Offline map progress indicator
+
+- (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader stateChangedTo:(MBXOfflineMapDownloaderState)state
+{
+    assert([NSThread isMainThread]);
+
+    switch (state)
+    {
+        case MBXOfflineMapDownloaderStateAvailable:
+            _offlineMapButtonBegin.enabled = YES;
+            _offlineMapButtonCancel.enabled = NO;
+            [_offlineMapButtonSuspendResume setTitle:@"Suspend"];
+            _offlineMapButtonSuspendResume.enabled = NO;
+            break;
+        case MBXOfflineMapDownloaderStateRunning:
+            _offlineMapButtonBegin.enabled = NO;
+            _offlineMapButtonCancel.enabled = YES;
+            [_offlineMapButtonSuspendResume setTitle:@"Suspend"];
+            _offlineMapButtonSuspendResume.enabled = YES;
+            break;
+        case MBXOfflineMapDownloaderStateCanceling:
+            _offlineMapButtonBegin.enabled = NO;
+            _offlineMapButtonCancel.enabled = NO;
+            [_offlineMapButtonSuspendResume setTitle:@"Suspend"];
+            _offlineMapButtonSuspendResume.enabled = NO;
+            break;
+        case MBXOfflineMapDownloaderStateSuspended:
+            _offlineMapButtonBegin.enabled = NO;
+            _offlineMapButtonCancel.enabled = YES;
+            [_offlineMapButtonSuspendResume setTitle:@"Resume"];
+            _offlineMapButtonSuspendResume.enabled = YES;
+            break;
+    }
+}
+
+- (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader totalFilesExpectedToWrite:(NSUInteger)totalFilesExpectedToWrite
+{
+    assert([NSThread isMainThread]);
+
+    [_offlineMapProgress setDoubleValue:0.0];
+    [_offlineMapProgress setHidden:NO];
+}
+
+- (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader totalFilesWritten:(NSUInteger)totalFilesWritten totalFilesExpectedToWrite:(NSUInteger)totalFilesExpectedToWrite
+{
+    assert([NSThread isMainThread]);
+
+    if (totalFilesExpectedToWrite != 0)
+    {
+        float progress = ((float)totalFilesWritten) / ((float)totalFilesExpectedToWrite);
+        [_offlineMapProgress setDoubleValue:progress];
+    }
+}
+
+- (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader didCompleteOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase withError:(NSError *)error
+{
+    assert([NSThread isMainThread]);
+
+    [_offlineMapProgress setHidden:YES];
+}
+
 
 
 #pragma mark - MKMapViewDelegate protocol implementation

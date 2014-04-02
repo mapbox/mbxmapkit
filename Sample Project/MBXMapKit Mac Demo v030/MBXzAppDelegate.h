@@ -9,8 +9,9 @@
 #import <Cocoa/Cocoa.h>
 #import <MapKit/MapKit.h>
 #import "MBXRasterTileOverlay.h"
+#import "MBXOfflineMapDownloader.h"
 
-@interface MBXzAppDelegate : NSObject <NSApplicationDelegate, MKMapViewDelegate, MBXRasterTileOverlayDelegate>
+@interface MBXzAppDelegate : NSObject <NSApplicationDelegate, MKMapViewDelegate, MBXRasterTileOverlayDelegate, MBXOfflineMapDownloaderDelegate>
 
 @property (assign) IBOutlet NSWindow *window;
 
