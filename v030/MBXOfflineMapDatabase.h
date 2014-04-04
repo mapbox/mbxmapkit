@@ -28,6 +28,6 @@
 
 - (id)initWithContentsOfFile:(NSString *)path;
 
-- (NSData *)dataForKey:(NSString *)key withError:(NSError **)error;
+- (NSData *)dataForURL:(NSURL *)url withError:(NSError **)error;
 
 @end

@@ -26,6 +26,8 @@
 		014DA20418C45AE000AB33F8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 014DA20318C45AE000AB33F8 /* Images.xcassets */; };
 		014DA22218C45B8400AB33F8 /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */; };
 		014DA22818C45B8400AB33F8 /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BCB22718C43CEA00AD5C27 /* MBXPointAnnotation.m */; };
+		015C9F0C18EF1D8000F05D5B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 015C9F0B18EF1D8000F05D5B /* libsqlite3.dylib */; };
+		015C9F0E18EF1D8D00F05D5B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 015C9F0D18EF1D8D00F05D5B /* libsqlite3.dylib */; };
 		01AE443418DA861C00870BAF /* MBXError.m in Sources */ = {isa = PBXBuildFile; fileRef = 01AE443318DA861C00870BAF /* MBXError.m */; };
 		01AE443518DA861C00870BAF /* MBXError.m in Sources */ = {isa = PBXBuildFile; fileRef = 01AE443318DA861C00870BAF /* MBXError.m */; };
 		01B36D7918DA17C200019255 /* MBXOfflineMapDownlader.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B36D7818DA17C200019255 /* MBXOfflineMapDownlader.m */; };
@@ -85,6 +87,8 @@
 		014DA20018C45AE000AB33F8 /* MBXxViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXxViewController.h; sourceTree = "<group>"; };
 		014DA20118C45AE000AB33F8 /* MBXxViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MBXxViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		014DA20318C45AE000AB33F8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		015C9F0B18EF1D8000F05D5B /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		015C9F0D18EF1D8D00F05D5B /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
 		01AE443218DA861C00870BAF /* MBXError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXError.h; sourceTree = "<group>"; };
 		01AE443318DA861C00870BAF /* MBXError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXError.m; sourceTree = "<group>"; };
 		01B36D7718DA17C200019255 /* MBXOfflineMapDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXOfflineMapDownloader.h; sourceTree = "<group>"; };
@@ -128,6 +132,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				015C9F0E18EF1D8D00F05D5B /* libsqlite3.dylib in Frameworks */,
 				01DCA2F118CFAABA002E5125 /* MapKit.framework in Frameworks */,
 				0112ACE118C8F2DF00DD495C /* Cocoa.framework in Frameworks */,
 			);
@@ -137,6 +142,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				015C9F0C18EF1D8000F05D5B /* libsqlite3.dylib in Frameworks */,
 				014DA1EB18C45AE000AB33F8 /* CoreGraphics.framework in Frameworks */,
 				014DA1ED18C45AE000AB33F8 /* UIKit.framework in Frameworks */,
 				014DA1E918C45AE000AB33F8 /* Foundation.framework in Frameworks */,
@@ -203,6 +209,8 @@
 		014DA1E718C45AE000AB33F8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				015C9F0D18EF1D8D00F05D5B /* libsqlite3.dylib */,
+				015C9F0B18EF1D8000F05D5B /* libsqlite3.dylib */,
 				01DCA2EF18CFAA77002E5125 /* MapKit.framework */,
 				014DA1E818C45AE000AB33F8 /* Foundation.framework */,
 				014DA1EA18C45AE000AB33F8 /* CoreGraphics.framework */,

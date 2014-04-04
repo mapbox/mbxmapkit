@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 MapBox. All rights reserved.
 //
 
+#import <sqlite3.h>
 #import "MBXError.h"
 #import "MBXOfflineMapDownloader.h"
 #import "MBXOfflineMapDatabase.h"
@@ -78,6 +79,7 @@
         //
         _state = MBXOfflineMapDownloaderStateAvailable;
         _mutableOfflineMapDatabases = [[NSMutableArray alloc] init];
+        [_mutableOfflineMapDatabases addObject:[[MBXOfflineMapDatabase alloc] initWithContentsOfFile:@"foo"]];
     }
 
     return self;

@@ -408,7 +408,7 @@
         // If an offline map database is configured for this overlay, use the database to fetch data for URLs
         //
         NSError *error;
-        NSData *data = [_offlineMapDatabase dataForKey:[url absoluteString] withError:&error];
+        NSData *data = [_offlineMapDatabase dataForURL:url withError:&error];
         if(!error)
         {
             // Since the URL was successfully retrieved, invoke the block to process its data

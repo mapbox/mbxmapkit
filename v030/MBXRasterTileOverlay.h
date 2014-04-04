@@ -14,14 +14,14 @@
 #pragma mark - Image quality constants
 
 typedef NS_ENUM(NSUInteger, MBXRasterImageQuality) {
-    MBXRasterImageQualityFull,   // default
-    MBXRasterImageQualityPNG32,  // 32 color indexed PNG
-    MBXRasterImageQualityPNG64,  // 64 color indexed PNG
-    MBXRasterImageQualityPNG128, // 128 color indexed PNG
-    MBXRasterImageQualityPNG256, // 256 color indexed PNG
-    MBXRasterImageQualityJPEG70, // 70% quality JPEG
-    MBXRasterImageQualityJPEG80, // 80% quality JPEG
-    MBXRasterImageQualityJPEG90  // 90% quality JPEG
+    MBXRasterImageQualityFull = 0,   // default
+    MBXRasterImageQualityPNG32 = 1,  // 32 color indexed PNG
+    MBXRasterImageQualityPNG64 = 2,  // 64 color indexed PNG
+    MBXRasterImageQualityPNG128 = 3, // 128 color indexed PNG
+    MBXRasterImageQualityPNG256 = 4, // 256 color indexed PNG
+    MBXRasterImageQualityJPEG70 = 5, // 70% quality JPEG
+    MBXRasterImageQualityJPEG80 = 6, // 80% quality JPEG
+    MBXRasterImageQualityJPEG90 = 7  // 90% quality JPEG
 };
 
 
