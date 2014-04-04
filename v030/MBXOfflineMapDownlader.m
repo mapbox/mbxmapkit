@@ -26,6 +26,7 @@
 @property (readwrite, nonatomic) MBXOfflineMapDownloaderState state;
 
 @property (nonatomic) NSMutableArray *mutableOfflineMapDatabases;
+@property (nonatomic) NSString *partialDatabasePath;
 @property (nonatomic) NSURL *offlineMapDirectory;
 
 @property (nonatomic) id<MBXOfflineMapDownloaderDelegate> delegate;
@@ -88,14 +89,50 @@
             result = [fm createDirectoryAtURL:_offlineMapDirectory withIntermediateDirectories:YES attributes:nil error:&error];
             [_offlineMapDirectory setResourceValues:@{NSURLIsExcludedFromBackupKey:@YES} error:nil];
 
-            NSLog(@"\n%@\n%@",[_offlineMapDirectory absoluteString],[_offlineMapDirectory resourceValuesForKeys:@[NSURLIsExcludedFromBackupKey] error:nil]);
+            //NSLog(@"\n%@\n%@",[_offlineMapDirectory absoluteString],[_offlineMapDirectory resourceValuesForKeys:@[NSURLIsExcludedFromBackupKey] error:nil]);
+        }
+
+        // Restore persistent state from disk
+        //
+        _mutableOfflineMapDatabases = [[NSMutableArray alloc] init];
+        NSMutableArray *partialDatabasePaths = [[NSMutableArray alloc] init];
+        NSArray *files = [fm contentsOfDirectoryAtPath:[_offlineMapDirectory absoluteString] error:nil];
+        if (files)
+        {
+            MBXOfflineMapDatabase *db;
+            for(NSString *path in files)
+            {
+                // Find the completed map databases
+                //
+                if([path hasSuffix:@".complete"])
+                {
+                    db = [[MBXOfflineMapDatabase alloc] initWithContentsOfFile:path];
+                    if(db)
+                    {
+                        [_mutableOfflineMapDatabases addObject:db];
+                    }
+                    else
+                    {
+                        NSLog(@"Error: %@ is not a valid offline map database",path);
+                    }
+                }
+
+                // Find the partial map databases (there should be only one unless something has gone seriously wrong)
+                //
+                if([path hasSuffix:@".partial"])
+                {
+                    [partialDatabasePaths addObject:path];
+                }
+                assert([partialDatabasePaths count] <= 1);
+                _partialDatabasePath = [partialDatabasePaths lastObject];
+            }
         }
 
         //
-        // TODO: Restore persistent state from disk, or if the offline map directory doesn't exist, set up the directory.
+        // TODO: Resume downloading partial offline map database if there was a suspended one on disk
         //
+
         _state = MBXOfflineMapDownloaderStateAvailable;
-        _mutableOfflineMapDatabases = [[NSMutableArray alloc] init];
     }
 
     return self;

@@ -41,21 +41,48 @@
     {
         _path = path;
 
-        _mapID =     [self sqliteMetadataForName:@"mapID"];
-        _metadata = [[self sqliteMetadataForName:@"metadata"] boolValue];
-        _markers =  [[self sqliteMetadataForName:@"markers"] boolValue];
+        NSString *mapID = [self sqliteMetadataForName:@"mapID"];
+        NSString *metadata = [self sqliteMetadataForName:@"metadata"];
+        NSString *markers = [self sqliteMetadataForName:@"markers"];
+        NSString *imageQuality = [self sqliteMetadataForName:@"imageQuality"];
+        NSString *region_latitude = [self sqliteMetadataForName:@"region_latitude"];
+        NSString *region_longitude = [self sqliteMetadataForName:@"region_longitude"];
+        NSString *region_latitude_delta = [self sqliteMetadataForName:@"region_latitude_delta"];
+        NSString *region_longitude_delta = [self sqliteMetadataForName:@"region_longitude_delta"];
+        NSString *minimumZ = [self sqliteMetadataForName:@"minimumZ"];
+        NSString *maximumZ = [self sqliteMetadataForName:@"maximumZ"];
 
-        _imageQuality = (MBXRasterImageQuality)[[self sqliteMetadataForName:@"imageQuality"] integerValue];
+        if (mapID &&  metadata && markers && imageQuality
+            && region_latitude && region_longitude && region_latitude_delta && region_longitude_delta
+            && minimumZ && maximumZ
+            )
+        {
+            // Reaching this point means that the specified database file at <path> pointed to an sqlite file which had all the
+            // required correct values in its metadata table. That means the file passed the test for being a valid
+            // offline map database.
+            //
+            _mapID = mapID;
+            _metadata = [metadata boolValue];
+            _markers =  [markers boolValue];
 
-        _mapRegion.center.latitude =     [[self sqliteMetadataForName:@"region_latitude"] doubleValue];
-        _mapRegion.center.longitude =    [[self sqliteMetadataForName:@"region_longitude"] doubleValue];
-        _mapRegion.span.latitudeDelta =  [[self sqliteMetadataForName:@"region_latitude_delta"] doubleValue];
-        _mapRegion.span.longitudeDelta = [[self sqliteMetadataForName:@"region_longitude_delta"] doubleValue];
+            _imageQuality = (MBXRasterImageQuality)[imageQuality integerValue];
 
-        _minimumZ = [[self sqliteMetadataForName:@"minimumZ"] integerValue];
-        _maximumZ = [[self sqliteMetadataForName:@"maximumZ"] integerValue];
+            _mapRegion.center.latitude =     [region_latitude doubleValue];
+            _mapRegion.center.longitude =    [region_longitude doubleValue];
+            _mapRegion.span.latitudeDelta =  [region_latitude_delta doubleValue];
+            _mapRegion.span.longitudeDelta = [region_longitude_delta doubleValue];
 
-        _initializedProperly = YES;
+            _minimumZ = [minimumZ integerValue];
+            _maximumZ = [maximumZ integerValue];
+
+            _initializedProperly = YES;
+        }
+        else
+        {
+            // Reaching this point means the file at <path> isn't a valid offline map database, so we can't use it.
+            //
+            self = nil;
+        }
     }
 
     return self;
