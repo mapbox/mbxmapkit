@@ -52,8 +52,8 @@
         _mapRegion.span.latitudeDelta =  [[self sqliteMetadataForName:@"region_latitude_delta"] doubleValue];
         _mapRegion.span.longitudeDelta = [[self sqliteMetadataForName:@"region_longitude_delta"] doubleValue];
 
-        _minimumZ = [[self sqliteMetadataForName:@"region_longitude_delta"] doubleValue];
-        _maximumZ = [[self sqliteMetadataForName:@"region_longitude_delta"] doubleValue];
+        _minimumZ = [[self sqliteMetadataForName:@"minimumZ"] integerValue];
+        _maximumZ = [[self sqliteMetadataForName:@"maximumZ"] integerValue];
 
         _initializedProperly = YES;
     }
@@ -127,7 +127,7 @@
 
     // Prepare the query, see http://sqlite.org/c3ref/prepare.html
     const char *zSql = [query cStringUsingEncoding:NSUTF8StringEncoding];
-    int nByte = [query lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+    int nByte = (int)[query lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
     sqlite3_stmt *ppStmt;
     const char *pzTail;
     rc = sqlite3_prepare_v2(db, zSql, nByte, &ppStmt, &pzTail);

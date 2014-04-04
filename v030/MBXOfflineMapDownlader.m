@@ -25,7 +25,8 @@
 @property (readwrite, nonatomic) NSInteger maximumZ;
 @property (readwrite, nonatomic) MBXOfflineMapDownloaderState state;
 
-@property (readwrite, nonatomic) NSMutableArray *mutableOfflineMapDatabases;
+@property (nonatomic) NSMutableArray *mutableOfflineMapDatabases;
+@property (nonatomic) NSURL *offlineMapDirectory;
 
 @property (nonatomic) id<MBXOfflineMapDownloaderDelegate> delegate;
 
@@ -75,11 +76,26 @@
 
     if(self)
     {
+        // Make sure the offline map directory exists and that it will be excluded from iCloud backups
+        //
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSURL *appSupport = [fm URLForDirectory:NSApplicationSupportDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+        _offlineMapDirectory = [appSupport URLByAppendingPathComponent:@"MBXMapKit/OfflineMaps"];
+        if(_offlineMapDirectory)
+        {
+            NSError *error;
+            BOOL result;
+            result = [fm createDirectoryAtURL:_offlineMapDirectory withIntermediateDirectories:YES attributes:nil error:&error];
+            [_offlineMapDirectory setResourceValues:@{NSURLIsExcludedFromBackupKey:@YES} error:nil];
+
+            NSLog(@"\n%@\n%@",[_offlineMapDirectory absoluteString],[_offlineMapDirectory resourceValuesForKeys:@[NSURLIsExcludedFromBackupKey] error:nil]);
+        }
+
+        //
         // TODO: Restore persistent state from disk, or if the offline map directory doesn't exist, set up the directory.
         //
         _state = MBXOfflineMapDownloaderStateAvailable;
         _mutableOfflineMapDatabases = [[NSMutableArray alloc] init];
-        [_mutableOfflineMapDatabases addObject:[[MBXOfflineMapDatabase alloc] initWithContentsOfFile:@"foo"]];
     }
 
     return self;
