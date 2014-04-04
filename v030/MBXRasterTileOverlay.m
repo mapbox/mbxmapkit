@@ -8,6 +8,8 @@
 
 #import "MBXRasterTileOverlay.h"
 #import "MBXError.h"
+#import "MBXPointAnnotation.h"
+#import "MBXOfflineMapDatabase.h"
 
 
 #pragma mark -
@@ -37,6 +39,8 @@
 @property (nonatomic) BOOL markerIconLoaderMayInitiateDelegateCallback;
 @property (nonatomic) BOOL didFinishLoadingMetadata;
 @property (nonatomic) BOOL didFinishLoadingMarkers;
+
+@property (strong, nonatomic) MBXOfflineMapDatabase *offlineMapDatabase;
 
 @end
 
@@ -76,6 +80,17 @@
     if (self)
     {
         [self setupMapID:mapID metadata:metadata markers:markers imageQuality:imageQuality];
+    }
+    return self;
+}
+
+- (id)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase
+{
+    self = [super init];
+    if (self)
+    {
+        _offlineMapDatabase = offlineMapDatabase;
+        [self setupMapID:offlineMapDatabase.mapID metadata:offlineMapDatabase.metadata markers:offlineMapDatabase.markers imageQuality:offlineMapDatabase.imageQuality];
     }
     return self;
 }
@@ -385,28 +400,49 @@
     // This method exists to:
     // 1. Encapsulte the boilderplate network code for checking HTTP status which is needed for every data session task
     // 2. Provide a single configuration point where it is possible to set breakpoints and adjust the caching policy for all HTTP requests
+    // 3. Provide a hook point for implementing alternate methods (i.e. offline map database) of fetching data for a URL
     //
-    NSURLSessionDataTask *task;
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
-    task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
-    {
-        if (!error)
-        {
-            if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
-            {
-                error = [self statusErrorFromHTTPResponse:response];
-            }
-            else
-            {
-                // Since the URL was successfully retrieved, invoke the block to process its data
-                //
-                dataBlock(data,&error);
-            }
-        }
 
+    if (_offlineMapDatabase)
+    {
+        // If an offline map database is configured for this overlay, use the database to fetch data for URLs
+        //
+        NSError *error;
+        NSData *data = [_offlineMapDatabase dataForKey:[url absoluteString] withError:&error];
+        if(!error)
+        {
+            // Since the URL was successfully retrieved, invoke the block to process its data
+            //
+            dataBlock(data, &error);
+        }
         completionHandler(data,error);
-    }];
-    [task resume];
+    }
+    else
+    {
+        // In the normal case, use HTTP network requests to fetch data for URLs
+        //
+        NSURLSessionDataTask *task;
+        NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
+        task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+        {
+            if (!error)
+            {
+                if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
+                {
+                    error = [self statusErrorFromHTTPResponse:response];
+                }
+                else
+                {
+                    // Since the URL was successfully retrieved, invoke the block to process its data
+                    //
+                    dataBlock(data,&error);
+                }
+            }
+
+            completionHandler(data,error);
+        }];
+        [task resume];
+    }
 }
 
 

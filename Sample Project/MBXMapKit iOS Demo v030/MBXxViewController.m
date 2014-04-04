@@ -9,6 +9,7 @@
 #import "MBXxViewController.h"
 #import <MapKit/MapKit.h>
 #import "MBXRasterTileOverlay.h"
+#import "MBXPointAnnotation.h"
 #import "MBXOfflineMapDownloader.h"
 #import "MBXOfflineMapDatabase.h"
 
@@ -205,6 +206,9 @@
         case 7:
             // Offline Map Viewer
             [self resetMapViewAndRasterOverlayDefaults];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithOfflineMapDatabase:[MBXOfflineMapDownloader sharedOfflineMapDownloader].offlineMapDatabases.lastObject];
+            _rasterOverlay.delegate = self;
+            [_mapView addOverlay:_rasterOverlay];
             break;
     }
 }

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
-#import "MBXError.h"
+#import "MBXRasterTileOverlay.h"
 
 
 #pragma mark - Task states
@@ -52,10 +52,15 @@ typedef NS_ENUM(NSUInteger, MBXOfflineMapDownloaderState) {
 #pragma mark -
 
 @property (readonly, nonatomic) NSString *mapID;
+@property (readonly, nonatomic) BOOL metadata;
+@property (readonly, nonatomic) BOOL markers;
+@property (readonly, nonatomic) MBXRasterImageQuality imageQuality;
 @property (readonly, nonatomic) MKCoordinateRegion mapRegion;
 @property (readonly, nonatomic) NSInteger minimumZ;
 @property (readonly, nonatomic) NSInteger maximumZ;
 @property (readonly, nonatomic) MBXOfflineMapDownloaderState state;
+
+@property (readonly, nonatomic) NSArray *offlineMapDatabases;
 
 
 #pragma mark -
@@ -64,8 +69,14 @@ typedef NS_ENUM(NSUInteger, MBXOfflineMapDownloaderState) {
 
 - (void)beginDownloadingMapID:(NSString *)mapID mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ;
 
+- (void)beginDownloadingMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ;
+
+- (void)beginDownloadingMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers imageQuality:(MBXRasterImageQuality)imageQuality mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ;
+
 - (void)cancel;
 - (void)resume;
 - (void)suspend;
+
+- (void)removeOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase;
 
 @end

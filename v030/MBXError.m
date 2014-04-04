@@ -16,7 +16,6 @@ NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
 NSInteger const MBXMapKitErrorDownloadingCanceled = -3;
 NSInteger const MBXMapKitErrorOfflineMapHasNoDataForKey = -4;
-NSInteger const MBXMapKitErrorNothingToDo = -5;
 
 
 #pragma mark -

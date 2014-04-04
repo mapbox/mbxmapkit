@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 MapBox. All rights reserved.
 //
 
+#import "MBXError.h"
 #import "MBXOfflineMapDownloader.h"
 #import "MBXOfflineMapDatabase.h"
 
@@ -15,10 +16,15 @@
 @interface MBXOfflineMapDownloader ()
 
 @property (readwrite, nonatomic) NSString *mapID;
+@property (readwrite, nonatomic) BOOL metadata;
+@property (readwrite, nonatomic) BOOL markers;
+@property (readwrite, nonatomic) MBXRasterImageQuality imageQuality;
 @property (readwrite, nonatomic) MKCoordinateRegion mapRegion;
 @property (readwrite, nonatomic) NSInteger minimumZ;
 @property (readwrite, nonatomic) NSInteger maximumZ;
 @property (readwrite, nonatomic) MBXOfflineMapDownloaderState state;
+
+@property (readwrite, nonatomic) NSMutableArray *mutableOfflineMapDatabases;
 
 @property (nonatomic) id<MBXOfflineMapDownloaderDelegate> delegate;
 
@@ -52,13 +58,26 @@
 
 #pragma mark -
 
+- (NSArray *)offlineMapDatabases
+{
+    // Return an array with offline map database objects representing each of the *complete* map databases on disk
+    //
+    return [NSArray arrayWithArray:_mutableOfflineMapDatabases];
+}
+
+
+#pragma mark -
+
 - (id)init
 {
     self = [super init];
 
     if(self)
     {
+        // TODO: Restore persistent state from disk, or if the offline map directory doesn't exist, set up the directory.
+        //
         _state = MBXOfflineMapDownloaderStateAvailable;
+        _mutableOfflineMapDatabases = [[NSMutableArray alloc] init];
     }
 
     return self;
@@ -113,19 +132,40 @@
 }
 
 
-
 - (void)beginDownloadingMapID:(NSString *)mapID mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ
+{
+    [self beginDownloadingMapID:mapID metadata:YES markers:YES imageQuality:MBXRasterImageQualityFull mapRegion:mapRegion minimumZ:minimumZ maximumZ:maximumZ];
+}
+
+
+- (void)beginDownloadingMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ
+{
+    [self beginDownloadingMapID:mapID metadata:metadata markers:markers imageQuality:MBXRasterImageQualityFull mapRegion:mapRegion minimumZ:minimumZ maximumZ:maximumZ];
+}
+
+
+- (void)beginDownloadingMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers imageQuality:(MBXRasterImageQuality)imageQuality mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ
 {
     assert(_state == MBXOfflineMapDownloaderStateAvailable);
 
     // Start a download job to retrieve all the resources needed for using the specified map offline
     //
     _mapID = mapID;
+    _metadata = metadata;
+    _markers = markers;
+    _imageQuality = imageQuality;
     _mapRegion = mapRegion;
     _minimumZ = minimumZ;
     _maximumZ = maximumZ;
     _state = MBXOfflineMapDownloaderStateRunning;
     [self notifyDelegateOfStateChange];
+
+    //
+    // TODO: Make this real...
+    //       - Calculate the list of tiles to be requested
+    //       - Write all the URLS out to the sqlite with null data and a "needs to be downloaded" state
+    //       - Start the thing which keeps track of the background downloads
+    //
 
     // Fake like we're doing some work to facilitate testing the progress indicator GUI
     //
@@ -194,6 +234,18 @@
     [_fakeProgressTimer invalidate];
     _state = MBXOfflineMapDownloaderStateSuspended;
     [self notifyDelegateOfStateChange];
+}
+
+
+- (void)removeOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase
+{
+    // Get rid of an offline map
+    //
+    [_mutableOfflineMapDatabases removeObject:offlineMapDatabase];
+
+    //
+    // TODO: assuming this is a real offline map, find and delete the associated database on disk
+    //
 }
 
 

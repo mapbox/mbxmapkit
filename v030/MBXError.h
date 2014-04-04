@@ -16,7 +16,6 @@ extern NSInteger const MBXMapKitErrorCodeHTTPStatus;
 extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 extern NSInteger const MBXMapKitErrorDownloadingCanceled;
 extern NSInteger const MBXMapKitErrorOfflineMapHasNoDataForKey;
-extern NSInteger const MBXMapKitErrorNothingToDo;
 
 
 #pragma mark -

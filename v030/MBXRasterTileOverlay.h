@@ -7,9 +7,9 @@
 //
 
 #import <MapKit/MapKit.h>
-#import "MBXPointAnnotation.h"
 
 @class MBXRasterTileOverlay;
+@class MBXOfflineMapDatabase;
 
 #pragma mark - Image quality constants
 
@@ -53,6 +53,7 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 - (id)initWithMapID:(NSString *)mapID;
 - (id)initWithMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers;
 - (id)initWithMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers imageQuality:(MBXRasterImageQuality)imageQuality;
+- (id)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase;
 
 @property (weak,nonatomic) id<MBXRasterTileOverlayDelegate> delegate;
 
