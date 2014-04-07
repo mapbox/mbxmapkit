@@ -233,6 +233,39 @@
     //       - Write all the URLS out to the sqlite with null data and a "needs to be downloaded" state
     //       - Start the thing which keeps track of the background downloads
     //
+    NSDictionary *metadataDictionary =
+    @{
+      @"mapID": @"examples.map-pgygbwdm",
+      @"metadata" : @"YES",
+      @"markers" : @"YES",
+      @"imageQuality" : @"0",
+      @"region_latitude" : @"36.976492",
+      @"region_longitude" : @"-122.006111",
+      @"region_latitude_delta" : @"0.031542",
+      @"region_longitude_delta" : @"0.027466",
+      @"minimumZ" : @"0",
+      @"maximumZ" : @"19"
+      };
+
+    NSArray *urlArray =
+    @[
+      @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm.json",
+      @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/markers.geojson",
+      @"https://a.tiles.mapbox.com/v3/marker/pin-m-swimming+f5c272@2x.png",
+      @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5277/12755@2x.png",
+      @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5277/12756@2x.png",
+      @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5277/12757@2x.png",
+      @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5277/12758@2x.png",
+      @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5278/12755@2x.png",
+      @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5278/12756@2x.png",
+      @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5278/12757@2x.png",
+      @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5278/12758@2x.png",
+      @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5279/12755@2x.png",
+      @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5279/12756@2x.png",
+      @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5279/12757@2x.png",
+      @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5279/12758@2x.png"
+      ];
+
 
     // Fake like we're doing some work to facilitate testing the progress indicator GUI
     //
@@ -318,13 +351,26 @@
 
 - (void)removeOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase
 {
-    // Get rid of an offline map
+    // Mark the offline map object as invalid in case there are any references to it still floating around
+    //
+    [offlineMapDatabase invalidate];
+
+    // If this assert fails, an MBXOfflineMapDatabase object has somehow been initialized with a database path which is not
+    // inside of the directory for completed ofline map databases. That should definitely not be happening, and we should definitely
+    // not proceed to recursively remove whatever the path string actually is pointed at.
+    //
+    assert([offlineMapDatabase.path hasPrefix:[_offlineMapDirectory absoluteString]]);
+
+    // Remove the offline map object from the array and delete it's backing database
     //
     [_mutableOfflineMapDatabases removeObject:offlineMapDatabase];
 
-    //
-    // TODO: assuming this is a real offline map, find and delete the associated database on disk
-    //
+    NSError *error;
+    [[NSFileManager defaultManager] removeItemAtPath:offlineMapDatabase.path error:&error];
+    if(error)
+    {
+        NSLog(@"There was an error while attempting to delete an offline map database: %@", error);
+    }
 }
 
 

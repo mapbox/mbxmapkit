@@ -21,8 +21,8 @@
 @property (readwrite, nonatomic) MKCoordinateRegion mapRegion;
 @property (readwrite, nonatomic) NSInteger minimumZ;
 @property (readwrite, nonatomic) NSInteger maximumZ;
-
-@property (nonatomic) NSString *path;
+@property (readwrite, nonatomic) NSString *path;
+@property (readwrite, nonatomic) BOOL invalid;
 
 @property (nonatomic) BOOL initializedProperly;
 
@@ -111,6 +111,17 @@
         *error = [MBXError errorWithCode:MBXMapKitErrorOfflineMapHasNoDataForKey reason:reason description:@"No offline data for key error"];
     }
     return data;
+}
+
+
+- (void)invalidate
+{
+    // This is to let MBXOfflineMapDownloader mark an MBXOfflineMapDatabase object as invalid when it has been asked to delete
+    // the backing database on disk. This is important because there's a possibility that an MBXRasterTileOverlay layer could still
+    // be holding a reference to the MBXOfflineMapDatabase at the time that the backing file is deleted. If that happens, it would
+    // be a logic error, but it seems like a pretty easy error to make, so this helps to catch it (see assert in MBXRasterTileOverlay).
+    //
+    _invalid = YES;
 }
 
 
