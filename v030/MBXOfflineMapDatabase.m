@@ -51,17 +51,23 @@
         NSString *region_longitude_delta = [self sqliteMetadataForName:@"region_longitude_delta"];
         NSString *minimumZ = [self sqliteMetadataForName:@"minimumZ"];
         NSString *maximumZ = [self sqliteMetadataForName:@"maximumZ"];
+        NSString *download_complete = [self sqliteMetadataForName:@"download_complete"];
 
-        if (mapID &&  metadata && markers && imageQuality
+        // If this assert fails, something is very wrong. MBXOfflineMapDatabase objects should only be instantiated by
+        // [MBXOfflineMapDownloader sharedOfflineMapDownloader], and it should never attempt to do that until the associated
+        // offline map download is complete, and that means it should have added a name="download_complete" row to the metadata table.
+        assert(download_complete);
+
+        if (mapID && metadata && markers && imageQuality
             && region_latitude && region_longitude && region_latitude_delta && region_longitude_delta
             && minimumZ && maximumZ
             )
         {
-            // Reaching this point means that the specified database file at <path> pointed to an sqlite file which had all the
-            // required correct values in its metadata table. That means the file passed the test for being a valid
+            // Reaching this point means that the specified database file at path pointed to an sqlite file which had
+            // all the required values in its metadata table. That means the file passed the test for being a valid
             // offline map database.
             //
-            _mapID = mapID;
+            _mapID =     mapID;
             _metadata = [metadata boolValue];
             _markers =  [markers boolValue];
 
@@ -79,7 +85,7 @@
         }
         else
         {
-            // Reaching this point means the file at <path> isn't a valid offline map database, so we can't use it.
+            // Reaching this point means the file at path isn't a valid offline map database, so we can't use it.
             //
             self = nil;
         }
@@ -120,7 +126,7 @@
 
 - (NSData *)sqliteDataForURL:(NSURL *)url
 {
-    NSString *query = [NSString stringWithFormat:@"select data from resources where url = \"%@\";", [url absoluteString]];
+    NSString *query = [NSString stringWithFormat:@"SELECT data FROM resources WHERE url='%@';", [url absoluteString]];
     NSData *data = [self sqliteDataForSingleColumnQuery:query];
     return data;
 }
