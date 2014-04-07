@@ -53,7 +53,8 @@
     //
     _offlineMapProgressView.hidden = YES;
     _offlineMapDownloadControlsView.hidden = YES;
-    [[MBXOfflineMapDownloader sharedOfflineMapDownloader] setDelegate:self];
+    MBXOfflineMapDownloader *sharedDownloader = [MBXOfflineMapDownloader sharedOfflineMapDownloader];
+    [sharedDownloader setDelegate:self];
 
     // Configure the mapView to use delegate callbacks for managing tile overlay layers, map centering, and adding
     // adding markers.
@@ -71,6 +72,20 @@
     // This enables us to assert that delegate callbacks aren't getting called before initialization is complete
     //
     _viewHasFinishedLoading = YES;
+
+
+    // If there was a suspended offline map download, resume it...
+    // Note how the call above to initialize the shared map downloader singleton happens before the singleton's delegate can be set.
+    // So, in order to know whether there might be a suspended download which was restored from disk, we need to poll and invoke any
+    // necessary handler functions on our own.
+    //
+    if(sharedDownloader.state == MBXOfflineMapDownloaderStateSuspended)
+    {
+        [self offlineMapDownloader:sharedDownloader stateChangedTo:MBXOfflineMapDownloaderStateSuspended];
+        [self offlineMapDownloader:sharedDownloader totalFilesExpectedToWrite:sharedDownloader.totalFilesExpectedToWrite];
+        [self offlineMapDownloader:sharedDownloader totalFilesWritten:sharedDownloader.totalFilesWritten totalFilesExpectedToWrite:sharedDownloader.totalFilesExpectedToWrite];
+        [[MBXOfflineMapDownloader sharedOfflineMapDownloader] resume];
+    }
 }
 
 

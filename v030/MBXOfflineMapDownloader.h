@@ -62,6 +62,9 @@ typedef NS_ENUM(NSUInteger, MBXOfflineMapDownloaderState) {
 
 @property (readonly, nonatomic) NSArray *offlineMapDatabases;
 
+@property (readonly,nonatomic) NSUInteger totalFilesWritten;
+@property (readonly,nonatomic) NSUInteger totalFilesExpectedToWrite;
+
 
 #pragma mark -
 

@@ -24,15 +24,14 @@
 @property (readwrite, nonatomic) NSInteger minimumZ;
 @property (readwrite, nonatomic) NSInteger maximumZ;
 @property (readwrite, nonatomic) MBXOfflineMapDownloaderState state;
+@property (readwrite,nonatomic) NSUInteger totalFilesWritten;
+@property (readwrite,nonatomic) NSUInteger totalFilesExpectedToWrite;
 
 @property (nonatomic) NSMutableArray *mutableOfflineMapDatabases;
 @property (nonatomic) NSString *partialDatabasePath;
 @property (nonatomic) NSURL *offlineMapDirectory;
 
 @property (nonatomic) id<MBXOfflineMapDownloaderDelegate> delegate;
-
-@property (nonatomic) NSUInteger totalFilesWritten;
-@property (nonatomic) NSUInteger totalFilesExpectedToWrite;
 
 @property (nonatomic) NSTimer *fakeProgressTimer;
 
@@ -44,7 +43,7 @@
 @implementation MBXOfflineMapDownloader
 
 
-#pragma mark - Shared downloader singleton
+#pragma mark - API: Shared downloader singleton
 
 + (MBXOfflineMapDownloader *)sharedOfflineMapDownloader
 {
@@ -59,20 +58,13 @@
 }
 
 
-#pragma mark -
-
-- (NSArray *)offlineMapDatabases
-{
-    // Return an array with offline map database objects representing each of the *complete* map databases on disk
-    //
-    return [NSArray arrayWithArray:_mutableOfflineMapDatabases];
-}
-
-
-#pragma mark -
+#pragma mark - Initialize and restore saved state from disk
 
 - (id)init
 {
+    // NOTE: MBXOfflineMapDownloader is designed with the intention that init should be used _only_ by +sharedOfflineMapDownloader.
+    // Please use the shared downloader singleton rather than attempting to create your own MBXOfflineMapDownloader objects.
+    //
     self = [super init];
 
     if(self)
@@ -128,15 +120,33 @@
             }
         }
 
-        //
-        // TODO: Resume downloading partial offline map database if there was a suspended one on disk
-        //
+        if([partialDatabasePaths count] > 0)
+        {
+            _state = MBXOfflineMapDownloaderStateSuspended;
 
-        _state = MBXOfflineMapDownloaderStateAvailable;
+            // TODO: Calculate the real completion percentage from the sqlite db
+            //
+            _totalFilesExpectedToWrite = 100;
+            _totalFilesWritten = 20;
+
+            // Note that we're not calling offlineMapDownloader:totalFilesExpectedToWrite: because it isn't possible for the
+            // delegate to be set yet. If the object that's invoking init by way of sharedOfflineMapDownloader wants to resume
+            // the download, it needs to poll the values of state, totalFilesExpectedToWrite, and totalFilesWritten
+            //
+            [_fakeProgressTimer invalidate];
+            _fakeProgressTimer = [NSTimer scheduledTimerWithTimeInterval:0.314 target:self selector:@selector(fakeProgressTimerAction:) userInfo:nil repeats:YES];
+        }
+        else
+        {
+            _state = MBXOfflineMapDownloaderStateAvailable;
+        }
     }
 
     return self;
 }
+
+
+#pragma mark - Internal implementation: utility functions
 
 - (void)notifyDelegateOfStateChange
 {
@@ -186,6 +196,8 @@
     }
 }
 
+
+#pragma mark - API: Begin an offline map download
 
 - (void)beginDownloadingMapID:(NSString *)mapID mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ
 {
@@ -238,6 +250,8 @@
 }
 
 
+#pragma mark - API: Control an in-progress offline map download
+
 - (void)cancel
 {
     assert(_state == MBXOfflineMapDownloaderStateRunning || _state == MBXOfflineMapDownloaderStateSuspended);
@@ -289,6 +303,16 @@
     [_fakeProgressTimer invalidate];
     _state = MBXOfflineMapDownloaderStateSuspended;
     [self notifyDelegateOfStateChange];
+}
+
+
+#pragma mark - API: Access or delete completed offline map databases on disk
+
+- (NSArray *)offlineMapDatabases
+{
+    // Return an array with offline map database objects representing each of the *complete* map databases on disk
+    //
+    return [NSArray arrayWithArray:_mutableOfflineMapDatabases];
 }
 
 
