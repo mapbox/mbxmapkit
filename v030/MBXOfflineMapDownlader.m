@@ -146,7 +146,7 @@
 }
 
 
-#pragma mark - Internal implementation: utility functions
+#pragma mark - Implementation: utility functions
 
 - (void)notifyDelegateOfStateChange
 {
@@ -156,6 +156,15 @@
             [_delegate offlineMapDownloader:self stateChangedTo:_state];
         });
     }
+}
+
+
+- (void)startDownloading
+{
+    // Fake like we're doing some work to facilitate testing the progress indicator GUI
+    //
+    [_fakeProgressTimer invalidate];
+    _fakeProgressTimer = [NSTimer scheduledTimerWithTimeInterval:0.314 target:self selector:@selector(fakeProgressTimerAction:) userInfo:nil repeats:YES];
 }
 
 
@@ -197,6 +206,15 @@
 }
 
 
+#pragma mark - Implementation: sqlite stuff
+
+- (void)initializeDatabaseWithMetadataDictionary:(NSDictionary *)metadata andArrayOfURLStrings:(NSArray *)urlStrings
+{
+    _totalFilesExpectedToWrite = [urlStrings count];
+    _totalFilesWritten = 0;
+}
+
+
 #pragma mark - API: Begin an offline map download
 
 - (void)beginDownloadingMapID:(NSString *)mapID mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ
@@ -235,19 +253,19 @@
     //
     NSDictionary *metadataDictionary =
     @{
-      @"mapID": @"examples.map-pgygbwdm",
-      @"metadata" : @"YES",
-      @"markers" : @"YES",
-      @"imageQuality" : @"0",
-      @"region_latitude" : @"36.976492",
-      @"region_longitude" : @"-122.006111",
-      @"region_latitude_delta" : @"0.031542",
-      @"region_longitude_delta" : @"0.027466",
-      @"minimumZ" : @"0",
-      @"maximumZ" : @"19"
+      @"mapID": mapID,
+      @"metadata" : metadata?@"YES":@"NO",
+      @"markers" : markers?@"YES":@"NO",
+      @"imageQuality" : [NSString stringWithFormat:@"%ld",(long)imageQuality],
+      @"region_latitude" : [NSString stringWithFormat:@"%.8f",mapRegion.center.latitude],
+      @"region_longitude" : [NSString stringWithFormat:@"%.8f",mapRegion.center.longitude],
+      @"region_latitude_delta" : [NSString stringWithFormat:@"%.8f",mapRegion.span.latitudeDelta],
+      @"region_longitude_delta" : [NSString stringWithFormat:@"%.8f",mapRegion.span.longitudeDelta],
+      @"minimumZ" : [NSString stringWithFormat:@"%ld",(long)minimumZ],
+      @"maximumZ" : [NSString stringWithFormat:@"%ld",(long)maximumZ]
       };
 
-    NSArray *urlArray =
+    NSArray *urlStrings =
     @[
       @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm.json",
       @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/markers.geojson",
@@ -266,20 +284,18 @@
       @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5279/12758@2x.png"
       ];
 
+    [self initializeDatabaseWithMetadataDictionary:metadataDictionary andArrayOfURLStrings:urlStrings];
 
-    // Fake like we're doing some work to facilitate testing the progress indicator GUI
+
+    // Update the delegate with the initial count of files to be downloaded and start downloading
     //
-    _totalFilesExpectedToWrite = 100;
-    _totalFilesWritten = 0;
     if([_delegate respondsToSelector:@selector(offlineMapDownloader:totalFilesExpectedToWrite:)])
     {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [_delegate offlineMapDownloader:self totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
         });
     }
-
-    [_fakeProgressTimer invalidate];
-    _fakeProgressTimer = [NSTimer scheduledTimerWithTimeInterval:0.314 target:self selector:@selector(fakeProgressTimerAction:) userInfo:nil repeats:YES];
+    [self startDownloading];
 }
 
 
