@@ -208,10 +208,73 @@
 
 #pragma mark - Implementation: sqlite stuff
 
-- (void)initializeDatabaseWithMetadataDictionary:(NSDictionary *)metadata andArrayOfURLStrings:(NSArray *)urlStrings
+- (void)createDatabaseUsingMetadata:(NSDictionary *)metadata urlArray:(NSArray *)urlStrings withError:(NSError **)error
 {
+    // TODO: create the database
+    //
     _totalFilesExpectedToWrite = [urlStrings count];
     _totalFilesWritten = 0;
+
+    // MBXMapKit expects libsqlite to have been compiled with SQLITE_THREADSAFE=2 (multi-thread mode), which means
+    // that it can handle its own thread safety as long as you don't attempt to re-use database connections.
+    //
+    assert(sqlite3_threadsafe()==2);
+
+
+    // Path to the database where we will track the progress of the offline map download
+    //
+    NSString *path = [[self.offlineMapDirectory URLByAppendingPathComponent:@"newdatabase.partial"] absoluteString];
+    //NSLog(@"path = %@",path);
+
+    // Build a query to populate the database
+    //
+    NSMutableString *query = [[NSMutableString alloc] init];
+    [query appendString:@"PRAGMA foreign_keys=OFF;\n"];
+    [query appendString:@"BEGIN TRANSACTION;\n"];
+    [query appendString:@"CREATE TABLE metadata (name text, value text);\n"];
+    [query appendString:@"CREATE UNIQUE INDEX name ON metadata (name);\n"];
+    [query appendString:@"CREATE TABLE resources (url text, status text, data text);\n"];
+    [query appendString:@"CREATE UNIQUE INDEX url ON resources (url);\n"];
+    for(NSString *key in metadata) {
+        [query appendFormat:@"INSERT INTO \"metadata\" VALUES('%@','%@');\n", key, [metadata valueForKey:key]];
+    }
+
+    [query appendString:@"COMMIT;"];
+    //NSLog(@"%@",query);
+
+
+    // Open the database read-only and multi-threaded. The slightly obscure c-style variable names here and below are
+    // used to stay consistent with the sqlite documentaion. See http://sqlite.org/c3ref/open.html
+    sqlite3 *db;
+    int rc;
+    const char *filename = [path cStringUsingEncoding:NSUTF8StringEncoding];
+    rc = sqlite3_open_v2(filename, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
+    if (rc)
+    {
+        // Opening the database file for writing failed... something is very wrong.
+        //
+        if(error != NULL)
+        {
+            NSString *reason = [NSString stringWithFormat:@"Unable to create a writable sqlite database %@: %s", path, sqlite3_errmsg(db)];
+            *error  = [MBXError errorWithCode:MBXMapKitErrorOfflineMapSqlite reason:reason description:@"Failed to create the sqlite offline map database file"];
+        }
+        sqlite3_close(db);
+    }
+    else
+    {
+        // Success! Creating the database file worked, so now populate the tables we'll need to hold the offline map
+        //
+        const char *zSql = [query cStringUsingEncoding:NSUTF8StringEncoding];
+        char *errmsg;
+        sqlite3_exec(db, zSql, NULL, NULL, &errmsg);
+        if(errmsg != NULL)
+        {
+            NSString *reason = [NSString stringWithFormat:@"There was an sqlite error while executing the query to populate the offline map database %@: %@", path, [NSString stringWithUTF8String:errmsg]];
+            *error  = [MBXError errorWithCode:MBXMapKitErrorOfflineMapSqlite reason:reason description:@"Failed to populate the sqlite offline map database file"];
+            sqlite3_free(errmsg);
+        }
+        sqlite3_close(db);
+    }
 }
 
 
@@ -284,7 +347,12 @@
       @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5279/12758@2x.png"
       ];
 
-    [self initializeDatabaseWithMetadataDictionary:metadataDictionary andArrayOfURLStrings:urlStrings];
+    NSError *error;
+    [self createDatabaseUsingMetadata:metadataDictionary urlArray:urlStrings withError:&error];
+    if(error)
+    {
+        NSLog(@"There was an error while attempting to create an offline map database: %@",error);
+    }
 
 
     // Update the delegate with the initial count of files to be downloaded and start downloading
