@@ -210,36 +210,35 @@
 
 - (void)createDatabaseUsingMetadata:(NSDictionary *)metadata urlArray:(NSArray *)urlStrings withError:(NSError **)error
 {
-    // TODO: create the database
-    //
-    _totalFilesExpectedToWrite = [urlStrings count];
-    _totalFilesWritten = 0;
-
     // MBXMapKit expects libsqlite to have been compiled with SQLITE_THREADSAFE=2 (multi-thread mode), which means
     // that it can handle its own thread safety as long as you don't attempt to re-use database connections.
     //
     assert(sqlite3_threadsafe()==2);
-
 
     // Path to the database where we will track the progress of the offline map download
     //
     NSString *path = [[self.offlineMapDirectory URLByAppendingPathComponent:@"newdatabase.partial"] absoluteString];
     //NSLog(@"path = %@",path);
 
-    // Build a query to populate the database
+    // Build a query to populate the database (map metadata and list of map resource urls)
     //
     NSMutableString *query = [[NSMutableString alloc] init];
     [query appendString:@"PRAGMA foreign_keys=OFF;\n"];
     [query appendString:@"BEGIN TRANSACTION;\n"];
     [query appendString:@"CREATE TABLE metadata (name text, value text);\n"];
     [query appendString:@"CREATE UNIQUE INDEX name ON metadata (name);\n"];
-    [query appendString:@"CREATE TABLE resources (url text, status text, data text);\n"];
+    [query appendString:@"CREATE TABLE resources (url text, status text, data blob);\n"];
     [query appendString:@"CREATE UNIQUE INDEX url ON resources (url);\n"];
     for(NSString *key in metadata) {
         [query appendFormat:@"INSERT INTO \"metadata\" VALUES('%@','%@');\n", key, [metadata valueForKey:key]];
     }
-
+    for(NSString *url in urlStrings)
+    {
+        [query appendFormat:@"INSERT INTO \"resources\" VALUES('%@',NULL,NULL);\n",url];
+    }
     [query appendString:@"COMMIT;"];
+    _totalFilesExpectedToWrite = [urlStrings count];
+    _totalFilesWritten = 0;
     //NSLog(@"%@",query);
 
 
