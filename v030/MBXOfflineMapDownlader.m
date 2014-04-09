@@ -165,6 +165,12 @@
     //
     [_fakeProgressTimer invalidate];
     _fakeProgressTimer = [NSTimer scheduledTimerWithTimeInterval:0.314 target:self selector:@selector(fakeProgressTimerAction:) userInfo:nil repeats:YES];
+
+    // TODO: Prime the download pipeline with URLs from the sqlite db
+
+    // How to do the tile blob inserts using blob id's as foreign keys:
+    //   sqlite> INSERT INTO data(value) VALUES("foo");
+    //   sqlite> INSERT INTO resources VALUES('bar','200',last_insert_rowid());
 }
 
 
@@ -223,12 +229,11 @@
     // Build a query to populate the database (map metadata and list of map resource urls)
     //
     NSMutableString *query = [[NSMutableString alloc] init];
-    [query appendString:@"PRAGMA foreign_keys=OFF;\n"];
+    [query appendString:@"PRAGMA foreign_keys=ON;\n"];
     [query appendString:@"BEGIN TRANSACTION;\n"];
-    [query appendString:@"CREATE TABLE metadata (name text, value text);\n"];
-    [query appendString:@"CREATE UNIQUE INDEX name ON metadata (name);\n"];
-    [query appendString:@"CREATE TABLE resources (url text, status text, data blob);\n"];
-    [query appendString:@"CREATE UNIQUE INDEX url ON resources (url);\n"];
+    [query appendString:@"CREATE TABLE metadata (name TEXT UNIQUE, value TEXT);\n"];
+    [query appendString:@"CREATE TABLE data (id INTEGER PRIMARY KEY, value BLOB);\n"];
+    [query appendString:@"CREATE TABLE resources (url TEXT UNIQUE, status TEXT, id INTEGER REFERENCES data);\n"];
     for(NSString *key in metadata) {
         [query appendFormat:@"INSERT INTO \"metadata\" VALUES('%@','%@');\n", key, [metadata valueForKey:key]];
     }
@@ -310,7 +315,6 @@
     //
     // TODO: Make this real...
     //       - Calculate the list of tiles to be requested
-    //       - Write all the URLS out to the sqlite with null data and a "needs to be downloaded" state
     //       - Start the thing which keeps track of the background downloads
     //
     NSDictionary *metadataDictionary =
@@ -370,6 +374,12 @@
 
 - (void)cancel
 {
+    if(_state == MBXOfflineMapDownloaderStateCanceling || _state == MBXOfflineMapDownloaderStateAvailable)
+    {
+        NSLog(@"Possible concurrency problem: MBXOfflineDownloader -cancel invoked while state was not running and not suspended.");
+        return;
+    }
+
     assert(_state == MBXOfflineMapDownloaderStateRunning || _state == MBXOfflineMapDownloaderStateSuspended);
 
     // Stop a download job and discard the associated files
