@@ -30,7 +30,7 @@ NSInteger const MBXMapKitErrorOfflineMapSqlite = -5;
     NSDictionary *userInfo = @{ NSLocalizedDescriptionKey        : NSLocalizedString(description, nil),
                                 NSLocalizedFailureReasonErrorKey : NSLocalizedString(reason, nil) };
 
-    return [NSError errorWithDomain:MBXMapKitErrorDomain code:MBXMapKitErrorCodeHTTPStatus userInfo:userInfo];
+    return [NSError errorWithDomain:MBXMapKitErrorDomain code:code userInfo:userInfo];
 }
 
 

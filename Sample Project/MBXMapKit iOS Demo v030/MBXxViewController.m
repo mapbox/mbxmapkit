@@ -12,6 +12,7 @@
 #import "MBXPointAnnotation.h"
 #import "MBXOfflineMapDownloader.h"
 #import "MBXOfflineMapDatabase.h"
+#import "MBXError.h"
 
 
 @interface MBXxViewController ()
@@ -316,6 +317,7 @@
     }
 }
 
+
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader totalFilesExpectedToWrite:(NSUInteger)totalFilesExpectedToWrite
 {
     assert([NSThread isMainThread]);
@@ -324,6 +326,7 @@
     [_offlineMapProgress setProgress:0.0 animated:NO];
     _offlineMapProgressView.hidden = NO;
 }
+
 
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader totalFilesWritten:(NSUInteger)totalFilesWritten totalFilesExpectedToWrite:(NSUInteger)totalFilesExpectedToWrite
 {
@@ -337,12 +340,27 @@
     }
 }
 
+
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader didCompleteOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase withError:(NSError *)error
 {
     assert([NSThread isMainThread]);
     assert(_viewHasFinishedLoading);
 
     _offlineMapProgressView.hidden = YES;
+
+    if(error)
+    {
+        if(error.code == MBXMapKitErrorDownloadingCanceled)
+        {
+            // Ignore cancellations,
+        }
+        else
+        {
+            // ...but pay attention to other errors
+            //
+            NSLog(@"The offline map download completed with an error: %@",error);
+        }
+    }
 }
 
 
