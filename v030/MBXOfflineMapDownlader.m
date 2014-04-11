@@ -125,10 +125,12 @@
         {
             _state = MBXOfflineMapDownloaderStateSuspended;
 
-            // TODO: Calculate the real completion percentage from the sqlite db
-            //
-            _totalFilesExpectedToWrite = 40;
-            _totalFilesWritten = 20;
+            NSError *error;
+            [self queryWrittenAndExpectedCountsWithError:&error];
+            if(error)
+            {
+                NSLog(@"Error while querying how many files need to be downloaded %@",error);
+            }
 
             //
             // Note that we're not calling offlineMapDownloader:totalFilesExpectedToWrite: because it isn't possible for the
@@ -240,7 +242,7 @@
 
             // If all the downloads are done, clean up and notify the delegate
             //
-            if(_totalFilesWritten >= _totalFilesExpectedToWrite)
+            if(_totalFilesWritten >= _totalFilesExpectedToWrite && _state != MBXOfflineMapDownloaderStateAvailable)
             {
                 MBXOfflineMapDatabase *offlineMap = [self completeDatabaseAndInstantiateOfflineMap];
                 [self notifyDelegateOfCompletionWithOfflineMapDatabase:offlineMap];
@@ -254,6 +256,72 @@
 
 
 #pragma mark - Implementation: sqlite stuff
+
+- (void)queryWrittenAndExpectedCountsWithError:(NSError **)error
+{
+    // Calculate how many files need to be written in total and how many of them have been written already
+    //
+    NSString *query = @"SELECT COUNT(url) AS totalFilesExpectedToWrite, (SELECT COUNT(url) FROM resources WHERE status IS NOT NULL) AS totalFilesWritten FROM resources;\n";
+
+    // Open the database
+    //
+    sqlite3 *db;
+    const char *filename = [_partialDatabasePath cStringUsingEncoding:NSUTF8StringEncoding];
+    int rc = sqlite3_open_v2(filename, &db, SQLITE_OPEN_READONLY, NULL);
+    if (rc)
+    {
+        // Opening the database failed... something is very wrong.
+        //
+        if(error != NULL)
+        {
+            *error = [MBXError errorCannotOpenOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
+        }
+    }
+    else
+    {
+        // Success! First prepare the query...
+        //
+        const char *zSql = [query cStringUsingEncoding:NSUTF8StringEncoding];
+        int nByte = (int)[query lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+        sqlite3_stmt *ppStmt;
+        const char *pzTail;
+        rc = sqlite3_prepare_v2(db, zSql, nByte, &ppStmt, &pzTail);
+        if (rc)
+        {
+            // Preparing the query didn't work.
+            //
+            if(error)
+            {
+                *error = [MBXError errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
+            }
+        }
+        else
+        {
+            // Evaluate the query
+            //
+            rc = sqlite3_step(ppStmt);
+            if (rc == SQLITE_ROW && sqlite3_column_count(ppStmt)==2)
+            {
+                // Success! We got a row with the counts for resource files
+                //
+                _totalFilesExpectedToWrite = [[NSString stringWithUTF8String:(const char *)sqlite3_column_text(ppStmt, 0)] integerValue];
+                _totalFilesWritten = [[NSString stringWithUTF8String:(const char *)sqlite3_column_text(ppStmt, 1)] integerValue];
+            }
+            else
+            {
+                // Something unexpected happened.
+                //
+                if(error)
+                {
+                    *error = [MBXError errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
+                }
+            }
+        }
+        sqlite3_finalize(ppStmt);
+    }
+    sqlite3_close(db);
+}
+
 
 - (void)createDatabaseUsingMetadata:(NSDictionary *)metadata urlArray:(NSArray *)urlStrings withError:(NSError **)error
 {
@@ -277,10 +345,9 @@
     [query appendString:@"COMMIT;"];
     _totalFilesExpectedToWrite = [urlStrings count];
     _totalFilesWritten = 0;
-    //NSLog(@"%@",query);
 
 
-    // Open the database read-only and multi-threaded. The slightly obscure c-style variable names here and below are
+    // Open the database read-write and multi-threaded. The slightly obscure c-style variable names here and below are
     // used to stay consistent with the sqlite documentaion. See http://sqlite.org/c3ref/open.html
     sqlite3 *db;
     int rc;
@@ -288,12 +355,11 @@
     rc = sqlite3_open_v2(filename, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
     if (rc)
     {
-        // Opening the database file for writing failed... something is very wrong.
+        // Opening the database failed... something is very wrong.
         //
         if(error != NULL)
         {
-            NSString *reason = [NSString stringWithFormat:@"Unable to create a writable sqlite database %@: %s", _partialDatabasePath, sqlite3_errmsg(db)];
-            *error  = [MBXError errorWithCode:MBXMapKitErrorOfflineMapSqlite reason:reason description:@"Failed to create the sqlite offline map database file"];
+            *error = [MBXError errorCannotOpenOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
         }
         sqlite3_close(db);
     }
@@ -304,10 +370,9 @@
         const char *zSql = [query cStringUsingEncoding:NSUTF8StringEncoding];
         char *errmsg;
         sqlite3_exec(db, zSql, NULL, NULL, &errmsg);
-        if(errmsg != NULL)
+        if(error && errmsg != NULL)
         {
-            NSString *reason = [NSString stringWithFormat:@"There was an sqlite error while executing the query to populate the offline map database %@: %@", _partialDatabasePath, [NSString stringWithUTF8String:errmsg]];
-            *error  = [MBXError errorWithCode:MBXMapKitErrorOfflineMapSqlite reason:reason description:@"Failed to populate the sqlite offline map database file"];
+            *error = [MBXError errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:errmsg];
             sqlite3_free(errmsg);
         }
         sqlite3_close(db);

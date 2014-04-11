@@ -34,4 +34,14 @@ NSInteger const MBXMapKitErrorOfflineMapSqlite = -5;
 }
 
 
++ (NSError *)errorCannotOpenOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError
+{
+    return [MBXError errorWithCode:MBXMapKitErrorOfflineMapSqlite reason:[NSString stringWithFormat:@"Unable to open database %@: %@", path, [NSString stringWithUTF8String:sqliteError]] description:@"Failed to open the sqlite offline map database file"];
+}
+
++ (NSError *)errorQueryFailedForOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError
+{
+    return [MBXError errorWithCode:MBXMapKitErrorOfflineMapSqlite reason:[NSString stringWithFormat:@"There was an sqlite error while executing a query on database %@: %@", path, [NSString stringWithUTF8String:sqliteError]] description:@"Failed to execute query"];
+}
+
 @end

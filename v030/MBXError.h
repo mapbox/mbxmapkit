@@ -25,4 +25,8 @@ extern NSInteger const MBXMapKitErrorOfflineMapSqlite;
 
 + (NSError *)errorWithCode:(NSInteger)code reason:(NSString *)reason description:(NSString *)description;
 
++ (NSError *)errorCannotOpenOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
+
++ (NSError *)errorQueryFailedForOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
+
 @end
