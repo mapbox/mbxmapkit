@@ -35,6 +35,8 @@
 
 @property (nonatomic) NSOperationQueue *backgroundWorkQueue;
 @property (nonatomic) NSOperationQueue *sqliteQueue;
+@property (nonatomic) NSURLSession *dataSession;
+
 
 @end
 
@@ -149,6 +151,21 @@
         [_backgroundWorkQueue setMaxConcurrentOperationCount:1];
         _sqliteQueue = [[NSOperationQueue alloc] init];
         [_sqliteQueue setMaxConcurrentOperationCount:1];
+
+        // Configure the download session
+        NSString *userAgent;
+#if TARGET_OS_IPHONE
+        userAgent = [NSString stringWithFormat:@"MBXMapKit (%@/%@) -- offline map", [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion]];
+#else
+        userAgent = [NSString stringWithFormat:@"MBXMapKit (OS X/%@) -- offline map", [[NSProcessInfo processInfo] operatingSystemVersionString]];
+#endif
+
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+        config.allowsCellularAccess = YES;
+        config.HTTPMaximumConnectionsPerHost = 4;
+        config.URLCache = [NSURLCache sharedURLCache];
+        config.HTTPAdditionalHeaders = @{ @"User-Agent" : userAgent };
+        _dataSession = [NSURLSession sessionWithConfiguration:config];
     }
 
     return self;
@@ -178,6 +195,37 @@
     {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [_delegate offlineMapDownloader:self totalFilesWritten:_totalFilesWritten totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
+        });
+    }
+}
+
+
+- (void)notifyDelegateOfNetworkConnectivityError:(NSError *)error
+{
+    assert(![NSThread isMainThread]);
+
+    if([_delegate respondsToSelector:@selector(offlineMapDownloader:didEncounterRecoverableError:)])
+    {
+        NSError *networkError = [MBXError errorWithCode:MBXMapKitErrorCodeURLSessionConnectivity reason:[error localizedFailureReason] description:[error localizedDescription]];
+
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_delegate offlineMapDownloader:self didEncounterRecoverableError:networkError];
+        });
+    }
+}
+
+
+- (void)notifyDelegateOfHTTPStatusError:(NSInteger)status
+{
+    assert(![NSThread isMainThread]);
+
+    if([_delegate respondsToSelector:@selector(offlineMapDownloader:didEncounterRecoverableError:)])
+    {
+        NSString *reason = [NSString stringWithFormat:@"HTTP status %li was received", (long)status];
+        NSError *statusError = [MBXError errorWithCode:MBXMapKitErrorCodeHTTPStatus reason:reason description:@"HTTP status error"];
+
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_delegate offlineMapDownloader:self didEncounterRecoverableError:statusError];
         });
     }
 }
@@ -228,7 +276,7 @@
     // TODO: Prime the download pipeline with URLs from the sqlite db
     [_sqliteQueue addOperationWithBlock:^{
         NSError *error;
-        NSArray *urls = [self readArrayOfOfflineMapURLsToBeDownloadLimit:100 withError:&error];
+        NSArray *urls = [self readArrayOfOfflineMapURLsToBeDownloadLimit:40 withError:&error];
         if(error)
         {
             NSLog(@"Error while reading urls to be downloaded: %@",error);
@@ -237,36 +285,78 @@
         {
             for(NSURL *url in urls)
             {
+                NSURLSessionDataTask *task;
+                NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
+                task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+                {
+                    if(error)
+                    {
+                        // We got a session level error which probably indicates a connectivity problem such as airplane mode.
+                        // Notify the delegate.
+                        //
+                        [self notifyDelegateOfNetworkConnectivityError:error];
+                    }
+                    if (!error)
+                    {
+                        if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
+                        {
+                            // This url didn't work. For now, use the primitive error handling method of notifying the delegate and
+                            // continuing to request the url (this will eventually cylcle back through the download queue since we're
+                            // not marking the url as done in the database).
+                            //
+                            [self notifyDelegateOfHTTPStatusError:((NSHTTPURLResponse *)response).statusCode];
+                        }
+                        else
+                        {
+                            [_sqliteQueue addOperationWithBlock:^{
+
+                                // Since the URL was successfully retrieved, save the data
+                                //
+                                [self saveDownloadedData:data forURL:url];
+
+                                // Update the progress
+                                //
+                                [self notifyDelegateOfProgress];
+
+
+                                // If all the downloads are done, clean up and notify the delegate
+                                //
+                                if(_totalFilesWritten >= _totalFilesExpectedToWrite)
+                                {
+                                    if(_state != MBXOfflineMapDownloaderStateAvailable)
+                                    {
+                                        // This is what to do when we've downloaded all the files
+                                        //
+                                        MBXOfflineMapDatabase *offlineMap = [self completeDatabaseAndInstantiateOfflineMap];
+                                        [self notifyDelegateOfCompletionWithOfflineMapDatabase:offlineMap];
+
+                                        _state = MBXOfflineMapDownloaderStateAvailable;
+                                        [self notifyDelegateOfStateChange];
+                                    }
+                                }
+                            }];
+                        }
+                    }
+                }];
+                [task resume];
+
                 NSLog(@"url: %@",[url absoluteString]);
             }
+            //
+            // End of for loop to process a batch of urls
+            //
+
+            // If the previous batch of urls didn't complete the offline map, get another batch from the database and keep working.
+            //
+            [_sqliteQueue addOperationWithBlock:^{
+                if(_totalFilesWritten < _totalFilesExpectedToWrite)
+                {
+                    //[self startDownloading];
+                }
+            }];
         }
     }];
 
-    for(NSInteger i=_totalFilesWritten; i<_totalFilesExpectedToWrite; i++)
-    {
-        [_sqliteQueue addOperationWithBlock:^{
-            // Do some fake work
-            //
-            [NSThread sleepForTimeInterval:0.314];
-            [self saveDownloadedData:nil forURL:nil];
-
-            // Update the progress
-            //
-            [self notifyDelegateOfProgress];
-
-
-            // If all the downloads are done, clean up and notify the delegate
-            //
-            if(_totalFilesWritten >= _totalFilesExpectedToWrite && _state != MBXOfflineMapDownloaderStateAvailable)
-            {
-                MBXOfflineMapDatabase *offlineMap = [self completeDatabaseAndInstantiateOfflineMap];
-                [self notifyDelegateOfCompletionWithOfflineMapDatabase:offlineMap];
-
-                _state = MBXOfflineMapDownloaderStateAvailable;
-                [self notifyDelegateOfStateChange];
-            }
-        }];
-    }
 }
 
 
@@ -602,6 +692,8 @@
         // Stop a download job and discard the associated files
         //
         [_backgroundWorkQueue addOperationWithBlock:^{
+            [_dataSession invalidateAndCancel];
+
             _state = MBXOfflineMapDownloaderStateCanceling;
             [self notifyDelegateOfStateChange];
 
@@ -612,7 +704,7 @@
 
             if([_delegate respondsToSelector:@selector(offlineMapDownloader:didCompleteOfflineMapDatabase:withError:)])
             {
-                NSError *canceled = [MBXError errorWithCode:MBXMapKitErrorDownloadingCanceled reason:@"The download job was canceled" description:@"Download canceled"];
+                NSError *canceled = [MBXError errorWithCode:MBXMapKitErrorCodeDownloadingCanceled reason:@"The download job was canceled" description:@"Download canceled"];
                 dispatch_async(dispatch_get_main_queue(), ^(void){
                     [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:nil withError:canceled];
                 });
@@ -632,8 +724,8 @@
     // Resume a previously suspended download job
     //
     [_backgroundWorkQueue addOperationWithBlock:^{
-        [self startDownloading];
         _state = MBXOfflineMapDownloaderStateRunning;
+        [self startDownloading];
         [self notifyDelegateOfStateChange];
     }];
 }

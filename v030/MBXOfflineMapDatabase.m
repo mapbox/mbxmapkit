@@ -108,7 +108,7 @@
     if(*error != NULL)
     {
         NSString *reason = [NSString stringWithFormat:@"The offline database has no data for %@",[url absoluteString]];
-        *error = [MBXError errorWithCode:MBXMapKitErrorOfflineMapHasNoDataForKey reason:reason description:@"No offline data for key error"];
+        *error = [MBXError errorWithCode:MBXMapKitErrorCodeOfflineMapHasNoDataForKey reason:reason description:@"No offline data for key error"];
     }
     return data;
 }

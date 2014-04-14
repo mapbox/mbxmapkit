@@ -14,9 +14,10 @@
 NSString *const MBXMapKitErrorDomain = @"MBXMapKitErrorDomain";
 NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
-NSInteger const MBXMapKitErrorDownloadingCanceled = -3;
-NSInteger const MBXMapKitErrorOfflineMapHasNoDataForKey = -4;
-NSInteger const MBXMapKitErrorOfflineMapSqlite = -5;
+NSInteger const MBXMapKitErrorCodeDownloadingCanceled = -3;
+NSInteger const MBXMapKitErrorCodeOfflineMapHasNoDataForKey = -4;
+NSInteger const MBXMapKitErrorCodeOfflineMapSqlite = -5;
+NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 
 
 #pragma mark -
@@ -36,12 +37,12 @@ NSInteger const MBXMapKitErrorOfflineMapSqlite = -5;
 
 + (NSError *)errorCannotOpenOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError
 {
-    return [MBXError errorWithCode:MBXMapKitErrorOfflineMapSqlite reason:[NSString stringWithFormat:@"Unable to open database %@: %@", path, [NSString stringWithUTF8String:sqliteError]] description:@"Failed to open the sqlite offline map database file"];
+    return [MBXError errorWithCode:MBXMapKitErrorCodeOfflineMapSqlite reason:[NSString stringWithFormat:@"Unable to open database %@: %@", path, [NSString stringWithUTF8String:sqliteError]] description:@"Failed to open the sqlite offline map database file"];
 }
 
 + (NSError *)errorQueryFailedForOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError
 {
-    return [MBXError errorWithCode:MBXMapKitErrorOfflineMapSqlite reason:[NSString stringWithFormat:@"There was an sqlite error while executing a query on database %@: %@", path, [NSString stringWithUTF8String:sqliteError]] description:@"Failed to execute query"];
+    return [MBXError errorWithCode:MBXMapKitErrorCodeOfflineMapSqlite reason:[NSString stringWithFormat:@"There was an sqlite error while executing a query on database %@: %@", path, [NSString stringWithUTF8String:sqliteError]] description:@"Failed to execute query"];
 }
 
 @end

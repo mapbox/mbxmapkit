@@ -281,7 +281,7 @@
 }
 
 
-#pragma mark - Offline map progress indicator
+#pragma mark - Offline map delegate implementation (progress indicator, etc)
 
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader stateChangedTo:(MBXOfflineMapDownloaderState)state
 {
@@ -341,6 +341,30 @@
 }
 
 
+- (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader didEncounterRecoverableError:(NSError *)error
+{
+    if(error.code == MBXMapKitErrorCodeURLSessionConnectivity)
+    {
+        // For some reason the offline map downloader wasn't able to make an HTTP connection. This probably means there is a
+        // network connectivity problem, so stop trying to download stuff. Please note how this is a minimal example which probably isn't
+        // very suitable to copy over into real apps. In contexts where there is a reasonable expectation of intermittent network
+        // connectivity, an approach with some capability to resume when the network re-connects would probably be better.
+        //
+        [offlineMapDownloader suspend];
+        NSLog(@"The offline map download was suspended in response to a network connectivity error.");
+    }
+    else if(error.code == MBXMapKitErrorCodeHTTPStatus)
+    {
+        // The HTTP status response for one of the urls requested by the offline map came back as something other than 200. This is
+        // not necessarily bad, but it probably indicates a problem with the parameters used to begin an offline map download. For
+        // example, you might have requested markers for a map that doesn't have any.
+        //
+        NSLog(@"The offline map downloader encountered an HTTP status error. %@", error);
+
+    }
+}
+
+
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader didCompleteOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase withError:(NSError *)error
 {
     assert([NSThread isMainThread]);
@@ -350,7 +374,7 @@
 
     if(error)
     {
-        if(error.code == MBXMapKitErrorDownloadingCanceled)
+        if(error.code == MBXMapKitErrorCodeDownloadingCanceled)
         {
             // Ignore cancellations,
         }
