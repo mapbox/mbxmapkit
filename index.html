@@ -102,14 +102,17 @@ var map = L.mapbox.map('map', 'examples.map-9ijuk24y', {
 
 <div class='prose pad2 doc round fill-white keyline-all'>
   <h2 id='api_overview'>API overview</h2>
-  <p>MBXMapKit works identically to Apple’s MapKit, since it’s a subclass derivative, so check out <a href='https://developer.apple.com/library/ios/#documentation/MapKit/Reference/MapKit_Framework_Reference'>Apple’s MapKit documentation</a> for details on getting starting. MBXMapKit provides several additional features:</p>
+  <p>MBXMapKit works identically to Apple’s MapKit, since it’s a subclass derivative, so check out <a href='https://developer.apple.com/library/ios/#documentation/MapKit/Reference/MapKit_Framework_Reference'>Apple’s MapKit documentation</a> for details on getting started. MBXMapKit provides several additional features:</p>
   <ul>
     <li>The option to set a <code>mapID</code> to use any Mapbox map.</li>
     <li>Toggle the visibility of Apple’s default maps under a Mapbox map.</li>
     <li>Control offline map tile caching duration.</li>
     <li>Swap in a completely custom offline map to the tile caching system.</li>
+    <li>Support for the Mapbox <a href="https://www.mapbox.com/developers/api/static/#markers">markers API</a> and <a href="https://www.mapbox.com/maki/">Maki</a>.</li>
+    <li>Support for Mapbox-hosted <a href="https://www.mapbox.com/developers/api/maps/#geojson">simplestyle GeoJSON</a>.</li>
+    <li>Support for the Mapbox <a href="https://www.mapbox.com/developers/api/static/#format">image quality API</a>.</li>
   </ul>
-  <p><a href='{{site.baseurl}}/api' class='rcon next'>API documentation for more details</a></p>
+  <p>Full API documentation is available right in Xcode, either inline or in Xcode's Quick Help inspector. You can also run the provided <code>install_docs.sh</code> script, which leverages <a href="http://gentlebytes.com/appledoc/">appledoc</a> to create and install a documentation set into Xcode's documentation viewer.</p>
 
   <h3 id='tile_caching'>Tile caching</h3>
   <p>Mapbox offers unrestricted control for caching our maps such as <a href='/maps/'>Mapbox Streets</a> on mobile devices with MBXMapKit.</p>
