@@ -351,7 +351,7 @@
         // connectivity, an approach with some capability to resume when the network re-connects would probably be better.
         //
         [offlineMapDownloader suspend];
-        NSLog(@"The offline map download was suspended in response to a network connectivity error.");
+        NSLog(@"The offline map download was suspended in response to a network connectivity error: %@",error);
     }
     else if(error.code == MBXMapKitErrorCodeHTTPStatus)
     {
@@ -359,8 +359,13 @@
         // not necessarily bad, but it probably indicates a problem with the parameters used to begin an offline map download. For
         // example, you might have requested markers for a map that doesn't have any.
         //
-        NSLog(@"The offline map downloader encountered an HTTP status error. %@", error);
-
+        NSLog(@"The offline map downloader encountered an HTTP status error: %@",error);
+    }
+    else if(error.code == MBXMapKitErrorCodeOfflineMapSqlite)
+    {
+        // There was an sqlite error with the offline map. The most likely explanation is that the disk is running out of space.
+        //
+        NSLog(@"The offline map downloader encountered an sqlite error: %@",error);
     }
 }
 
