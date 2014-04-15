@@ -51,12 +51,7 @@
         NSString *region_longitude_delta = [self sqliteMetadataForName:@"region_longitude_delta"];
         NSString *minimumZ = [self sqliteMetadataForName:@"minimumZ"];
         NSString *maximumZ = [self sqliteMetadataForName:@"maximumZ"];
-        NSString *download_complete = [self sqliteMetadataForName:@"download_complete"];
 
-        // If this assert fails, something is very wrong. MBXOfflineMapDatabase objects should only be instantiated by
-        // [MBXOfflineMapDownloader sharedOfflineMapDownloader], and it should never attempt to do that until the associated
-        // offline map download is complete, and that means it should have added a name="download_complete" row to the metadata table.
-        assert(download_complete);
 
         if (mapID && metadata && markers && imageQuality
             && region_latitude && region_longitude && region_latitude_delta && region_longitude_delta
@@ -137,7 +132,7 @@
 
 - (NSData *)sqliteDataForURL:(NSURL *)url
 {
-    NSString *query = [NSString stringWithFormat:@"SELECT data FROM resources WHERE url='%@';", [url absoluteString]];
+    NSString *query = [NSString stringWithFormat:@"SELECT value FROM data WHERE id = (SELECT id from resources WHERE url='%@');", [url absoluteString]];
     NSData *data = [self sqliteDataForSingleColumnQuery:query];
     return data;
 }

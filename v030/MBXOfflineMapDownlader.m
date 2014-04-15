@@ -38,7 +38,6 @@
 @property (nonatomic) NSURLSession *dataSession;
 @property (nonatomic) NSInteger activeDataSessionTasks;
 
-
 @end
 
 
@@ -101,7 +100,7 @@
         // Restore persistent state from disk
         //
         _mutableOfflineMapDatabases = [[NSMutableArray alloc] init];
-        NSArray *files = [fm contentsOfDirectoryAtPath:[_offlineMapDirectory absoluteString] error:nil];
+        NSArray *files = [fm contentsOfDirectoryAtPath:[_offlineMapDirectory path] error:nil];
         if (files)
         {
             MBXOfflineMapDatabase *db;
@@ -111,7 +110,7 @@
                 //
                 if([path hasSuffix:@".complete"])
                 {
-                    db = [[MBXOfflineMapDatabase alloc] initWithContentsOfFile:path];
+                    db = [[MBXOfflineMapDatabase alloc] initWithContentsOfFile:[[_offlineMapDirectory URLByAppendingPathComponent:path] path]];
                     if(db)
                     {
                         [_mutableOfflineMapDatabases addObject:db];
@@ -254,14 +253,14 @@
 }
 
 
-- (void)notifyDelegateOfCompletionWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMap
+- (void)notifyDelegateOfCompletionWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMap withError:(NSError *)error
 {
     assert(![NSThread isMainThread]);
 
     if([_delegate respondsToSelector:@selector(offlineMapDownloader:didCompleteOfflineMapDatabase:withError:)])
     {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:offlineMap withError:nil];
+            [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:offlineMap withError:error];
         });
     }
 }
@@ -272,17 +271,7 @@
     assert(![NSThread isMainThread]);
     assert(_activeDataSessionTasks > 0);
 
-    // TODO: make this insert the real data blob instead of 'foo'
     [_sqliteQueue addOperationWithBlock:^{
-
-        // Build a query to populate the database (map metadata and list of map resource urls)
-        //
-        NSMutableString *query = [[NSMutableString alloc] init];
-        [query appendString:@"PRAGMA foreign_keys=ON;\n"];
-        [query appendString:@"BEGIN TRANSACTION;\n"];
-        [query appendString:@"INSERT INTO data(value) VALUES('foo');\n"];
-        [query appendFormat:@"UPDATE resources SET status=200,id=last_insert_rowid() WHERE url='%@';\n",[url absoluteString]];
-        [query appendString:@"COMMIT;"];
 
         // Open the database read-write and multi-threaded. The slightly obscure c-style variable names here and below are
         // used to stay consistent with the sqlite documentaion.
@@ -299,8 +288,11 @@
         }
         else
         {
-            // Success! Creating the database file worked, so now write the image blob to the database
+            // Creating the database file worked, so now start an atomic commit
             //
+            NSMutableString *query = [[NSMutableString alloc] init];
+            [query appendString:@"PRAGMA foreign_keys=ON;\n"];
+            [query appendString:@"BEGIN TRANSACTION;\n"];
             const char *zSql = [query cStringUsingEncoding:NSUTF8StringEncoding];
             char *errmsg;
             sqlite3_exec(db, zSql, NULL, NULL, &errmsg);
@@ -308,6 +300,49 @@
             {
                 error = [MBXError errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:errmsg];
                 sqlite3_free(errmsg);
+            }
+            else
+            {
+                // Continue by inserting an image blob into the data table
+                //
+                NSString *query2 = @"INSERT INTO data(value) VALUES(?);";
+                const char *zSql2 = [query2 cStringUsingEncoding:NSUTF8StringEncoding];
+                int nByte2 = (int)[query2 lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+                sqlite3_stmt *ppStmt2;
+                const char *pzTail2;
+                BOOL successfulBlobInsert = NO;
+                if(sqlite3_prepare_v2(db, zSql2, nByte2, &ppStmt2, &pzTail2) == SQLITE_OK)
+                {
+                    if(sqlite3_bind_blob(ppStmt2, 1, [data bytes], [data length], SQLITE_TRANSIENT) == SQLITE_OK)
+                    {
+                        if(sqlite3_step(ppStmt2) == SQLITE_DONE)
+                        {
+                            successfulBlobInsert = YES;
+                        }
+                    }
+                }
+                if(!successfulBlobInsert)
+                {
+                    error = [MBXError errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
+                }
+                sqlite3_finalize(ppStmt2);
+
+                // Finish up by updating the url in the resources table with status and the blob id, then close out the commit
+                //
+                if(!error)
+                {
+                    query  = [[NSMutableString alloc] init];
+                    [query appendFormat:@"UPDATE resources SET status=200,id=last_insert_rowid() WHERE url='%@';\n",[url absoluteString]];
+                    [query appendString:@"COMMIT;"];
+                    const char *zSql3 = [query cStringUsingEncoding:NSUTF8StringEncoding];
+                    sqlite3_exec(db, zSql3, NULL, NULL, &errmsg);
+                    if(errmsg)
+                    {
+                        error = [MBXError errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:errmsg];
+                        sqlite3_free(errmsg);
+                    }
+                }
+
             }
         }
         sqlite3_close(db);
@@ -333,8 +368,11 @@
                 {
                     // This is what to do when we've downloaded all the files
                     //
-                    MBXOfflineMapDatabase *offlineMap = [self completeDatabaseAndInstantiateOfflineMap];
-                    [self notifyDelegateOfCompletionWithOfflineMapDatabase:offlineMap];
+                    MBXOfflineMapDatabase *offlineMap = [self completeDatabaseAndInstantiateOfflineMapWithError:&error];
+                    if(offlineMap && !error) {
+                        [_mutableOfflineMapDatabases addObject:offlineMap];
+                    }
+                    [self notifyDelegateOfCompletionWithOfflineMapDatabase:offlineMap withError:error];
 
                     _state = MBXOfflineMapDownloaderStateAvailable;
                     [self notifyDelegateOfStateChange];
@@ -356,16 +394,30 @@
 }
 
 
-- (MBXOfflineMapDatabase *)completeDatabaseAndInstantiateOfflineMap
+- (MBXOfflineMapDatabase *)completeDatabaseAndInstantiateOfflineMapWithError:(NSError **)error
 {
     assert(![NSThread isMainThread]);
 
-    // TODO: rename the db instead of deleting it
+    // Rename the file using a unique prefix
+    //
+    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
+    CFStringRef uuidString = CFUUIDCreateString(kCFAllocatorDefault, uuid);
+    NSString *newFilename = [NSString stringWithFormat:@"%@.complete",uuidString];
+    NSString *newPath = [[_offlineMapDirectory URLByAppendingPathComponent:newFilename] path];
+    CFRelease(uuidString);
+    CFRelease(uuid);
+    [[NSFileManager defaultManager] moveItemAtPath:_partialDatabasePath toPath:newPath error:error];
 
-    [_sqliteQueue addOperationWithBlock:^{
-        //[[NSFileManager defaultManager] removeItemAtPath:_partialDatabasePath error:nil];
-    }];
-    return nil;
+    // If the move worked, instantiate and return offline map database
+    //
+    if(error && *error)
+    {
+        return nil;
+    }
+    else
+    {
+        return [[MBXOfflineMapDatabase alloc] initWithContentsOfFile:newPath];
+    }
 }
 
 
