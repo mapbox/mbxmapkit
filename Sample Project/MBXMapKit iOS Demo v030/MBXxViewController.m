@@ -30,6 +30,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *offlineMapButtonSuspendResume;
 
 @property (nonatomic) BOOL viewHasFinishedLoading;
+@property (nonatomic) BOOL currentlyViewingAnOfflineMap;
 
 @end
 
@@ -96,7 +97,7 @@
 {
     // This is the list of options for selecting which map should be shown by the demo app
     //
-    return [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"OSM world map",@"OSM over Apple satellite",@"Terrain under Apple labels",@"Tilemill bounded region",@"Tilemill region over Apple",@"Tilemill transparent over Apple", @"Offline Map Downloader", @"Offline Map Viewer", nil];
+    return [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"OSM world map",@"OSM over Apple satellite",@"Terrain under Apple labels",@"Tilemill bounded region",@"Tilemill region over Apple",@"Tilemill transparent over Apple", @"Offline Map Downloader", @"Offline Map Viewer", @"Remove offline maps",nil];
 }
 
 
@@ -145,6 +146,7 @@
     [_mapView removeOverlay:_rasterOverlay];
     [_rasterOverlay invalidateAndCancel];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    _currentlyViewingAnOfflineMap = NO;
 }
 
 
@@ -213,7 +215,7 @@
             // Offline Map Downloader
             [self resetMapViewAndRasterOverlayDefaults];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm" metadata:YES markers:NO];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm" metadata:YES markers:YES];
             _rasterOverlay.delegate = self;
             [_mapView addOverlay:_rasterOverlay];
             _offlineMapDownloadControlsView.hidden = NO;
@@ -222,9 +224,13 @@
         case 7:
             // Offline Map Viewer
             [self resetMapViewAndRasterOverlayDefaults];
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithOfflineMapDatabase:[MBXOfflineMapDownloader sharedOfflineMapDownloader].offlineMapDatabases.lastObject];
-            _rasterOverlay.delegate = self;
+            _currentlyViewingAnOfflineMap = YES;
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithOfflineMapDatabase:[MBXOfflineMapDownloader sharedOfflineMapDownloader].offlineMapDatabases.lastObject delegate:self];
             [_mapView addOverlay:_rasterOverlay];
+            break;
+        case 8:
+            // Remove offline maps
+            [self areYouSureYouWantToDeleteAllOfflineMaps];
             break;
     }
 }
@@ -243,7 +249,7 @@
 
 - (IBAction)offlineMapButtonActionBegin:(id)sender
 {
-    [[MBXOfflineMapDownloader sharedOfflineMapDownloader] beginDownloadingMapID:_rasterOverlay.mapID mapRegion:_mapView.region minimumZ:_rasterOverlay.minimumZ maximumZ:_rasterOverlay.maximumZ];
+    [[MBXOfflineMapDownloader sharedOfflineMapDownloader] beginDownloadingMapID:_rasterOverlay.mapID mapRegion:_mapView.region minimumZ:_rasterOverlay.minimumZ maximumZ:MIN(17,_rasterOverlay.maximumZ)];
 }
 
 
@@ -251,6 +257,14 @@
 {
     NSString *title = @"Are you sure you want to cancel?";
     NSString *message = @"Canceling an offline map download permanently deletes its partially downloaded map data. This action cannot be undone.";
+    UIAlertView *areYouSure = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:nil otherButtonTitles:@"No", @"Yes", nil];
+    [areYouSure show];
+}
+
+- (void)areYouSureYouWantToDeleteAllOfflineMaps
+{
+    NSString *title = @"Are you sure you want to remove your offline maps?";
+    NSString *message = @"This will permently delete your offline map data. This action cannot be undone.";
     UIAlertView *areYouSure = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:nil otherButtonTitles:@"No", @"Yes", nil];
     [areYouSure show];
 }
@@ -264,6 +278,23 @@
         if([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Yes"])
         {
             [[MBXOfflineMapDownloader sharedOfflineMapDownloader] cancel];
+        }
+    }
+    else if([alertView.title isEqualToString:@"Are you sure you want to remove your offline maps?"])
+    {
+        if([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Yes"])
+        {
+            if(_currentlyViewingAnOfflineMap)
+            {
+                [self resetMapViewAndRasterOverlayDefaults];
+                _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithOfflineMapDatabase:nil delegate:self];
+                [_mapView addOverlay:_rasterOverlay];
+            }
+            for(MBXOfflineMapDatabase *db in [MBXOfflineMapDownloader sharedOfflineMapDownloader].offlineMapDatabases)
+            {
+                [[MBXOfflineMapDownloader sharedOfflineMapDownloader] removeOfflineMapDatabase:db];
+            }
+
         }
     }
 }

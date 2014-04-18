@@ -49,6 +49,42 @@
 
 @implementation MBXRasterTileOverlay
 
+#pragma mark - Tile url utility funtions
+
++ (NSString *)qualityExtensionForImageQuality:(MBXRasterImageQuality)imageQuality
+{
+    NSString *qualityExtension;
+    switch (imageQuality)
+    {
+        case MBXRasterImageQualityPNG32:
+            qualityExtension = @"png32";
+            break;
+        case MBXRasterImageQualityPNG64:
+            qualityExtension = @"png64";;
+            break;
+        case MBXRasterImageQualityPNG128:
+            qualityExtension = @"png128";
+            break;
+        case MBXRasterImageQualityPNG256:
+            qualityExtension = @"png256";
+            break;
+        case MBXRasterImageQualityJPEG70:
+            qualityExtension = @"jpg70";
+            break;
+        case MBXRasterImageQualityJPEG80:
+            qualityExtension = @"jpg80";
+            break;
+        case MBXRasterImageQualityJPEG90:
+            qualityExtension = @"jpg90";
+            break;
+        case MBXRasterImageQualityFull:
+        default:
+            qualityExtension = @"png";
+            break;
+    }
+    return qualityExtension;
+}
+
 
 #pragma mark - Initialization
 
@@ -84,12 +120,13 @@
     return self;
 }
 
-- (id)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase
+- (id)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase delegate:(id<MBXRasterTileOverlayDelegate>)delegate
 {
     self = [super init];
     if (self)
     {
         _offlineMapDatabase = offlineMapDatabase;
+        _delegate = delegate;
         [self setupMapID:offlineMapDatabase.mapID metadata:offlineMapDatabase.metadata markers:offlineMapDatabase.markers imageQuality:offlineMapDatabase.imageQuality];
     }
     return self;
@@ -185,7 +222,7 @@
                                        (long)path.x,
                                        (long)path.y,
                                        (path.contentScaleFactor > 1.0 ? @"@2x" : @""),
-                                       [self qualityExtensionForImageQuality:_imageQuality]
+                                       [MBXRasterTileOverlay qualityExtensionForImageQuality:_imageQuality]
                                        ]];
 
     void(^dataBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error)
@@ -508,50 +545,6 @@
 #endif
 
     return [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/marker/%@", marker]];
-}
-
-
-- (NSString *)qualityExtensionForImageQuality:(MBXRasterImageQuality)imageQuality
-{
-    NSString *qualityExtension;
-
-    switch (imageQuality)
-    {
-        case MBXRasterImageQualityPNG32:
-            qualityExtension = @"png32";
-            break;
-
-        case MBXRasterImageQualityPNG64:
-            qualityExtension = @"png64";;
-            break;
-
-        case MBXRasterImageQualityPNG128:
-            qualityExtension = @"png128";
-            break;
-
-        case MBXRasterImageQualityPNG256:
-            qualityExtension = @"png256";
-            break;
-            
-        case MBXRasterImageQualityJPEG70:
-            qualityExtension = @"jpg70";
-            break;
-            
-        case MBXRasterImageQualityJPEG80:
-            qualityExtension = @"jpg80";
-            break;
-            
-        case MBXRasterImageQualityJPEG90:
-            qualityExtension = @"jpg90";
-            break;
-            
-        case MBXRasterImageQualityFull:
-        default:
-            qualityExtension = @"png";
-            break;
-    }
-    
-    return qualityExtension;
 }
 
 

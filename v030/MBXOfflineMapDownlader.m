@@ -237,13 +237,13 @@
 }
 
 
-- (void)notifyDelegateOfHTTPStatusError:(NSInteger)status
+- (void)notifyDelegateOfHTTPStatusError:(NSInteger)status url:(NSURL *)url
 {
     assert(![NSThread isMainThread]);
 
     if([_delegate respondsToSelector:@selector(offlineMapDownloader:didEncounterRecoverableError:)])
     {
-        NSString *reason = [NSString stringWithFormat:@"HTTP status %li was received", (long)status];
+        NSString *reason = [NSString stringWithFormat:@"HTTP status %li was received for %@", (long)status,[url absoluteString]];
         NSError *statusError = [MBXError errorWithCode:MBXMapKitErrorCodeHTTPStatus reason:reason description:@"HTTP status error"];
 
         dispatch_async(dispatch_get_main_queue(), ^(void){
@@ -456,7 +456,7 @@
                             // continuing to request the url (this will eventually cycle back through the download queue since we're
                             // not marking the url as done in the database).
                             //
-                            [self notifyDelegateOfHTTPStatusError:((NSHTTPURLResponse *)response).statusCode];
+                            [self notifyDelegateOfHTTPStatusError:((NSHTTPURLResponse *)response).statusCode url:response.URL];
                         }
                         else
                         {
@@ -732,27 +732,58 @@
           };
 
 
-        NSArray *urlStrings =
-        @[
-          @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm.json",
-          @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/markers.geojson",
-          @"https://a.tiles.mapbox.com/v3/marker/pin-m-swimming+f5c272@2x.png",
-          @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5277/12755@2x.png",
-          @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5277/12756@2x.png",
-          @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5277/12757@2x.png",
-          @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5277/12758@2x.png",
-          @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5278/12755@2x.png",
-          @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5278/12756@2x.png",
-          @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5278/12757@2x.png",
-          @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5278/12758@2x.png",
-          @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5279/12755@2x.png",
-          @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5279/12756@2x.png",
-          @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5279/12757@2x.png",
-          @"https://a.tiles.mapbox.com/v3/examples.map-pgygbwdm/15/5279/12758@2x.png"
-          ];
+        NSMutableArray *urls = [[NSMutableArray alloc] init];
 
+        // Include URLs for the metadata and markers json if applicable
+        //
+        if(metadata)
+        {
+            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@.json",mapID]];
+        }
+        if(markers)
+        {
+            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson",mapID]];
+        }
+
+        // Loop through the zoom levels and lat/lon bounds to generate a list of urls which should be included in the offline map
+        //
+        CLLocationDegrees minLat = mapRegion.center.latitude - (mapRegion.span.latitudeDelta / 2.0);
+        CLLocationDegrees maxLat = minLat + mapRegion.span.latitudeDelta;
+        CLLocationDegrees minLon = mapRegion.center.longitude - (mapRegion.span.longitudeDelta / 2.0);
+        CLLocationDegrees maxLon = minLon + mapRegion.span.longitudeDelta;
+        NSUInteger minX;
+        NSUInteger maxX;
+        NSUInteger minY;
+        NSUInteger maxY;
+        NSUInteger tilesPerSide;
+        for(NSUInteger zoom = minimumZ; zoom <= maximumZ; zoom++)
+        {
+            tilesPerSide = pow(2.0, zoom);
+            minX = floor(((minLon + 180.0) / 360.0) * tilesPerSide);
+            maxX = floor(((maxLon + 180.0) / 360.0) * tilesPerSide);
+            minY = floor((1.0 - (logf(tanf(maxLat * M_PI / 180.0) + 1.0 / cosf(maxLat * M_PI / 180.0)) / M_PI)) / 2.0 * tilesPerSide);
+            maxY = floor((1.0 - (logf(tanf(minLat * M_PI / 180.0) + 1.0 / cosf(minLat * M_PI / 180.0)) / M_PI)) / 2.0 * tilesPerSide);
+            for(NSUInteger x=minX; x<=maxX; x++)
+            {
+                for(NSUInteger y=minY; y<=maxY; y++)
+                {
+                    [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/%ld/%ld/%ld%@.%@",
+                                     mapID,
+                                     (long)zoom,
+                                     (long)x,
+                                     (long)y,
+                                     [[UIScreen mainScreen] scale] > 1.0 ? @"@2x" : @"",
+                                     [MBXRasterTileOverlay qualityExtensionForImageQuality:_imageQuality]
+                                     ]
+                     ];
+                }
+            }
+        }
+
+        // Now create the sqlite database so we have a place to track the download progress
+        //
         NSError *error;
-        [self createDatabaseUsingMetadata:metadataDictionary urlArray:urlStrings withError:&error];
+        [self createDatabaseUsingMetadata:metadataDictionary urlArray:urls withError:&error];
         if(error)
         {
             // Creating the database failed for some reason, so clean up and change the state back to available
@@ -795,15 +826,7 @@
 
 - (void)cancel
 {
-    if(_state == MBXOfflineMapDownloaderStateCanceling)
-    {
-        NSLog(@"Attempting to cancel while the offline map downloader state is 'canceling'. Concurrency problem?");
-    }
-    else if(_state == MBXOfflineMapDownloaderStateAvailable)
-    {
-        NSLog(@"Attempting to cancel while the offline map downloader state is 'available'. Concurrency problem?");
-    }
-    else
+    if(_state != MBXOfflineMapDownloaderStateCanceling && _state != MBXOfflineMapDownloaderStateAvailable)
     {
         // Stop a download job and discard the associated files
         //
@@ -849,15 +872,16 @@
 
 - (void)suspend
 {
-    assert(_state == MBXOfflineMapDownloaderStateRunning);
-
-    // Stop a download job, preserving the necessary state to resume later
-    //
-    [_backgroundWorkQueue addOperationWithBlock:^{
-        [_sqliteQueue cancelAllOperations];
-        _state = MBXOfflineMapDownloaderStateSuspended;
-        [self notifyDelegateOfStateChange];
-    }];
+    if(_state == MBXOfflineMapDownloaderStateRunning)
+    {
+        // Stop a download job, preserving the necessary state to resume later
+        //
+        [_backgroundWorkQueue addOperationWithBlock:^{
+            [_sqliteQueue cancelAllOperations];
+            _state = MBXOfflineMapDownloaderStateSuspended;
+            [self notifyDelegateOfStateChange];
+        }];
+    }
 }
 
 
@@ -881,7 +905,7 @@
     // inside of the directory for completed ofline map databases. That should definitely not be happening, and we should definitely
     // not proceed to recursively remove whatever the path string actually is pointed at.
     //
-    assert([offlineMapDatabase.path hasPrefix:[_offlineMapDirectory absoluteString]]);
+    assert([offlineMapDatabase.path hasPrefix:[_offlineMapDirectory path]]);
 
     // Remove the offline map object from the array and delete it's backing database
     //
