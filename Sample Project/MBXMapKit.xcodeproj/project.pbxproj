@@ -30,8 +30,8 @@
 		015C9F0E18EF1D8D00F05D5B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 015C9F0D18EF1D8D00F05D5B /* libsqlite3.dylib */; };
 		01AE443418DA861C00870BAF /* MBXError.m in Sources */ = {isa = PBXBuildFile; fileRef = 01AE443318DA861C00870BAF /* MBXError.m */; };
 		01AE443518DA861C00870BAF /* MBXError.m in Sources */ = {isa = PBXBuildFile; fileRef = 01AE443318DA861C00870BAF /* MBXError.m */; };
-		01B36D7918DA17C200019255 /* MBXOfflineMapDownlader.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B36D7818DA17C200019255 /* MBXOfflineMapDownlader.m */; };
-		01B36D7A18DA17C200019255 /* MBXOfflineMapDownlader.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B36D7818DA17C200019255 /* MBXOfflineMapDownlader.m */; };
+		01B36D7918DA17C200019255 /* MBXOfflineMapDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B36D7818DA17C200019255 /* MBXOfflineMapDownloader.m */; };
+		01B36D7A18DA17C200019255 /* MBXOfflineMapDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B36D7818DA17C200019255 /* MBXOfflineMapDownloader.m */; };
 		01DCA2F018CFAA77002E5125 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01DCA2EF18CFAA77002E5125 /* MapKit.framework */; };
 		01DCA2F118CFAABA002E5125 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01DCA2EF18CFAA77002E5125 /* MapKit.framework */; };
 		01E5625F18D7C80E00C281E2 /* MBXOfflineMapDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E5625E18D7C80E00C281E2 /* MBXOfflineMapDatabase.m */; };
@@ -92,7 +92,7 @@
 		01AE443218DA861C00870BAF /* MBXError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXError.h; sourceTree = "<group>"; };
 		01AE443318DA861C00870BAF /* MBXError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXError.m; sourceTree = "<group>"; };
 		01B36D7718DA17C200019255 /* MBXOfflineMapDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXOfflineMapDownloader.h; sourceTree = "<group>"; };
-		01B36D7818DA17C200019255 /* MBXOfflineMapDownlader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXOfflineMapDownlader.m; sourceTree = "<group>"; };
+		01B36D7818DA17C200019255 /* MBXOfflineMapDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXOfflineMapDownloader.m; sourceTree = "<group>"; };
 		01BCB22018C43B7300AD5C27 /* MBXRasterTileOverlay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXRasterTileOverlay.h; sourceTree = "<group>"; };
 		01BCB22118C43B7300AD5C27 /* MBXRasterTileOverlay.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXRasterTileOverlay.m; sourceTree = "<group>"; };
 		01BCB22618C43CEA00AD5C27 /* MBXPointAnnotation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXPointAnnotation.h; sourceTree = "<group>"; };
@@ -254,7 +254,7 @@
 				01AE443218DA861C00870BAF /* MBXError.h */,
 				01AE443318DA861C00870BAF /* MBXError.m */,
 				01B36D7718DA17C200019255 /* MBXOfflineMapDownloader.h */,
-				01B36D7818DA17C200019255 /* MBXOfflineMapDownlader.m */,
+				01B36D7818DA17C200019255 /* MBXOfflineMapDownloader.m */,
 				01E5625D18D7C80E00C281E2 /* MBXOfflineMapDatabase.h */,
 				01E5625E18D7C80E00C281E2 /* MBXOfflineMapDatabase.m */,
 				01BCB22018C43B7300AD5C27 /* MBXRasterTileOverlay.h */,
@@ -552,7 +552,7 @@
 				01ED214718C90543002726DD /* MBXPointAnnotation.m in Sources */,
 				0112ACE918C8F2DF00DD495C /* main.m in Sources */,
 				0112ACF018C8F2DF00DD495C /* MBXzAppDelegate.m in Sources */,
-				01B36D7A18DA17C200019255 /* MBXOfflineMapDownlader.m in Sources */,
+				01B36D7A18DA17C200019255 /* MBXOfflineMapDownloader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -567,7 +567,7 @@
 				014DA20218C45AE000AB33F8 /* MBXxViewController.m in Sources */,
 				014DA1F918C45AE000AB33F8 /* MBXxAppDelegate.m in Sources */,
 				01AE443418DA861C00870BAF /* MBXError.m in Sources */,
-				01B36D7918DA17C200019255 /* MBXOfflineMapDownlader.m in Sources */,
+				01B36D7918DA17C200019255 /* MBXOfflineMapDownloader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
