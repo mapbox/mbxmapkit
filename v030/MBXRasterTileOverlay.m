@@ -369,7 +369,29 @@
         }
         else
         {
-            _markerIconLoaderMayInitiateDelegateCallback = YES;
+            if(_activeMarkerIconRequests <= 0)
+            {
+                // Handle the case where all the marker icons URLs finished loading before the markers.geojson finished parsing
+                //
+                _markers = [NSArray arrayWithArray:_mutableMarkers];
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    [_delegate tileOverlay:self didLoadMarkers:_markers withError:error];
+                });
+
+                _didFinishLoadingMarkers = YES;
+                if(_didFinishLoadingMetadata) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void){
+                        [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
+                    });
+                }
+                _markerIconLoaderMayInitiateDelegateCallback = NO;
+            }
+            else
+            {
+                // There are still icons loading, so let the last one of those handle the delegate callback
+                //
+                _markerIconLoaderMayInitiateDelegateCallback = YES;
+            }
         }
     };
 
