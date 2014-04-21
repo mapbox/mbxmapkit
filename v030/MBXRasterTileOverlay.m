@@ -49,7 +49,8 @@
 
 @implementation MBXRasterTileOverlay
 
-#pragma mark - Tile url utility funtions
+
+#pragma mark - URL utility funtions
 
 + (NSString *)qualityExtensionForImageQuality:(MBXRasterImageQuality)imageQuality
 {
@@ -83,6 +84,43 @@
             break;
     }
     return qualityExtension;
+}
+
+
++ (NSURL *)markerIconURLForSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color
+{
+    // Make a string which follows the MapBox Core API spec for stand-alone markers. This relies on the MapBox API
+    // for error checking.
+    //
+    NSMutableString *marker = [[NSMutableString alloc] initWithString:@"pin-"];
+
+    if ([size hasPrefix:@"l"])
+    {
+        [marker appendString:@"l-"]; // large
+    }
+    else if ([size hasPrefix:@"s"])
+    {
+        [marker appendString:@"s-"]; // small
+    }
+    else
+    {
+        [marker appendString:@"m-"]; // default to medium
+    }
+
+    [marker appendFormat:@"%@+",symbol];
+
+    [marker appendString:[color stringByReplacingOccurrencesOfString:@"#" withString:@""]];
+
+#if TARGET_OS_IPHONE
+    [marker appendString:([[UIScreen mainScreen] scale] > 1.0 ? @"@2x.png" : @".png")];
+#else
+    // Making this smart enough to handle a Retina MacBook with a normal dpi external display is complicated.
+    // For now, just default to @1x images and a 1.0 scale.
+    //
+    [marker appendString:@".png"];
+#endif
+
+    return [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/marker/%@", marker]];
 }
 
 
@@ -290,7 +328,7 @@
                                 point.subtitle   = description;
                                 point.coordinate = CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue]);
 
-                                NSURL *markerURL = [self markerIconURLForSize:size symbol:symbol color:color];
+                                NSURL *markerURL = [MBXRasterTileOverlay markerIconURLForSize:size symbol:symbol color:color];
                                 [self asyncLoadMarkerIconURL:(NSURL *)markerURL point:point];
                             }
                             else
@@ -508,43 +546,6 @@
     NSString *reason = [NSString stringWithFormat:@"The %@ dictionary is missing important keys", dictionaryName];
 
     return [MBXError errorWithCode:MBXMapKitErrorCodeDictionaryMissingKeys reason:reason description:@"Dictionary missing keys error"];
-}
-
-
-- (NSURL *)markerIconURLForSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color
-{
-    // Make a string which follows the MapBox Core API spec for stand-alone markers. This relies on the MapBox API
-    // for error checking.
-    //
-    NSMutableString *marker = [[NSMutableString alloc] initWithString:@"pin-"];
-
-    if ([size hasPrefix:@"l"])
-    {
-        [marker appendString:@"l-"]; // large
-    }
-    else if ([size hasPrefix:@"s"])
-    {
-        [marker appendString:@"s-"]; // small
-    }
-    else
-    {
-        [marker appendString:@"m-"]; // default to medium
-    }
-
-    [marker appendFormat:@"%@+",symbol];
-
-    [marker appendString:[color stringByReplacingOccurrencesOfString:@"#" withString:@""]];
-
-#if TARGET_OS_IPHONE
-    [marker appendString:([[UIScreen mainScreen] scale] > 1.0 ? @"@2x.png" : @".png")];
-#else
-    // Making this smart enough to handle a Retina MacBook with a normal dpi external display is complicated.
-    // For now, just default to @1x images and a 1.0 scale.
-    //
-    [marker appendString:@".png"];
-#endif
-
-    return [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/marker/%@", marker]];
 }
 
 

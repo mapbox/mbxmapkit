@@ -128,7 +128,7 @@
             _state = MBXOfflineMapDownloaderStateSuspended;
 
             NSError *error;
-            [self queryWrittenAndExpectedCountsWithError:&error];
+            [self sqliteQueryWrittenAndExpectedCountsWithError:&error];
             if(error)
             {
                 NSLog(@"Error while querying how many files need to be downloaded %@",error);
@@ -137,7 +137,7 @@
             {
                 // This isn't good... the offline map database is completely downloaded, but it's still in the location for
                 // a download in progress.
-                NSLog(@"Something strange happened. While restoring a partial offline map download from disk, init found that %ld of %ld urls are complete. This should have been marked as complete.",(long)_totalFilesWritten,(long)_totalFilesExpectedToWrite);
+                NSLog(@"Something strange happened. While restoring a supposedly partial offline map download from disk, init found that %ld of %ld urls are complete.",(long)_totalFilesWritten,(long)_totalFilesExpectedToWrite);
             }
 
             //
@@ -266,7 +266,91 @@
 }
 
 
-- (void)saveDownloadedData:(NSData *)data forURL:(NSURL *)url
+- (MBXOfflineMapDatabase *)completeDatabaseAndInstantiateOfflineMapWithError:(NSError **)error
+{
+    assert(![NSThread isMainThread]);
+
+    // Rename the file using a unique prefix
+    //
+    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
+    CFStringRef uuidString = CFUUIDCreateString(kCFAllocatorDefault, uuid);
+    NSString *newFilename = [NSString stringWithFormat:@"%@.complete",uuidString];
+    NSString *newPath = [[_offlineMapDirectory URLByAppendingPathComponent:newFilename] path];
+    CFRelease(uuidString);
+    CFRelease(uuid);
+    [[NSFileManager defaultManager] moveItemAtPath:_partialDatabasePath toPath:newPath error:error];
+
+    // If the move worked, instantiate and return offline map database
+    //
+    if(error && *error)
+    {
+        return nil;
+    }
+    else
+    {
+        return [[MBXOfflineMapDatabase alloc] initWithContentsOfFile:newPath];
+    }
+}
+
+
+- (void)startDownloading
+{
+    assert(![NSThread isMainThread]);
+
+    [_sqliteQueue addOperationWithBlock:^{
+        NSError *error;
+        NSArray *urls = [self sqliteReadArrayOfOfflineMapURLsToBeDownloadLimit:30 withError:&error];
+        if(error)
+        {
+            NSLog(@"Error while reading offline map urls: %@",error);
+        }
+        else
+        {
+            for(NSURL *url in urls)
+            {
+                NSURLSessionDataTask *task;
+                NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
+                _activeDataSessionTasks += 1;
+                task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+                {
+                    if(error  && _state == MBXOfflineMapDownloaderStateRunning)
+                    {
+                        // We got a session level error which probably indicates a connectivity problem such as airplane mode.
+                        // Notify the delegate.
+                        //
+                        [self notifyDelegateOfNetworkConnectivityError:error];
+                    }
+                    if(!error  && _state == MBXOfflineMapDownloaderStateRunning)
+                    {
+                        if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
+                        {
+                            // This url didn't work. For now, use the primitive error handling method of notifying the delegate and
+                            // continuing to request the url (this will eventually cycle back through the download queue since we're
+                            // not marking the url as done in the database).
+                            //
+                            [self notifyDelegateOfHTTPStatusError:((NSHTTPURLResponse *)response).statusCode url:response.URL];
+                        }
+                        else
+                        {
+                            // Since the URL was successfully retrieved, save the data
+                            //
+                            [self sqliteSaveDownloadedData:data forURL:url];
+                        }
+                    }
+                }];
+                [task resume];
+
+                // This is the last line of the for loop
+            }
+        }
+    }];
+
+}
+
+
+#pragma mark - Implementation: sqlite stuff
+
+- (void)sqliteSaveDownloadedData:(NSData *)data forURL:(NSURL *)url
 {
     assert(![NSThread isMainThread]);
     assert(_activeDataSessionTasks > 0);
@@ -387,98 +471,13 @@
         _activeDataSessionTasks -= 1;
         if(_activeDataSessionTasks == 0 && _totalFilesWritten < _totalFilesExpectedToWrite)
         {
-            NSLog(@"Recursion saftey check: making a call to startDownloading.");
             [self startDownloading];
         }
     }];
 }
 
 
-- (MBXOfflineMapDatabase *)completeDatabaseAndInstantiateOfflineMapWithError:(NSError **)error
-{
-    assert(![NSThread isMainThread]);
-
-    // Rename the file using a unique prefix
-    //
-    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
-    CFStringRef uuidString = CFUUIDCreateString(kCFAllocatorDefault, uuid);
-    NSString *newFilename = [NSString stringWithFormat:@"%@.complete",uuidString];
-    NSString *newPath = [[_offlineMapDirectory URLByAppendingPathComponent:newFilename] path];
-    CFRelease(uuidString);
-    CFRelease(uuid);
-    [[NSFileManager defaultManager] moveItemAtPath:_partialDatabasePath toPath:newPath error:error];
-
-    // If the move worked, instantiate and return offline map database
-    //
-    if(error && *error)
-    {
-        return nil;
-    }
-    else
-    {
-        return [[MBXOfflineMapDatabase alloc] initWithContentsOfFile:newPath];
-    }
-}
-
-
-- (void)startDownloading
-{
-    assert(![NSThread isMainThread]);
-
-    [_sqliteQueue addOperationWithBlock:^{
-        NSError *error;
-        NSArray *urls = [self readArrayOfOfflineMapURLsToBeDownloadLimit:14 withError:&error];
-        if(error)
-        {
-            NSLog(@"Error while reading offline map urls: %@",error);
-        }
-        else
-        {
-            for(NSURL *url in urls)
-            {
-                NSURLSessionDataTask *task;
-                NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
-                _activeDataSessionTasks += 1;
-                task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
-                {
-                    if(error)
-                    {
-                        // We got a session level error which probably indicates a connectivity problem such as airplane mode.
-                        // Notify the delegate.
-                        //
-                        [self notifyDelegateOfNetworkConnectivityError:error];
-                    }
-                    if (!error)
-                    {
-                        if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
-                        {
-                            // This url didn't work. For now, use the primitive error handling method of notifying the delegate and
-                            // continuing to request the url (this will eventually cycle back through the download queue since we're
-                            // not marking the url as done in the database).
-                            //
-                            [self notifyDelegateOfHTTPStatusError:((NSHTTPURLResponse *)response).statusCode url:response.URL];
-                        }
-                        else
-                        {
-                            // Since the URL was successfully retrieved, save the data
-                            //
-                            [self saveDownloadedData:data forURL:url];
-                        }
-                    }
-                }];
-                [task resume];
-
-                // This is the last line of the for loop
-            }
-        }
-    }];
-
-}
-
-
-#pragma mark - Implementation: sqlite stuff
-
-- (NSArray *)readArrayOfOfflineMapURLsToBeDownloadLimit:(NSInteger)limit withError:(NSError **)error
+- (NSArray *)sqliteReadArrayOfOfflineMapURLsToBeDownloadLimit:(NSInteger)limit withError:(NSError **)error
 {
     assert(![NSThread isMainThread]);
 
@@ -557,7 +556,7 @@
 }
 
 
-- (void)queryWrittenAndExpectedCountsWithError:(NSError **)error
+- (void)sqliteQueryWrittenAndExpectedCountsWithError:(NSError **)error
 {
     // NOTE: Unlike most of the sqlite code, this method is written with the expectation that it can and will be called on the main
     //       thread as part of init. This is also meant to be used in other contexts throught the normal serial operation queue.
@@ -626,7 +625,7 @@
 }
 
 
-- (void)createDatabaseUsingMetadata:(NSDictionary *)metadata urlArray:(NSArray *)urlStrings withError:(NSError **)error
+- (void)sqliteCreateDatabaseUsingMetadata:(NSDictionary *)metadata urlArray:(NSArray *)urlStrings withError:(NSError **)error
 {
     assert(![NSThread isMainThread]);
 
@@ -701,8 +700,6 @@
 {
     assert(_state == MBXOfflineMapDownloaderStateAvailable);
 
-    // TODO: Generate the real list of urls from the map region and flags
-    //
     [_backgroundWorkQueue addOperationWithBlock:^{
 
         // Start a download job to retrieve all the resources needed for using the specified map offline
@@ -745,6 +742,7 @@
             [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson",mapID]];
         }
 
+
         // Loop through the zoom levels and lat/lon bounds to generate a list of urls which should be included in the offline map
         //
         CLLocationDegrees minLat = mapRegion.center.latitude - (mapRegion.span.latitudeDelta / 2.0);
@@ -780,45 +778,179 @@
             }
         }
 
-        // Now create the sqlite database so we have a place to track the download progress
-        //
-        NSError *error;
-        [self createDatabaseUsingMetadata:metadataDictionary urlArray:urls withError:&error];
-        if(error)
-        {
-            // Creating the database failed for some reason, so clean up and change the state back to available
-            //
-            _state = MBXOfflineMapDownloaderStateCanceling;
-            [self notifyDelegateOfStateChange];
 
-            if([_delegate respondsToSelector:@selector(offlineMapDownloader:didCompleteOfflineMapDatabase:withError:)])
+        // Determine if we need to add marker icon urls (i.e. parse markers.geojson), and if so, add them
+        //
+        if(markers)
+        {
+            NSURL *geojson = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson",mapID]];
+            NSURLSessionDataTask *task;
+            NSURLRequest *request = [NSURLRequest requestWithURL:geojson cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
+            task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
             {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:nil withError:error];
-                });
-            }
+                if(error)
+                {
+                    // We got a session level error which probably indicates a connectivity problem such as airplane mode.
+                    // Since we must fetch and parse markers.geojson in order to determine which marker icons need to be
+                    // added to the list of urls to download, the lack of network connectivity is a non-recoverable error
+                    // here.
+                    //
+                    [self notifyDelegateOfNetworkConnectivityError:error];
+                    [self cancelImmediatelyWithError:error];
+                }
+                else
+                {
+                    if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
+                    {
+                        // The url for markers.geojson didn't work (some maps don't have any markers). Notify the delegate of the
+                        // problem, and stop attempting to add marker icons, but don't bail out on whole the offline map download.
+                        // The delegate can decide for itself whether it wants to continue or cancel.
+                        //
+                        [self notifyDelegateOfHTTPStatusError:((NSHTTPURLResponse *)response).statusCode url:response.URL];
+                    }
+                    else
+                    {
+                        // The marker geojson was successfully retrieved, so parse it for marker icons. Note that we shouldn't
+                        // try to save it here, because it may already be in the download queue and saving it twice will mess
+                        // up the count of urls to be downloaded!
+                        //
+                        NSArray *markerIconURLStrings = [self parseMarkerIconURLStringsFromGeojsonData:(NSData *)data];
+                        if(markerIconURLStrings)
+                        {
+                            [urls addObjectsFromArray:markerIconURLStrings];
+                        }
+                    }
 
-            [_sqliteQueue cancelAllOperations];
-            [_sqliteQueue addOperationWithBlock:^{
-                [[NSFileManager defaultManager] removeItemAtPath:_partialDatabasePath error:nil];
+
+                    // ==========================================================================================================
+                    // == WARNING! WARNING! WARNING!                                                                           ==
+                    // == This stuff is a duplicate of the code immediately below it, but this copy is inside of a completion  ==
+                    // == block while the other isn't. You will be sad and confused if you try to eliminate the "duplication". ==
+                    //===========================================================================================================
+
+                    // Create the database and start the download
+                    //
+                    NSError *error;
+                    [self sqliteCreateDatabaseUsingMetadata:metadataDictionary urlArray:urls withError:&error];
+                    if(error)
+                    {
+                        [self cancelImmediatelyWithError:error];
+                    }
+                    else
+                    {
+                        if([_delegate respondsToSelector:@selector(offlineMapDownloader:totalFilesExpectedToWrite:)])
+                        {
+                            // Update the delegate with the file count so it can display a progress indicator
+                            //
+                            dispatch_async(dispatch_get_main_queue(), ^(void){
+                                [_delegate offlineMapDownloader:self totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
+                            });
+                        }
+                        [self startDownloading];
+                    }
+                }
             }];
-
-            _state = MBXOfflineMapDownloaderStateAvailable;
-            [self notifyDelegateOfStateChange];
+            [task resume];
         }
-
-
-        // Update the delegate with the initial count of files to be downloaded and start downloading
-        //
-        if([_delegate respondsToSelector:@selector(offlineMapDownloader:totalFilesExpectedToWrite:)])
+        else
         {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                [_delegate offlineMapDownloader:self totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
-            });
+            // There aren't any marker icons to worry about, so just create database and start downloading
+            //
+            NSError *error;
+            [self sqliteCreateDatabaseUsingMetadata:metadataDictionary urlArray:urls withError:&error];
+            if(error)
+            {
+                [self cancelImmediatelyWithError:error];
+            }
+            else
+            {
+                if([_delegate respondsToSelector:@selector(offlineMapDownloader:totalFilesExpectedToWrite:)])
+                {
+                    // Update the delegate with the file count so it can display a progress indicator
+                    //
+                    dispatch_async(dispatch_get_main_queue(), ^(void){
+                        [_delegate offlineMapDownloader:self totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
+                    });
+                }
+                [self startDownloading];
+            }
         }
-        [self startDownloading];
-
     }];
+}
+
+
+- (NSArray *)parseMarkerIconURLStringsFromGeojsonData:(NSData *)data
+{
+    // TODO: Parse marker icon URLs
+    //
+    id markers;
+    id value;
+    NSMutableArray *iconURLStrings = [[NSMutableArray alloc] init];
+    NSError *error;
+    NSDictionary *simplestyleJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    if(!error)
+    {
+        // Find point features in the markers dictionary (if there are any) and add them to the map.
+        //
+        markers = simplestyleJSONDictionary[@"features"];
+
+        if (markers && [markers isKindOfClass:[NSArray class]])
+        {
+            for (value in (NSArray *)markers)
+            {
+                if ([value isKindOfClass:[NSDictionary class]])
+                {
+                    NSDictionary *feature = (NSDictionary *)value;
+                    NSString *type = feature[@"geometry"][@"type"];
+
+                    if ([@"Point" isEqualToString:type])
+                    {
+                        NSString *size        = feature[@"properties"][@"marker-size"];
+                        NSString *color       = feature[@"properties"][@"marker-color"];
+                        NSString *symbol      = feature[@"properties"][@"marker-symbol"];
+                        if (size && color && symbol)
+                        {
+                            NSURL *markerURL = [MBXRasterTileOverlay markerIconURLForSize:size symbol:symbol color:color];
+                            if(markerURL && iconURLStrings )
+                            {
+                                [iconURLStrings addObject:[markerURL absoluteString]];
+                            }
+                        }
+                    }
+                }
+                // This is the last line of the loop
+            }
+        }
+    }
+
+    // Return only the unique icon urls
+    //
+    NSSet *uniqueIcons = [NSSet setWithArray:iconURLStrings];
+    return [uniqueIcons allObjects];
+}
+
+
+- (void)cancelImmediatelyWithError:(NSError *)error
+{
+    // Creating the database failed for some reason, so clean up and change the state back to available
+    //
+    _state = MBXOfflineMapDownloaderStateCanceling;
+    [self notifyDelegateOfStateChange];
+
+    if([_delegate respondsToSelector:@selector(offlineMapDownloader:didCompleteOfflineMapDatabase:withError:)])
+    {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:nil withError:error];
+        });
+    }
+
+    [_sqliteQueue cancelAllOperations];
+    [_sqliteQueue addOperationWithBlock:^{
+        [[NSFileManager defaultManager] removeItemAtPath:_partialDatabasePath error:nil];
+    }];
+
+    _state = MBXOfflineMapDownloaderStateAvailable;
+    [self notifyDelegateOfStateChange];
 }
 
 
