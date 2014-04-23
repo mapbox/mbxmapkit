@@ -15,8 +15,8 @@
 @interface MBXOfflineMapDatabase ()
 
 @property (readwrite, nonatomic) NSString *mapID;
-@property (readwrite, nonatomic) BOOL metadata;
-@property (readwrite, nonatomic) BOOL markers;
+@property (readwrite, nonatomic) BOOL includesMetadata;
+@property (readwrite, nonatomic) BOOL includesMarkers;
 @property (readwrite, nonatomic) MBXRasterImageQuality imageQuality;
 @property (readwrite, nonatomic) MKCoordinateRegion mapRegion;
 @property (readwrite, nonatomic) NSInteger minimumZ;
@@ -42,8 +42,8 @@
         _path = path;
 
         NSString *mapID = [self sqliteMetadataForName:@"mapID"];
-        NSString *metadata = [self sqliteMetadataForName:@"metadata"];
-        NSString *markers = [self sqliteMetadataForName:@"markers"];
+        NSString *includesMetadata = [self sqliteMetadataForName:@"metadata"];
+        NSString *includesMarkers = [self sqliteMetadataForName:@"markers"];
         NSString *imageQuality = [self sqliteMetadataForName:@"imageQuality"];
         NSString *region_latitude = [self sqliteMetadataForName:@"region_latitude"];
         NSString *region_longitude = [self sqliteMetadataForName:@"region_longitude"];
@@ -53,7 +53,7 @@
         NSString *maximumZ = [self sqliteMetadataForName:@"maximumZ"];
 
 
-        if (mapID && metadata && markers && imageQuality
+        if (mapID && includesMetadata && includesMarkers && imageQuality
             && region_latitude && region_longitude && region_latitude_delta && region_longitude_delta
             && minimumZ && maximumZ
             )
@@ -63,8 +63,8 @@
             // offline map database.
             //
             _mapID =     mapID;
-            _metadata = [metadata boolValue];
-            _markers =  [markers boolValue];
+            _includesMetadata = [includesMetadata boolValue];
+            _includesMarkers =  [includesMarkers boolValue];
 
             _imageQuality = (MBXRasterImageQuality)[imageQuality integerValue];
 

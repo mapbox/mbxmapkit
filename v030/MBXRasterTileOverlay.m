@@ -131,29 +131,29 @@
     self = [super init];
     if (self)
     {
-        [self setupMapID:mapID metadata:YES markers:YES imageQuality:MBXRasterImageQualityFull];
+        [self setupMapID:mapID includeMetadata:YES includeMarkers:YES imageQuality:MBXRasterImageQualityFull];
     }
     return self;
 }
 
 
-- (id)initWithMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers
+- (id)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers
 {
     self = [super init];
     if (self)
     {
-        [self setupMapID:mapID metadata:metadata markers:markers imageQuality:MBXRasterImageQualityFull];
+        [self setupMapID:mapID includeMetadata:includeMetadata includeMarkers:includeMarkers imageQuality:MBXRasterImageQualityFull];
     }
     return self;
 }
 
 
-- (id)initWithMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers imageQuality:(MBXRasterImageQuality)imageQuality
+- (id)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality
 {
     self = [super init];
     if (self)
     {
-        [self setupMapID:mapID metadata:metadata markers:markers imageQuality:imageQuality];
+        [self setupMapID:mapID includeMetadata:includeMetadata includeMarkers:includeMarkers imageQuality:imageQuality];
     }
     return self;
 }
@@ -165,13 +165,13 @@
     {
         _offlineMapDatabase = offlineMapDatabase;
         _delegate = delegate;
-        [self setupMapID:offlineMapDatabase.mapID metadata:offlineMapDatabase.metadata markers:offlineMapDatabase.markers imageQuality:offlineMapDatabase.imageQuality];
+        [self setupMapID:offlineMapDatabase.mapID includeMetadata:offlineMapDatabase.metadata includeMarkers:offlineMapDatabase.markers imageQuality:offlineMapDatabase.imageQuality];
     }
     return self;
 }
 
 
-- (void)setupMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers imageQuality:(MBXRasterImageQuality)imageQuality
+- (void)setupMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality
 {
     // Configure the NSURLSessions
     //
@@ -205,7 +205,7 @@
 
     // Initiate asynchronous metadata and marker loading
     //
-    if(metadata)
+    if(includeMetadata)
     {
         [self asyncLoadMetadata];
     }
@@ -214,7 +214,7 @@
         _didFinishLoadingMetadata = YES;
     }
 
-    if(markers)
+    if(includeMarkers)
     {
         _mutableMarkers = [[NSMutableArray alloc] init];
         [self asyncLoadMarkers];

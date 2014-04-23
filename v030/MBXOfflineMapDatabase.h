@@ -19,8 +19,8 @@
 #pragma mark - Properties and methods for accessing stored map data
 
 @property (readonly, nonatomic) NSString *mapID;
-@property (readonly, nonatomic) BOOL metadata;
-@property (readonly, nonatomic) BOOL markers;
+@property (readonly, nonatomic) BOOL includesMetadata;
+@property (readonly, nonatomic) BOOL includesMarkers;
 @property (readonly, nonatomic) MBXRasterImageQuality imageQuality;
 @property (readonly, nonatomic) MKCoordinateRegion mapRegion;
 @property (readonly, nonatomic) NSInteger minimumZ;

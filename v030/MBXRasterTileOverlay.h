@@ -56,8 +56,8 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 #pragma mark - Map tile overlay layer initialization and configuration
 
 - (id)initWithMapID:(NSString *)mapID;
-- (id)initWithMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers;
-- (id)initWithMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers imageQuality:(MBXRasterImageQuality)imageQuality;
+- (id)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers;
+- (id)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality;
 - (id)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase delegate:(id<MBXRasterTileOverlayDelegate>)delegate;
 
 @property (weak,nonatomic) id<MBXRasterTileOverlayDelegate> delegate;

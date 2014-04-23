@@ -17,8 +17,8 @@
 @interface MBXOfflineMapDownloader ()
 
 @property (readwrite, nonatomic) NSString *mapID;
-@property (readwrite, nonatomic) BOOL metadata;
-@property (readwrite, nonatomic) BOOL markers;
+@property (readwrite, nonatomic) BOOL includesMetadata;
+@property (readwrite, nonatomic) BOOL includesMarkers;
 @property (readwrite, nonatomic) MBXRasterImageQuality imageQuality;
 @property (readwrite, nonatomic) MKCoordinateRegion mapRegion;
 @property (readwrite, nonatomic) NSInteger minimumZ;
@@ -686,17 +686,17 @@
 
 - (void)beginDownloadingMapID:(NSString *)mapID mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ
 {
-    [self beginDownloadingMapID:mapID metadata:YES markers:YES imageQuality:MBXRasterImageQualityFull mapRegion:mapRegion minimumZ:minimumZ maximumZ:maximumZ];
+    [self beginDownloadingMapID:mapID includeMetadata:YES includeMarkers:YES imageQuality:MBXRasterImageQualityFull mapRegion:mapRegion minimumZ:minimumZ maximumZ:maximumZ];
 }
 
 
-- (void)beginDownloadingMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ
+- (void)beginDownloadingMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ
 {
-    [self beginDownloadingMapID:mapID metadata:metadata markers:markers imageQuality:MBXRasterImageQualityFull mapRegion:mapRegion minimumZ:minimumZ maximumZ:maximumZ];
+    [self beginDownloadingMapID:mapID includeMetadata:includeMetadata includeMarkers:includeMarkers imageQuality:MBXRasterImageQualityFull mapRegion:mapRegion minimumZ:minimumZ maximumZ:maximumZ];
 }
 
 
-- (void)beginDownloadingMapID:(NSString *)mapID metadata:(BOOL)metadata markers:(BOOL)markers imageQuality:(MBXRasterImageQuality)imageQuality mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ
+- (void)beginDownloadingMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ
 {
     assert(_state == MBXOfflineMapDownloaderStateAvailable);
 
@@ -705,8 +705,8 @@
         // Start a download job to retrieve all the resources needed for using the specified map offline
         //
         _mapID = mapID;
-        _metadata = metadata;
-        _markers = markers;
+        _includesMetadata = includeMetadata;
+        _includesMarkers = includeMarkers;
         _imageQuality = imageQuality;
         _mapRegion = mapRegion;
         _minimumZ = minimumZ;
@@ -717,8 +717,8 @@
         NSDictionary *metadataDictionary =
         @{
           @"mapID": mapID,
-          @"metadata" : metadata?@"YES":@"NO",
-          @"markers" : markers?@"YES":@"NO",
+          @"includesMetadata" : includeMetadata?@"YES":@"NO",
+          @"includesMarkers" : includeMarkers?@"YES":@"NO",
           @"imageQuality" : [NSString stringWithFormat:@"%ld",(long)imageQuality],
           @"region_latitude" : [NSString stringWithFormat:@"%.8f",mapRegion.center.latitude],
           @"region_longitude" : [NSString stringWithFormat:@"%.8f",mapRegion.center.longitude],
@@ -733,11 +733,11 @@
 
         // Include URLs for the metadata and markers json if applicable
         //
-        if(metadata)
+        if(includeMetadata)
         {
             [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@.json",mapID]];
         }
-        if(markers)
+        if(includeMarkers)
         {
             [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson",mapID]];
         }
@@ -781,7 +781,7 @@
 
         // Determine if we need to add marker icon urls (i.e. parse markers.geojson), and if so, add them
         //
-        if(markers)
+        if(includeMarkers)
         {
             NSURL *geojson = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson",mapID]];
             NSURLSessionDataTask *task;
