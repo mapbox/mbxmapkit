@@ -42,8 +42,8 @@
         _path = path;
 
         NSString *mapID = [self sqliteMetadataForName:@"mapID"];
-        NSString *includesMetadata = [self sqliteMetadataForName:@"metadata"];
-        NSString *includesMarkers = [self sqliteMetadataForName:@"markers"];
+        NSString *includesMetadata = [self sqliteMetadataForName:@"includesMetadata"];
+        NSString *includesMarkers = [self sqliteMetadataForName:@"includesMarkers"];
         NSString *imageQuality = [self sqliteMetadataForName:@"imageQuality"];
         NSString *region_latitude = [self sqliteMetadataForName:@"region_latitude"];
         NSString *region_longitude = [self sqliteMetadataForName:@"region_longitude"];

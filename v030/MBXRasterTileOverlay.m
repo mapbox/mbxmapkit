@@ -165,7 +165,7 @@
     {
         _offlineMapDatabase = offlineMapDatabase;
         _delegate = delegate;
-        [self setupMapID:offlineMapDatabase.mapID includeMetadata:offlineMapDatabase.metadata includeMarkers:offlineMapDatabase.markers imageQuality:offlineMapDatabase.imageQuality];
+        [self setupMapID:offlineMapDatabase.mapID includeMetadata:offlineMapDatabase.includesMetadata includeMarkers:offlineMapDatabase.includesMarkers imageQuality:offlineMapDatabase.imageQuality];
     }
     return self;
 }

@@ -170,7 +170,7 @@
             [self resetMapViewAndRasterOverlayDefaults];
             _mapView.mapType = MKMapTypeSatellite;
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.map-9tlo4knw" metadata:YES markers:NO];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.map-9tlo4knw" includeMetadata:YES includeMarkers:NO];
             _rasterOverlay.delegate = self;
             _rasterOverlay.canReplaceMapContent = NO;
             [_mapView addOverlay:_rasterOverlay];
@@ -179,7 +179,7 @@
             // Terrain under Apple labels
             [self resetMapViewAndRasterOverlayDefaults];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.map-mf07hryq" metadata:YES markers:NO];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.map-mf07hryq" includeMetadata:YES includeMarkers:NO];
             _rasterOverlay.delegate = self;
             [_mapView insertOverlay:_rasterOverlay atIndex:0 level:MKOverlayLevelAboveRoads];
             break;
@@ -189,7 +189,7 @@
             _mapView.scrollEnabled = NO;
             _mapView.zoomEnabled = NO;
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.NACIS2012" metadata:YES markers:NO];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.NACIS2012" includeMetadata:YES includeMarkers:NO];
             _rasterOverlay.delegate = self;
             [_mapView addOverlay:_rasterOverlay];
             break;
@@ -197,7 +197,7 @@
             // Tilemill region over Apple
             [self resetMapViewAndRasterOverlayDefaults];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.clp-2011-11-03-1200" metadata:YES markers:NO];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.clp-2011-11-03-1200" includeMetadata:YES includeMarkers:NO];
             _rasterOverlay.delegate = self;
             _rasterOverlay.canReplaceMapContent = NO;
             [_mapView addOverlay:_rasterOverlay];
@@ -206,7 +206,7 @@
             // Tilemill transparent over Apple
             [self resetMapViewAndRasterOverlayDefaults];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.pdx_meters" metadata:YES markers:NO];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"justin.pdx_meters" includeMetadata:YES includeMarkers:NO];
             _rasterOverlay.delegate = self;
             _rasterOverlay.canReplaceMapContent = NO;
             [_mapView addOverlay:_rasterOverlay];
@@ -215,7 +215,7 @@
             // Offline Map Downloader
             [self resetMapViewAndRasterOverlayDefaults];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm" metadata:YES markers:YES];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm" includeMetadata:YES includeMarkers:YES];
             _rasterOverlay.delegate = self;
             [_mapView addOverlay:_rasterOverlay];
             _offlineMapDownloadControlsView.hidden = NO;
