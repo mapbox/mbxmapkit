@@ -170,23 +170,31 @@
         [_sqliteQueue setMaxConcurrentOperationCount:1];
 
         // Configure the download session
-        NSString *userAgent;
-#if TARGET_OS_IPHONE
-        userAgent = [NSString stringWithFormat:@"MBXMapKit (%@/%@) -- offline map", [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion]];
-#else
-        userAgent = [NSString stringWithFormat:@"MBXMapKit (OS X/%@) -- offline map", [[NSProcessInfo processInfo] operatingSystemVersionString]];
-#endif
-
-        NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-        config.allowsCellularAccess = YES;
-        config.HTTPMaximumConnectionsPerHost = 4;
-        config.URLCache = [NSURLCache sharedURLCache];
-        config.HTTPAdditionalHeaders = @{ @"User-Agent" : userAgent };
-        _dataSession = [NSURLSession sessionWithConfiguration:config];
-        _activeDataSessionTasks = 0;
+        //
+        [self setUpNewDataSession];
     }
 
     return self;
+}
+
+- (void)setUpNewDataSession
+{
+    // Create a new NSURLDataSession. This is necessary after a call to invalidateAndCancel
+    //
+    NSString *userAgent;
+#if TARGET_OS_IPHONE
+    userAgent = [NSString stringWithFormat:@"MBXMapKit (%@/%@) -- offline map", [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion]];
+#else
+    userAgent = [NSString stringWithFormat:@"MBXMapKit (OS X/%@) -- offline map", [[NSProcessInfo processInfo] operatingSystemVersionString]];
+#endif
+
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    config.allowsCellularAccess = YES;
+    config.HTTPMaximumConnectionsPerHost = 4;
+    config.URLCache = [NSURLCache sharedURLCache];
+    config.HTTPAdditionalHeaders = @{ @"User-Agent" : userAgent };
+    _dataSession = [NSURLSession sessionWithConfiguration:config];
+    _activeDataSessionTasks = 0;
 }
 
 
@@ -368,6 +376,13 @@
 
     [_sqliteQueue addOperationWithBlock:^{
 
+        // Bail out if the state has changed to canceling, suspended, or available
+        //
+        if(_state != MBXOfflineMapDownloaderStateRunning)
+        {
+            return;
+        }
+
         // Open the database read-write and multi-threaded. The slightly obscure c-style variable names here and below are
         // used to stay consistent with the sqlite documentaion.
         NSError *error;
@@ -478,8 +493,10 @@
         // If this was the last of a batch of urls in the data session's download queue, and there are more urls
         // to be downloaded, get another batch of urls from the database and keep working.
         //
-        assert(_activeDataSessionTasks > 0);
-        _activeDataSessionTasks -= 1;
+        if(_activeDataSessionTasks > 0)
+        {
+            _activeDataSessionTasks -= 1;
+        }
         if(_activeDataSessionTasks == 0 && _totalFilesWritten < _totalFilesExpectedToWrite)
         {
             [self startDownloading];
@@ -955,13 +972,19 @@
         });
     }
 
+    [_dataSession invalidateAndCancel];
     [_sqliteQueue cancelAllOperations];
-    [_sqliteQueue addOperationWithBlock:^{
-        [[NSFileManager defaultManager] removeItemAtPath:_partialDatabasePath error:nil];
-    }];
 
-    _state = MBXOfflineMapDownloaderStateAvailable;
-    [self notifyDelegateOfStateChange];
+    [_sqliteQueue addOperationWithBlock:^{
+        [self setUpNewDataSession];
+        _totalFilesWritten = 0;
+        _totalFilesExpectedToWrite = 0;
+
+        [[NSFileManager defaultManager] removeItemAtPath:_partialDatabasePath error:nil];
+
+        _state = MBXOfflineMapDownloaderStateAvailable;
+        [self notifyDelegateOfStateChange];
+    }];
 }
 
 
@@ -974,26 +997,30 @@
         // Stop a download job and discard the associated files
         //
         [_backgroundWorkQueue addOperationWithBlock:^{
-            [_dataSession invalidateAndCancel];
-
             _state = MBXOfflineMapDownloaderStateCanceling;
             [self notifyDelegateOfStateChange];
 
+            [_dataSession invalidateAndCancel];
             [_sqliteQueue cancelAllOperations];
+
             [_sqliteQueue addOperationWithBlock:^{
+                [self setUpNewDataSession];
+                _totalFilesWritten = 0;
+                _totalFilesExpectedToWrite = 0;
                 [[NSFileManager defaultManager] removeItemAtPath:_partialDatabasePath error:nil];
+
+                if([_delegate respondsToSelector:@selector(offlineMapDownloader:didCompleteOfflineMapDatabase:withError:)])
+                {
+                    NSError *canceled = [MBXError errorWithCode:MBXMapKitErrorCodeDownloadingCanceled reason:@"The download job was canceled" description:@"Download canceled"];
+                    dispatch_async(dispatch_get_main_queue(), ^(void){
+                        [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:nil withError:canceled];
+                    });
+                }
+
+                _state = MBXOfflineMapDownloaderStateAvailable;
+                [self notifyDelegateOfStateChange];
             }];
 
-            if([_delegate respondsToSelector:@selector(offlineMapDownloader:didCompleteOfflineMapDatabase:withError:)])
-            {
-                NSError *canceled = [MBXError errorWithCode:MBXMapKitErrorCodeDownloadingCanceled reason:@"The download job was canceled" description:@"Download canceled"];
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:nil withError:canceled];
-                });
-            }
-
-            _state = MBXOfflineMapDownloaderStateAvailable;
-            [self notifyDelegateOfStateChange];
         }];
     }
 }
@@ -1022,6 +1049,7 @@
         [_backgroundWorkQueue addOperationWithBlock:^{
             [_sqliteQueue cancelAllOperations];
             _state = MBXOfflineMapDownloaderStateSuspended;
+            _activeDataSessionTasks = 0;
             [self notifyDelegateOfStateChange];
         }];
     }
