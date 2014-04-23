@@ -25,12 +25,7 @@
 @property (readonly, nonatomic) MKCoordinateRegion mapRegion;
 @property (readonly, nonatomic) NSInteger minimumZ;
 @property (readonly, nonatomic) NSInteger maximumZ;
-@property (readonly, nonatomic) NSString *path;
 @property (readonly, nonatomic) BOOL invalid;
-
-- (id)initWithContentsOfFile:(NSString *)path;
-
-- (NSData *)dataForURL:(NSURL *)url withError:(NSError **)error;
 
 - (void)invalidate;
 

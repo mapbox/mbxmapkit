@@ -12,6 +12,15 @@
 #import "MBXOfflineMapDatabase.h"
 
 
+#pragma mark - Private API for cooperating with MBXOfflineMapDatabase
+
+@interface MBXOfflineMapDatabase ()
+
+- (NSData *)dataForURL:(NSURL *)url withError:(NSError **)error;
+
+@end
+
+
 #pragma mark -
 
 @interface MBXRasterTileOverlay ()

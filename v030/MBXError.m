@@ -15,7 +15,7 @@ NSString *const MBXMapKitErrorDomain = @"MBXMapKitErrorDomain";
 NSInteger const MBXMapKitErrorCodeHTTPStatus = -1;
 NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys = -2;
 NSInteger const MBXMapKitErrorCodeDownloadingCanceled = -3;
-NSInteger const MBXMapKitErrorCodeOfflineMapHasNoDataForKey = -4;
+NSInteger const MBXMapKitErrorCodeOfflineMapHasNoDataForURL = -4;
 NSInteger const MBXMapKitErrorCodeOfflineMapSqlite = -5;
 NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 

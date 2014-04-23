@@ -33,6 +33,15 @@
 
 @implementation MBXOfflineMapDatabase
 
+- (id)init
+{
+    NSLog(@"\n\n-init should not be called directly. To instantiate MBXOfflineMapDatabase objects, please use the cababilities provided by MBXOfflineMapDatabase.\n\n");
+    BOOL properInstantiationOfMBXOfflineMapDatabase = NO;
+    assert(properInstantiationOfMBXOfflineMapDatabase);
+    return nil;
+}
+
+
 - (id)initWithContentsOfFile:(NSString *)path
 {
     self = [super init];
@@ -103,7 +112,7 @@
     if(*error != NULL)
     {
         NSString *reason = [NSString stringWithFormat:@"The offline database has no data for %@",[url absoluteString]];
-        *error = [MBXError errorWithCode:MBXMapKitErrorCodeOfflineMapHasNoDataForKey reason:reason description:@"No offline data for key error"];
+        *error = [MBXError errorWithCode:MBXMapKitErrorCodeOfflineMapHasNoDataForURL reason:reason description:@"No offline data for key error"];
     }
     return data;
 }

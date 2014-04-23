@@ -12,6 +12,17 @@
 #import "MBXOfflineMapDatabase.h"
 
 
+#pragma mark - Private API for cooperating with MBXOfflineMapDatabase
+
+@interface MBXOfflineMapDatabase ()
+
+@property (readonly, nonatomic) NSString *path;
+
+- (id)initWithContentsOfFile:(NSString *)path;
+
+@end
+
+
 #pragma mark -
 
 @interface MBXOfflineMapDownloader ()
