@@ -7,22 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		014DA1E918C45AE000AB33F8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 014DA1E818C45AE000AB33F8 /* Foundation.framework */; };
-		014DA1EB18C45AE000AB33F8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 014DA1EA18C45AE000AB33F8 /* CoreGraphics.framework */; };
-		014DA1ED18C45AE000AB33F8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 014DA1EC18C45AE000AB33F8 /* UIKit.framework */; };
-		014DA1F318C45AE000AB33F8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 014DA1F118C45AE000AB33F8 /* InfoPlist.strings */; };
-		014DA1F518C45AE000AB33F8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 014DA1F418C45AE000AB33F8 /* main.m */; };
-		014DA1F918C45AE000AB33F8 /* MBXxAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 014DA1F818C45AE000AB33F8 /* MBXxAppDelegate.m */; };
-		014DA1FC18C45AE000AB33F8 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 014DA1FA18C45AE000AB33F8 /* Main_iPhone.storyboard */; };
-		014DA1FF18C45AE000AB33F8 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 014DA1FD18C45AE000AB33F8 /* Main_iPad.storyboard */; };
-		014DA20218C45AE000AB33F8 /* MBXxViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 014DA20118C45AE000AB33F8 /* MBXxViewController.m */; };
-		014DA20418C45AE000AB33F8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 014DA20318C45AE000AB33F8 /* Images.xcassets */; };
-		015C9F0C18EF1D8000F05D5B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 015C9F0B18EF1D8000F05D5B /* libsqlite3.dylib */; };
-		017F79461909D1D200EF8AD1 /* MBXError.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F793D1909D1D200EF8AD1 /* MBXError.m */; };
-		017F79471909D1D200EF8AD1 /* MBXOfflineMapDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F793F1909D1D200EF8AD1 /* MBXOfflineMapDatabase.m */; };
-		017F79481909D1D200EF8AD1 /* MBXOfflineMapDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79411909D1D200EF8AD1 /* MBXOfflineMapDownloader.m */; };
-		017F79491909D1D200EF8AD1 /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79431909D1D200EF8AD1 /* MBXPointAnnotation.m */; };
-		017F794A1909D1D200EF8AD1 /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79451909D1D200EF8AD1 /* MBXRasterTileOverlay.m */; };
+		012A0D7E1909D3F6005B69D7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 014DA1E818C45AE000AB33F8 /* Foundation.framework */; };
+		012A0D7F1909D3F6005B69D7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 014DA1EA18C45AE000AB33F8 /* CoreGraphics.framework */; };
+		012A0D801909D3F6005B69D7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 014DA1EC18C45AE000AB33F8 /* UIKit.framework */; };
+		012A0D861909D3F6005B69D7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 012A0D841909D3F6005B69D7 /* InfoPlist.strings */; };
+		012A0D881909D3F6005B69D7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 012A0D871909D3F6005B69D7 /* main.m */; };
+		012A0D8E1909D3F6005B69D7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 012A0D8D1909D3F6005B69D7 /* Images.xcassets */; };
+		012A0DAB1909D515005B69D7 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 012A0DA71909D515005B69D7 /* Main_iPad.storyboard */; };
+		012A0DAC1909D515005B69D7 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 012A0DA91909D515005B69D7 /* Main_iPhone.storyboard */; };
+		012A0DB11909D52E005B69D7 /* MBXxAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 012A0DAE1909D52E005B69D7 /* MBXxAppDelegate.m */; };
+		012A0DB21909D52E005B69D7 /* MBXxViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 012A0DB01909D52E005B69D7 /* MBXxViewController.m */; };
+		012A0DB41909D58E005B69D7 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 012A0DB31909D58E005B69D7 /* MapKit.framework */; };
+		012A0DB51909D5A8005B69D7 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 015C9F0B18EF1D8000F05D5B /* libsqlite3.dylib */; };
+		012A0DB71909D5B1005B69D7 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 012A0DB61909D5B1005B69D7 /* CoreLocation.framework */; };
+		012A0DB81909D5FC005B69D7 /* MBXError.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F793D1909D1D200EF8AD1 /* MBXError.m */; };
+		012A0DB91909D5FC005B69D7 /* MBXOfflineMapDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F793F1909D1D200EF8AD1 /* MBXOfflineMapDatabase.m */; };
+		012A0DBA1909D5FC005B69D7 /* MBXOfflineMapDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79411909D1D200EF8AD1 /* MBXOfflineMapDownloader.m */; };
+		012A0DBB1909D5FC005B69D7 /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79431909D1D200EF8AD1 /* MBXPointAnnotation.m */; };
+		012A0DBC1909D5FC005B69D7 /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79451909D1D200EF8AD1 /* MBXRasterTileOverlay.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,21 +33,23 @@
 		0112ACAE18C8F0EA00DD495C /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		0112ACAF18C8F0EA00DD495C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0112ACC918C8F0EA00DD495C /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		014DA1E618C45AE000AB33F8 /* MBXMapKit iOS Demo v030.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MBXMapKit iOS Demo v030.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		012A0D7D1909D3F6005B69D7 /* MBXMapKit iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MBXMapKit iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		012A0D831909D3F6005B69D7 /* MBXMapKit iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MBXMapKit iOS-Info.plist"; sourceTree = "<group>"; };
+		012A0D851909D3F6005B69D7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		012A0D871909D3F6005B69D7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		012A0D891909D3F6005B69D7 /* MBXMapKit iOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MBXMapKit iOS-Prefix.pch"; sourceTree = "<group>"; };
+		012A0D8D1909D3F6005B69D7 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		012A0DA81909D515005B69D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
+		012A0DAA1909D515005B69D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
+		012A0DAD1909D52E005B69D7 /* MBXxAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXxAppDelegate.h; sourceTree = "<group>"; };
+		012A0DAE1909D52E005B69D7 /* MBXxAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXxAppDelegate.m; sourceTree = "<group>"; };
+		012A0DAF1909D52E005B69D7 /* MBXxViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXxViewController.h; sourceTree = "<group>"; };
+		012A0DB01909D52E005B69D7 /* MBXxViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXxViewController.m; sourceTree = "<group>"; };
+		012A0DB31909D58E005B69D7 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		012A0DB61909D5B1005B69D7 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		014DA1E818C45AE000AB33F8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		014DA1EA18C45AE000AB33F8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		014DA1EC18C45AE000AB33F8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		014DA1F018C45AE000AB33F8 /* MBXMapKit iOS Demo v030-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MBXMapKit iOS Demo v030-Info.plist"; sourceTree = "<group>"; };
-		014DA1F218C45AE000AB33F8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		014DA1F418C45AE000AB33F8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		014DA1F618C45AE000AB33F8 /* MBXMapKit iOS Demo v030-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MBXMapKit iOS Demo v030-Prefix.pch"; sourceTree = "<group>"; };
-		014DA1F718C45AE000AB33F8 /* MBXxAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXxAppDelegate.h; sourceTree = "<group>"; };
-		014DA1F818C45AE000AB33F8 /* MBXxAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXxAppDelegate.m; sourceTree = "<group>"; };
-		014DA1FB18C45AE000AB33F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
-		014DA1FE18C45AE000AB33F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
-		014DA20018C45AE000AB33F8 /* MBXxViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXxViewController.h; sourceTree = "<group>"; };
-		014DA20118C45AE000AB33F8 /* MBXxViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MBXxViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		014DA20318C45AE000AB33F8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		015C9F0B18EF1D8000F05D5B /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		015C9F0D18EF1D8D00F05D5B /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
 		017F793C1909D1D200EF8AD1 /* MBXError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXError.h; sourceTree = "<group>"; };
@@ -62,14 +66,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		014DA1E318C45AE000AB33F8 /* Frameworks */ = {
+		012A0D7A1909D3F6005B69D7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				015C9F0C18EF1D8000F05D5B /* libsqlite3.dylib in Frameworks */,
-				014DA1EB18C45AE000AB33F8 /* CoreGraphics.framework in Frameworks */,
-				014DA1ED18C45AE000AB33F8 /* UIKit.framework in Frameworks */,
-				014DA1E918C45AE000AB33F8 /* Foundation.framework in Frameworks */,
+				012A0DB71909D5B1005B69D7 /* CoreLocation.framework in Frameworks */,
+				012A0DB51909D5A8005B69D7 /* libsqlite3.dylib in Frameworks */,
+				012A0D7F1909D3F6005B69D7 /* CoreGraphics.framework in Frameworks */,
+				012A0D801909D3F6005B69D7 /* UIKit.framework in Frameworks */,
+				012A0DB41909D58E005B69D7 /* MapKit.framework in Frameworks */,
+				012A0D7E1909D3F6005B69D7 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,9 +92,37 @@
 			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
+		012A0D811909D3F6005B69D7 /* MBXMapKit iOS */ = {
+			isa = PBXGroup;
+			children = (
+				012A0DAD1909D52E005B69D7 /* MBXxAppDelegate.h */,
+				012A0DAE1909D52E005B69D7 /* MBXxAppDelegate.m */,
+				012A0DAF1909D52E005B69D7 /* MBXxViewController.h */,
+				012A0DB01909D52E005B69D7 /* MBXxViewController.m */,
+				012A0DA71909D515005B69D7 /* Main_iPad.storyboard */,
+				012A0DA91909D515005B69D7 /* Main_iPhone.storyboard */,
+				012A0D8D1909D3F6005B69D7 /* Images.xcassets */,
+				012A0D821909D3F6005B69D7 /* Supporting Files */,
+			);
+			path = "MBXMapKit iOS";
+			sourceTree = "<group>";
+		};
+		012A0D821909D3F6005B69D7 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				012A0D831909D3F6005B69D7 /* MBXMapKit iOS-Info.plist */,
+				012A0D841909D3F6005B69D7 /* InfoPlist.strings */,
+				012A0D871909D3F6005B69D7 /* main.m */,
+				012A0D891909D3F6005B69D7 /* MBXMapKit iOS-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		014DA1E718C45AE000AB33F8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				012A0DB61909D5B1005B69D7 /* CoreLocation.framework */,
+				012A0DB31909D58E005B69D7 /* MapKit.framework */,
 				015C9F0D18EF1D8D00F05D5B /* libsqlite3.dylib */,
 				015C9F0B18EF1D8000F05D5B /* libsqlite3.dylib */,
 				01DCA2EF18CFAA77002E5125 /* MapKit.framework */,
@@ -100,32 +134,6 @@
 				0112ACAC18C8F0EA00DD495C /* Other Frameworks */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		014DA1EE18C45AE000AB33F8 /* MBXMapKit iOS Demo v030 */ = {
-			isa = PBXGroup;
-			children = (
-				014DA1F718C45AE000AB33F8 /* MBXxAppDelegate.h */,
-				014DA1F818C45AE000AB33F8 /* MBXxAppDelegate.m */,
-				014DA1FA18C45AE000AB33F8 /* Main_iPhone.storyboard */,
-				014DA1FD18C45AE000AB33F8 /* Main_iPad.storyboard */,
-				014DA20018C45AE000AB33F8 /* MBXxViewController.h */,
-				014DA20118C45AE000AB33F8 /* MBXxViewController.m */,
-				014DA20318C45AE000AB33F8 /* Images.xcassets */,
-				014DA1EF18C45AE000AB33F8 /* Supporting Files */,
-			);
-			path = "MBXMapKit iOS Demo v030";
-			sourceTree = "<group>";
-		};
-		014DA1EF18C45AE000AB33F8 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				014DA1F018C45AE000AB33F8 /* MBXMapKit iOS Demo v030-Info.plist */,
-				014DA1F118C45AE000AB33F8 /* InfoPlist.strings */,
-				014DA1F418C45AE000AB33F8 /* main.m */,
-				014DA1F618C45AE000AB33F8 /* MBXMapKit iOS Demo v030-Prefix.pch */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		017F793B1909D1D200EF8AD1 /* mbxmapkit */ = {
@@ -149,7 +157,7 @@
 		DDD5905A17D7D086009291B8 = {
 			isa = PBXGroup;
 			children = (
-				014DA1EE18C45AE000AB33F8 /* MBXMapKit iOS Demo v030 */,
+				012A0D811909D3F6005B69D7 /* MBXMapKit iOS */,
 				017F793B1909D1D200EF8AD1 /* mbxmapkit */,
 				014DA1E718C45AE000AB33F8 /* Frameworks */,
 				DDD5906417D7D086009291B8 /* Products */,
@@ -159,7 +167,7 @@
 		DDD5906417D7D086009291B8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				014DA1E618C45AE000AB33F8 /* MBXMapKit iOS Demo v030.app */,
+				012A0D7D1909D3F6005B69D7 /* MBXMapKit iOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -167,21 +175,21 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		014DA1E518C45AE000AB33F8 /* MBXMapKit iOS Demo v030 */ = {
+		012A0D7C1909D3F6005B69D7 /* MBXMapKit iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 014DA21C18C45AE000AB33F8 /* Build configuration list for PBXNativeTarget "MBXMapKit iOS Demo v030" */;
+			buildConfigurationList = 012A0DA11909D3F7005B69D7 /* Build configuration list for PBXNativeTarget "MBXMapKit iOS" */;
 			buildPhases = (
-				014DA1E218C45AE000AB33F8 /* Sources */,
-				014DA1E318C45AE000AB33F8 /* Frameworks */,
-				014DA1E418C45AE000AB33F8 /* Resources */,
+				012A0D791909D3F6005B69D7 /* Sources */,
+				012A0D7A1909D3F6005B69D7 /* Frameworks */,
+				012A0D7B1909D3F6005B69D7 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "MBXMapKit iOS Demo v030";
-			productName = "MBXMapKit iOS Demo v030";
-			productReference = 014DA1E618C45AE000AB33F8 /* MBXMapKit iOS Demo v030.app */;
+			name = "MBXMapKit iOS";
+			productName = "MBXMapKit iOS";
+			productReference = 012A0D7D1909D3F6005B69D7 /* MBXMapKit iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -193,6 +201,15 @@
 				CLASSPREFIX = MBX;
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = MapBox;
+				TargetAttributes = {
+					012A0D7C1909D3F6005B69D7 = {
+						SystemCapabilities = {
+							com.apple.iOS = {
+								enabled = 1;
+							};
+						};
+					};
+				};
 			};
 			buildConfigurationList = DDD5905E17D7D086009291B8 /* Build configuration list for PBXProject "MBXMapKit" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -207,98 +224,102 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				014DA1E518C45AE000AB33F8 /* MBXMapKit iOS Demo v030 */,
+				012A0D7C1909D3F6005B69D7 /* MBXMapKit iOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		014DA1E418C45AE000AB33F8 /* Resources */ = {
+		012A0D7B1909D3F6005B69D7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				014DA1FF18C45AE000AB33F8 /* Main_iPad.storyboard in Resources */,
-				014DA20418C45AE000AB33F8 /* Images.xcassets in Resources */,
-				014DA1FC18C45AE000AB33F8 /* Main_iPhone.storyboard in Resources */,
-				014DA1F318C45AE000AB33F8 /* InfoPlist.strings in Resources */,
+				012A0DAC1909D515005B69D7 /* Main_iPhone.storyboard in Resources */,
+				012A0DAB1909D515005B69D7 /* Main_iPad.storyboard in Resources */,
+				012A0D861909D3F6005B69D7 /* InfoPlist.strings in Resources */,
+				012A0D8E1909D3F6005B69D7 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		014DA1E218C45AE000AB33F8 /* Sources */ = {
+		012A0D791909D3F6005B69D7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				017F79471909D1D200EF8AD1 /* MBXOfflineMapDatabase.m in Sources */,
-				017F794A1909D1D200EF8AD1 /* MBXRasterTileOverlay.m in Sources */,
-				014DA1F518C45AE000AB33F8 /* main.m in Sources */,
-				014DA20218C45AE000AB33F8 /* MBXxViewController.m in Sources */,
-				017F79461909D1D200EF8AD1 /* MBXError.m in Sources */,
-				014DA1F918C45AE000AB33F8 /* MBXxAppDelegate.m in Sources */,
-				017F79491909D1D200EF8AD1 /* MBXPointAnnotation.m in Sources */,
-				017F79481909D1D200EF8AD1 /* MBXOfflineMapDownloader.m in Sources */,
+				012A0DB81909D5FC005B69D7 /* MBXError.m in Sources */,
+				012A0DB91909D5FC005B69D7 /* MBXOfflineMapDatabase.m in Sources */,
+				012A0DBA1909D5FC005B69D7 /* MBXOfflineMapDownloader.m in Sources */,
+				012A0DBB1909D5FC005B69D7 /* MBXPointAnnotation.m in Sources */,
+				012A0DBC1909D5FC005B69D7 /* MBXRasterTileOverlay.m in Sources */,
+				012A0D881909D3F6005B69D7 /* main.m in Sources */,
+				012A0DB21909D52E005B69D7 /* MBXxViewController.m in Sources */,
+				012A0DB11909D52E005B69D7 /* MBXxAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		014DA1F118C45AE000AB33F8 /* InfoPlist.strings */ = {
+		012A0D841909D3F6005B69D7 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				014DA1F218C45AE000AB33F8 /* en */,
+				012A0D851909D3F6005B69D7 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		014DA1FA18C45AE000AB33F8 /* Main_iPhone.storyboard */ = {
+		012A0DA71909D515005B69D7 /* Main_iPad.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				014DA1FB18C45AE000AB33F8 /* Base */,
-			);
-			name = Main_iPhone.storyboard;
-			sourceTree = "<group>";
-		};
-		014DA1FD18C45AE000AB33F8 /* Main_iPad.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				014DA1FE18C45AE000AB33F8 /* Base */,
+				012A0DA81909D515005B69D7 /* Base */,
 			);
 			name = Main_iPad.storyboard;
+			sourceTree = "<group>";
+		};
+		012A0DA91909D515005B69D7 /* Main_iPhone.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				012A0DAA1909D515005B69D7 /* Base */,
+			);
+			name = Main_iPhone.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		014DA21818C45AE000AB33F8 /* Debug */ = {
+		012A0DA21909D3F7005B69D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "MBXMapKit iOS Demo v030/MBXMapKit iOS Demo v030-Prefix.pch";
+				GCC_PREFIX_HEADER = "MBXMapKit iOS/MBXMapKit iOS-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				INFOPLIST_FILE = "MBXMapKit iOS Demo v030/MBXMapKit iOS Demo v030-Info.plist";
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "MBXMapKit iOS/MBXMapKit iOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
 		};
-		014DA21918C45AE000AB33F8 /* Release */ = {
+		012A0DA31909D3F7005B69D7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "MBXMapKit iOS Demo v030/MBXMapKit iOS Demo v030-Prefix.pch";
+				GCC_PREFIX_HEADER = "MBXMapKit iOS/MBXMapKit iOS-Prefix.pch";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				INFOPLIST_FILE = "MBXMapKit iOS Demo v030/MBXMapKit iOS Demo v030-Info.plist";
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "MBXMapKit iOS/MBXMapKit iOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -377,14 +398,13 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		014DA21C18C45AE000AB33F8 /* Build configuration list for PBXNativeTarget "MBXMapKit iOS Demo v030" */ = {
+		012A0DA11909D3F7005B69D7 /* Build configuration list for PBXNativeTarget "MBXMapKit iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				014DA21818C45AE000AB33F8 /* Debug */,
-				014DA21918C45AE000AB33F8 /* Release */,
+				012A0DA21909D3F7005B69D7 /* Debug */,
+				012A0DA31909D3F7005B69D7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
 		};
 		DDD5905E17D7D086009291B8 /* Build configuration list for PBXProject "MBXMapKit" */ = {
 			isa = XCConfigurationList;
