@@ -67,10 +67,10 @@ typedef NS_ENUM(NSUInteger, MBXOfflineMapDownloaderState) {
 @property (readonly,nonatomic) NSUInteger totalFilesWritten;
 @property (readonly,nonatomic) NSUInteger totalFilesExpectedToWrite;
 
+@property (nonatomic) id<MBXOfflineMapDownloaderDelegate> delegate;
+
 
 #pragma mark -
-
-- (void)setDelegate:(id<MBXOfflineMapDownloaderDelegate>)delegate;
 
 - (void)beginDownloadingMapID:(NSString *)mapID mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ;
 

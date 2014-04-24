@@ -42,8 +42,6 @@
 @property (nonatomic) NSString *partialDatabasePath;
 @property (nonatomic) NSURL *offlineMapDirectory;
 
-@property (nonatomic) id<MBXOfflineMapDownloaderDelegate> delegate;
-
 @property (nonatomic) NSOperationQueue *backgroundWorkQueue;
 @property (nonatomic) NSOperationQueue *sqliteQueue;
 @property (nonatomic) NSURLSession *dataSession;
@@ -208,6 +206,19 @@
     {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [_delegate offlineMapDownloader:self stateChangedTo:_state];
+        });
+    }
+}
+
+
+- (void)notifyDelegateOfInitialCount
+{
+    if([_delegate respondsToSelector:@selector(offlineMapDownloader:totalFilesExpectedToWrite:)])
+    {
+        // Update the delegate with the file count so it can display a progress indicator
+        //
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_delegate offlineMapDownloader:self totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
         });
     }
 }
@@ -873,14 +884,7 @@
                     }
                     else
                     {
-                        if([_delegate respondsToSelector:@selector(offlineMapDownloader:totalFilesExpectedToWrite:)])
-                        {
-                            // Update the delegate with the file count so it can display a progress indicator
-                            //
-                            dispatch_async(dispatch_get_main_queue(), ^(void){
-                                [_delegate offlineMapDownloader:self totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
-                            });
-                        }
+                        [self notifyDelegateOfInitialCount];
                         [self startDownloading];
                     }
                 }
@@ -899,14 +903,7 @@
             }
             else
             {
-                if([_delegate respondsToSelector:@selector(offlineMapDownloader:totalFilesExpectedToWrite:)])
-                {
-                    // Update the delegate with the file count so it can display a progress indicator
-                    //
-                    dispatch_async(dispatch_get_main_queue(), ^(void){
-                        [_delegate offlineMapDownloader:self totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
-                    });
-                }
+                [self notifyDelegateOfInitialCount];
                 [self startDownloading];
             }
         }
@@ -916,8 +913,6 @@
 
 - (NSArray *)parseMarkerIconURLStringsFromGeojsonData:(NSData *)data
 {
-    // TODO: Parse marker icon URLs
-    //
     id markers;
     id value;
     NSMutableArray *iconURLStrings = [[NSMutableArray alloc] init];
