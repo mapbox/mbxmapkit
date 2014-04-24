@@ -798,7 +798,14 @@
                                      (long)zoom,
                                      (long)x,
                                      (long)y,
+#if TARGET_OS_IPHONE
                                      [[UIScreen mainScreen] scale] > 1.0 ? @"@2x" : @"",
+#else
+                                     // Making this smart enough to handle a Retina MacBook with a normal dpi external display
+                                     // is complicated. For now, just default to @1x images and a 1.0 scale.
+                                     //
+                                     @"",
+#endif
                                      [MBXRasterTileOverlay qualityExtensionForImageQuality:_imageQuality]
                                      ]
                      ];

@@ -9,6 +9,7 @@
 #import "MBXzAppDelegate.h"
 #import <MapKit/MapKit.h>
 #import "MBXRasterTileOverlay.h"
+#import "MBXPointAnnotation.h"
 
 
 @interface MBXzAppDelegate ()
