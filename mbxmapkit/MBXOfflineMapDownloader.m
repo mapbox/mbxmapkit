@@ -86,30 +86,56 @@
 
     if(self)
     {
-        // Make sure the offline map directory exists and that it will be excluded from iCloud backups
+        // Calculate the path in Application Support for storing offline maps
         //
         NSFileManager *fm = [NSFileManager defaultManager];
         NSURL *appSupport = [fm URLForDirectory:NSApplicationSupportDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
         _offlineMapDirectory = [appSupport URLByAppendingPathComponent:@"MBXMapKit/OfflineMaps"];
-        if(_offlineMapDirectory)
-        {
-            NSError *error;
-            BOOL result;
-            result = [fm createDirectoryAtURL:_offlineMapDirectory withIntermediateDirectories:YES attributes:nil error:&error];
-            [_offlineMapDirectory setResourceValues:@{NSURLIsExcludedFromBackupKey:@YES} error:nil];
 
-            //NSLog(@"\n%@\n%@",[_offlineMapDirectory absoluteString],[_offlineMapDirectory resourceValuesForKeys:@[NSURLIsExcludedFromBackupKey] error:nil]);
+        // Make sure the offline map directory exists
+        //
+        NSError *error;
+        [fm createDirectoryAtURL:_offlineMapDirectory withIntermediateDirectories:YES attributes:nil error:&error];
+        if(error)
+        {
+            NSLog(@"There was an error with creating the offline map directory: %@", error);
+            error = nil;
         }
+
+        // Figure out if the offline map directory already has a value for NSURLIsExcludedFromBackupKey. If so,
+        // then leave that value alone. Otherwise, set a default value to exclude offline maps from backups.
+        //
+        NSNumber *excluded;
+        [_offlineMapDirectory getResourceValue:&excluded forKey:NSURLIsExcludedFromBackupKey error:&error];
+        if(error)
+        {
+            NSLog(@"There was an error with checking the offline map directory's resource values: %@", error);
+            error = nil;
+        }
+        if(excluded != nil)
+        {
+            _offlineMapsAreExcludedFromBackup = [excluded boolValue];
+        }
+        else
+        {
+            [self setOfflineMapsAreExcludedFromBackup:YES];
+        }
+
 
         // This is where partial offline map databases live (at most 1 at a time!) while their resources are being downloaded
         //
         _partialDatabasePath = [[_offlineMapDirectory URLByAppendingPathComponent:@"newdatabase.partial"] path];
-        //NSLog(@"%@",_partialDatabasePath);
-        
+
+
         // Restore persistent state from disk
         //
         _mutableOfflineMapDatabases = [[NSMutableArray alloc] init];
-        NSArray *files = [fm contentsOfDirectoryAtPath:[_offlineMapDirectory path] error:nil];
+        error = nil;
+        NSArray *files = [fm contentsOfDirectoryAtPath:[_offlineMapDirectory path] error:&error];
+        if(error)
+        {
+            NSLog(@"There was an error with listing the contents of the offline map directory: %@", error);
+        }
         if (files)
         {
             MBXOfflineMapDatabase *db;
@@ -174,6 +200,23 @@
 
     return self;
 }
+
+
+- (void)setOfflineMapsAreExcludedFromBackup:(BOOL)offlineMapsAreExcludedFromBackup
+{
+    NSError *error;
+    NSNumber *boolNumber = offlineMapsAreExcludedFromBackup ? @YES : @NO;
+    [_offlineMapDirectory setResourceValue:boolNumber forKey:NSURLIsExcludedFromBackupKey error:&error];
+    if(error)
+    {
+        NSLog(@"There was an error setting NSURLIsExcludedFromBackupKey on the offline map directory: %@",error);
+    }
+    else
+    {
+        _offlineMapsAreExcludedFromBackup = offlineMapsAreExcludedFromBackup;
+    }
+}
+
 
 - (void)setUpNewDataSession
 {

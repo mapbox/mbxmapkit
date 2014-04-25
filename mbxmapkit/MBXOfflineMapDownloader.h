@@ -69,6 +69,8 @@ typedef NS_ENUM(NSUInteger, MBXOfflineMapDownloaderState) {
 
 @property (nonatomic) id<MBXOfflineMapDownloaderDelegate> delegate;
 
+@property (nonatomic) BOOL offlineMapsAreExcludedFromBackup;
+
 
 #pragma mark -
 
