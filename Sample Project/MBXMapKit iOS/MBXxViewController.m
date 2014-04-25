@@ -225,7 +225,9 @@
             // Offline Map Viewer
             [self resetMapViewAndRasterOverlayDefaults];
             _currentlyViewingAnOfflineMap = YES;
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithOfflineMapDatabase:[MBXOfflineMapDownloader sharedOfflineMapDownloader].offlineMapDatabases.lastObject delegate:self];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithOfflineMapDatabase:[MBXOfflineMapDownloader sharedOfflineMapDownloader].offlineMapDatabases.lastObject];
+            _rasterOverlay.delegate = self;
+
             [_mapView addOverlay:_rasterOverlay];
             break;
         case 8:
@@ -287,7 +289,8 @@
             if(_currentlyViewingAnOfflineMap)
             {
                 [self resetMapViewAndRasterOverlayDefaults];
-                _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithOfflineMapDatabase:nil delegate:self];
+                _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithOfflineMapDatabase:nil];
+                _rasterOverlay.delegate = self;
                 [_mapView addOverlay:_rasterOverlay];
             }
             for(MBXOfflineMapDatabase *db in [MBXOfflineMapDownloader sharedOfflineMapDownloader].offlineMapDatabases)

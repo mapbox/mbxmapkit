@@ -51,6 +51,12 @@
 
 @property (strong, nonatomic) MBXOfflineMapDatabase *offlineMapDatabase;
 
+@property (nonatomic) NSDictionary *metadataForPendingNotification;
+@property (nonatomic) NSError *metadataErrorForPendingNotification;
+@property (nonatomic) NSArray *markersForPendingNotification;
+@property (nonatomic) NSError *markersErrorForPendingNotification;
+@property (nonatomic) BOOL needToNotifyDelegateThatMetadataAndMarkersAreFinished;
+
 @end
 
 
@@ -167,13 +173,12 @@
     return self;
 }
 
-- (id)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase delegate:(id<MBXRasterTileOverlayDelegate>)delegate
+- (id)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase
 {
     self = [super init];
     if (self)
     {
         _offlineMapDatabase = offlineMapDatabase;
-        _delegate = delegate;
         [self setupMapID:offlineMapDatabase.mapID includeMetadata:offlineMapDatabase.includesMetadata includeMarkers:offlineMapDatabase.includesMarkers imageQuality:offlineMapDatabase.imageQuality];
     }
     return self;
@@ -287,6 +292,82 @@
     [self asyncLoadURL:url dataBlock:dataBlock completionHandler:completionHandler];
 }
 
+#pragma mark - Delegate Notifications
+
+- (void)setDelegate:(id<MBXRasterTileOverlayDelegate>)delegate
+{
+    _delegate = delegate;
+
+    // If notifications were attempted between initialization and the time the delegate was set, send
+    // the saved notifications. This is a normal situation for offline maps because their resources
+    // load *very* quickly using operation queues on background threads.
+    //
+    if(_metadataForPendingNotification || _metadataErrorForPendingNotification)
+    {
+        [self notifyDelegateDidLoadMetadata:_metadataForPendingNotification withError:_metadataErrorForPendingNotification];
+    }
+    if(_markersForPendingNotification || _markersErrorForPendingNotification)
+    {
+        [self notifyDelegateDidLoadMarkers:_markersForPendingNotification withError:_markersErrorForPendingNotification];
+    }
+    if(_needToNotifyDelegateThatMetadataAndMarkersAreFinished)
+    {
+        [self notifyDelegateDidFinishLoadingMetadataAndMarkersForOverlay];
+    }
+}
+
+- (void)notifyDelegateDidLoadMetadata:(NSDictionary *)metadata withError:(NSError *)error
+{
+    if([_delegate respondsToSelector:@selector(tileOverlay:didLoadMetadata:withError:)])
+    {
+        _metadataForPendingNotification = nil;
+        _metadataErrorForPendingNotification = nil;
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_delegate tileOverlay:self didLoadMetadata:metadata withError:error];
+        });
+    }
+    else
+    {
+        _metadataForPendingNotification = metadata;
+        _metadataErrorForPendingNotification = error;
+    }
+}
+
+
+- (void)notifyDelegateDidLoadMarkers:(NSArray *)markers withError:(NSError *)error
+{
+    if([_delegate respondsToSelector:@selector(tileOverlay:didLoadMarkers:withError:)])
+    {
+        _markersForPendingNotification = nil;
+        _markersErrorForPendingNotification = nil;
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_delegate tileOverlay:self didLoadMarkers:markers withError:error];
+        });
+    }
+    else
+    {
+        _markersForPendingNotification = markers;
+        _markersErrorForPendingNotification = error;
+    }
+}
+
+
+- (void)notifyDelegateDidFinishLoadingMetadataAndMarkersForOverlay
+{
+    if([_delegate respondsToSelector:@selector(tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:)])
+    {
+        _needToNotifyDelegateThatMetadataAndMarkersAreFinished = NO;
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
+        });
+    }
+    else
+    {
+        _needToNotifyDelegateThatMetadataAndMarkersAreFinished = YES;
+    }
+}
+
+
 
 #pragma mark - Methods for asynchronous loading of metadata and markers
 
@@ -365,15 +446,11 @@
             // the fact that some of the markers probably didn't load properly.
             //
             _markerIconLoaderMayInitiateDelegateCallback = NO;
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                [_delegate tileOverlay:self didLoadMarkers:nil withError:error];
-            });
+            [self notifyDelegateDidLoadMarkers:nil withError:error];
 
             _didFinishLoadingMarkers = YES;
             if(_didFinishLoadingMetadata) {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
-                });
+                [self notifyDelegateDidFinishLoadingMetadataAndMarkersForOverlay];
             }
         }
         else
@@ -383,15 +460,11 @@
                 // Handle the case where all the marker icons URLs finished loading before the markers.geojson finished parsing
                 //
                 _markers = [NSArray arrayWithArray:_mutableMarkers];
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    [_delegate tileOverlay:self didLoadMarkers:_markers withError:error];
-                });
+                [self notifyDelegateDidLoadMarkers:_markers withError:error];
 
                 _didFinishLoadingMarkers = YES;
                 if(_didFinishLoadingMetadata) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void){
-                        [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
-                    });
+                    [self notifyDelegateDidFinishLoadingMetadataAndMarkersForOverlay];
                 }
                 _markerIconLoaderMayInitiateDelegateCallback = NO;
             }
@@ -434,15 +507,11 @@
         if(_markerIconLoaderMayInitiateDelegateCallback && _activeMarkerIconRequests <= 0)
         {
             _markers = [NSArray arrayWithArray:_mutableMarkers];
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                [_delegate tileOverlay:self didLoadMarkers:_markers withError:error];
-            });
+            [self notifyDelegateDidLoadMarkers:_markers withError:error];
 
             _didFinishLoadingMarkers = YES;
             if(_didFinishLoadingMetadata) {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
-                });
+                [self notifyDelegateDidFinishLoadingMetadataAndMarkersForOverlay];
             }
         }
     };
@@ -485,15 +554,11 @@
     //
     void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
     {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [_delegate tileOverlay:self didLoadMetadata:_tileJSONDictionary withError:error];
-        });
+        [self notifyDelegateDidLoadMetadata:_tileJSONDictionary withError:error];
 
         _didFinishLoadingMetadata = YES;
         if(_didFinishLoadingMarkers) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
-            });
+            [self notifyDelegateDidFinishLoadingMetadataAndMarkersForOverlay];
         }
     };
 

@@ -196,7 +196,7 @@
 }
 
 
-#pragma mark - Implementation: utility functions
+#pragma mark - Delegate Notifications
 
 - (void)notifyDelegateOfStateChange
 {
@@ -294,6 +294,9 @@
         });
     }
 }
+
+
+#pragma mark - Implementation: download urls
 
 
 - (MBXOfflineMapDatabase *)completeDatabaseAndInstantiateOfflineMapWithError:(NSError **)error
