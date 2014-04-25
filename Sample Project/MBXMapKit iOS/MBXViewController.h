@@ -1,5 +1,5 @@
 //
-//  MBXxViewController.h
+//  MBXViewController.h
 //  MBXMapKit iOS Demo v030
 //
 //  Created by Will Snook on 3/2/14.
@@ -11,6 +11,6 @@
 #import "MBXRasterTileOverlay.h"
 #import "MBXOfflineMapDownloader.h"
 
-@interface MBXxViewController : UIViewController <UIActionSheetDelegate, MKMapViewDelegate, MBXRasterTileOverlayDelegate, MBXOfflineMapDownloaderDelegate, UIAlertViewDelegate>
+@interface MBXViewController : UIViewController <UIActionSheetDelegate, MKMapViewDelegate, MBXRasterTileOverlayDelegate, MBXOfflineMapDownloaderDelegate, UIAlertViewDelegate>
 
 @end

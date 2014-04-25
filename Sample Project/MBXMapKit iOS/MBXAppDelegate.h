@@ -1,5 +1,5 @@
 //
-//  MBXxAppDelegate.h
+//  MBXAppDelegate.h
 //  MBXMapKit iOS Demo v030
 //
 //  Created by Will Snook on 3/2/14.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MBXxAppDelegate : UIResponder <UIApplicationDelegate>
+@interface MBXAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

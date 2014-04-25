@@ -1,12 +1,12 @@
 //
-//  MBXxViewController.m
+//  MBXViewController.m
 //  MBXMapKit iOS Demo v030
 //
 //  Created by Will Snook on 3/2/14.
 //  Copyright (c) 2014 MapBox. All rights reserved.
 //
 
-#import "MBXxViewController.h"
+#import "MBXViewController.h"
 #import <MapKit/MapKit.h>
 #import "MBXRasterTileOverlay.h"
 #import "MBXPointAnnotation.h"
@@ -15,7 +15,7 @@
 #import "MBXError.h"
 
 
-@interface MBXxViewController ()
+@interface MBXViewController ()
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (nonatomic) MBXRasterTileOverlay *rasterOverlay;
@@ -34,7 +34,7 @@
 
 @end
 
-@implementation MBXxViewController
+@implementation MBXViewController
 
 
 #pragma mark - Initialization

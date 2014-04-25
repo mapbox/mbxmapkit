@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-#import "MBXxAppDelegate.h"
+#import "MBXAppDelegate.h"
 
 int main(int argc, char * argv[])
 {
     @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSStringFromClass([MBXxAppDelegate class]));
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([MBXAppDelegate class]));
     }
 }
