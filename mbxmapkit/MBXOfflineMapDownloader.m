@@ -437,7 +437,7 @@
                 BOOL successfulBlobInsert = NO;
                 if(sqlite3_prepare_v2(db, zSql2, nByte2, &ppStmt2, &pzTail2) == SQLITE_OK)
                 {
-                    if(sqlite3_bind_blob(ppStmt2, 1, [data bytes], [data length], SQLITE_TRANSIENT) == SQLITE_OK)
+                    if(sqlite3_bind_blob(ppStmt2, 1, [data bytes], (int)[data length], SQLITE_TRANSIENT) == SQLITE_OK)
                     {
                         if(sqlite3_step(ppStmt2) == SQLITE_DONE)
                         {

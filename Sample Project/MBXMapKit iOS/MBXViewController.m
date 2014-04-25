@@ -251,7 +251,7 @@
 
 - (IBAction)offlineMapButtonActionBegin:(id)sender
 {
-    [[MBXOfflineMapDownloader sharedOfflineMapDownloader] beginDownloadingMapID:_rasterOverlay.mapID mapRegion:_mapView.region minimumZ:_rasterOverlay.minimumZ maximumZ:MIN(17,_rasterOverlay.maximumZ)];
+    [[MBXOfflineMapDownloader sharedOfflineMapDownloader] beginDownloadingMapID:_rasterOverlay.mapID mapRegion:_mapView.region minimumZ:_rasterOverlay.minimumZ maximumZ:MIN(16,_rasterOverlay.maximumZ)];
 }
 
 
