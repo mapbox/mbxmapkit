@@ -3,12 +3,21 @@ MBXMapKit
 
 MBXMapKit is a simple library which extends Apple's MapKit API to integrate with maps hosted on mapbox.com. With MBXMapKit, your app is responsible for providing and managing an MKMapView instance, while MBXMapKit provides a subclass of [MKTileOverlay](https://developer.apple.com/library/ios/documentation/MapKit/Reference/MKTileOverlay_class/Reference/Reference.html), a subclass of [MKShape](https://developer.apple.com/library/ios/documentation/MapKit/Reference/MKShape_class/Reference/Reference.html), delegate callbacks for managing asynchronously loaded resources, and an offline map downloader. These extensions allow you to combine the performance of native maps on iOS with convenience and integration similar to Mapbox.js in desktop browsers. 
 
-A key concept to understand, and a point of potential confusion to be aware of, is that MBXMapKit designed to add features to MKMapKit rather than replace it. MBXMapKit started off taking a different approach, but this has changed. Versions 0.1.0 through 0.2.1 were designed to manage a subclass of MKMapView, but that turned out to be impractical for apps which needed to use the full flexibility of MKMapKit. Starting with MBXMapKit 0.3.0, you are now responsible for managing your own MKMapView, and MBXMapKit will stay out of your way. To see how MBXMapKit makes that process fairly painless, and for several examples of configuring MKMapView for different appearances, please take a look at the view controller in the iOS sample app.
+[![](https://raw.github.com/mapbox/mbxmapkit/packaging/screenshot.png)]()
+
+### Features
 
 The main features which MBXMapKit adds to MapKit are:
  * **Mapbox Markers:** If you've configured markers for your map using the mapbox.com editor, MBXMapKit makes it easy to add them to your MKMapView as MKShape annotations. You'll need to include some simple bolierplate code in your view controller's `mapView:viewForAnnotation:` to connect annotations with regular MKAnnotationView instances (see iOS sample app).
  * **Performance Caching:** MBXMapKit uses NSURLSession and NSURLCache for performance caching of the tiles, json, and icons required for loading maps. In contrast to the Mapbox iOS SDK and earlier versions of MBXMapKit, this is a traditional cache which is not designed to be used for long term persistence of map data while offline. That capability is provided by a separate mechanism (see next point).
  * **Offline Maps:** MBXMapKit now includes an offline map downloader to manage the download of all resources (tiles, json, and icons) necessary to display requested map regions while offline. The offline map downloader provides download progress updates, an internal mechanism for persistant storage of multiple offline map regions, the ability to remove specific offline map regions from disk, and the ability to include offline map data in iCloud backups (the default is to *exclude* offline map data from backups). 
+
+
+### Conceptual Overview
+
+A key concept to understand, and a point of potential confusion to be aware of, is that MBXMapKit designed to add features to MKMapKit rather than replace it. MBXMapKit started off taking a different approach, but this has changed. Versions 0.1.0 through 0.2.1 were designed to manage a subclass of MKMapView, but that turned out to be impractical for apps which needed to use the full flexibility of MKMapKit.
+
+Starting with MBXMapKit 0.3.0, you are now responsible for managing your own MKMapView, and MBXMapKit will stay out of your way. MBXMapKit provides MKTileOverlay and MKShape subclass instances which you can add to your MKMapView in combination with overlays and annotations from other sources. To see how MBXMapKit makes that process fairly painless, and for several examples of configuring MKMapView for different appearances, please take a look at the view controller in the iOS sample app.
 
 
 ### Supported Platforms
@@ -30,14 +39,14 @@ To include MBXMapKit in your app you will need to:
  5. Study the view controller in the iOS sample app. It's meant to be liberally copied and pasted. In particular, take a look at `viewDidLoad`, `resetMapViewAndRasterOverlayDefaults`, `actionSheet:clickedButtonAtIndex:`, the MBXOfflineMapDownloaderDelegate callbacks, `mapView:rendererForOverlay:`, `mapView:viewForAnnotation:`, and the MBXRasterTileOverlayDelegate callbacks.
 
 
-
 ### Requirements
 
  * iOS 7.0+
  * Xcode 5+
  * Automatic Reference Counting (ARC)
 
-[![](https://raw.github.com/mapbox/mbxmapkit/packaging/screenshot.png)]()
+
+### Related
 
 Check out the [overview guide](http://mapbox.com/mbxmapkit/) for more details. 
 

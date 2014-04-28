@@ -49,6 +49,9 @@
 		014DA1E818C45AE000AB33F8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		014DA1EA18C45AE000AB33F8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		014DA1EC18C45AE000AB33F8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		01509721190F0E8A0060413A /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = text; name = CHANGELOG.md; path = ../CHANGELOG.md; sourceTree = "<group>"; };
+		01509722190F0E8A0060413A /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE.md; path = ../LICENSE.md; sourceTree = "<group>"; };
+		01509723190F0E8A0060413A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		015C9F0B18EF1D8000F05D5B /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		015C9F0D18EF1D8D00F05D5B /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
 		017F793C1909D1D200EF8AD1 /* MBXError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXError.h; sourceTree = "<group>"; };
@@ -155,6 +158,9 @@
 		DDD5905A17D7D086009291B8 = {
 			isa = PBXGroup;
 			children = (
+				01509721190F0E8A0060413A /* CHANGELOG.md */,
+				01509722190F0E8A0060413A /* LICENSE.md */,
+				01509723190F0E8A0060413A /* README.md */,
 				012A0D811909D3F6005B69D7 /* MBXMapKit iOS */,
 				017F793B1909D1D200EF8AD1 /* mbxmapkit */,
 				014DA1E718C45AE000AB33F8 /* Frameworks */,
