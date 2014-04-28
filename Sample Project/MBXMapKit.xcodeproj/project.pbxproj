@@ -19,7 +19,6 @@
 		012A0DB21909D52E005B69D7 /* MBXViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 012A0DB01909D52E005B69D7 /* MBXViewController.m */; };
 		012A0DB41909D58E005B69D7 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 012A0DB31909D58E005B69D7 /* MapKit.framework */; };
 		012A0DB51909D5A8005B69D7 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 015C9F0B18EF1D8000F05D5B /* libsqlite3.dylib */; };
-		012A0DB71909D5B1005B69D7 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 012A0DB61909D5B1005B69D7 /* CoreLocation.framework */; };
 		012A0DB81909D5FC005B69D7 /* MBXError.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F793D1909D1D200EF8AD1 /* MBXError.m */; };
 		012A0DB91909D5FC005B69D7 /* MBXOfflineMapDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F793F1909D1D200EF8AD1 /* MBXOfflineMapDatabase.m */; };
 		012A0DBA1909D5FC005B69D7 /* MBXOfflineMapDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79411909D1D200EF8AD1 /* MBXOfflineMapDownloader.m */; };
@@ -70,7 +69,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				012A0DB71909D5B1005B69D7 /* CoreLocation.framework in Frameworks */,
 				012A0DB51909D5A8005B69D7 /* libsqlite3.dylib in Frameworks */,
 				012A0D7F1909D3F6005B69D7 /* CoreGraphics.framework in Frameworks */,
 				012A0D801909D3F6005B69D7 /* UIKit.framework in Frameworks */,

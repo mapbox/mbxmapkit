@@ -315,7 +315,7 @@
 }
 
 
-#pragma mark - Offline map delegate implementation (progress indicator, etc)
+#pragma mark - MBXOfflineMapDownloaderDelegate implementation (progress indicator, etc)
 
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader stateChangedTo:(MBXOfflineMapDownloaderState)state
 {
