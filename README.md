@@ -1,7 +1,7 @@
 MBXMapKit
 ---------
 
-MBXMapKit is a simple library which extends Apple's MapKit API to integrate with maps hosted on mapbox.com. With MBXMapKit, your app is responsible for providing and managing an MKMapView instance, while MBXMapKit provides a subclass of [MKTileOverlay](https://developer.apple.com/library/ios/documentation/MapKit/Reference/MKTileOverlay_class/Reference/Reference.html), a subclass of [MKShape](https://developer.apple.com/library/ios/documentation/MapKit/Reference/MKShape_class/Reference/Reference.html), delegate callbacks for managing asynchronously loaded resources, and an offline map downloader. These extensions allow you to combine the performance of native maps on iOS with convenience and integration similar to Mapbox.js in desktop browsers. 
+MBXMapKit is a simple library which extends Apple's MapKit API to integrate with maps hosted on mapbox.com, providing a native map implementation with many of the advantages of Mapbox.js in desktop browsers. With MBXMapKit, your app is responsible for providing and managing its own MKMapView instance, while MBXMapKit provides tile overlays, annotations, and an offline map downloader so you can easily display maps from mapbox.com, both online and offline.
 
 [![](https://raw.github.com/mapbox/mbxmapkit/packaging/screenshot.png)]()
 
