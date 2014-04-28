@@ -1,7 +1,7 @@
 MBXMapKit
 ---------
 
-MBXMapKit is a simple library which extends Apple's MapKit API to integrate with maps hosted on mapbox.com, providing a native map implementation with many of the advantages of Mapbox.js in desktop browsers. With MBXMapKit, your app is responsible for providing and managing its own MKMapView instance, while MBXMapKit provides tile overlays, annotations, and an offline map downloader so you can easily display maps from mapbox.com, both online and offline.
+MBXMapKit is a simple library which extends Apple's MapKit API to integrate with maps hosted on mapbox.com, combining the performance of a native map implementation with convenience and integration similar to Mapbox.js. With MBXMapKit, your app is responsible for providing and managing its own MKMapView instance, while MBXMapKit provides tile overlays, annotations, and an offline map downloader so you can easily display maps from mapbox.com, both online and offline.
 
 [![](https://raw.github.com/mapbox/mbxmapkit/packaging/screenshot.png)]()
 
@@ -10,7 +10,8 @@ MBXMapKit is a simple library which extends Apple's MapKit API to integrate with
 The main features which MBXMapKit adds to MapKit are:
  * **Mapbox Markers:** If you've configured markers for your map using the mapbox.com editor, MBXMapKit makes it easy to add them to your MKMapView as MKShape annotations. You'll need to include some simple bolierplate code in your view controller's `mapView:viewForAnnotation:` to connect annotations with regular MKAnnotationView instances (see iOS sample app).
  * **Performance Caching:** MBXMapKit uses NSURLSession and NSURLCache for performance caching of the tiles, json, and icons required for loading maps. In contrast to the Mapbox iOS SDK and earlier versions of MBXMapKit, this is a traditional cache which is not designed to be used for long term persistence of map data while offline. That capability is provided by a separate mechanism (see next point).
- * **Offline Maps:** MBXMapKit now includes an offline map downloader to manage the download of all resources (tiles, json, and icons) necessary to display requested map regions while offline. The offline map downloader provides download progress updates, an internal mechanism for persistant storage of multiple offline map regions, the ability to remove specific offline map regions from disk, and the ability to include offline map data in iCloud backups (the default is to *exclude* offline map data from backups). 
+ * **Offline Maps:** MBXMapKit now includes an offline map downloader to manage the download of all resources (tiles, json, and icons) necessary to display requested map regions while offline. The offline map downloader provides download progress updates, an internal mechanism for persistant storage of multiple offline map regions, the ability to remove specific offline map regions from disk, and the ability to include offline map data in iCloud backups (the default is to *exclude* offline map data from backups).
+ * **Online Maps:** You can initialize a raster tile layer using a map ID, and MBXMapKit will handle the details of generating tile URLs and asynchronously loading metadata and markers. With MBXMapKit's delegate callbacks for asynchrously loaded metadata and markers, you have the option to immediately start rendering your map, then as the necessary data becomes available, to adjust the visible region and add markers to match how the map is configured in the mapbox.com editor.
 
 
 ### Conceptual Overview
