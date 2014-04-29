@@ -1,7 +1,7 @@
 MBXMapKit
 ---------
 
-MBXMapKit is a simple library which extends Apple's MapKit API to integrate with maps hosted on mapbox.com, combining the performance of a native map implementation with convenience and integration similar to Mapbox.js. With MBXMapKit, your app is responsible for providing and managing its own MKMapView instance, while MBXMapKit provides tile overlays, annotations, and an offline map downloader so you can easily display maps from mapbox.com, both online and offline.
+MBXMapKit extends Apple's MapKit API to integrate with maps hosted on mapbox.com, combining the performance of native maps with convenience and integration similar to Mapbox.js. With MBXMapKit, your app is responsible for providing and managing its own MKMapView instance, while MBXMapKit provides tile overlays, annotations, and an offline map downloader so you can easily display maps from mapbox.com, both online and offline.
 
 [![](https://raw.github.com/mapbox/mbxmapkit/packaging/screenshot.png)]()
 
@@ -9,21 +9,21 @@ MBXMapKit is a simple library which extends Apple's MapKit API to integrate with
 
 The main features which MBXMapKit adds to MapKit are:
  * **Mapbox Markers:** If you've configured markers for your map using the mapbox.com editor, MBXMapKit makes it easy to add them to your MKMapView as MKShape annotations. You'll need to include some simple bolierplate code in your view controller's `mapView:viewForAnnotation:` to connect annotations with regular MKAnnotationView instances (see iOS sample app).
- * **Performance Caching:** MBXMapKit uses NSURLSession and NSURLCache for performance caching of the tiles, json, and icons required for loading maps. In contrast to the Mapbox iOS SDK and earlier versions of MBXMapKit, this is a traditional cache which is not designed to be used for long term persistence of map data while offline. That capability is provided by a separate mechanism (see next point).
+ * **Performance Caching:** MBXMapKit uses NSURLSession and NSURLCache for performance caching of the tiles, json, and icons required for loading maps. In contrast to the Mapbox iOS SDK and earlier versions of MBXMapKit, this is a traditional cache which is not designed to be used for long term persistence of map data while offline. That capability is provided by a separate mechanism.
  * **Offline Maps:** MBXMapKit now includes an offline map downloader to manage the download of all resources (tiles, json, and icons) necessary to display requested map regions while offline. The offline map downloader provides download progress updates, an internal mechanism for persistant storage of multiple offline map regions, the ability to remove specific offline map regions from disk, and the ability to include offline map data in iCloud backups (the default is to *exclude* offline map data from backups).
- * **Online Maps:** You can initialize a raster tile layer using a map ID, and MBXMapKit will handle the details of generating tile URLs and asynchronously loading metadata and markers. With MBXMapKit's delegate callbacks for asynchrously loaded metadata and markers, you have the option to immediately start rendering your map, then as the necessary data becomes available, to adjust the visible region and add markers to match how the map is configured in the mapbox.com editor.
+ * **Online Maps:** You can initialize a raster tile layer using a map ID, and MBXMapKit will handle the details of generating tile URLs and asynchronously loading metadata and markers. With MBXMapKit's delegate callbacks for asynchrously loaded resources, you have the option to immediately start rendering your map, then as the necessary data becomes available, to adjust the visible region and add markers to match how the map is configured in the mapbox.com editor.
 
 
 ### Conceptual Overview
 
-A key concept to understand, and a point of potential confusion to be aware of, is that MBXMapKit designed to add features to MKMapKit rather than replace it. MBXMapKit started off taking a different approach, but this has changed. Versions 0.1.0 through 0.2.1 were designed to manage a subclass of MKMapView, but that turned out to be impractical for apps which needed to use the full flexibility of MKMapKit.
+A key concept to understand, and a point of potential confusion to be aware of, is that MBXMapKit designed to add features to MKMapKit rather than replace or encapsulate it. MBXMapKit started off taking a different approach, but this has changed. Versions 0.1.0 through 0.2.1 were designed to manage a subclass of MKMapView, but that turned out to be impractical for apps which needed to use the full flexibility of MKMapKit.
 
 Starting with MBXMapKit 0.3.0, you are now responsible for managing your own MKMapView, and MBXMapKit will stay out of your way. MBXMapKit provides MKTileOverlay and MKShape subclass instances which you can add to your MKMapView in combination with overlays and annotations from other sources. To see how MBXMapKit makes that process fairly painless, and for several examples of configuring MKMapView for different appearances, please take a look at the view controller in the iOS sample app.
 
 
 ### Supported Platforms
 
-As of version 0.3.0, MBXMapKit is officially supported only for iOS 7.0+. While iOS is the main priority, we also hope to keep things OS X 10.9+ friendly. That means you may notice a number of things with `#if TARGET_OS_IPHONE`, and it's possible some of those things may not work on OS X.
+As of version 0.3.0, MBXMapKit is officially supported only for iOS 7.0 and later. While iOS is the main priority, we also hope to keep things OS X friendly (10.9 and later). That means you may notice a number of things with `#if TARGET_OS_IPHONE` around UIImage/NSImage and such, and it's possible the OS X side of some of those things may be broken. During the development from 0.2.1 to 0.3.0, we were maintaining an OS X sample app to match the iOS sample app, but it ended up consuming a lot of time and slowing down progress on iOS, so we pulled back for now.
 
 If you encounter an OS X related problem and want to file an issue or pull request on GitHub, that would be welcome and appriciated. In particular, if you're working on an OS X app which needs something more than Mapbox.js in a WebView (offline maps?) we'd like to hear about it.
 
