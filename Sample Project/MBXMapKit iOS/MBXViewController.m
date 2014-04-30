@@ -28,6 +28,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *offlineMapButtonBegin;
 @property (weak, nonatomic) IBOutlet UIButton *offlineMapButtonCancel;
 @property (weak, nonatomic) IBOutlet UIButton *offlineMapButtonSuspendResume;
+@property (weak, nonatomic) IBOutlet UIView *removeOfflineMapsView;
+
 
 @property (nonatomic) BOOL viewHasFinishedLoading;
 @property (nonatomic) BOOL currentlyViewingAnOfflineMap;
@@ -55,6 +57,7 @@
     //
     _offlineMapProgressView.hidden = YES;
     _offlineMapDownloadControlsView.hidden = YES;
+    _removeOfflineMapsView.hidden = YES;
     MBXOfflineMapDownloader *sharedDownloader = [MBXOfflineMapDownloader sharedOfflineMapDownloader];
     [sharedDownloader setDelegate:self];
 
@@ -97,7 +100,7 @@
 {
     // This is the list of options for selecting which map should be shown by the demo app
     //
-    return [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"OSM world map",@"OSM over Apple satellite",@"Terrain under Apple labels",@"Tilemill bounded region",@"Tilemill region over Apple",@"Tilemill transparent over Apple", @"Offline Map Downloader", @"Offline Map Viewer", @"Remove offline maps",nil];
+    return [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"OSM world map",@"OSM over Apple satellite",@"Terrain under Apple labels",@"Tilemill bounded region",@"Tilemill region over Apple",@"Tilemill transparent over Apple", @"Offline Map Downloader", @"Offline Map Viewer", @"Attribution",nil];
 }
 
 
@@ -135,6 +138,7 @@
     _mapView.scrollEnabled = YES;
     _mapView.zoomEnabled = YES;
     _offlineMapDownloadControlsView.hidden = YES;
+    _removeOfflineMapsView.hidden = YES;
 
     // Make sure that any downloads (tiles, metadata, marker icons) which might be in progress for
     // the old tile overlay are stopped, and remove the overlay and its markers from the MKMapView.
@@ -227,15 +231,92 @@
             _currentlyViewingAnOfflineMap = YES;
             _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithOfflineMapDatabase:[MBXOfflineMapDownloader sharedOfflineMapDownloader].offlineMapDatabases.lastObject];
             _rasterOverlay.delegate = self;
+            _removeOfflineMapsView.hidden = NO;
 
             [_mapView addOverlay:_rasterOverlay];
             break;
         case 8:
-            // Remove offline maps
-            [self areYouSureYouWantToDeleteAllOfflineMaps];
+            // Show Attribution
+            [self attribution:_rasterOverlay.attribution];
             break;
     }
 }
+
+
+#pragma mark - AlertView stuff
+
+- (void)areYouSureYouWantToDeleteAllOfflineMaps
+{
+    NSString *title = @"Are you sure you want to remove your offline maps?";
+    NSString *message = @"This will permently delete your offline map data. This action cannot be undone.";
+    UIAlertView *areYouSure = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:nil otherButtonTitles:@"No", @"Yes", nil];
+    [areYouSure show];
+}
+
+- (void)areYouSureYouWantToCancel
+{
+    NSString *title = @"Are you sure you want to cancel?";
+    NSString *message = @"Canceling an offline map download permanently deletes its partially downloaded map data. This action cannot be undone.";
+    UIAlertView *areYouSure = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:nil otherButtonTitles:@"No", @"Yes", nil];
+    [areYouSure show];
+}
+
+- (void)attribution:(NSString *)attribution
+{
+    NSString *title = @"Attribution";
+    NSString *message = attribution;
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Mapbox Details", @"OSM Details", nil];
+    [alert show];
+}
+
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if([alertView.title isEqualToString:@"Are you sure you want to cancel?"])
+    {
+        // For the are you sure you want to cancel alert dialog, do the cancel action if the answer was "Yes"
+        //
+        if([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Yes"])
+        {
+            [[MBXOfflineMapDownloader sharedOfflineMapDownloader] cancel];
+        }
+    }
+    else if([alertView.title isEqualToString:@"Are you sure you want to remove your offline maps?"])
+    {
+        // For are you sure you want to remove offline maps alert dialog, do the remove action if the answer was "Yes"
+        //
+        if([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Yes"])
+        {
+            if(_currentlyViewingAnOfflineMap)
+            {
+                [self resetMapViewAndRasterOverlayDefaults];
+                _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithOfflineMapDatabase:nil];
+                _rasterOverlay.delegate = self;
+                [_mapView addOverlay:_rasterOverlay];
+            }
+            for(MBXOfflineMapDatabase *db in [MBXOfflineMapDownloader sharedOfflineMapDownloader].offlineMapDatabases)
+            {
+                [[MBXOfflineMapDownloader sharedOfflineMapDownloader] removeOfflineMapDatabase:db];
+            }
+
+        }
+    }
+    else if([alertView.title isEqualToString:@"Attribution"])
+    {
+        // For the attribution alert dialog, open the Mapbox and OSM copyright pages when their respective buttons are pressed
+        //
+        if([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Mapbox Details"])
+        {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.mapbox.com/tos/"]];
+        }
+        if([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"OSM Details"])
+        {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.openstreetmap.org/copyright"]];
+        }
+    }
+}
+
+
 
 
 #pragma mark - Offline map download controls
@@ -257,51 +338,8 @@
 
 - (IBAction)offlineMapButtonActionCancel:(id)sender
 {
-    NSString *title = @"Are you sure you want to cancel?";
-    NSString *message = @"Canceling an offline map download permanently deletes its partially downloaded map data. This action cannot be undone.";
-    UIAlertView *areYouSure = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:nil otherButtonTitles:@"No", @"Yes", nil];
-    [areYouSure show];
+    [self areYouSureYouWantToCancel];
 }
-
-- (void)areYouSureYouWantToDeleteAllOfflineMaps
-{
-    NSString *title = @"Are you sure you want to remove your offline maps?";
-    NSString *message = @"This will permently delete your offline map data. This action cannot be undone.";
-    UIAlertView *areYouSure = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:nil otherButtonTitles:@"No", @"Yes", nil];
-    [areYouSure show];
-}
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    // For the are you sure you want to cancel alert dialog, do the cancel action if the answer was "Yes"
-    //
-    if([alertView.title isEqualToString:@"Are you sure you want to cancel?"])
-    {
-        if([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Yes"])
-        {
-            [[MBXOfflineMapDownloader sharedOfflineMapDownloader] cancel];
-        }
-    }
-    else if([alertView.title isEqualToString:@"Are you sure you want to remove your offline maps?"])
-    {
-        if([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Yes"])
-        {
-            if(_currentlyViewingAnOfflineMap)
-            {
-                [self resetMapViewAndRasterOverlayDefaults];
-                _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithOfflineMapDatabase:nil];
-                _rasterOverlay.delegate = self;
-                [_mapView addOverlay:_rasterOverlay];
-            }
-            for(MBXOfflineMapDatabase *db in [MBXOfflineMapDownloader sharedOfflineMapDownloader].offlineMapDatabases)
-            {
-                [[MBXOfflineMapDownloader sharedOfflineMapDownloader] removeOfflineMapDatabase:db];
-            }
-
-        }
-    }
-}
-
 
 - (IBAction)offlineMapButtonActionSuspendResume:(id)sender {
     if ([[MBXOfflineMapDownloader sharedOfflineMapDownloader] state] == MBXOfflineMapDownloaderStateSuspended)
@@ -312,6 +350,13 @@
     {
         [[MBXOfflineMapDownloader sharedOfflineMapDownloader] suspend];
     }
+}
+
+
+- (IBAction)removeOfflineMapsButtonAction:(id)sender {
+    // Remove offline maps
+    //
+    [self areYouSureYouWantToDeleteAllOfflineMaps];
 }
 
 

@@ -33,6 +33,7 @@
 @property (readwrite,nonatomic) CLLocationCoordinate2D center;
 @property (readwrite,nonatomic) NSInteger centerZoom;
 @property (readwrite,nonatomic) NSArray *markers;
+@property (readwrite,nonatomic) NSString *attribution;
 
 
 #pragma mark - Properties for asynchronous downloading of metadata and markers
@@ -216,6 +217,8 @@
     //
     self.canReplaceMapContent = YES;
 
+    // Default attribution
+    self.attribution = @"© Mapbox\n© OpenStreetMap Contributors";
 
     // Initiate asynchronous metadata and marker loading
     //

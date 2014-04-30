@@ -110,17 +110,41 @@
                                     <constraint firstAttribute="height" constant="33" id="urr-CB-FHe"/>
                                 </constraints>
                             </view>
+                            <view alpha="0.85999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4oS-K3-x6l">
+                                <rect key="frame" x="73" y="520" width="174" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0S8-ES-vwe">
+                                        <rect key="frame" x="14" y="5" width="147" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Remove Offline Maps">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="removeOfflineMapsButtonAction:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="2Gf-Ez-M1c"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="goJ-u6-wxI"/>
+                                    <constraint firstAttribute="width" constant="174" id="zKA-fU-F2Y"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="e1u-Kk-xWn" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="5LY-gA-hey"/>
                             <constraint firstAttribute="trailing" secondItem="1eE-g9-qXF" secondAttribute="trailing" constant="10" id="CfM-T6-djJ"/>
+                            <constraint firstItem="L5Y-cU-ekA" firstAttribute="top" secondItem="4oS-K3-x6l" secondAttribute="bottom" constant="8" id="D0A-kj-lLJ"/>
+                            <constraint firstAttribute="centerX" secondItem="4oS-K3-x6l" secondAttribute="centerX" id="OtW-Cw-HPU"/>
                             <constraint firstAttribute="centerY" secondItem="qWN-yZ-qMg" secondAttribute="centerY" id="XNb-tt-VjI"/>
                             <constraint firstItem="e1u-Kk-xWn" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="d91-pe-MDT"/>
                             <constraint firstAttribute="centerX" secondItem="qWN-yZ-qMg" secondAttribute="centerX" id="en9-Py-oNv"/>
                             <constraint firstItem="L5Y-cU-ekA" firstAttribute="top" secondItem="00i-j9-GME" secondAttribute="bottom" constant="5" id="idw-Zu-bsS"/>
                             <constraint firstItem="L5Y-cU-ekA" firstAttribute="top" secondItem="1eE-g9-qXF" secondAttribute="bottom" constant="10" id="lvv-ag-EcV"/>
                             <constraint firstAttribute="trailing" secondItem="e1u-Kk-xWn" secondAttribute="trailing" id="maD-KC-Ciq"/>
+                            <constraint firstItem="L5Y-cU-ekA" firstAttribute="top" secondItem="4oS-K3-x6l" secondAttribute="bottom" constant="8" id="q4D-JP-bmV"/>
                             <constraint firstItem="L5Y-cU-ekA" firstAttribute="top" secondItem="e1u-Kk-xWn" secondAttribute="bottom" id="ums-7j-7HX"/>
                             <constraint firstAttribute="centerX" secondItem="00i-j9-GME" secondAttribute="centerX" id="xpW-JO-knT"/>
                         </constraints>
@@ -134,6 +158,7 @@
                         <outlet property="offlineMapDownloadControlsView" destination="qWN-yZ-qMg" id="C3J-qM-0wg"/>
                         <outlet property="offlineMapProgress" destination="nkU-Sw-TJ4" id="vB5-8O-wVj"/>
                         <outlet property="offlineMapProgressView" destination="00i-j9-GME" id="R77-pw-8xl"/>
+                        <outlet property="removeOfflineMapsView" destination="4oS-K3-x6l" id="BeH-6h-gZn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>

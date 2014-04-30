@@ -71,6 +71,7 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 @property (readonly,nonatomic) CLLocationCoordinate2D center;
 @property (readonly,nonatomic) NSInteger centerZoom;
 @property (readonly,nonatomic) NSArray *markers;
+@property (readonly,nonatomic) NSString *attribution;
 
 
 #pragma mark - Methods for invalidating cached metadata and markers
