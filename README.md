@@ -35,7 +35,20 @@ To include MBXMapKit in your app you will need to:
  3. Make sure you have the map capability turned on for your build target (select project, select build target, select Capabilities tab, flip the switch to "ON" for Maps).
  4. Make sure that your build target is linked with 'libsqlite3.dylib' and 'MapKit.framework' (select project, select build target, select Build Phases tab, expand Link Binary With Libraries, and check the list). When you turn on the map capability, the MapKit framework should be added automatically, but you will probably need to add libsqlite3.dylib unless you are already using sqlite for something.
  5. Study the view controller in the iOS sample app. It's meant to be liberally copied and pasted. In particular, take a look at `viewDidLoad`, `resetMapViewAndRasterOverlayDefaults`, `actionSheet:clickedButtonAtIndex:`, the MBXOfflineMapDownloaderDelegate callbacks, `mapView:rendererForOverlay:`, `mapView:viewForAnnotation:`, and the MBXRasterTileOverlayDelegate callbacks.
- 6. Provide some *prominent* means to display any applicable map data copyright attribution messages. For maps which include OSM data, that means you need something which links to the OSM copyright page. See https://www.mapbox.com/help/attribution/ and http://www.openstreetmap.org/copyright for details.
+ 6. Provide some prominent means to display any applicable map data copyright attribution messages. For maps which include OSM data, that means you need something which links to the OSM copyright page (see sample app for an example). More details are available at https://www.mapbox.com/help/attribution/ and http://www.openstreetmap.org/copyright
+
+
+### Understanding the Sample App
+
+The sample app is meant to demonstrate the full capabilities of MBXMapKit and to show examples of different ways to configure an MKMapView. We've also found it to be useful for testing for responsiveness and visual glitching during work on the API implementation.
+
+A quick tour:
+ 1. Start the sample app
+ 2. Tap the info button in the bottom right corner to bring up an action sheet with several map configurations and an option to view the attribution dialog
+ 3. Try the different map configurations, then take a look at `resetMapViewAndRasterOverlayDefaults` and `actionSheet:clickedButtonAtIndex:` from MBXViewController.m to understand what's going on. The basic idea is that when the map configuration gets switched, the MKMapView is reverted to a known state by removing overlays and markers, then new overlays and markers are added for the new configuration.
+ 4. Note that "OSM world map" includes several orange swim markers in Santa Cruz, CA. The callout text comes from the maps markers.geojson file, which is loaded from the Mapbox API, and the icons are also loaded from the Mapbox API after the necessary specifications are parsed out of markers.geojson. The map center coordinate and zoom scale come from the map's metadata json (i.e. <mapid>.json). The markers, centering, and zoom get applied to the map by way of the view controller's MBXRasterTileOverlayDelegate callback implementations.
+ 5. Note how "Offline Map Downloader" provides a view in the center of the screen with controls to begin, cancel, suspend, and resume the downloading of an offline map region. To select the region to be downloaded, just adjust the visible map region before hitting the begin button. When a download is active, you should see the progress indicator at the bottom of the screen. The progress indicator will remain on screen if you switch to other maps. If you kill the app before the download is complete, it should resume when you re-launch the app.
+ 6. Note how the "Offline Map Viewer" will show the most recent offline map region which was completely downloaded at the time you switched to "Offline Map Viewer". Note how the offline map includes markers, initial centering, and initial zoom, even when airplane mode is enabled. There is also a button with a confirmation dialog for deleting all the stored maps. While the sample app only shows the most recently downloaded offline map, the API is designed so that you can enumerate all the available offline maps and use whichever ones you want.
 
 
 ### Supported Platforms
