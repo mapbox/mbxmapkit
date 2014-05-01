@@ -30,7 +30,7 @@ The way that MBXMapKit is designed to be used revolves around the idea of instan
 
 ### Installation
 
-Note: This changed significantly as of version 0.3.0!
+Note: This changed significantly as of version `0.3.0`!
 
 To include MBXMapKit in your app you will need to:
 
@@ -76,7 +76,7 @@ If you encounter an OS X related problem and want to file an issue or pull reque
  * Xcode 5+
  * Automatic Reference Counting (ARC)
 
-### Related
+### See Also
 
 Check out the [overview guide](http://mapbox.com/mbxmapkit/) for more details. 
 
