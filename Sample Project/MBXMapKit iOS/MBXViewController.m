@@ -7,7 +7,6 @@
 //
 
 #import "MBXViewController.h"
-#import <MapKit/MapKit.h>
 #import "MBXRasterTileOverlay.h"
 #import "MBXPointAnnotation.h"
 #import "MBXOfflineMapDownloader.h"
