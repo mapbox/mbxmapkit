@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C1021" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="BYZ-38-t0r">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="MBXViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="4OV-TN-Raw"/>
+                        <viewControllerLayoutGuide type="bottom" id="FHN-lG-jxi"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="gPJ-J9-gbW">
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </mapView>
+                            <view alpha="0.86000001430511475" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8ak-mO-GOk">
+                                <rect key="frame" x="297" y="976" width="174" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AlB-be-aHT">
+                                        <rect key="frame" x="14" y="5" width="147" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Remove Offline Maps">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="removeOfflineMapsButtonAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lID-WM-mBw"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="JTb-ZT-Q7L"/>
+                                    <constraint firstAttribute="width" constant="174" id="WbF-mV-T66"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fIq-kZ-kh5">
+                                <rect key="frame" x="726" y="982" width="22" height="22"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="22" id="Jth-nC-ASF"/>
+                                    <constraint firstAttribute="height" constant="22" id="xvc-aM-7KB"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <state key="normal">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="iPadInfoButtonAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hsG-el-5i1"/>
+                                </connections>
+                            </button>
+                            <view alpha="0.86000001430511475" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dbh-km-XxY">
+                                <rect key="frame" x="267" y="464" width="234" height="95"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P88-NI-Iyl">
+                                        <rect key="frame" x="197" y="7" width="30" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="?">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="offlineMapButtonActionHelp:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xIL-9Y-ndA"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Offline Map Downloader" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KgU-qM-OPk">
+                                        <rect key="frame" x="19" y="9" width="170" height="28"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zMe-yp-ydY">
+                                        <rect key="frame" x="20" y="45" width="40" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Begin"/>
+                                        <connections>
+                                            <action selector="offlineMapButtonActionBegin:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7Yb-gc-KP7"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="36h-y3-eew">
+                                        <rect key="frame" x="153" y="45" width="61" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Suspend">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="offlineMapButtonActionSuspendResume:" destination="BYZ-38-t0r" eventType="touchUpInside" id="sqE-bX-jNA"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zdY-fN-k1d">
+                                        <rect key="frame" x="79" y="45" width="51" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Cancel">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="offlineMapButtonActionCancel:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Fpm-bd-rPj"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="95" id="Oh4-aa-pQU"/>
+                                    <constraint firstAttribute="width" constant="234" id="uhv-Mo-g21"/>
+                                </constraints>
+                            </view>
+                            <view alpha="0.86000001430511475" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9MG-Tv-xht">
+                                <rect key="frame" x="293" y="982" width="183" height="33"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Offline map download progress" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E29-i7-16v">
+                                        <rect key="frame" x="7" y="2" width="168" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="01R-h1-6hN">
+                                        <rect key="frame" x="9" y="22" width="166" height="2"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </progressView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="33" id="SAz-3g-YSD"/>
+                                    <constraint firstAttribute="height" constant="33" id="XTf-k1-eg3"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="183" id="eWF-WT-F4a"/>
+                                    <constraint firstAttribute="width" constant="183" id="mSN-pX-8gw"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="gPJ-J9-gbW" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="1ey-mN-3EC"/>
+                            <constraint firstAttribute="centerY" secondItem="Dbh-km-XxY" secondAttribute="centerY" id="4Zh-jm-FdP"/>
+                            <constraint firstAttribute="trailing" secondItem="fIq-kZ-kh5" secondAttribute="trailing" constant="20" id="9RL-lv-iIB"/>
+                            <constraint firstItem="gPJ-J9-gbW" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="BeN-et-arb"/>
+                            <constraint firstAttribute="centerX" secondItem="Dbh-km-XxY" secondAttribute="centerX" id="FPN-Jv-YJm"/>
+                            <constraint firstAttribute="trailing" secondItem="gPJ-J9-gbW" secondAttribute="trailing" id="IP0-68-dPc"/>
+                            <constraint firstItem="FHN-lG-jxi" firstAttribute="top" secondItem="8ak-mO-GOk" secondAttribute="bottom" constant="8" id="Wqm-eJ-1pg"/>
+                            <constraint firstItem="FHN-lG-jxi" firstAttribute="top" secondItem="gPJ-J9-gbW" secondAttribute="bottom" id="YIc-iH-Viw"/>
+                            <constraint firstItem="FHN-lG-jxi" firstAttribute="top" secondItem="fIq-kZ-kh5" secondAttribute="bottom" constant="20" id="ZMy-Z0-QlN"/>
+                            <constraint firstAttribute="centerX" secondItem="9MG-Tv-xht" secondAttribute="centerX" id="bY4-OT-89c"/>
+                            <constraint firstItem="FHN-lG-jxi" firstAttribute="top" secondItem="9MG-Tv-xht" secondAttribute="bottom" constant="9" id="jlM-JT-oUl"/>
+                            <constraint firstAttribute="centerX" secondItem="8ak-mO-GOk" secondAttribute="centerX" id="uXQ-xK-ygk"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="gPJ-J9-gbW" id="ajU-YC-7fB"/>
+                        <outlet property="offlineMapButtonBegin" destination="zMe-yp-ydY" id="jES-Kj-3dU"/>
+                        <outlet property="offlineMapButtonCancel" destination="zdY-fN-k1d" id="U0n-rR-pwg"/>
+                        <outlet property="offlineMapButtonHelp" destination="P88-NI-Iyl" id="dNb-1Q-8Xk"/>
+                        <outlet property="offlineMapButtonSuspendResume" destination="36h-y3-eew" id="oKj-fC-HGh"/>
+                        <outlet property="offlineMapDownloadControlsView" destination="Dbh-km-XxY" id="Wsq-9i-L2V"/>
+                        <outlet property="offlineMapProgress" destination="01R-h1-6hN" id="3hl-Sp-kNG"/>
+                        <outlet property="offlineMapProgressView" destination="9MG-Tv-xht" id="3Eg-OC-i2M"/>
+                        <outlet property="removeOfflineMapsView" destination="8ak-mO-GOk" id="8cA-qg-Iaw"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="193" y="-115"/>
+        </scene>
+    </scenes>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackOpaque"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination"/>
+    </simulatedMetricsContainer>
+</document>
