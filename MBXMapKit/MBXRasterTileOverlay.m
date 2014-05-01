@@ -357,11 +357,11 @@
 
 - (void)notifyDelegateDidFinishLoadingMetadataAndMarkersForOverlay
 {
-    if([_delegate respondsToSelector:@selector(tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:)])
+    if([_delegate respondsToSelector:@selector(tileOverlayDidFinishLoadingMetadataAndMarkers:)])
     {
         _needToNotifyDelegateThatMetadataAndMarkersAreFinished = NO;
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [_delegate tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:self];
+            [_delegate tileOverlayDidFinishLoadingMetadataAndMarkers:self];
         });
     }
     else

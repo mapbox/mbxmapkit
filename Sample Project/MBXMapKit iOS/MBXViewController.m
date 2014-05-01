@@ -545,7 +545,7 @@
     }
 }
 
-- (void)tileOverlayDidFinishLoadingMetadataAndMarkersForOverlay:(MBXRasterTileOverlay *)overlay
+- (void)tileOverlayDidFinishLoadingMetadataAndMarkers:(MBXRasterTileOverlay *)overlay
 {
     assert([NSThread isMainThread]);
 
