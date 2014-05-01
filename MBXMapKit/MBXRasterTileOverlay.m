@@ -280,11 +280,6 @@
                                        [MBXRasterTileOverlay qualityExtensionForImageQuality:_imageQuality]
                                        ]];
 
-    void(^dataBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error)
-    {
-        // No special actions need to be taken here
-    };
-
     void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
     {
         // Invoke the loadTileAtPath's completion handler
@@ -292,7 +287,7 @@
         result(data, error);
     };
 
-    [self asyncLoadURL:url dataBlock:dataBlock completionHandler:completionHandler];
+    [self asyncLoadURL:url workerBlock:nil completionHandler:completionHandler];
 }
 
 #pragma mark - Delegate Notifications
@@ -378,7 +373,7 @@
 {
     // This block is run only if data for the URL is successfully retrieved
     //
-    void(^dataBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error)
+    void(^workerBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error)
     {
         id markers;
         id value;
@@ -480,7 +475,7 @@
         }
     };
 
-    [self asyncLoadURL:_markersURL dataBlock:dataBlock completionHandler:completionHandler];
+    [self asyncLoadURL:_markersURL workerBlock:workerBlock completionHandler:completionHandler];
 }
 
 
@@ -488,7 +483,7 @@
 {
     // This block is run only if data for the URL is successfully retrieved
     //
-    void(^dataBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error){
+    void(^workerBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error){
 
 #if TARGET_OS_IPHONE
         point.image = [[UIImage alloc] initWithData:data scale:[[UIScreen mainScreen] scale]];
@@ -519,7 +514,7 @@
         }
     };
 
-    [self asyncLoadURL:url dataBlock:dataBlock completionHandler:completionHandler];
+    [self asyncLoadURL:url workerBlock:workerBlock completionHandler:completionHandler];
 }
 
 
@@ -527,7 +522,7 @@
 {
     // This block is run only if data for the URL is successfully retrieved
     //
-    void(^dataBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error)
+    void(^workerBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error)
     {
         _tileJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
         if(!*error)
@@ -565,11 +560,11 @@
         }
     };
 
-    [self asyncLoadURL:_metadataURL dataBlock:dataBlock completionHandler:completionHandler];
+    [self asyncLoadURL:_metadataURL workerBlock:workerBlock completionHandler:completionHandler];
 }
 
 
-- (void)asyncLoadURL:(NSURL *)url dataBlock:(void(^)(NSData *,NSError **))dataBlock completionHandler:(void (^)(NSData *, NSError *))completionHandler
+- (void)asyncLoadURL:(NSURL *)url workerBlock:(void(^)(NSData *,NSError **))workerBlock completionHandler:(void (^)(NSData *, NSError *))completionHandler
 {
     // This method exists to:
     // 1. Encapsulte the boilderplate network code for checking HTTP status which is needed for every data session task
@@ -593,7 +588,7 @@
         {
             // Since the URL was successfully retrieved, invoke the block to process its data
             //
-            dataBlock(data, &error);
+            workerBlock(data, &error);
         }
         completionHandler(data,error);
     }
@@ -615,7 +610,7 @@
                 {
                     // Since the URL was successfully retrieved, invoke the block to process its data
                     //
-                    dataBlock(data,&error);
+                    workerBlock(data,&error);
                 }
             }
 
