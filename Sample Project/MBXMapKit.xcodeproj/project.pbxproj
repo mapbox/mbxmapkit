@@ -26,7 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		012A0D7D1909D3F6005B69D7 /* MBXMapKit iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MBXMapKit iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		012A0D7D1909D3F6005B69D7 /* MBXMapKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MBXMapKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		012A0D831909D3F6005B69D7 /* MBXMapKit iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MBXMapKit iOS-Info.plist"; sourceTree = "<group>"; };
 		012A0D851909D3F6005B69D7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		012A0D871909D3F6005B69D7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -69,7 +69,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		012A0D811909D3F6005B69D7 /* MBXMapKit iOS */ = {
+		012A0D811909D3F6005B69D7 /* Sample App (iOS) */ = {
 			isa = PBXGroup;
 			children = (
 				012A0DAD1909D52E005B69D7 /* MBXAppDelegate.h */,
@@ -81,6 +81,7 @@
 				012A0D8D1909D3F6005B69D7 /* Images.xcassets */,
 				012A0D821909D3F6005B69D7 /* Supporting Files */,
 			);
+			name = "Sample App (iOS)";
 			path = "MBXMapKit iOS";
 			sourceTree = "<group>";
 		};
@@ -106,7 +107,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		017F793B1909D1D200EF8AD1 /* mbxmapkit */ = {
+		017F793B1909D1D200EF8AD1 /* MBXMapKit */ = {
 			isa = PBXGroup;
 			children = (
 				017F793C1909D1D200EF8AD1 /* MBXError.h */,
@@ -120,15 +121,15 @@
 				017F79441909D1D200EF8AD1 /* MBXRasterTileOverlay.h */,
 				017F79451909D1D200EF8AD1 /* MBXRasterTileOverlay.m */,
 			);
-			name = mbxmapkit;
+			name = MBXMapKit;
 			path = ../mbxmapkit;
 			sourceTree = "<group>";
 		};
 		DDD5905A17D7D086009291B8 = {
 			isa = PBXGroup;
 			children = (
-				012A0D811909D3F6005B69D7 /* MBXMapKit iOS */,
-				017F793B1909D1D200EF8AD1 /* mbxmapkit */,
+				012A0D811909D3F6005B69D7 /* Sample App (iOS) */,
+				017F793B1909D1D200EF8AD1 /* MBXMapKit */,
 				014DA1E718C45AE000AB33F8 /* Frameworks */,
 				DDD5906417D7D086009291B8 /* Products */,
 			);
@@ -137,7 +138,7 @@
 		DDD5906417D7D086009291B8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				012A0D7D1909D3F6005B69D7 /* MBXMapKit iOS.app */,
+				012A0D7D1909D3F6005B69D7 /* MBXMapKit.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -159,7 +160,7 @@
 			);
 			name = "MBXMapKit iOS";
 			productName = "MBXMapKit iOS";
-			productReference = 012A0D7D1909D3F6005B69D7 /* MBXMapKit iOS.app */;
+			productReference = 012A0D7D1909D3F6005B69D7 /* MBXMapKit.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -276,8 +277,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = "MBXMapKit iOS/MBXMapKit iOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_NAME = MBXMapKit;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -294,8 +295,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = "MBXMapKit iOS/MBXMapKit iOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_NAME = MBXMapKit;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
