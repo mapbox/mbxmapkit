@@ -1,4 +1,4 @@
-MBXMapKit copyright (c) 2013, MapBox. All rights reserved.
+MBXMapKit copyright (c) 2013-2014, Mapbox. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
