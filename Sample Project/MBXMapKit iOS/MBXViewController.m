@@ -516,9 +516,7 @@
     }
     else
     {
-        MKCoordinateRegion region = MKCoordinateRegionMake(overlay.center, MKCoordinateSpanMake(0, 360 / pow(2, overlay.centerZoom) * _mapView.frame.size.width / 256));
-        
-        [_mapView setRegion:region animated:NO];
+        [_mapView setCenterCoordinate:overlay.center zoomLevel:overlay.centerZoom animated:NO];
     }
 }
 

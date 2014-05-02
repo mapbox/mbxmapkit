@@ -13,3 +13,9 @@
 #import "MBXRasterTileOverlay.h"
 #import "MBXConstantsAndTypes.h"
 
+
+@interface MKMapView (MBXMapView)
+
+- (void)setCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate zoomLevel:(NSUInteger)zoomLevel animated:(BOOL)animated;
+
+@end

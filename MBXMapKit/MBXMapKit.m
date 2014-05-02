@@ -8,6 +8,19 @@
 #import "MBXMapKit.h"
 
 
+#pragma mark - Add support to MKMapView for using Mapbox-style center/zoom to configure the visible region
+
+@implementation MKMapView (MBXMapView)
+
+- (void)setCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate zoomLevel:(NSUInteger)zoomLevel animated:(BOOL)animated
+{
+    MKCoordinateRegion region = MKCoordinateRegionMake(centerCoordinate, MKCoordinateSpanMake(0, 360 / pow(2, zoomLevel) * self.frame.size.width / 256));
+    [self setRegion:region animated:animated];
+}
+
+@end
+
+
 #pragma mark - Constants for the MBXMapKit error domain
 
 NSString *const MBXMapKitErrorDomain = @"MBXMapKitErrorDomain";
@@ -19,7 +32,7 @@ NSInteger const MBXMapKitErrorCodeOfflineMapSqlite = -5;
 NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 
 
-#pragma mark -
+#pragma mark - Helpers for creating verbose errors
 
 @implementation NSError (MBXError)
 
