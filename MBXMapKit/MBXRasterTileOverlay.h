@@ -34,11 +34,6 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 
 @interface MBXRasterTileOverlay : MKTileOverlay
 
-#pragma mark - URL utility funtions
-
-+ (NSString *)qualityExtensionForImageQuality:(MBXRasterImageQuality)imageQuality;
-+ (NSURL *)markerIconURLForSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color;
-
 
 #pragma mark - Map tile overlay layer initialization and configuration
 

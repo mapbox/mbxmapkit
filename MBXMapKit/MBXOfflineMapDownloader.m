@@ -14,10 +14,18 @@
 @interface NSError (MBXError)
 
 + (NSError *)mbxErrorWithCode:(NSInteger)code reason:(NSString *)reason description:(NSString *)description;
-
 + (NSError *)mbxErrorCannotOpenOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
-
 + (NSError *)mbxErrorQueryFailedForOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
+
+@end
+
+
+#pragma mark - Private API for cooperating with MBXRasterTileOverlay
+
+@interface MBXRasterTileOverlay ()
+
++ (NSString *)qualityExtensionForImageQuality:(MBXRasterImageQuality)imageQuality;
++ (NSURL *)markerIconURLForSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color;
 
 @end
 
