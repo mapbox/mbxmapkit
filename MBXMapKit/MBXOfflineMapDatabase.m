@@ -9,6 +9,20 @@
 #import <MapKit/MapKit.h>
 #import "MBXMapKit.h"
 
+
+#pragma mark - Private API for creating verbose errors
+
+@interface NSError (MBXError)
+
++ (NSError *)mbxErrorWithCode:(NSInteger)code reason:(NSString *)reason description:(NSString *)description;
+
++ (NSError *)mbxErrorCannotOpenOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
+
++ (NSError *)mbxErrorQueryFailedForOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
+
+@end
+
+
 #pragma mark -
 
 @interface MBXOfflineMapDatabase ()
@@ -111,7 +125,7 @@
     if(*error != NULL)
     {
         NSString *reason = [NSString stringWithFormat:@"The offline database has no data for %@",[url absoluteString]];
-        *error = [MBXError errorWithCode:MBXMapKitErrorCodeOfflineMapHasNoDataForURL reason:reason description:@"No offline data for key error"];
+        *error = [NSError mbxErrorWithCode:MBXMapKitErrorCodeOfflineMapHasNoDataForURL reason:reason description:@"No offline data for key error"];
     }
     return data;
 }

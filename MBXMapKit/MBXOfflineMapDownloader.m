@@ -9,6 +9,19 @@
 #import "MBXMapKit.h"
 
 
+#pragma mark - Private API for creating verbose errors
+
+@interface NSError (MBXError)
+
++ (NSError *)mbxErrorWithCode:(NSInteger)code reason:(NSString *)reason description:(NSString *)description;
+
++ (NSError *)mbxErrorCannotOpenOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
+
++ (NSError *)mbxErrorQueryFailedForOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
+
+@end
+
+
 #pragma mark - Private API for cooperating with MBXOfflineMapDatabase
 
 @interface MBXOfflineMapDatabase ()
@@ -283,7 +296,7 @@
 
     if([_delegate respondsToSelector:@selector(offlineMapDownloader:didEncounterRecoverableError:)])
     {
-        NSError *networkError = [MBXError errorWithCode:MBXMapKitErrorCodeURLSessionConnectivity reason:[error localizedFailureReason] description:[error localizedDescription]];
+        NSError *networkError = [NSError mbxErrorWithCode:MBXMapKitErrorCodeURLSessionConnectivity reason:[error localizedFailureReason] description:[error localizedDescription]];
 
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [_delegate offlineMapDownloader:self didEncounterRecoverableError:networkError];
@@ -298,7 +311,7 @@
 
     if([_delegate respondsToSelector:@selector(offlineMapDownloader:didEncounterRecoverableError:)])
     {
-        NSError *networkError = [MBXError errorWithCode:MBXMapKitErrorCodeOfflineMapSqlite reason:[error localizedFailureReason] description:[error localizedDescription]];
+        NSError *networkError = [NSError mbxErrorWithCode:MBXMapKitErrorCodeOfflineMapSqlite reason:[error localizedFailureReason] description:[error localizedDescription]];
 
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [_delegate offlineMapDownloader:self didEncounterRecoverableError:networkError];
@@ -314,7 +327,7 @@
     if([_delegate respondsToSelector:@selector(offlineMapDownloader:didEncounterRecoverableError:)])
     {
         NSString *reason = [NSString stringWithFormat:@"HTTP status %li was received for %@", (long)status,[url absoluteString]];
-        NSError *statusError = [MBXError errorWithCode:MBXMapKitErrorCodeHTTPStatus reason:reason description:@"HTTP status error"];
+        NSError *statusError = [NSError mbxErrorWithCode:MBXMapKitErrorCodeHTTPStatus reason:reason description:@"HTTP status error"];
 
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [_delegate offlineMapDownloader:self didEncounterRecoverableError:statusError];
@@ -448,7 +461,7 @@
         {
             // Opening the database failed... something is very wrong.
             //
-            error = [MBXError errorCannotOpenOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
+            error = [NSError mbxErrorCannotOpenOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
         }
         else
         {
@@ -462,7 +475,7 @@
             sqlite3_exec(db, zSql, NULL, NULL, &errmsg);
             if(errmsg)
             {
-                error = [MBXError errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:errmsg];
+                error = [NSError mbxErrorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:errmsg];
                 sqlite3_free(errmsg);
             }
             else
@@ -487,7 +500,7 @@
                 }
                 if(!successfulBlobInsert)
                 {
-                    error = [MBXError errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
+                    error = [NSError mbxErrorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
                 }
                 sqlite3_finalize(ppStmt2);
 
@@ -502,7 +515,7 @@
                     sqlite3_exec(db, zSql3, NULL, NULL, &errmsg);
                     if(errmsg)
                     {
-                        error = [MBXError errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:errmsg];
+                        error = [NSError mbxErrorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:errmsg];
                         sqlite3_free(errmsg);
                     }
                 }
@@ -579,7 +592,7 @@
         //
         if(error)
         {
-            *error = [MBXError errorCannotOpenOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
+            *error = [NSError mbxErrorCannotOpenOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
         }
     }
     else
@@ -597,7 +610,7 @@
             //
             if(error)
             {
-                *error = [MBXError errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
+                *error = [NSError mbxErrorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
             }
         }
         else
@@ -625,7 +638,7 @@
                     keepGoing = NO;
                     if(error)
                     {
-                        *error = [MBXError errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
+                        *error = [NSError mbxErrorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
                     }
                 }
             }
@@ -658,7 +671,7 @@
         //
         if(error)
         {
-            *error = [MBXError errorCannotOpenOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
+            *error = [NSError mbxErrorCannotOpenOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
         }
     }
     else
@@ -676,7 +689,7 @@
             //
             if(error)
             {
-                *error = [MBXError errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
+                *error = [NSError mbxErrorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
             }
         }
         else
@@ -697,7 +710,7 @@
                 //
                 if(error)
                 {
-                    *error = [MBXError errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
+                    *error = [NSError mbxErrorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
                 }
             }
         }
@@ -743,7 +756,7 @@
         //
         if(error != NULL)
         {
-            *error = [MBXError errorCannotOpenOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
+            *error = [NSError mbxErrorCannotOpenOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
         }
         sqlite3_close(db);
     }
@@ -756,7 +769,7 @@
         sqlite3_exec(db, zSql, NULL, NULL, &errmsg);
         if(error && errmsg != NULL)
         {
-            *error = [MBXError errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:errmsg];
+            *error = [NSError mbxErrorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:errmsg];
             sqlite3_free(errmsg);
         }
         sqlite3_close(db);
@@ -1056,7 +1069,7 @@
 
                 if([_delegate respondsToSelector:@selector(offlineMapDownloader:didCompleteOfflineMapDatabase:withError:)])
                 {
-                    NSError *canceled = [MBXError errorWithCode:MBXMapKitErrorCodeDownloadingCanceled reason:@"The download job was canceled" description:@"Download canceled"];
+                    NSError *canceled = [NSError mbxErrorWithCode:MBXMapKitErrorCodeDownloadingCanceled reason:@"The download job was canceled" description:@"Download canceled"];
                     dispatch_async(dispatch_get_main_queue(), ^(void){
                         [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:nil withError:canceled];
                     });

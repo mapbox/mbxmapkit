@@ -7,6 +7,20 @@
 
 #import "MBXMapKit.h"
 
+
+#pragma mark - Private API for creating verbose errors
+
+@interface NSError (MBXError)
+
++ (NSError *)mbxErrorWithCode:(NSInteger)code reason:(NSString *)reason description:(NSString *)description;
+
++ (NSError *)mbxErrorCannotOpenOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
+
++ (NSError *)mbxErrorQueryFailedForOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
+
+@end
+
+
 #pragma mark - Private API for cooperating with MBXOfflineMapDatabase
 
 @interface MBXOfflineMapDatabase ()
@@ -624,7 +638,7 @@
     //
     NSString *reason = [NSString stringWithFormat:@"HTTP status %li was received", (long)((NSHTTPURLResponse *)response).statusCode];
 
-    return [MBXError errorWithCode:MBXMapKitErrorCodeHTTPStatus reason:reason description:@"HTTP status error"];
+    return [NSError mbxErrorWithCode:MBXMapKitErrorCodeHTTPStatus reason:reason description:@"HTTP status error"];
 }
 
 
@@ -634,7 +648,7 @@
     //
     NSString *reason = [NSString stringWithFormat:@"The %@ dictionary is missing important keys", dictionaryName];
 
-    return [MBXError errorWithCode:MBXMapKitErrorCodeDictionaryMissingKeys reason:reason description:@"Dictionary missing keys error"];
+    return [NSError mbxErrorWithCode:MBXMapKitErrorCodeDictionaryMissingKeys reason:reason description:@"Dictionary missing keys error"];
 }
 
 

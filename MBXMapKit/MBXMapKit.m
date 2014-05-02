@@ -21,9 +21,9 @@ NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 
 #pragma mark -
 
-@implementation MBXError : NSError
+@implementation NSError (MBXError)
 
-+ (NSError *)errorWithCode:(NSInteger)code reason:(NSString *)reason description:(NSString *)description
++ (NSError *)mbxErrorWithCode:(NSInteger)code reason:(NSString *)reason description:(NSString *)description
 {
     // Return an error in the MBXMapKit error domain with the specified reason and description
     //
@@ -34,14 +34,14 @@ NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 }
 
 
-+ (NSError *)errorCannotOpenOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError
++ (NSError *)mbxErrorCannotOpenOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError
 {
-    return [MBXError errorWithCode:MBXMapKitErrorCodeOfflineMapSqlite reason:[NSString stringWithFormat:@"Unable to open database %@: %@", path, [NSString stringWithUTF8String:sqliteError]] description:@"Failed to open the sqlite offline map database file"];
+    return [NSError mbxErrorWithCode:MBXMapKitErrorCodeOfflineMapSqlite reason:[NSString stringWithFormat:@"Unable to open database %@: %@", path, [NSString stringWithUTF8String:sqliteError]] description:@"Failed to open the sqlite offline map database file"];
 }
 
-+ (NSError *)errorQueryFailedForOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError
++ (NSError *)mbxErrorQueryFailedForOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError
 {
-    return [MBXError errorWithCode:MBXMapKitErrorCodeOfflineMapSqlite reason:[NSString stringWithFormat:@"There was an sqlite error while executing a query on database %@: %@", path, [NSString stringWithUTF8String:sqliteError]] description:@"Failed to execute query"];
+    return [NSError mbxErrorWithCode:MBXMapKitErrorCodeOfflineMapSqlite reason:[NSString stringWithFormat:@"There was an sqlite error while executing a query on database %@: %@", path, [NSString stringWithUTF8String:sqliteError]] description:@"Failed to execute query"];
 }
 
 @end
