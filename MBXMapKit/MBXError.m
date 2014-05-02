@@ -2,8 +2,7 @@
 //  MBXError.m
 //  MBXMapKit
 //
-//  Created by Will Snook on 3/19/14.
-//  Copyright (c) 2014 MapBox. All rights reserved.
+//  Copyright (c) 2014 Mapbox. All rights reserved.
 //
 
 #import "MBXError.h"
