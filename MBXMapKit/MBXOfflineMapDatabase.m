@@ -6,8 +6,8 @@
 //
 
 #import <sqlite3.h>
-#import "MBXOfflineMapDatabase.h"
-#import "MBXError.h"
+#import <MapKit/MapKit.h>
+#import "MBXMapKit.h"
 
 #pragma mark -
 

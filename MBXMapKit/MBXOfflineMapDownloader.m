@@ -6,9 +6,7 @@
 //
 
 #import <sqlite3.h>
-#import "MBXError.h"
-#import "MBXOfflineMapDownloader.h"
-#import "MBXOfflineMapDatabase.h"
+#import "MBXMapKit.h"
 
 
 #pragma mark - Private API for cooperating with MBXOfflineMapDatabase

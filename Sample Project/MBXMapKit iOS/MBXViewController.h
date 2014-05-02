@@ -7,8 +7,7 @@
 
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
-#import "MBXRasterTileOverlay.h"
-#import "MBXOfflineMapDownloader.h"
+#import "MBXMapKit.h"
 
 @interface MBXViewController : UIViewController <UIActionSheetDelegate, MKMapViewDelegate, MBXRasterTileOverlayDelegate, MBXOfflineMapDownloaderDelegate, UIAlertViewDelegate>
 

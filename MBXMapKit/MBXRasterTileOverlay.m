@@ -5,11 +5,7 @@
 //  Copyright (c) 2014 Mapbox. All rights reserved.
 //
 
-#import "MBXRasterTileOverlay.h"
-#import "MBXError.h"
-#import "MBXPointAnnotation.h"
-#import "MBXOfflineMapDatabase.h"
-
+#import "MBXMapKit.h"
 
 #pragma mark - Private API for cooperating with MBXOfflineMapDatabase
 

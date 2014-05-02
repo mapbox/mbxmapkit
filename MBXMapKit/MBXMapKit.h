@@ -6,17 +6,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <MapKit/MapKit.h>
+#import "MBXOfflineMapDatabase.h"
+#import "MBXOfflineMapDownloader.h"
+#import "MBXPointAnnotation.h"
+#import "MBXRasterTileOverlay.h"
+#import "MBXConstantsAndTypes.h"
 
-
-#pragma mark - Constants for the MBXMapKit error domain
-
-extern NSString *const MBXMapKitErrorDomain;
-extern NSInteger const MBXMapKitErrorCodeHTTPStatus;
-extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
-extern NSInteger const MBXMapKitErrorCodeDownloadingCanceled;
-extern NSInteger const MBXMapKitErrorCodeOfflineMapHasNoDataForURL;
-extern NSInteger const MBXMapKitErrorCodeOfflineMapSqlite;
-extern NSInteger const MBXMapKitErrorCodeURLSessionConnectivity;
 
 
 #pragma mark -

@@ -5,7 +5,7 @@
 //  Copyright (c) 2014 Mapbox. All rights reserved.
 //
 
-#import "MBXError.h"
+#import "MBXMapKit.h"
 
 
 #pragma mark - Constants for the MBXMapKit error domain
@@ -21,7 +21,7 @@ NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 
 #pragma mark -
 
-@implementation MBXError
+@implementation MBXError : NSError
 
 + (NSError *)errorWithCode:(NSInteger)code reason:(NSString *)reason description:(NSString *)description
 {
