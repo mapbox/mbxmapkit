@@ -2,8 +2,7 @@
 //  MBXAppDelegate.m
 //  MBXMapKit iOS Demo v030
 //
-//  Created by Will Snook on 3/2/14.
-//  Copyright (c) 2014 MapBox. All rights reserved.
+//  Copyright (c) 2014 Mapbox. All rights reserved.
 //
 
 #import "MBXAppDelegate.h"
