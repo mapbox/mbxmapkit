@@ -588,7 +588,7 @@
         {
             // Since the URL was successfully retrieved, invoke the block to process its data
             //
-            workerBlock(data, &error);
+            if (workerBlock) workerBlock(data, &error);
         }
         completionHandler(data,error);
     }
@@ -610,7 +610,7 @@
                 {
                     // Since the URL was successfully retrieved, invoke the block to process its data
                     //
-                    workerBlock(data,&error);
+                    if (workerBlock) workerBlock(data, &error);
                 }
             }
 
