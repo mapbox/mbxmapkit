@@ -6,11 +6,7 @@
 //
 
 #import "MBXViewController.h"
-#import "MBXRasterTileOverlay.h"
-#import "MBXPointAnnotation.h"
-#import "MBXOfflineMapDownloader.h"
-#import "MBXOfflineMapDatabase.h"
-#import "MBXError.h"
+#import "MBXMapKit.h"
 
 
 @interface MBXViewController ()
@@ -520,9 +516,7 @@
     }
     else
     {
-        MKCoordinateRegion region = MKCoordinateRegionMake(overlay.center, MKCoordinateSpanMake(0, 360 / pow(2, overlay.centerZoom) * _mapView.frame.size.width / 256));
-        
-        [_mapView setRegion:region animated:NO];
+        [_mapView setCenterCoordinate:overlay.center zoomLevel:overlay.centerZoom animated:NO];
     }
 }
 

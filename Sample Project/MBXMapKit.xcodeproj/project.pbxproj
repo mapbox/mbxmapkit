@@ -16,7 +16,7 @@
 		012A0DB11909D52E005B69D7 /* MBXAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 012A0DAE1909D52E005B69D7 /* MBXAppDelegate.m */; };
 		012A0DB21909D52E005B69D7 /* MBXViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 012A0DB01909D52E005B69D7 /* MBXViewController.m */; };
 		012A0DB41909D58E005B69D7 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 012A0DB31909D58E005B69D7 /* MapKit.framework */; };
-		012A0DB81909D5FC005B69D7 /* MBXError.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F793D1909D1D200EF8AD1 /* MBXError.m */; };
+		012A0DB81909D5FC005B69D7 /* MBXMapKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F793D1909D1D200EF8AD1 /* MBXMapKit.m */; };
 		012A0DB91909D5FC005B69D7 /* MBXOfflineMapDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F793F1909D1D200EF8AD1 /* MBXOfflineMapDatabase.m */; };
 		012A0DBA1909D5FC005B69D7 /* MBXOfflineMapDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79411909D1D200EF8AD1 /* MBXOfflineMapDownloader.m */; };
 		012A0DBB1909D5FC005B69D7 /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79431909D1D200EF8AD1 /* MBXPointAnnotation.m */; };
@@ -40,8 +40,9 @@
 		012A0DB01909D52E005B69D7 /* MBXViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXViewController.m; sourceTree = "<group>"; };
 		012A0DB31909D58E005B69D7 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		014DA1EC18C45AE000AB33F8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		017F793C1909D1D200EF8AD1 /* MBXError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXError.h; sourceTree = "<group>"; };
-		017F793D1909D1D200EF8AD1 /* MBXError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXError.m; sourceTree = "<group>"; };
+		0161CFE619140CEA00692A7A /* MBXConstantsAndTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MBXConstantsAndTypes.h; path = ../MBXMapKit/MBXConstantsAndTypes.h; sourceTree = "<group>"; };
+		017F793C1909D1D200EF8AD1 /* MBXMapKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXMapKit.h; sourceTree = "<group>"; };
+		017F793D1909D1D200EF8AD1 /* MBXMapKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXMapKit.m; sourceTree = "<group>"; };
 		017F793E1909D1D200EF8AD1 /* MBXOfflineMapDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXOfflineMapDatabase.h; sourceTree = "<group>"; };
 		017F793F1909D1D200EF8AD1 /* MBXOfflineMapDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXOfflineMapDatabase.m; sourceTree = "<group>"; };
 		017F79401909D1D200EF8AD1 /* MBXOfflineMapDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXOfflineMapDownloader.h; sourceTree = "<group>"; };
@@ -110,8 +111,9 @@
 		017F793B1909D1D200EF8AD1 /* MBXMapKit */ = {
 			isa = PBXGroup;
 			children = (
-				017F793C1909D1D200EF8AD1 /* MBXError.h */,
-				017F793D1909D1D200EF8AD1 /* MBXError.m */,
+				017F793C1909D1D200EF8AD1 /* MBXMapKit.h */,
+				017F793D1909D1D200EF8AD1 /* MBXMapKit.m */,
+				0161CFE619140CEA00692A7A /* MBXConstantsAndTypes.h */,
 				017F793E1909D1D200EF8AD1 /* MBXOfflineMapDatabase.h */,
 				017F793F1909D1D200EF8AD1 /* MBXOfflineMapDatabase.m */,
 				017F79401909D1D200EF8AD1 /* MBXOfflineMapDownloader.h */,
@@ -220,7 +222,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				012A0DB81909D5FC005B69D7 /* MBXError.m in Sources */,
+				012A0DB81909D5FC005B69D7 /* MBXMapKit.m in Sources */,
 				012A0DB91909D5FC005B69D7 /* MBXOfflineMapDatabase.m in Sources */,
 				012A0DBA1909D5FC005B69D7 /* MBXOfflineMapDownloader.m in Sources */,
 				012A0DBB1909D5FC005B69D7 /* MBXPointAnnotation.m in Sources */,

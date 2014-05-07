@@ -5,10 +5,20 @@
 //  Copyright (c) 2014 Mapbox. All rights reserved.
 //
 
-#import "MBXRasterTileOverlay.h"
-#import "MBXError.h"
-#import "MBXPointAnnotation.h"
-#import "MBXOfflineMapDatabase.h"
+#import "MBXMapKit.h"
+
+
+#pragma mark - Private API for creating verbose errors
+
+@interface NSError (MBXError)
+
++ (NSError *)mbxErrorWithCode:(NSInteger)code reason:(NSString *)reason description:(NSString *)description;
+
++ (NSError *)mbxErrorCannotOpenOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
+
++ (NSError *)mbxErrorQueryFailedForOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
+
+@end
 
 
 #pragma mark - Private API for cooperating with MBXOfflineMapDatabase
@@ -577,7 +587,7 @@
         // for this offline map database object while the database is still associated with a map overlay. That's a serious logic
         // error which should be checked for and avoided.
         //
-        assert(_offlineMapDatabase.invalid == NO);
+        assert(_offlineMapDatabase.isInvalid == NO);
 
         // If an offline map database is configured for this overlay, use the database to fetch data for URLs
         //
@@ -628,7 +638,7 @@
     //
     NSString *reason = [NSString stringWithFormat:@"HTTP status %li was received", (long)((NSHTTPURLResponse *)response).statusCode];
 
-    return [MBXError errorWithCode:MBXMapKitErrorCodeHTTPStatus reason:reason description:@"HTTP status error"];
+    return [NSError mbxErrorWithCode:MBXMapKitErrorCodeHTTPStatus reason:reason description:@"HTTP status error"];
 }
 
 
@@ -638,7 +648,7 @@
     //
     NSString *reason = [NSString stringWithFormat:@"The %@ dictionary is missing important keys", dictionaryName];
 
-    return [MBXError errorWithCode:MBXMapKitErrorCodeDictionaryMissingKeys reason:reason description:@"Dictionary missing keys error"];
+    return [NSError mbxErrorWithCode:MBXMapKitErrorCodeDictionaryMissingKeys reason:reason description:@"Dictionary missing keys error"];
 }
 
 
