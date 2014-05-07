@@ -39,7 +39,10 @@
 {
     [super viewDidLoad];
 
-    // Configure the cache
+    // Configure the amount of storage to use for NSURLCache's shared cache: You can also omit this and allow NSURLCache's
+    // to use its default cache size. These sizes determines how much storage will be used for performance caching of HTTP
+    // requests made by MBXOfflineMapDownloader and MBXRasterTileOverlay. Please note that these values apply only to the
+    // HTTP cache, and persistent offline map data is stored using an entirely separate mechanism.
     //
     NSUInteger memoryCapacity = 4 * 1024 * 1024;
     NSUInteger diskCapacity = 40 * 1024 * 1024;
@@ -52,25 +55,37 @@
     _offlineMapProgressView.hidden = YES;
     _offlineMapDownloadControlsView.hidden = YES;
     _removeOfflineMapsView.hidden = YES;
+
+    // Let the shared offline map downloader know that we want to be notified of changes in its state. This will allow us to
+    // update the download progress indicator and the begin/cancel/suspend/resume buttons
+    //
     MBXOfflineMapDownloader *sharedDownloader = [MBXOfflineMapDownloader sharedOfflineMapDownloader];
     [sharedDownloader setDelegate:self];
 
-    // Configure the mapView to use delegate callbacks for managing tile overlay layers, map centering, and adding
-    // adding markers.
-    //
+    // Turn off distracting MKMapView features which aren't relevant to this demonstration
     _mapView.rotateEnabled = NO;
     _mapView.pitchEnabled = NO;
+
+    // Let the mapView know that we want to use delegate callbacks to provide customized renderers for tile overlays and views
+    // for annotations. In order to make use of MBXRasterTileOverlay and MBXPointAnnotation, it is essential for your app to set
+    // this delegate and implement MKMapViewDelegate's mapView:rendererForOverlay: and mapView:(MKMapView *)mapView viewForAnnotation:
+    // methods.
+    //
     _mapView.delegate = self;
 
+    // Show the network activity spinner in the status bar
+    //
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 
+    // Configure the initial sample map
+    //
     _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm"];
     _rasterOverlay.delegate = self;
     [_mapView addOverlay:_rasterOverlay];
 
     // If there was a suspended offline map download, resume it...
-    // Note how the call above to initialize the shared map downloader singleton happens before the singleton's delegate can be set.
-    // So, in order to know whether there might be a suspended download which was restored from disk, we need to poll and invoke any
+    // Note how the call above to initialize the shared map downloader happens before its delegate can be set. So now, in order
+    // to know whether there might be a suspended download which was restored from disk, we need to poll and invoke any
     // necessary handler functions on our own.
     //
     if(sharedDownloader.state == MBXOfflineMapDownloaderStateSuspended)
