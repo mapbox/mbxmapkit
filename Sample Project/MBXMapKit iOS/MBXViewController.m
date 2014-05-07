@@ -68,11 +68,6 @@
     _rasterOverlay.delegate = self;
     [_mapView addOverlay:_rasterOverlay];
 
-    // This enables us to assert that delegate callbacks aren't getting called before initialization is complete
-    //
-    _viewHasFinishedLoading = YES;
-
-
     // If there was a suspended offline map download, resume it...
     // Note how the call above to initialize the shared map downloader singleton happens before the singleton's delegate can be set.
     // So, in order to know whether there might be a suspended download which was restored from disk, we need to poll and invoke any
@@ -358,9 +353,6 @@
 
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader stateChangedTo:(MBXOfflineMapDownloaderState)state
 {
-    assert([NSThread isMainThread]);
-    assert(_viewHasFinishedLoading);
-
     switch (state)
     {
         case MBXOfflineMapDownloaderStateAvailable:
@@ -393,9 +385,6 @@
 
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader totalFilesExpectedToWrite:(NSUInteger)totalFilesExpectedToWrite
 {
-    assert([NSThread isMainThread]);
-    assert(_viewHasFinishedLoading);
-
     [_offlineMapProgress setProgress:0.0 animated:NO];
     _offlineMapProgressView.hidden = NO;
 }
@@ -403,9 +392,6 @@
 
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader totalFilesWritten:(NSUInteger)totalFilesWritten totalFilesExpectedToWrite:(NSUInteger)totalFilesExpectedToWrite
 {
-    assert([NSThread isMainThread]);
-    assert(_viewHasFinishedLoading);
-
     if (totalFilesExpectedToWrite != 0)
     {
         float progress = ((float)totalFilesWritten) / ((float)totalFilesExpectedToWrite);
@@ -445,9 +431,6 @@
 
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader didCompleteOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase withError:(NSError *)error
 {
-    assert([NSThread isMainThread]);
-    assert(_viewHasFinishedLoading);
-
     _offlineMapProgressView.hidden = YES;
 
     if(error)
@@ -505,9 +488,6 @@
 
 - (void)tileOverlay:(MBXRasterTileOverlay *)overlay didLoadMetadata:(NSDictionary *)metadata withError:(NSError *)error
 {
-    assert(_mapView);
-    assert([NSThread isMainThread]);
-
     // This delegate callback is for centering the map once the map metadata has been loaded
     //
     if (error)
@@ -523,9 +503,6 @@
 
 - (void)tileOverlay:(MBXRasterTileOverlay *)overlay didLoadMarkers:(NSArray *)markers withError:(NSError *)error
 {
-    assert(_mapView);
-    assert([NSThread isMainThread]);
-
     // This delegate callback is for adding map markers to an MKMapView once all the markers for the tile overlay have loaded
     //
     if (error)
@@ -540,8 +517,6 @@
 
 - (void)tileOverlayDidFinishLoadingMetadataAndMarkers:(MBXRasterTileOverlay *)overlay
 {
-    assert([NSThread isMainThread]);
-
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
