@@ -138,7 +138,7 @@
     // be holding a reference to the MBXOfflineMapDatabase at the time that the backing file is deleted. If that happens, it would
     // be a logic error, but it seems like a pretty easy error to make, so this helps to catch it (see assert in MBXRasterTileOverlay).
     //
-    _invalid = YES;
+    self.invalid = YES;
 }
 
 
