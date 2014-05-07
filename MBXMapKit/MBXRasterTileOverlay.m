@@ -587,7 +587,7 @@
         // for this offline map database object while the database is still associated with a map overlay. That's a serious logic
         // error which should be checked for and avoided.
         //
-        assert(_offlineMapDatabase.invalid == NO);
+        assert(_offlineMapDatabase.isInvalid == NO);
 
         // If an offline map database is configured for this overlay, use the database to fetch data for URLs
         //
