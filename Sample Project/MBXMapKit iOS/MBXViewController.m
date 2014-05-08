@@ -77,10 +77,20 @@
     //
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 
-    // Configure the initial sample map
+    // Configure a raster tile overlay to use the initial sample map
     //
     _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm"];
+
+    // Let the raster tile overlay know that we want to be notified when it has asynchronously loaded the sample map's metadata
+    // (so we can set the map's center and zoom) and the sample map's markers (so we can add them to the map).
+    //
     _rasterOverlay.delegate = self;
+
+    // Add the raster tile overlay to our mapView so that it will immediately start rendering tiles. At this point the MKMapView's
+    // default center and zoom don't match the center and zoom of the sample map, but that's okay. Adding the layer now will prevent
+    // a percieved visual glitch in the UI (an empty map), and we'll fix the center and zoom when tileOverlay:didLoadMetadata:withError:
+    // gets called to notify us that the raster tile overlay has finished asynchronously loading its metadata.
+    //
     [_mapView addOverlay:_rasterOverlay];
 
     // If there was a suspended offline map download, resume it...
@@ -104,7 +114,7 @@
 {
     // This is the list of options for selecting which map should be shown by the demo app
     //
-    return [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"OSM world map",@"OSM over Apple satellite",@"Terrain under Apple labels",@"Tilemill bounded region",@"Tilemill region over Apple",@"Tilemill transparent over Apple", @"Offline Map Downloader", @"Offline Map Viewer", @"Attribution",nil];
+    return [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"World baselayer, no Apple",@"World overlay, Apple satellite",@"World baselayer, Apple labels",@"Regional baselayer, no Apple",@"Regional overlay, Apple streets",@"Alpha overlay, Apple streets", @"Offline map downloader", @"Offline map viewer", @"Attribution",nil];
 }
 
 
