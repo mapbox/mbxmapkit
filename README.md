@@ -28,6 +28,18 @@ Another key idea introduced with MBXMapKit `0.3.0` is that making a clear distin
 The way that MBXMapKit is designed to be used revolves around the idea of instantiating `MBXRasterTileOverlay` instances (a subclass of `MKTileOverlay`) and adding them to, or removing them from, your `MKMapView`. Raster tile overlay objects are intended to be treated as immutable once they've been initialized, although the fact that some map resources necessarily must be loaded asynchronously complicates the concept a bit. The design intention is that if you want to switch the map ID which is being shown in your `MKMapView`, the way to do it is remove the visible raster tile overlay which you initialized with the old map ID, then add a new raster tile overlay which you've initialized with a new map ID. If you're expecting to set a map ID property, that won't work any more, but that's a good thing. The new approach introduced in MBXMapKit `0.3.0` cooperates with the design of `MKMapKit` in a more natural manner than the old approach.
 
 
+### Linking Requirements
+
+MBXMapKit requires `libsqlite3.dylib` and `MapKit.framework` to be linked with your build target in order to compile properly.
+
+
+### Getting the Latest Release from GitHub
+
+Generally speaking, MBXMapKit follows the conventions described by GitHub's [Release Your Software](https://github.com/blog/1547-release-your-software) post.
+
+Typically we develop new features as branches, and then merge them into the *master* as we are preparing for a release. When an official release is ready, we create a tag with the version number. You can view the list of releases at https://github.com/mapbox/mbxmapkit/releases
+
+
 ### Installation
 
 Note: This changed significantly as of version `0.3.0`!
