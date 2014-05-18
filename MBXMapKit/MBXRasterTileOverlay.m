@@ -30,6 +30,15 @@
 @end
 
 
+#pragma mark - Private API for cooperating with MBXMBTilesDatabase
+
+@interface MBXMBTilesDatabase ()
+
+- (NSData *)dataForURL:(NSURL *)url withError:(NSError **)error;
+
+@end
+
+
 #pragma mark -
 
 @interface MBXRasterTileOverlay ()
@@ -192,6 +201,11 @@
         [self setupMapID:offlineMapDatabase.mapID includeMetadata:offlineMapDatabase.includesMetadata includeMarkers:offlineMapDatabase.includesMarkers imageQuality:offlineMapDatabase.imageQuality userAgent:nil];
     }
     return self;
+}
+
+- (id)initWithMBTilesDatabase:(MBXMBTilesDatabase *)mbtilesDatabase
+{
+    return nil;
 }
 
 
