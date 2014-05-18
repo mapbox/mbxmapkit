@@ -33,12 +33,28 @@ The way that MBXMapKit is designed to be used revolves around the idea of instan
 MBXMapKit requires `libsqlite3.dylib` and `MapKit.framework` to be linked with your build target in order to compile properly.
 
 
+### Getting help
+
+If you have questions about how to use MBXMapKit, or are encountering problems, here are our suggestions for how to proceed:
+
+ 1. Read all of this README, review the documentation in the MBXMapKit header files, and check if what you're trying to do is similar to anything in the sample app.
+ 
+ 2. Google your problem or error message. This can be very helpful for distinguishing MBXMapKit specific problems from more general issues with MKMapKit, and it may also guide you to relevant GitHub issues or StackOverflow questions. In many cases, documentation and blog posts about using MKMapKit will also be applicable to MBXMapKit.
+ 
+ 3. Familiarize yourself with the documentation and developer resources on Mapbox.com ([Help](https://www.mapbox.com/help/), [Foundations](https://www.mapbox.com/foundations/), [Developers](https://www.mapbox.com/developers/)).
+ 
+ 4. Take a look at the MBXMapKit [issues](https://github.com/mapbox/mbxmapkit/issues?state=open) on GitHub.
+ 
+ 5. Take a look at [Mapbox questions](http://stackoverflow.com/questions/tagged/mapbox?sort=votes&pageSize=100) on StackOverflow
+
+ 6. If none of that helps, you can file an [issue](https://github.com/mapbox/mbxmapkit/issues?state=open) on GitHub, ask a question on [StackOverflow](http://stackoverflow.com/questions/tagged/mapbox?sort=votes&pageSize=100), or [contact](https://www.mapbox.com/contact/) Mapbox support. Specifically for MBXMapKit (vs the iOS SDK), GitHub is best for possible bug reports, feature requests, and things generally having to do with improving MBXMapKit. You can also ask usage questions on StackOverflow (please tag as Mapbox and MBXMapKit). Contacting support is good for asking questions involving proprietary information or getting priority support for premium and enterprise accounts (please be sure to let us know who you are if you're using an email address which isn't associated with your Mapbox account).
+
+
 ### Getting the Latest Release from GitHub
 
 Generally speaking, MBXMapKit follows the conventions described by GitHub's [Release Your Software](https://github.com/blog/1547-release-your-software) post.
 
 Typically we develop new features as branches, and then merge them into the *master* as we are preparing for a release. When an official release is ready, we create a tag with the version number. You can view the list of releases at https://github.com/mapbox/mbxmapkit/releases
-
 
 ### Installation
 
