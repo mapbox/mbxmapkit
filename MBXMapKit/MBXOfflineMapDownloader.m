@@ -73,6 +73,7 @@
 @implementation MBXOfflineMapDownloader
 
 // As setter and getter are implemented the compiler would omit creating a backing ivar.
+//
 @synthesize userAgent = _userAgent;
 
 #pragma mark - API: Shared downloader singleton
@@ -244,10 +245,13 @@
     [self setUpNewDataSession];
 }
 
+
 - (NSString *)userAgent
 {
     if (_userAgent)
+    {
         return _userAgent;
+    }
     
     // Provide default userAgent strings
     //
