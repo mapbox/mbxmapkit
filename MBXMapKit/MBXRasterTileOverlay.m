@@ -300,7 +300,9 @@
     {
         // Invoke the loadTileAtPath's completion handler
         //
-        result(data, error);
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            result(data, error);
+        });
     };
 
     [self asyncLoadURL:url workerBlock:nil completionHandler:completionHandler];
