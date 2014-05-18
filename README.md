@@ -33,6 +33,7 @@ The way that MBXMapKit is designed to be used revolves around the idea of instan
 MBXMapKit requires `libsqlite3.dylib` and `MapKit.framework` to be linked with your build target in order to compile properly.
 
 
+
 ### Getting help
 
 If you have questions about how to use MBXMapKit, or are encountering problems, here are our suggestions for how to proceed:
@@ -48,6 +49,7 @@ If you have questions about how to use MBXMapKit, or are encountering problems, 
  5. Take a look at [Mapbox questions](http://stackoverflow.com/questions/tagged/mapbox?sort=votes&pageSize=100) on StackOverflow
 
  6. If none of that helps, you can file an [issue](https://github.com/mapbox/mbxmapkit/issues?state=open) on GitHub, ask a question on [StackOverflow](http://stackoverflow.com/questions/tagged/mapbox?sort=votes&pageSize=100), or [contact](https://www.mapbox.com/contact/) Mapbox support. Specifically for MBXMapKit (vs the iOS SDK), GitHub is best for possible bug reports, feature requests, and things generally having to do with improving MBXMapKit. You can also ask usage questions on StackOverflow (please tag as Mapbox and MBXMapKit). Contacting support is good for asking questions involving proprietary information or getting priority support for premium and enterprise accounts (please be sure to let us know who you are if you're using an email address which isn't associated with your Mapbox account).
+
 
 
 ### Getting the Latest Release from GitHub
