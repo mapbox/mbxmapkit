@@ -27,4 +27,7 @@
 
 - (void)invalidate;
 
+// prevent init from being used
+- (instancetype)init __attribute__((unavailable("To instantiate MBXOfflineMapDatabase objects, please use the cababilities provided by MBXOfflineMapDatabase.")));
+
 @end
