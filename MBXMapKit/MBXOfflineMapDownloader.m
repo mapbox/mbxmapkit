@@ -72,6 +72,8 @@
 
 @implementation MBXOfflineMapDownloader
 
+// As setter and getter are implemented the compiler would omit creating a backing ivar.
+@synthesize userAgent = _userAgent;
 
 #pragma mark - API: Shared downloader singleton
 
@@ -242,30 +244,32 @@
     [self setUpNewDataSession];
 }
 
+- (NSString *)userAgent
+{
+    if (_userAgent)
+        return _userAgent;
+    
+    // Provide default userAgent strings
+    //
+#if TARGET_OS_IPHONE
+    _userAgent = [NSString stringWithFormat:@"MBXMapKit (%@/%@) -- offline map", [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion]];
+#else
+    _userAgent = [NSString stringWithFormat:@"MBXMapKit (OS X/%@) -- offline map", [[NSProcessInfo processInfo] operatingSystemVersionString]];
+#endif
+    
+    return _userAgent;
+}
+
 
 - (void)setUpNewDataSession
 {
     // Create a new NSURLDataSession. This is necessary after a call to invalidateAndCancel
     //
-    NSString *userAgent;
-    if(self.userAgent)
-    {
-        userAgent = self.userAgent;
-    }
-    else
-    {
-#if TARGET_OS_IPHONE
-    userAgent = [NSString stringWithFormat:@"MBXMapKit (%@/%@) -- offline map", [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion]];
-#else
-    userAgent = [NSString stringWithFormat:@"MBXMapKit (OS X/%@) -- offline map", [[NSProcessInfo processInfo] operatingSystemVersionString]];
-#endif
-    }
-
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     config.allowsCellularAccess = YES;
     config.HTTPMaximumConnectionsPerHost = 4;
     config.URLCache = [NSURLCache sharedURLCache];
-    config.HTTPAdditionalHeaders = @{ @"User-Agent" : userAgent };
+    config.HTTPAdditionalHeaders = @{ @"User-Agent" : self.userAgent };
     _dataSession = [NSURLSession sessionWithConfiguration:config];
     _activeDataSessionTasks = 0;
 }
