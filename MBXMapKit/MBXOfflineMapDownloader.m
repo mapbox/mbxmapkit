@@ -236,16 +236,30 @@
 }
 
 
+- (void)setUserAgent:(NSString *)userAgent
+{
+    _userAgent = userAgent;
+    [self setUpNewDataSession];
+}
+
+
 - (void)setUpNewDataSession
 {
     // Create a new NSURLDataSession. This is necessary after a call to invalidateAndCancel
     //
     NSString *userAgent;
+    if(self.userAgent)
+    {
+        userAgent = self.userAgent;
+    }
+    else
+    {
 #if TARGET_OS_IPHONE
     userAgent = [NSString stringWithFormat:@"MBXMapKit (%@/%@) -- offline map", [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion]];
 #else
     userAgent = [NSString stringWithFormat:@"MBXMapKit (OS X/%@) -- offline map", [[NSProcessInfo processInfo] operatingSystemVersionString]];
 #endif
+    }
 
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     config.allowsCellularAccess = YES;
