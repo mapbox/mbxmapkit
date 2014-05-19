@@ -18,11 +18,7 @@
 
 #pragma mark - Read-only properties to check initialized values
 
-/** @name Read-only properties for checking the initialized values */
-@property (readonly,nonatomic) NSString *mapID;
-@property (readonly,nonatomic) CLLocationCoordinate2D center;
-@property (readonly,nonatomic) NSInteger centerZoom;
-@property (readonly,nonatomic) NSArray *markers;
-@property (readonly,nonatomic) NSString *attribution;
+@property (nonatomic) NSUInteger zoomLimit;
+@property (nonatomic) BOOL shouldOverzoom;
 
 @end

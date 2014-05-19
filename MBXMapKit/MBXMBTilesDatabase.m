@@ -46,7 +46,7 @@ NSString * const kFormatPNG      = @"png";
 @property (readwrite, nonatomic) NSString *version;
 @property (readwrite, nonatomic) NSString *description;
 @property (readwrite, nonatomic) NSString *format;
-@property (readwrite, nonatomic) MKCoordinateRegion mapRegion;
+@property (readwrite, nonatomic) MKMapRect mapRect;
 @property (readwrite, nonatomic) NSInteger minimumZ;
 @property (readwrite, nonatomic) NSInteger maximumZ;
 @property (readwrite, nonatomic) BOOL invalid;
@@ -99,7 +99,7 @@ NSString * const kFormatPNG      = @"png";
                     // This is bad, bounds was supposed to have 4 comma-separated doubles
                     NSLog(@"initWithMBTilesURL: failed to parse the map bounds: %@", bounds);
                     
-                    _mapRegion = MKCoordinateRegionForMapRect(MKMapRectNull);
+                    _mapRect = MKMapRectNull;
                 }
                 else
                 {
@@ -113,7 +113,7 @@ NSString * const kFormatPNG      = @"png";
                     boundingRect.size.width = se.x - nw.x;
                     boundingRect.size.height = se.y - nw.y;
                     
-                    _mapRegion = MKCoordinateRegionForMapRect(boundingRect);
+                    _mapRect = boundingRect;
                 }
             }
             
