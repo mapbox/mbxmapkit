@@ -160,14 +160,14 @@ NSString * const kFormatPNG      = @"png";
 
 - (NSInteger)sqliteMinimumForColumn:(NSString *)colName
 {
-    NSString *query = [NSString stringWithFormat:@"SELECT MIN(zoom_level) FROM %@;", colName];
+    NSString *query = [NSString stringWithFormat:@"SELECT MIN(%@) FROM tiles;", colName];
     NSData *data = [self sqliteDataForSingleColumnQuery:query];
     return data ? [[[NSString alloc] initWithBytes:data.bytes length:data.length encoding:NSUTF8StringEncoding] integerValue] : 0;
 }
 
 - (NSInteger)sqliteMaximumForColumn:(NSString *)colName
 {
-    NSString *query = [NSString stringWithFormat:@"SELECT MAX(zoom_level) FROM %@;", colName];
+    NSString *query = [NSString stringWithFormat:@"SELECT MAX(%@) FROM tiles;", colName];
     NSData *data = [self sqliteDataForSingleColumnQuery:query];
     return data ? [[[NSString alloc] initWithBytes:data.bytes length:data.length encoding:NSUTF8StringEncoding] integerValue] : 20;
 }

@@ -13,6 +13,8 @@
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (nonatomic) MBXRasterTileOverlay *rasterOverlay;
+@property (nonatomic) MBXMBTilesOverlay *mbtilesOverlay;
+@property (nonatomic) MBXMBTilesDatabase *mbtilesDb;
 @property (nonatomic) UIActionSheet *actionSheet;
 
 @property (weak, nonatomic) IBOutlet UIView *offlineMapProgressView;
@@ -250,8 +252,15 @@
             [_mapView addOverlay:_rasterOverlay];
             break;
         case 8:
-            // Show Attribution
-            [self attribution:_rasterOverlay.attribution];
+            // MBTiles Database
+            [self resetMapViewAndRasterOverlayDefaults];
+            _currentlyViewingAnOfflineMap = YES;
+            
+            NSURL *mbtilesURL = [[NSBundle mainBundle] URLForResource:@"Sample Data/open-streets-dc" withExtension:@"mbtiles"];
+            _mbtilesDb = [[MBXMBTilesDatabase alloc] initWithMBTilesURL:mbtilesURL];
+            _mbtilesOverlay = [[MBXMBTilesOverlay alloc] initWithMBTilesDatabase:_mbtilesDb];
+            [self.mapView setRegion:MKCoordinateRegionForMapRect(_mbtilesDb.mapRect)];
+            [_mapView addOverlay:_mbtilesOverlay];
             break;
     }
 }
@@ -480,7 +489,8 @@
 {
     // This is boilerplate code to connect tile overlay layers with suitable renderers
     //
-    if ([overlay isKindOfClass:[MBXRasterTileOverlay class]])
+    if ([overlay isKindOfClass:[MBXRasterTileOverlay class]]
+        || [overlay isKindOfClass:[MBXMBTilesOverlay class]])
     {
         MKTileOverlayRenderer *renderer = [[MKTileOverlayRenderer alloc] initWithTileOverlay:overlay];
         return renderer;

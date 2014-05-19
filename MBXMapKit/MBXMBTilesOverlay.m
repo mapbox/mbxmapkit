@@ -45,9 +45,8 @@
                 self.canReplaceMapContent = YES;
             }
             
+            _zoomLimit = 20;
             
-            
-            //
         }
     }
     return self;
@@ -106,7 +105,7 @@
 - (BOOL)isGeometryFlipped
 {
     // Default coordinate system is upside down relative to an
-    // MBTiles from TileMill, so flip it
+    // MBTiles file from TileMill, so flip it
     return YES;
 }
 
