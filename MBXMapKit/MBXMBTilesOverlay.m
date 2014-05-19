@@ -20,7 +20,7 @@
 
 #pragma mark - Initialization
 
-- (instancetype)initWithMBXMBTilesDatabase:(MBXMBTilesDatabase *)mbtileDatabase
+- (instancetype)initWithMBTilesDatabase:(MBXMBTilesDatabase *)mbtileDatabase
 {
     if (self = [super init])
     {

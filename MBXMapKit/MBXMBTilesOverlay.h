@@ -11,7 +11,7 @@
 
 @interface MBXMBTilesOverlay : MKTileOverlay
 
-- (instancetype)initWithMBXMBTilesDatabase:(MBXMBTilesDatabase *)mbtileDatabase;
+- (instancetype)initWithMBTilesDatabase:(MBXMBTilesDatabase *)mbtileDatabase;
 - (instancetype)init __attribute__((unavailable("To instantiate MBXMBTilesOverlay objects, please use initWithFileURL:.")));
 - (instancetype)initWithURLTemplate:(NSString *)URLTemplate __attribute__((unavailable("To instantiate MBXMBTilesOverlay objects, please use initWithFileURL:.")));
 
