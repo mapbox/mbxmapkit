@@ -7,6 +7,7 @@
 
 @import Foundation;
 @import MapKit;
+#import "MBXConstantsAndTypes.h"
 
 #pragma mark - Valid values for MBTiles spec parameters
 

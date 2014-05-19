@@ -7,6 +7,7 @@
 
 #import "MBXMBTilesDatabase.h"
 #import <sqlite3.h>
+#import "MBXMapKit.h"
 
 
 // TODO: implement MBTiles-spec either as class or introduce a class method that
@@ -34,6 +35,17 @@ NSString * const kTypeBaselayer  = @"baselayer";
 NSString * const kFormatJPEG     = @"jpg";
 NSString * const kFormatPNG      = @"png";
 
+#pragma mark - Private API for creating verbose errors
+
+@interface NSError (MBXError)
+
++ (NSError *)mbxErrorWithCode:(NSInteger)code reason:(NSString *)reason description:(NSString *)description;
+
++ (NSError *)mbxErrorCannotOpenOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
+
++ (NSError *)mbxErrorQueryFailedForOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
+
+@end
 
 #pragma mark -
 
@@ -139,7 +151,13 @@ NSString * const kFormatPNG      = @"png";
 {
     assert(_initializedProperly);
     
-    return [self sqliteDataForPath:path];
+    NSData *data = [self sqliteDataForPath:path];
+    if(*error != NULL)
+    {
+        NSString *reason = [NSString stringWithFormat:@"The mbtiles database has no data for z=%ld, y=%ld, x=%ld", (long)path.z, (long)path.y, (long)path.x];
+        *error = [NSError mbxErrorWithCode:MBXMapKitErrorCodeMBTilesDatabaseHasNoDataForPath reason:reason description:@"No mbtiles data for path error"];
+    }
+    return data;
 }
 
 #pragma mark - sqlite stuff
