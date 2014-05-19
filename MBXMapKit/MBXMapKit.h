@@ -12,6 +12,8 @@
 #import "MBXPointAnnotation.h"
 #import "MBXRasterTileOverlay.h"
 #import "MBXConstantsAndTypes.h"
+#import "MBXMBTilesDatabase.h"
+#import "MBXMBTilesOverlay.h"
 
 
 @interface MKMapView (MBXMapView)

@@ -8,26 +8,31 @@
 #import "MBXMBTilesDatabase.h"
 #import <sqlite3.h>
 
+
+// TODO: implement MBTiles-spec either as class or introduce a class method that
+// can read specs from a json file for example. MBXMBTilesDatabase might then
+// check the mbtiles file based on the version string against the correct spec.
+
 // Keys and predefined values according to MBTiles spec 1.1
 // See https://github.com/mapbox/mbtiles-spec/blob/master/1.1/spec.md
 //
 // required keys
-static NSString * const kNameKey        = @"name";
-static NSString * const kTypeKey        = @"type";
-static NSString * const kVersionKey     = @"version";
-static NSString * const kDescriptionKey = @"description";
-static NSString * const kFormatKey      = @"format";
+NSString * const kNameKey        = @"name";
+NSString * const kTypeKey        = @"type";
+NSString * const kVersionKey     = @"version";
+NSString * const kDescriptionKey = @"description";
+NSString * const kFormatKey      = @"format";
 
 // optional keys
-static NSString * const kBoundsKey      = @"bounds";
+NSString * const kBoundsKey      = @"bounds";
 
-// valid values for type
-static NSString * const kTypeOverlay    = @"overlay";
-static NSString * const kTypeBaselayer  = @"baselayer";
+// valid values for 'type'
+NSString * const kTypeOverlay    = @"overlay";
+NSString * const kTypeBaselayer  = @"baselayer";
 
-// valid values for format
-static NSString * const kFormatJPEG     = @"jpg";
-static NSString * const kFormatPNG      = @"png";
+// valid values for 'format'
+NSString * const kFormatJPEG     = @"jpg";
+NSString * const kFormatPNG      = @"png";
 
 
 #pragma mark -
@@ -55,13 +60,11 @@ static NSString * const kFormatPNG      = @"png";
 
 @implementation MBXMBTilesDatabase
 
-- (id)initWithURL:(NSURL *)url
+- (instancetype)initWithMBTilesURL:(NSURL *)mbtilesURL
 {
-    self = [super init];
-    
-    if(self)
+    if (self = [super init])
     {
-        _url = url;
+        _url = mbtilesURL;
         
         NSString *name        = [self sqliteMetadataForName:kNameKey];
         NSString *type        = [self sqliteMetadataForName:kTypeKey];
@@ -69,12 +72,11 @@ static NSString * const kFormatPNG      = @"png";
         NSString *description = [self sqliteMetadataForName:kDescriptionKey];
         NSString *format      = [self sqliteMetadataForName:kFormatKey];
         
-        // TODO: check against the correct spec according to *version* from metadata
         if (name && version && description
             && ([type isEqualToString:kTypeOverlay] || [type isEqualToString:kTypeBaselayer])
             && ([format isEqualToString:kFormatJPEG] || [format isEqualToString:kFormatPNG]))
         {
-            // Reaching this point means that the specified database file at path pointed to an sqlite file which had
+            // Reaching this point means that the specified mbtiles file at mbtilesURL pointed to an sqlite file which had
             // all the required values in its metadata table to pass the MBTiles spec 1.1.
             //
             _name        = name;
@@ -85,28 +87,59 @@ static NSString * const kFormatPNG      = @"png";
             
             // check if a bounds key exists
             NSString *bounds = [self sqliteMetadataForName:kBoundsKey];
+            
             if (bounds)
             {
-                //parse it
+                // Parse the bounds string and convert it to a map region and boundingMapRect
+                double west, south, east, north;
                 
-                // if it is invalid, set it to nil
+                const char *cBounds = [bounds cStringUsingEncoding:NSASCIIStringEncoding];
+                if (4 != sscanf(cBounds,"%lf,%lf,%lf,%lf",&west,&south,&east,&north))
+                {
+                    // This is bad, bounds was supposed to have 4 comma-separated doubles
+                    NSLog(@"initWithMBTilesURL: failed to parse the map bounds: %@", bounds);
+                    
+                    _mapRegion = MKCoordinateRegionForMapRect(MKMapRectNull);
+                }
+                else
+                {
+                    // Construct MKCoordinateRegion
+                    MKMapRect boundingRect;
+
+                    MKMapPoint nw = MKMapPointForCoordinate(CLLocationCoordinate2DMake(north, west));
+                    MKMapPoint se = MKMapPointForCoordinate(CLLocationCoordinate2DMake(south, east));
+                    
+                    boundingRect.origin = nw;
+                    boundingRect.size.width = se.x - nw.x;
+                    boundingRect.size.height = se.y - nw.y;
+                    
+                    _mapRegion = MKCoordinateRegionForMapRect(boundingRect);
+                }
             }
             
             // look up minimum and maximum Z from database
-            _minimumZ = [self sqliteMinimumZInDatabase];
-            _maximumZ = [self sqliteMaximumZInDatabase];
+            _minimumZ = [self sqliteMinimumForColumn:@"zoom_level"];
+            _maximumZ = [self sqliteMaximumForColumn:@"zoom_level"];
             
             _initializedProperly = YES;
         }
         else
         {
-            // Reaching this point means the file at path isn't a valid offline map database, so we can't use it.
+            // Reaching this point means the url doesn't point to a valid mbtiles database, so we can't use it.
             //
             self = nil;
         }
     }
     
     return self;
+}
+
+
+- (NSData *)dataForPath:(MKTileOverlayPath)path withError:(NSError **)error
+{
+    assert(_initializedProperly);
+    
+    return [self sqliteDataForPath:path];
 }
 
 #pragma mark - sqlite stuff
@@ -125,16 +158,16 @@ static NSString * const kFormatPNG      = @"png";
     return data;
 }
 
-- (NSInteger)sqliteMinimumZInDatabase
+- (NSInteger)sqliteMinimumForColumn:(NSString *)colName
 {
-    NSString *query = @"SELECT MIN(zoom_level) FROM tiles;";
+    NSString *query = [NSString stringWithFormat:@"SELECT MIN(zoom_level) FROM %@;", colName];
     NSData *data = [self sqliteDataForSingleColumnQuery:query];
     return data ? [[[NSString alloc] initWithBytes:data.bytes length:data.length encoding:NSUTF8StringEncoding] integerValue] : 0;
 }
 
-- (NSInteger)sqliteMaximumZInDatabase
+- (NSInteger)sqliteMaximumForColumn:(NSString *)colName
 {
-    NSString *query = @"SELECT MAX(zoom_level) FROM tiles;";
+    NSString *query = [NSString stringWithFormat:@"SELECT MAX(zoom_level) FROM %@;", colName];
     NSData *data = [self sqliteDataForSingleColumnQuery:query];
     return data ? [[[NSString alloc] initWithBytes:data.bytes length:data.length encoding:NSUTF8StringEncoding] integerValue] : 20;
 }

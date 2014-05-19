@@ -8,6 +8,16 @@
 @import Foundation;
 @import MapKit;
 
+#pragma mark - Valid values for MBTiles spec parameters
+
+// valid values for 'type'
+extern NSString * const kTypeOverlay;
+extern NSString * const kTypeBaselayer;
+
+// valid values for 'format'
+extern NSString * const kFormatJPEG;
+extern NSString * const kFormatPNG;
+
 @interface MBXMBTilesDatabase : NSObject
 
 #pragma mark - Properties and methods for accessing stored map data
@@ -23,5 +33,9 @@
 @property (readonly, nonatomic, getter=isInvalid) BOOL invalid;
 
 @property (nonatomic) BOOL shouldOverzoom;
+
+- (instancetype)initWithMBTilesURL:(NSURL *)mbtilesURL;
+
+- (instancetype)init __attribute__((unavailable("To instantiate MBXMBTilesDatabase objects, please use initWithMBTilesURL:(NSURL *)mbtilesURL")));
 
 @end

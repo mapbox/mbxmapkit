@@ -8,6 +8,16 @@
 #import "MBXMBTilesOverlay.h"
 #import "MBXMBTilesDatabase.h"
 
+
+#pragma mark - Private API for cooperating with MBXMBTilesDatabase
+
+@interface MBXMBTilesDatabase ()
+
+- (NSData *)dataForPath:(MKTileOverlayPath)path withError:(NSError **)error;
+
+@end
+
+
 @interface MBXMBTilesOverlay ()
 
 @property (strong, nonatomic) MBXMBTilesDatabase *mbtilesDatabase;
@@ -24,9 +34,12 @@
 {
     if (self = [super init])
     {
-        // check mbtiles file
-        //
         _mbtilesDatabase = mbtileDatabase;
+        
+        if ([mbtileDatabase.type isEqualToString:kTypeBaselayer])
+        {
+            self.canReplaceMapContent = YES;
+        }
         
         // 
     }
