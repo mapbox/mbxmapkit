@@ -114,7 +114,7 @@
     assert(_initializedProperly);
 
     NSData *data = [self sqliteDataForURL:url];
-    if(*error != NULL)
+    if((*error != NULL) && !data)
     {
         NSString *reason = [NSString stringWithFormat:@"The offline database has no data for %@",[url absoluteString]];
         *error = [NSError mbxErrorWithCode:MBXMapKitErrorCodeOfflineMapHasNoDataForURL reason:reason description:@"No offline data for key error"];
