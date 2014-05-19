@@ -681,7 +681,7 @@
 }
 
 
-- (void)sqliteQueryWrittenAndExpectedCountsWithError:(NSError **)error
+- (BOOL)sqliteQueryWrittenAndExpectedCountsWithError:(NSError **)error
 {
     // NOTE: Unlike most of the sqlite code, this method is written with the expectation that it can and will be called on the main
     //       thread as part of init. This is also meant to be used in other contexts throught the normal serial operation queue.
@@ -690,6 +690,7 @@
     //
     NSString *query = @"SELECT COUNT(url) AS totalFilesExpectedToWrite, (SELECT COUNT(url) FROM resources WHERE status IS NOT NULL) AS totalFilesWritten FROM resources;\n";
 
+    BOOL success = NO;
     // Open the database
     //
     sqlite3 *db;
@@ -733,6 +734,7 @@
                 //
                 _totalFilesExpectedToWrite = [[NSString stringWithUTF8String:(const char *)sqlite3_column_text(ppStmt, 0)] integerValue];
                 _totalFilesWritten = [[NSString stringWithUTF8String:(const char *)sqlite3_column_text(ppStmt, 1)] integerValue];
+                success = YES;
             }
             else
             {
@@ -747,12 +749,15 @@
         sqlite3_finalize(ppStmt);
     }
     sqlite3_close(db);
+
+    return success;
 }
 
 
-- (void)sqliteCreateDatabaseUsingMetadata:(NSDictionary *)metadata urlArray:(NSArray *)urlStrings withError:(NSError **)error
+- (BOOL)sqliteCreateDatabaseUsingMetadata:(NSDictionary *)metadata urlArray:(NSArray *)urlStrings withError:(NSError **)error
 {
     assert(![NSThread isMainThread]);
+    BOOL success = NO;
 
     // Build a query to populate the database (map metadata and list of map resource urls)
     //
@@ -803,7 +808,9 @@
             sqlite3_free(errmsg);
         }
         sqlite3_close(db);
+        success = YES;
     }
+    return success;
 }
 
 
