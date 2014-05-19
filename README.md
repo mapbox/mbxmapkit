@@ -34,7 +34,7 @@ MBXMapKit requires `libsqlite3.dylib` and `MapKit.framework` to be linked with y
 
 
 
-### Getting help
+### Getting Help
 
 If you have questions about how to use MBXMapKit, or are encountering problems, here are our suggestions for how to proceed:
 

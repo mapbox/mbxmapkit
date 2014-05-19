@@ -9,6 +9,7 @@
 
 @interface MBXPointAnnotation : MKShape
 
+/** Marker icon image for setting the `image` property of an MKAnnotationView */
 #if TARGET_OS_IPHONE
 @property (nonatomic) UIImage *image;
 #else
