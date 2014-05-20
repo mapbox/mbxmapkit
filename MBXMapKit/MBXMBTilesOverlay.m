@@ -140,20 +140,23 @@ NSString * const kFormatPNG      = @"png";
                     }
                 }
                 
-                // Configure overlay from database.
+                // Configure MKOverlay from database.
                 
                 // Look up minimum and maximum Z from database.
                 //
-                self.minimumZ = [self sqliteMinimumForColumn:@"zoom_level"];
-                self.maximumZ = [self sqliteMaximumForColumn:@"zoom_level"];
+                _mbtilesMinimumZ = [self sqliteMinimumForColumn:@"zoom_level"];
+                _mbtilesMaximumZ = [self sqliteMaximumForColumn:@"zoom_level"];
                 
-                // Check if we can render opaquely.
+                self.minimumZ = _mbtilesMinimumZ;
+                self.maximumZ = _mbtilesMaximumZ;
+                
+                // Check if MKMapkit can render the overlay opaquely.
                 //
                 if ([_type isEqualToString:kTypeBaselayer])
                 {
                     self.canReplaceMapContent = YES;
                 }
-                
+                self.canReplaceMapContent = YES;
                 _initializedProperly = YES;
             }
             else
@@ -163,8 +166,11 @@ NSString * const kFormatPNG      = @"png";
                 self = nil;
             }
             
-            // By default, if overzooming is enabled, we do it all the way down.
-            _zoomLimit = self.maximumZ;
+            // If overzooming is enabled, the desired zoom limit can be reduced by the user later.
+            // By default, we overzoom all the way down.
+            //
+            _zoomLimit = 20;
+            _shouldOverzoom = NO;
             
         }
     }
@@ -173,8 +179,8 @@ NSString * const kFormatPNG      = @"png";
 
 - (MKTileOverlayPath)enclosingTileForOverzoomedPath:(MKTileOverlayPath)path atZoom:(NSInteger)zoom
 {
-    // For the overzoomed tile specified by path, figure out which tile from level maximumZ encloses that same location
-    assert(path.z > self.maximumZ && path.z < 30);
+    // For the overzoomed tile specified by path, figure out which tile from level _mbtilesMaximumZ encloses that same location
+    assert(path.z > self.mbtilesMaximumZ && path.z < 30);
     MKTileOverlayPath enclosingTilePath;
     // Intentionally using integer division here to get the quotient and discard the remainder...
     int divisor = 1 << (path.z - zoom);
@@ -186,7 +192,7 @@ NSString * const kFormatPNG      = @"png";
 
 - (NSData *)extractTileAtPath:(MKTileOverlayPath)destPath fromTile:(NSData *)tile atPath:(MKTileOverlayPath)sourcePath
 {
-    // Load the source tile image which we know came from maximumZ zoom level
+    // Load the source tile image which we know came from _mbtilesMaximumZ zoom level
     //
     assert(sourcePath.z < destPath.z && destPath.z < 30);
     NSData *overzoomedTile;
@@ -220,6 +226,22 @@ NSString * const kFormatPNG      = @"png";
     return overzoomedTile;
 }
 
+- (void)setShouldOverzoom:(BOOL)shouldOverzoom
+{
+    // As MapKit will never request tiles for z > _maximumZ, we have to set
+    // _maximumZ whenever we toggle shouldOverzoom
+    if (shouldOverzoom)
+    {
+        _shouldOverzoom = YES;
+        self.maximumZ = self.zoomLimit;
+    }
+    else
+    {
+        _shouldOverzoom = NO;
+        self.maximumZ = self.mbtilesMaximumZ;
+    }
+}
+
 #pragma mark - MKTileOverlay implementation
 
 - (BOOL)isGeometryFlipped
@@ -239,18 +261,21 @@ NSString * const kFormatPNG      = @"png";
 {
     NSData *data;
     
-    if(self.zoomLimit >= path.z) {
+    if(self.mbtilesMaximumZ >= path.z) {
         
         // Within regular zoom limits: Retrieve and return the specified tile
         //
         NSError *error;
         data = [self dataForPath:path withError:&error];
         
+        if (error) {
+            NSLog(@"%s: %@", __PRETTY_FUNCTION__, error.userInfo[NSLocalizedFailureReasonErrorKey]);
+        }
     } else {
-        if (self.shouldOverzoom) {
+        if (self.shouldOverzoom && path.z <= self.zoomLimit) {
             // Overzoomed: Retrieve the enclosing tile at the higest available zoom level, scale, crop, and return
             //
-            MKTileOverlayPath enclosingTilePath = [self enclosingTileForOverzoomedPath:path atZoom:self.zoomLimit];
+            MKTileOverlayPath enclosingTilePath = [self enclosingTileForOverzoomedPath:path atZoom:self.mbtilesMaximumZ];
             NSData *enclosingTile = [self dataForPath:enclosingTilePath withError:nil];
             if(enclosingTile) {
                 data = [self extractTileAtPath:path fromTile:enclosingTile atPath:enclosingTilePath];
@@ -269,7 +294,8 @@ NSString * const kFormatPNG      = @"png";
     assert(_initializedProperly);
     
     NSData *data = [self sqliteDataForPath:path];
-    if(*error != NULL)
+    
+    if(!data && error)
     {
         NSString *reason = [NSString stringWithFormat:@"The mbtiles database has no data for z=%ld, y=%ld, x=%ld", (long)path.z, (long)path.y, (long)path.x];
         *error = [NSError mbxErrorWithCode:MBXMapKitErrorCodeMBTilesDatabaseHasNoDataForPath reason:reason description:@"No mbtiles data for path error"];

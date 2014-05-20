@@ -257,6 +257,7 @@
             
             NSURL *mbtilesURL = [[NSBundle mainBundle] URLForResource:@"Sample Data/open-streets-dc" withExtension:@"mbtiles"];
             _mbtilesOverlay = [[MBXMBTilesOverlay alloc] initWithMBTilesURL:mbtilesURL];
+            _mbtilesOverlay.shouldOverzoom = YES;
             [self.mapView setRegion:MKCoordinateRegionForMapRect(_mbtilesOverlay.mapRect)];
             [_mapView addOverlay:_mbtilesOverlay];
             break;
