@@ -14,7 +14,6 @@
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (nonatomic) MBXRasterTileOverlay *rasterOverlay;
 @property (nonatomic) MBXMBTilesOverlay *mbtilesOverlay;
-@property (nonatomic) MBXMBTilesDatabase *mbtilesDb;
 @property (nonatomic) UIActionSheet *actionSheet;
 
 @property (weak, nonatomic) IBOutlet UIView *offlineMapProgressView;
@@ -116,7 +115,7 @@
 {
     // This is the list of options for selecting which map should be shown by the demo app
     //
-    return [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"World baselayer, no Apple",@"World overlay, Apple satellite",@"World baselayer, Apple labels",@"Regional baselayer, no Apple",@"Regional overlay, Apple streets",@"Alpha overlay, Apple streets", @"Offline map downloader", @"Offline map viewer", @"Attribution",nil];
+    return [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"World baselayer, no Apple",@"World overlay, Apple satellite",@"World baselayer, Apple labels",@"Regional baselayer, no Apple",@"Regional overlay, Apple streets",@"Alpha overlay, Apple streets", @"Offline map downloader", @"Offline map viewer", @"MBTiles database",nil];
 }
 
 
@@ -257,9 +256,8 @@
             _currentlyViewingAnOfflineMap = YES;
             
             NSURL *mbtilesURL = [[NSBundle mainBundle] URLForResource:@"Sample Data/open-streets-dc" withExtension:@"mbtiles"];
-            _mbtilesDb = [[MBXMBTilesDatabase alloc] initWithMBTilesURL:mbtilesURL];
-            _mbtilesOverlay = [[MBXMBTilesOverlay alloc] initWithMBTilesDatabase:_mbtilesDb];
-            [self.mapView setRegion:MKCoordinateRegionForMapRect(_mbtilesDb.mapRect)];
+            _mbtilesOverlay = [[MBXMBTilesOverlay alloc] initWithMBTilesURL:mbtilesURL];
+            [self.mapView setRegion:MKCoordinateRegionForMapRect(_mbtilesOverlay.mapRect)];
             [_mapView addOverlay:_mbtilesOverlay];
             break;
     }

@@ -6,19 +6,36 @@
 //
 
 @import MapKit;
+#import "MBXConstantsAndTypes.h"
 
-@class MBXMBTilesDatabase;
+#pragma mark - Valid values for MBTiles spec parameters
+
+// valid values for 'type'
+extern NSString * const kTypeOverlay;
+extern NSString * const kTypeBaselayer;
+
+// valid values for 'format'
+extern NSString * const kFormatJPEG;
+extern NSString * const kFormatPNG;
 
 @interface MBXMBTilesOverlay : MKTileOverlay
 
-- (instancetype)initWithMBTilesDatabase:(MBXMBTilesDatabase *)mbtileDatabase;
+#pragma mark - Properties and methods for accessing stored map data
 
-- (instancetype)init __attribute__((unavailable("To instantiate MBXMBTilesOverlay objects, please use initWithFileURL:.")));
-- (instancetype)initWithURLTemplate:(NSString *)URLTemplate __attribute__((unavailable("To instantiate MBXMBTilesOverlay objects, please use initWithFileURL:.")));
+@property (readonly, nonatomic) NSURL      *mbtilesUrl;
+@property (readonly, nonatomic) NSString   *name;
+@property (readonly, nonatomic) NSString   *type;
+@property (readonly, nonatomic) NSString   *version;
+@property (readonly, nonatomic) NSString   *description;
+@property (readonly, nonatomic) NSString   *format;
+@property (readonly, nonatomic) MKMapRect  mapRect;
+@property (nonatomic          ) NSUInteger zoomLimit;
+@property (nonatomic          ) BOOL       shouldOverzoom;
+@property (readonly, nonatomic, getter=isInvalid) BOOL invalid;
 
-#pragma mark - Read-only properties to check initialized values
+- (instancetype)initWithMBTilesURL:(NSURL *)mbtilesURL;
 
-@property (nonatomic) NSUInteger zoomLimit;
-@property (nonatomic) BOOL shouldOverzoom;
+- (instancetype)init __attribute__((unavailable("To instantiate MBXMBTilesOverlay objects, please use initWithMBTilesURL:")));
+- (instancetype)initWithURLTemplate:(NSString *)URLTemplate __attribute__((unavailable("To instantiate MBXMBTilesOverlay objects, please use initWithMBTilesURL:")));
 
 @end
