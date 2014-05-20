@@ -31,7 +31,6 @@ extern NSString * const kFormatPNG;
 @property (readonly, nonatomic) MKMapRect  mapRect;
 @property (nonatomic          ) NSUInteger zoomLimit;
 @property (nonatomic          ) BOOL       shouldOverzoom;
-@property (readonly, nonatomic, getter=isInvalid) BOOL invalid;
 
 - (instancetype)initWithMBTilesURL:(NSURL *)mbtilesURL;
 

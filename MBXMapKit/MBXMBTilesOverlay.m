@@ -52,8 +52,6 @@ NSString * const kFormatPNG      = @"png";
 
 @interface MBXMBTilesOverlay ()
 
-@property (readwrite, nonatomic) NSURL *url;
-
 @property (readwrite, nonatomic) NSURL      *mbtilesUrl;
 @property (readwrite, nonatomic) NSString   *name;
 @property (readwrite, nonatomic) NSString   *type;
@@ -61,10 +59,10 @@ NSString * const kFormatPNG      = @"png";
 @property (readwrite, nonatomic) NSString   *description;
 @property (readwrite, nonatomic) NSString   *format;
 @property (readwrite, nonatomic) MKMapRect  mapRect;
-//@property (readwrite, nonatomic) NSInteger  minimumZ;
-//@property (readwrite, nonatomic) NSInteger  maximumZ;
-@property (readwrite, nonatomic) BOOL       invalid;
-@property (nonatomic           ) BOOL       initializedProperly;
+
+@property (nonatomic) NSInteger  mbtilesMinimumZ;
+@property (nonatomic) NSInteger  mbtilesMaximumZ;
+@property (nonatomic) BOOL       initializedProperly;
 
 @end
 
@@ -205,10 +203,10 @@ NSString * const kFormatPNG      = @"png";
     // Calculate the rect to use for scaling
     //
     CGRect scalingRect;
-    scalingRect.origin.x = 0.0 - x*256.0;
-    scalingRect.origin.y = 0.0 - (normalizedSideLength-1-y)*256.0;
-    scalingRect.size.width = 256.0*normalizedSideLength;
-    scalingRect.size.height = 256.0*normalizedSideLength;
+    scalingRect.origin.x = 0.0 - x * 256.0;
+    scalingRect.origin.y = 0.0 - (normalizedSideLength - 1 - y) * 256.0;
+    scalingRect.size.width = 256.0 * normalizedSideLength;
+    scalingRect.size.height = 256.0 * normalizedSideLength;
     
     // Set up a destination image, same size as the source
     //
@@ -328,6 +326,7 @@ NSString * const kFormatPNG      = @"png";
     int rc;
     NSString *dbPath = [self.mbtilesUrl path];
     const char *filename = [dbPath cStringUsingEncoding:NSUTF8StringEncoding];
+    
     rc = sqlite3_open_v2(filename, &db, SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, NULL);
     if (rc)
     {
