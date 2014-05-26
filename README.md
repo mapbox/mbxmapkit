@@ -74,7 +74,7 @@ To include MBXMapKit in your app you will need to:
  
  1. Study the view controller in the iOS sample app. It's meant to be liberally copied and pasted. In particular, take a look at `-viewDidLoad`, `-resetMapViewAndRasterOverlayDefaults`, `-actionSheet:clickedButtonAtIndex:`, the `MBXOfflineMapDownloaderDelegate` callbacks, `-mapView:rendererForOverlay:`, `-mapView:viewForAnnotation:`, and the `MBXRasterTileOverlayDelegate` callbacks.
  
- 1. Provide some prominent means to display any applicable map data copyright attribution messages. For maps which include [OpenStreetMap](http://mapbox.com/about/maps) data, that means you need something which links to the OSM copyright page (see sample app for an example). More details are available at https://www.mapbox.com/help/attribution/ and http://www.openstreetmap.org/copyright. 
+ 1. **Provide some prominent means to display any applicable map data copyright attribution messages.** For maps which include [OpenStreetMap](http://mapbox.com/about/maps) data, that means you need something which links to the OSM copyright page (see sample app for an example). More details are available at https://www.mapbox.com/help/attribution/ and http://www.openstreetmap.org/copyright. 
 
 ### Understanding the Sample App
 
