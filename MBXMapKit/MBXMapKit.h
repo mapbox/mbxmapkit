@@ -14,14 +14,14 @@
 #import "MBXConstantsAndTypes.h"
 
 
-/** A category on MKMapView adding the ability to set a Mapbox.js style initial center point and zoom */
+/** Category methods on MKMapView. */
 @interface MKMapView (MBXMapView)
 
-/** Convenience method to set an MKMapView's center point and zoom
- @param centerCoordinate The map's desired center coordinate
- @param zoomLevel The map's desired zoom level
- @param animated Whether the transition should be animated
- */
+
+/** Changes the center coordinate and zoom level of the map and optionally animates the change.
+*   @param centerCoordinate The new center coordinate for the map.
+*   @param zoomLevel The new zoom level for the map.
+*   @param animated Specify `YES` if you want the map view to scroll to the new location or `NO` if you want the map to display the new location immediately. */
 - (void)setCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate zoomLevel:(NSUInteger)zoomLevel animated:(BOOL)animated;
 
 @end
