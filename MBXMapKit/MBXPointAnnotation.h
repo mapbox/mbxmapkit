@@ -7,9 +7,17 @@
 
 #import <MapKit/MapKit.h>
 
+/** The MBXPointAnnotation class defines a concrete annotation object located at a specified point and with a custom image. You can use this class, rather than define your own, in situations where all you want to do is associate a point on the map with a title. */
 @interface MBXPointAnnotation : MKShape
 
-/** Marker icon image for setting the `image` property of an MKAnnotationView */
+/** @name Accessing the Annotation’s Location */
+
+/** The coordinate point of the annotation, specified as a latitude and longitude. */
+@property (nonatomic, assign) CLLocationCoordinate2D coordinate;
+
+/** @name Getting and Setting Attributes */
+
+/** The image to show upon display of the corresponding auto-created `MKAnnotationView`. */
 #if TARGET_OS_IPHONE
 @property (nonatomic) UIImage *image;
 #else
