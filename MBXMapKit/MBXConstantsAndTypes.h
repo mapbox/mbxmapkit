@@ -11,19 +11,19 @@
 
 #pragma mark - Constants for the MBXMapKit error domain
 
-/** Error domain for MBXMapKit */
+/** The MBXMapKit error domain. */
 extern NSString *const MBXMapKitErrorDomain;
-/** Received an HTTP status other than 200 */
+/** An HTTP status other than 200 was received. */
 extern NSInteger const MBXMapKitErrorCodeHTTPStatus;
-/** An required key is missing from the metadata or markers JSON dictionary */
+/** A required key is missing from the metadata or markers JSON dictionary. */
 extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
-/** An offline map download was cancelled before completion */
+/** An offline map download was cancelled before completion. */
 extern NSInteger const MBXMapKitErrorCodeDownloadingCanceled;
-/** An offline map database does not contain a requested resource */
+/** An offline map database does not contain a requested resource. */
 extern NSInteger const MBXMapKitErrorCodeOfflineMapHasNoDataForURL;
-/** There was an sqlite error while accessing an offline map database */
+/** There was a SQLite error while accessing an offline map database. */
 extern NSInteger const MBXMapKitErrorCodeOfflineMapSqlite;
-/** There is a network connectivity problem such as airplane mode */
+/** There is a network connectivity problem such as airplane mode. */
 extern NSInteger const MBXMapKitErrorCodeURLSessionConnectivity;
 
 
