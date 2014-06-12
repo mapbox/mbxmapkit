@@ -89,10 +89,9 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 *   @param includeMetadata Whether to load the map's metadata including center coordinate and zoom limits
 *   @param includeMarkers Whether to load the map's markers
 *   @param imageQuality The image quality to use for requesting tiles
-*   @param userAgent The user agent string to use for tile, metadata, and marker requests. Pass `nil` to use MBXMapKit's default user agent string.
 *   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized.
 */
-- (id)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality userAgent:(NSString *)userAgent;
+- (id)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality;
 
 /** Initialize from an `MBXOfflineMapDatabase` object, using its stored values for metadata and markers, if it has any
 *   @param offlineMapDatabase An offline map database object obtained from `MBXOfflineMapDownloader`

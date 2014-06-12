@@ -127,9 +127,6 @@ typedef NS_ENUM(NSUInteger, MBXOfflineMapDownloaderState) {
 /** Whether offline map databases should be excluded from iCloud and iTunes backups. This defaults to `YES`. If you want to make a change, the value will persist across app launches since it changes the offline map folder's resource value on disk. */
 @property (nonatomic) BOOL offlineMapsAreExcludedFromBackup;
 
-/** The user agent string used for network requests. This is initially set to a default value, but you can set a custom value to use your own user agent string. */
-@property (nonatomic) NSString *userAgent;
-
 /** @name Managing the Delegate */
 
 /** The delegate which should receive notifications as the offline map downloader's state and progress change. */

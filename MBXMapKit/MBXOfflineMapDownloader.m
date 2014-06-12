@@ -8,7 +8,6 @@
 #import <sqlite3.h>
 #import "MBXMapKit.h"
 
-
 #pragma mark - Private API for creating verbose errors
 
 @interface NSError (MBXError)
@@ -72,10 +71,6 @@
 #pragma mark -
 
 @implementation MBXOfflineMapDownloader
-
-// As setter and getter are implemented the compiler would omit creating a backing ivar.
-//
-@synthesize userAgent = _userAgent;
 
 #pragma mark - API: Shared downloader singleton
 
@@ -223,7 +218,6 @@
     return self;
 }
 
-
 - (void)setOfflineMapsAreExcludedFromBackup:(BOOL)offlineMapsAreExcludedFromBackup
 {
     NSError *error;
@@ -239,33 +233,6 @@
     }
 }
 
-
-- (void)setUserAgent:(NSString *)userAgent
-{
-    _userAgent = userAgent;
-    [self setUpNewDataSession];
-}
-
-
-- (NSString *)userAgent
-{
-    if (_userAgent)
-    {
-        return _userAgent;
-    }
-    
-    // Provide default userAgent strings
-    //
-#if TARGET_OS_IPHONE
-    _userAgent = [NSString stringWithFormat:@"MBXMapKit (%@/%@) -- offline map", [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion]];
-#else
-    _userAgent = [NSString stringWithFormat:@"MBXMapKit (OS X/%@) -- offline map", [[NSProcessInfo processInfo] operatingSystemVersionString]];
-#endif
-    
-    return _userAgent;
-}
-
-
 - (void)setUpNewDataSession
 {
     // Create a new NSURLDataSession. This is necessary after a call to invalidateAndCancel
@@ -274,7 +241,7 @@
     config.allowsCellularAccess = YES;
     config.HTTPMaximumConnectionsPerHost = 4;
     config.URLCache = [NSURLCache sharedURLCache];
-    config.HTTPAdditionalHeaders = @{ @"User-Agent" : self.userAgent };
+    config.HTTPAdditionalHeaders = @{ @"User-Agent" : [MBXMapKit userAgent] };
     _dataSession = [NSURLSession sessionWithConfiguration:config];
     _activeDataSessionTasks = 0;
 }
@@ -832,6 +799,8 @@
 - (void)beginDownloadingMapID:(NSString *)mapID mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality
 {
     assert(_state == MBXOfflineMapDownloaderStateAvailable);
+
+    [self setUpNewDataSession];
 
     [_backgroundWorkQueue addOperationWithBlock:^{
 
