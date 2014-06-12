@@ -110,9 +110,16 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 - (void)invalidateAndCancel;
 
 
-#pragma mark - Read-only properties to check initialized values
+#pragma mark - Properties to check initialized values
 
 /** @name Getting and Setting Properties */
+
+/** A Boolean value that indicates whether the tile content is fully opaque.
+*
+*   If the tile content you provide can cover the entire drawing area with opaque content, set this property to `YES`. Doing so serves as a hint to the map view that it does not need to draw any additional content underneath your tiles. Set this property to `NO` if your tiles contain any transparency.
+*
+*   The default value for this property is `YES`. */
+@property (nonatomic) BOOL canReplaceMapContent;
 
 /** The map ID this raster tile overlay was initialized with */
 @property (readonly,nonatomic) NSString *mapID;

@@ -176,6 +176,7 @@
     //
     switch(buttonIndex) {
         case 0:
+        {
             // OSM world map
             [self resetMapViewAndRasterOverlayDefaults];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -183,7 +184,9 @@
             _rasterOverlay.delegate = self;
             [_mapView addOverlay:_rasterOverlay];
             break;
+        }
         case 1:
+        {
             // OSM over Apple satellite
             [self resetMapViewAndRasterOverlayDefaults];
             _mapView.mapType = MKMapTypeSatellite;
@@ -193,7 +196,9 @@
             _rasterOverlay.canReplaceMapContent = NO;
             [_mapView addOverlay:_rasterOverlay];
             break;
+        }
         case 2:
+        {
             // Terrain under Apple labels
             [self resetMapViewAndRasterOverlayDefaults];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -201,7 +206,9 @@
             _rasterOverlay.delegate = self;
             [_mapView insertOverlay:_rasterOverlay atIndex:0 level:MKOverlayLevelAboveRoads];
             break;
+        }
         case 3:
+        {
             // Tilemill bounded region (scroll & zoom limited to programmatic control only)
             [self resetMapViewAndRasterOverlayDefaults];
             _mapView.scrollEnabled = NO;
@@ -211,7 +218,9 @@
             _rasterOverlay.delegate = self;
             [_mapView addOverlay:_rasterOverlay];
             break;
+        }
         case 4:
+        {
             // Tilemill region over Apple
             [self resetMapViewAndRasterOverlayDefaults];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -220,7 +229,9 @@
             _rasterOverlay.canReplaceMapContent = NO;
             [_mapView addOverlay:_rasterOverlay];
             break;
+        }
         case 5:
+        {
             // Tilemill transparent over Apple
             [self resetMapViewAndRasterOverlayDefaults];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -229,7 +240,9 @@
             _rasterOverlay.canReplaceMapContent = NO;
             [_mapView addOverlay:_rasterOverlay];
             break;
+        }
         case 6:
+        {
             // Offline Map Downloader
             [self resetMapViewAndRasterOverlayDefaults];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -239,20 +252,37 @@
             _offlineMapDownloadControlsView.hidden = NO;
             [self offlineMapDownloader:[MBXOfflineMapDownloader sharedOfflineMapDownloader] stateChangedTo:[[MBXOfflineMapDownloader sharedOfflineMapDownloader] state]];
             break;
+        }
         case 7:
+        {
             // Offline Map Viewer
             [self resetMapViewAndRasterOverlayDefaults];
             _currentlyViewingAnOfflineMap = YES;
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithOfflineMapDatabase:[MBXOfflineMapDownloader sharedOfflineMapDownloader].offlineMapDatabases.lastObject];
-            _rasterOverlay.delegate = self;
-            _removeOfflineMapsView.hidden = NO;
+            MBXOfflineMapDatabase *offlineMap = [[[MBXOfflineMapDownloader sharedOfflineMapDownloader] offlineMapDatabases] lastObject];
+            if (offlineMap)
+            {
+                _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithOfflineMapDatabase:offlineMap];
+                _rasterOverlay.delegate = self;
+                _removeOfflineMapsView.hidden = NO;
 
-            [_mapView addOverlay:_rasterOverlay];
+                [_mapView addOverlay:_rasterOverlay];
+            }
+            else
+            {
+                [[[UIAlertView alloc] initWithTitle:@"No Offline Maps"
+                                            message:@"No offline maps have been downloaded."
+                                           delegate:nil
+                                  cancelButtonTitle:nil
+                                  otherButtonTitles:@"OK", nil] show];
+            }
             break;
+        }
         case 8:
+        {
             // Show Attribution
             [self attribution:_rasterOverlay.attribution];
             break;
+        }
     }
 }
 
