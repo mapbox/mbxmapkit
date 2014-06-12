@@ -9,7 +9,7 @@ Pod::Spec.new do |m|
   m.license     = 'BSD'
   m.author      = { 'Mapbox' => 'mobile@mapbox.com' }
 
-  m.source = { :git => 'https://github.com/mapbox/mbxmapkit.git', :tag => m.version.to_s }
+  m.source = { :git => 'https://github.com/mapbox/mbxmapkit.git', :branch => 'master' }
 
   m.ios.deployment_target = '7.0'
   m.osx.deployment_target = '10.9'
