@@ -10,7 +10,6 @@
 #import <objc/runtime.h>
 
 NSString *const MBXMapKitVersion = @"0.3.0";
-NSString *const MBXUserAgentDidChangeNotification = @"MBXUserAgentDidChangeNotification";
 const void *MBXUserAgentAssociatedObjectKey = @"MBXUserAgentAssociatedObjectKey";
 
 #pragma mark - Add support to MKMapView for using Mapbox-style center/zoom to configure the visible region
@@ -42,11 +41,6 @@ NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 + (void)setUserAgent:(NSString *)userAgent
 {
     objc_setAssociatedObject([UIApplication sharedApplication], MBXUserAgentAssociatedObjectKey, userAgent, OBJC_ASSOCIATION_COPY);
-
-    dispatch_async(dispatch_get_main_queue(), ^(void)
-    {
-        [[NSNotificationCenter defaultCenter] postNotificationName:MBXUserAgentDidChangeNotification object:nil];
-    });
 }
 
 + (NSString *)userAgent

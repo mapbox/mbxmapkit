@@ -8,8 +8,6 @@
 #import <sqlite3.h>
 #import "MBXMapKit.h"
 
-extern NSString *const MBXUserAgentDidChangeNotification;
-
 #pragma mark - Private API for creating verbose errors
 
 @interface NSError (MBXError)
@@ -105,11 +103,6 @@ extern NSString *const MBXUserAgentDidChangeNotification;
 
     if(self)
     {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(userAgentDidChange:)
-                                                     name:MBXUserAgentDidChangeNotification
-                                                   object:nil];
-
         // Calculate the path in Application Support for storing offline maps
         //
         NSFileManager *fm = [NSFileManager defaultManager];
@@ -225,11 +218,6 @@ extern NSString *const MBXUserAgentDidChangeNotification;
     return self;
 }
 
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
 - (void)setOfflineMapsAreExcludedFromBackup:(BOOL)offlineMapsAreExcludedFromBackup
 {
     NSError *error;
@@ -243,11 +231,6 @@ extern NSString *const MBXUserAgentDidChangeNotification;
     {
         _offlineMapsAreExcludedFromBackup = offlineMapsAreExcludedFromBackup;
     }
-}
-
-- (void)userAgentDidChange:(NSNotification *)notification
-{
-    [self setUpNewDataSession];
 }
 
 - (void)setUpNewDataSession
@@ -816,6 +799,8 @@ extern NSString *const MBXUserAgentDidChangeNotification;
 - (void)beginDownloadingMapID:(NSString *)mapID mapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality
 {
     assert(_state == MBXOfflineMapDownloaderStateAvailable);
+
+    [self setUpNewDataSession];
 
     [_backgroundWorkQueue addOperationWithBlock:^{
 
