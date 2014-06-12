@@ -51,11 +51,11 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 
 /** The `MBXRasterTileOverlay` class provides an `MKTileOverlay` subclass instance which loads Mapbox-hosted custom-styled map tiles, either live from Mapbox.com, or in offline mode using an `MBXOfflineMapDatabase` instance.
 *
-*   You can use an `MBXRasterTileOverlay` instance with an `MKMapView` map as you would any other `MKTileOverlay`. In particular, the use of multiple overlays on an `MKMapView` is supported as long as the proper values of `canReplaceMapContent` are set for each. Also, it is not possible to change the map ID of an overlay once it has been initialized, but you can easily add and remove overlays using the methods provided by `MKMapView`. To avoid a possible crash, be sure to call invalidateAndCancel prior to removing an `MBXRasterTileOverlay` from an `MKMapView`.
+*   You can use an `MBXRasterTileOverlay` instance with an `MKMapView` map as you would any other `MKTileOverlay`. In particular, the use of multiple overlays on an `MKMapView` is supported as long as the proper values of `canReplaceMapContent` are set for each. Also, it is not possible to change the map ID of an overlay once it has been initialized, but you can easily add and remove overlays using the methods provided by `MKMapView`. To avoid a possible crash, be sure to call `invalidateAndCancel` prior to removing an `MBXRasterTileOverlay` from an `MKMapView`.
 *
 *   @warning Please note that you are responsible for getting permission to use the map data, and for ensuring your use adheres to the relevant terms of use.
 *
-*   @bug To avoid crashes in `MKMapView` due to asynchronous completion handlers referencing objects that no longer exist, it is very important to call the invalidateAndCancel method before removing an `MBXRasterTileOverlay` from your `MKMapView`. */
+*   @bug To avoid crashes in `MKMapView` due to asynchronous completion handlers referencing objects that no longer exist, it is very important to call the `invalidateAndCancel` method before removing an `MBXRasterTileOverlay` from your `MKMapView`. */
 @interface MBXRasterTileOverlay : MKTileOverlay
 
 
