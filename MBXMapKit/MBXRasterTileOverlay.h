@@ -107,7 +107,7 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 
 /** @name Invalidating a Tile Overlay */
 
-/** Mark a tile over as invalidated and cancel any asynchronous completion handlers for resource downloads. */
+/** Mark a tile overlay as invalidated and cancel any asynchronous completion handlers for resource downloads. */
 - (void)invalidateAndCancel;
 
 
