@@ -185,6 +185,7 @@
 
 - (id)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase
 {
+    assert(offlineMapDatabase);
     self = [super init];
     if (self)
     {
