@@ -43,7 +43,10 @@ NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 {
     objc_setAssociatedObject([UIApplication sharedApplication], MBXUserAgentAssociatedObjectKey, userAgent, OBJC_ASSOCIATION_COPY);
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:MBXUserAgentDidChangeNotification object:nil];
+    dispatch_async(dispatch_get_main_queue(), ^(void)
+    {
+        [[NSNotificationCenter defaultCenter] postNotificationName:MBXUserAgentDidChangeNotification object:nil];
+    });
 }
 
 + (NSString *)userAgent
