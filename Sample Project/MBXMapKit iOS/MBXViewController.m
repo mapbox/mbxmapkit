@@ -521,7 +521,7 @@
     }
     else
     {
-        [_mapView setCenterCoordinate:overlay.center zoomLevel:overlay.centerZoom animated:NO];
+        [_mapView mbx_setCenterCoordinate:overlay.center zoomLevel:overlay.centerZoom animated:NO];
     }
 }
 
