@@ -5,6 +5,12 @@
 //  Copyright (c) 2014 Mapbox. All rights reserved.
 //
 
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#else
+#import <AppKit/AppKit.h>
+#endif
+
 #import "MBXMapKit.h"
 
 #import <objc/runtime.h>
@@ -40,12 +46,20 @@ NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 
 + (void)setUserAgent:(NSString *)userAgent
 {
+#if TARGET_OS_IPHONE
     objc_setAssociatedObject([UIApplication sharedApplication], MBXUserAgentAssociatedObjectKey, userAgent, OBJC_ASSOCIATION_COPY);
+#else
+    objc_setAssociatedObject([NSApplication sharedApplication], MBXUserAgentAssociatedObjectKey, userAgent, OBJC_ASSOCIATION_COPY);
+#endif
 }
 
 + (NSString *)userAgent
 {
+#if TARGET_OS_IPHONE
     NSString *userAgent = objc_getAssociatedObject([UIApplication sharedApplication], MBXUserAgentAssociatedObjectKey);
+#else
+    NSString *userAgent = objc_getAssociatedObject([NSApplication sharedApplication], MBXUserAgentAssociatedObjectKey);
+#endif
 
     if ( ! userAgent)
     {

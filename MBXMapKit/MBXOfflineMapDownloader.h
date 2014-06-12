@@ -5,6 +5,8 @@
 //  Copyright (c) 2014 Mapbox. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+#import <MapKit/MapKit.h>
 
 #pragma mark - Task states
 

@@ -5,19 +5,19 @@
 //  Copyright (c) 2014 Mapbox. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
+
 #import "MBXConstantsAndTypes.h"
 
 @class MBXRasterTileOverlay;
 @class MBXOfflineMapDatabase;
-
 
 #pragma mark - Constants for the MBXMapKit error domain
 
 extern NSString *const MBXMapKitErrorDomain;
 extern NSInteger const MBXMapKitErrorCodeHTTPStatus;
 extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
-
 
 #pragma mark - Delegate callbacks for asynchronous loading of map metadata and markers
 

@@ -5,10 +5,9 @@
 //  Copyright (c) 2014 Mapbox. All rights reserved.
 //
 
-#import <sqlite3.h>
-#import <MapKit/MapKit.h>
 #import "MBXMapKit.h"
 
+#import <sqlite3.h>
 
 #pragma mark - Private API for creating verbose errors
 

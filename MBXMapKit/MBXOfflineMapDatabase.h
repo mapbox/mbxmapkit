@@ -5,9 +5,10 @@
 //  Copyright (c) 2014 Mapbox. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
-#import "MBXConstantsAndTypes.h"
 
+#import "MBXConstantsAndTypes.h"
 
 #pragma mark -
 

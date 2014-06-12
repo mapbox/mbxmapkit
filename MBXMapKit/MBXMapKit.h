@@ -7,11 +7,12 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
+
+#import "MBXConstantsAndTypes.h"
 #import "MBXOfflineMapDatabase.h"
 #import "MBXOfflineMapDownloader.h"
 #import "MBXPointAnnotation.h"
 #import "MBXRasterTileOverlay.h"
-#import "MBXConstantsAndTypes.h"
 
 #pragma mark - MKMapView category
 
