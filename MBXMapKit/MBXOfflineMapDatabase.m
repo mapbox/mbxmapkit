@@ -14,11 +14,11 @@
 
 @interface NSError (MBXError)
 
-+ (NSError *)mbxErrorWithCode:(NSInteger)code reason:(NSString *)reason description:(NSString *)description;
++ (NSError *)mbx_errorWithCode:(NSInteger)code reason:(NSString *)reason description:(NSString *)description;
 
-+ (NSError *)mbxErrorCannotOpenOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
++ (NSError *)mbx_errorCannotOpenOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
 
-+ (NSError *)mbxErrorQueryFailedForOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
++ (NSError *)mbx_errorQueryFailedForOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
 
 @end
 
@@ -117,7 +117,7 @@
     if (!data && error)
     {
         NSString *reason = [NSString stringWithFormat:@"The offline database has no data for %@",[url absoluteString]];
-        *error = [NSError mbxErrorWithCode:MBXMapKitErrorCodeOfflineMapHasNoDataForURL reason:reason description:@"No offline data for key error"];
+        *error = [NSError mbx_errorWithCode:MBXMapKitErrorCodeOfflineMapHasNoDataForURL reason:reason description:@"No offline data for key error"];
     }
     return data;
 }

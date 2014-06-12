@@ -12,11 +12,11 @@
 
 @interface NSError (MBXError)
 
-+ (NSError *)mbxErrorWithCode:(NSInteger)code reason:(NSString *)reason description:(NSString *)description;
++ (NSError *)mbx_errorWithCode:(NSInteger)code reason:(NSString *)reason description:(NSString *)description;
 
-+ (NSError *)mbxErrorCannotOpenOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
++ (NSError *)mbx_errorCannotOpenOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
 
-+ (NSError *)mbxErrorQueryFailedForOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
++ (NSError *)mbx_errorQueryFailedForOfflineMapDatabase:(NSString *)path sqliteError:(const char *)sqliteError;
 
 @end
 
@@ -654,7 +654,7 @@
     //
     NSString *reason = [NSString stringWithFormat:@"HTTP status %li was received", (long)((NSHTTPURLResponse *)response).statusCode];
 
-    return [NSError mbxErrorWithCode:MBXMapKitErrorCodeHTTPStatus reason:reason description:@"HTTP status error"];
+    return [NSError mbx_errorWithCode:MBXMapKitErrorCodeHTTPStatus reason:reason description:@"HTTP status error"];
 }
 
 
@@ -664,7 +664,7 @@
     //
     NSString *reason = [NSString stringWithFormat:@"The %@ dictionary is missing important keys", dictionaryName];
 
-    return [NSError mbxErrorWithCode:MBXMapKitErrorCodeDictionaryMissingKeys reason:reason description:@"Dictionary missing keys error"];
+    return [NSError mbx_errorWithCode:MBXMapKitErrorCodeDictionaryMissingKeys reason:reason description:@"Dictionary missing keys error"];
 }
 
 
