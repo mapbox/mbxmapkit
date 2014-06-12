@@ -26,7 +26,7 @@ typedef NS_ENUM(NSUInteger, MBXOfflineMapDownloaderState) {
 @class MBXOfflineMapDownloader;
 @class MBXOfflineMapDatabase;
 
-/** The MBXOfflineMapDownloaderDelegate protocol provides notifications of download progress and state machine transitions for the shared offline map downloader. */
+/** The `MBXOfflineMapDownloaderDelegate` protocol provides notifications of download progress and state machine transitions for the shared offline map downloader. */
 @protocol MBXOfflineMapDownloaderDelegate <NSObject>
 
 @optional
@@ -64,7 +64,7 @@ typedef NS_ENUM(NSUInteger, MBXOfflineMapDownloaderState) {
 *
 *   If the error parameter is `nil`, the job completed successfully. Otherwise, a non-recoverable error was encountered. 
 *   @param offlineMapDownloader The offline map downloader which finished a job.
-*   @param offlineMapDatabase An offline map database which you can use to create an MBXRasterTileOverlay. This paramtere may be `nil` if there was an error.
+*   @param offlineMapDatabase An offline map database which you can use to create an `MBXRasterTileOverlay`. This paramtere may be `nil` if there was an error.
 *   @param error The error which stopped the offline map download job. For successful completion, this parameter will be `nil`. */
 - (void)offlineMapDownloader:(MBXOfflineMapDownloader *)offlineMapDownloader didCompleteOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase withError:(NSError *)error;
 
@@ -73,9 +73,9 @@ typedef NS_ENUM(NSUInteger, MBXOfflineMapDownloaderState) {
 
 #pragma mark -
 
-/** MBXOfflineMapDownloader is a class for managing the downloading of offline maps.
+/** `MBXOfflineMapDownloader` is a class for managing the downloading of offline maps.
 *
-*   A single, shared instance of MBXOfflineMapDownloader exists and should be accessed with the sharedOfflineMapDownloader class method. */
+*   A single, shared instance of `MBXOfflineMapDownloader` exists and should be accessed with the `sharedOfflineMapDownloader` class method. */
 @interface MBXOfflineMapDownloader : NSObject
 
 
@@ -121,7 +121,7 @@ typedef NS_ENUM(NSUInteger, MBXOfflineMapDownloaderState) {
 /** If a download job is running or suspended, the number of files which still need to be written to finish the job. */
 @property (readonly,nonatomic) NSUInteger totalFilesExpectedToWrite;
 
-/** An array of MBXOfflineMapDatabase objects representing all completed offline map databases on disk. This is designed, in combination with the properties provided by MBXOfflineMapDatabase, to allow enumeration and management of the maps which are available on disk. */
+/** An array of `MBXOfflineMapDatabase` objects representing all completed offline map databases on disk. This is designed, in combination with the properties provided by `MBXOfflineMapDatabase`, to allow enumeration and management of the maps which are available on disk. */
 @property (readonly, nonatomic) NSArray *offlineMapDatabases;
 
 /** Whether offline map databases should be excluded from iCloud and iTunes backups. This defaults to `YES`. If you want to make a change, the value will persist across app launches since it changes the offline map folder's resource value on disk. */

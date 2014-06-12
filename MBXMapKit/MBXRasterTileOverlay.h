@@ -21,14 +21,14 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 
 #pragma mark - Delegate callbacks for asynchronous loading of map metadata and markers
 
-/** The MBXRasterTileOverlayDelegate protocol provides notifications about asynchronous loading of map metadata and markers for raster image-based maps when using the MBXRasterTileOverlay class. */
+/** The `MBXRasterTileOverlayDelegate` protocol provides notifications about asynchronous loading of map metadata and markers for raster image-based maps when using the `MBXRasterTileOverlay` class. */
 @protocol MBXRasterTileOverlayDelegate <NSObject>
 
 @optional
 
 /** @name Observing Download Completion */
 
-/** Notifies the delegate that asynchronous loading of the maps's metadata JSON is complete. This is designed to facilitate setting an MKMapView's center point, initial zoom, and zoom limits.
+/** Notifies the delegate that asynchronous loading of the maps's metadata JSON is complete. This is designed to facilitate setting an `MKMapView`'s center point, initial zoom, and zoom limits.
 *   @param overlay The raster tile overlay which has loaded its metadata JSON.
 *   @param metadata The metadata JSON dictionary. This value may be `nil` if there was an error.
 *   @param error The error encountered. This is `nil` unless there was an error. */
@@ -36,7 +36,7 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 
 /** Notifies the delegate that asynchronous loading of the maps's marker JSON and associated marker icons are complete. This is designed to facilitate adding the array of markers to an `MKMapView`.
 *   @param overlay The raster tile overlay which has loaded its markers.
-*   @param markers An array of MBXPointAnnotation objects created by parsing the map's marker JSON and loading any referenced marker icons from the Mapbox API. This can be `nil` if the map has no markers or if there was an error.
+*   @param markers An array of `MBXPointAnnotation` objects created by parsing the map's marker JSON and loading any referenced marker icons from the Mapbox API. This can be `nil` if the map has no markers or if there was an error.
 *   @param error The error encountered. This is `nil` unless there was an error. */
 - (void)tileOverlay:(MBXRasterTileOverlay *)overlay didLoadMarkers:(NSArray *)markers withError:(NSError *)error;
 
@@ -49,13 +49,13 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 
 #pragma mark -
 
-/** The MBXRasterTileOverlay class provides an `MKTileOverlay` subclass instance which loads Mapbox-hosted custom-styled map tiles, either live from Mapbox.com, or in offline mode using an MBXOfflineMapDatabase instance. 
+/** The `MBXRasterTileOverlay` class provides an `MKTileOverlay` subclass instance which loads Mapbox-hosted custom-styled map tiles, either live from Mapbox.com, or in offline mode using an `MBXOfflineMapDatabase` instance.
 *
-*   You can use an MBXRasterTileOverlay instance with an `MKMapView` map as you would any other `MKTileOverlay`. In particular, the use of multiple overlays on an `MKMapView` is supported as long as the proper values of `canReplaceMapContent` are set for each. Also, it is not possible to change the map ID of an overlay once it has been initialized, but you can easily add and remove overlays using the methods provided by `MKMapView`. To avoid a possible crash, be sure to call invalidateAndCancel prior to removing an MBXRasterTileOverlay from an `MKMapView`.
+*   You can use an `MBXRasterTileOverlay` instance with an `MKMapView` map as you would any other `MKTileOverlay`. In particular, the use of multiple overlays on an `MKMapView` is supported as long as the proper values of `canReplaceMapContent` are set for each. Also, it is not possible to change the map ID of an overlay once it has been initialized, but you can easily add and remove overlays using the methods provided by `MKMapView`. To avoid a possible crash, be sure to call invalidateAndCancel prior to removing an `MBXRasterTileOverlay` from an `MKMapView`.
 *
 *   @warning Please note that you are responsible for getting permission to use the map data, and for ensuring your use adheres to the relevant terms of use.
 *
-*   @bug To avoid crashes in `MKMapView` due to asynchronous completion handlers referencing objects that no longer exist, it is very important to call the invalidateAndCancel method before removing an MBXRasterTileOverlay from your `MKMapView`. */
+*   @bug To avoid crashes in `MKMapView` due to asynchronous completion handlers referencing objects that no longer exist, it is very important to call the invalidateAndCancel method before removing an `MBXRasterTileOverlay` from your `MKMapView`. */
 @interface MBXRasterTileOverlay : MKTileOverlay
 
 
@@ -121,7 +121,7 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 @property (readonly,nonatomic) CLLocationCoordinate2D center;
 /** The map's initial zoom level as parsed from the metadata JSON (see tileOverlay:didLoadMetadata:withError:) */
 @property (readonly,nonatomic) NSInteger centerZoom;
-/** The map's array of MBXPointAnnotation marker annotations as parsed from the marker JSON (see tileOverlay:didLoadMarkers:withError:)*/
+/** The map's array of `MBXPointAnnotation` marker annotations as parsed from the marker JSON (see tileOverlay:didLoadMarkers:withError:)*/
 @property (readonly,nonatomic) NSArray *markers;
 /** A default plain text attribution message suitable for displaying in an alert dialog (see metadata dictionary for an HTML string) */
 @property (readonly,nonatomic) NSString *attribution;

@@ -14,7 +14,7 @@
 #import "MBXConstantsAndTypes.h"
 
 
-/** Category methods on MKMapView. */
+/** Category methods on `MKMapView`. */
 @interface MKMapView (MBXMapView)
 
 

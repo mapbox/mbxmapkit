@@ -11,9 +11,9 @@
 
 #pragma mark -
 
-/** An instance of the MBXOfflineMapDatabase class represents a store of offline map data, including map tiles, JSON metadata, and marker images. 
+/** An instance of the `MBXOfflineMapDatabase` class represents a store of offline map data, including map tiles, JSON metadata, and marker images.
 *
-*   @warning The MBXOfflineMapDatabase class is not meant to be instantiated directly. Instead, instances are created and managed by the shared MBXOfflineMapDownloader instance. */
+*   @warning The `MBXOfflineMapDatabase` class is not meant to be instantiated directly. Instead, instances are created and managed by the shared `MBXOfflineMapDownloader` instance. */
 @interface MBXOfflineMapDatabase : NSObject
 
 
@@ -42,7 +42,7 @@
 /** The maximum zoom limit which was used to initiate the downloading of the tiles in this offline map database. */
 @property (readonly, nonatomic) NSInteger maximumZ;
 
-/** Whether this offline map database has been invalidated. This is to help prevent the completion handlers in MBXRasterTileOverlay from causing problems after overlay layers are removed from an `MKMapView`. */
+/** Whether this offline map database has been invalidated. This is to help prevent the completion handlers in `MBXRasterTileOverlay` from causing problems after overlay layers are removed from an `MKMapView`. */
 @property (readonly, nonatomic, getter=isInvalid) BOOL invalid;
 
 - (instancetype)init __attribute__((unavailable("To instantiate MBXOfflineMapDatabase objects, please use the capabilities provided by MBXOfflineMapDownloader.")));
