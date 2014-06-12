@@ -64,40 +64,40 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 /** @name Initializing a Tile Overlay */
 
 /** Initialize a map view with a given Mapbox map ID.
- *
- *   By default, `canReplaceMapContent` will be set to `YES`, which means Apple's maps will be hidden, and if the map ID represents a map with partial-world coverage, areas for which the map has no tiles will appear blank. If you have a full-world map with transparency and wish to show Apple's maps below it, set `canReplaceMapContent` to `NO` before adding your overlay to an `MKMapView`.
- *
- *   Also by default, asynchronous network requests will be started to load the metadata (center coordinate, zoom, etc) and markers associated with your map ID, if there are any. To receive notification when the asynchronous requests complete, set a delegate which implements `MBXRasterTileOverlayDelegate`.
- *
- *   In order for the tile overlay to appear on your map, your `MKMapView`'s delegate must implement `mapView:rendererForOverlay:` from the `MKMapViewDelegate` protocol. In order for markers to appear on your map, you must also provide an implementation for `mapView:viewForAnnotation:` which returns an `MKAnnotationView` initialized from an `MBXPointAnnotation`, including the image property.
- *
- *   @param mapID The Mapbox map ID.
- *   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized.
- */
+*
+*   By default, `canReplaceMapContent` will be set to `YES`, which means Apple's maps will be hidden, and if the map ID represents a map with partial-world coverage, areas for which the map has no tiles will appear blank. If you have a full-world map with transparency and wish to show Apple's maps below it, set `canReplaceMapContent` to `NO` before adding your overlay to an `MKMapView`.
+*
+*   Also by default, asynchronous network requests will be started to load the metadata (center coordinate, zoom, etc) and markers associated with your map ID, if there are any. To receive notification when the asynchronous requests complete, set a delegate which implements `MBXRasterTileOverlayDelegate`.
+*
+*   In order for the tile overlay to appear on your map, your `MKMapView`'s delegate must implement `mapView:rendererForOverlay:` from the `MKMapViewDelegate` protocol. In order for markers to appear on your map, you must also provide an implementation for `mapView:viewForAnnotation:` which returns an `MKAnnotationView` initialized from an `MBXPointAnnotation`, including the image property.
+*
+*   @param mapID The Mapbox map ID.
+*   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized.
+*/
 - (id)initWithMapID:(NSString *)mapID;
 
 /** Initialize a map view with a given Mapbox map ID while specifying whether to load metadata and markers.
- *   @param mapID The Mapbox map ID.
- *   @param includeMetadata Whether to load the map's metadata including center coordinate and zoom limits
- *   @param includeMarkers Whether to load the map's markers
- *   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized.
- */
+*   @param mapID The Mapbox map ID.
+*   @param includeMetadata Whether to load the map's metadata including center coordinate and zoom limits
+*   @param includeMarkers Whether to load the map's markers
+*   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized.
+*/
 - (id)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers;
 
 /** Initialize a map view with a given Mapbox map ID while specifying whether to load metadata, whether to load markers, which image quality to request, and which user agent string to use.
- *   @param mapID The Mapbox map ID.
- *   @param includeMetadata Whether to load the map's metadata including center coordinate and zoom limits
- *   @param includeMarkers Whether to load the map's markers
- *   @param imageQuality The image quality to use for requesting tiles
- *   @param userAgent The user agent string to use for tile, metadata, and marker requests. Pass `nil` to use MBXMapKit's default user agent string.
- *   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized.
- */
+*   @param mapID The Mapbox map ID.
+*   @param includeMetadata Whether to load the map's metadata including center coordinate and zoom limits
+*   @param includeMarkers Whether to load the map's markers
+*   @param imageQuality The image quality to use for requesting tiles
+*   @param userAgent The user agent string to use for tile, metadata, and marker requests. Pass `nil` to use MBXMapKit's default user agent string.
+*   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized.
+*/
 - (id)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality userAgent:(NSString *)userAgent;
 
 /** Initialize from an `MBXOfflineMapDatabase` object, using its stored values for metadata and markers, if it has any
- *   @param offlineMapDatabase An offline map database object obtained from `MBXOfflineMapDownloader`
- *   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized.
- */
+*   @param offlineMapDatabase An offline map database object obtained from `MBXOfflineMapDownloader`
+*   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized.
+*/
 - (id)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase;
 
 /** @name Accessing the Delegate */
