@@ -1,5 +1,5 @@
 //
-//  MBXError.h
+//  MBXMapKit.h
 //  MBXMapKit
 //
 //  Copyright (c) 2014 Mapbox. All rights reserved.
