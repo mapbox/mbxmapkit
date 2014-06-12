@@ -37,6 +37,7 @@
 @property (readonly, nonatomic) NSString *path;
 
 - (id)initWithContentsOfFile:(NSString *)path;
+- (void)invalidate;
 
 @end
 

@@ -36,8 +36,6 @@
 /** Whether this offline map database has been invalidated. This is to help prevent the completion handler in MBXRasterTileOverlay's  tileAtPath:result: from causing problems when overlay layers are removed from an MKMapView. */
 @property (readonly, nonatomic, getter=isInvalid) BOOL invalid;
 
-/** Mark this offline map object as no longer valid to prevent bad things from happening. This is designed to prevent bad things from happening with MBXRasterTileOverlay and MKMapView when MBXOfflineMapDownloader's removeOfflineMapDatabase: is invoked to remove an offline map's backing database from disk storage. */
-- (void)invalidate;
 
 /** Please use MBXOfflineMapDownloader to manage MBXOfflineMapDatabase objects. */
 - (instancetype)init __attribute__((unavailable("To instantiate MBXOfflineMapDatabase objects, please use the capabilities provided by MBXOfflineMapDownloader.")));
