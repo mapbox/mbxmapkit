@@ -13,10 +13,10 @@
 #import "MBXRasterTileOverlay.h"
 #import "MBXConstantsAndTypes.h"
 
+/** This category adds methods to the MapKit framework’s `MKMapView` class. */
+@interface MKMapView (MBXMapKit)
 
-/** Category methods on `MKMapView`. */
-@interface MKMapView (MBXMapView)
-
+/** @name Manipulating the Visible Portion of the Map */
 
 /** Changes the center coordinate and zoom level of the map and optionally animates the change.
 *   @param centerCoordinate The new center coordinate for the map.
