@@ -15,5 +15,5 @@
     - Run `git submodule update` to bring the CocoaPods working copy up to date. 
     - Run `cd CocoaPods` and ensure that you are on an up-to-date `master` branch. 
     - Copy `MBXMapKit.podspec` from `master` into a new folder in `./MBXMapKit/x.y.z` according to the version. 
-        - The remote spec shoudl reference `:tag => m.version.to_s`, not a branch. 
+        - The remote spec should reference `:tag => m.version.to_s`, not a branch. 
     - Add the new folder and file and commit it to CocoaPods to publish the release. 
