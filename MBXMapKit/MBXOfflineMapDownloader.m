@@ -8,6 +8,7 @@
 #import <sqlite3.h>
 #import "MBXMapKit.h"
 
+extern NSString *const MBXUserAgentDidChangeNotification;
 
 #pragma mark - Private API for creating verbose errors
 
@@ -73,10 +74,6 @@
 
 @implementation MBXOfflineMapDownloader
 
-// As setter and getter are implemented the compiler would omit creating a backing ivar.
-//
-@synthesize userAgent = _userAgent;
-
 #pragma mark - API: Shared downloader singleton
 
 + (MBXOfflineMapDownloader *)sharedOfflineMapDownloader
@@ -108,6 +105,11 @@
 
     if(self)
     {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(userAgentDidChange:)
+                                                     name:MBXUserAgentDidChangeNotification
+                                                   object:nil];
+
         // Calculate the path in Application Support for storing offline maps
         //
         NSFileManager *fm = [NSFileManager defaultManager];
@@ -223,6 +225,10 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (void)setOfflineMapsAreExcludedFromBackup:(BOOL)offlineMapsAreExcludedFromBackup
 {
@@ -239,32 +245,10 @@
     }
 }
 
-
-- (void)setUserAgent:(NSString *)userAgent
+- (void)userAgentDidChange:(NSNotification *)notification
 {
-    _userAgent = userAgent;
     [self setUpNewDataSession];
 }
-
-
-- (NSString *)userAgent
-{
-    if (_userAgent)
-    {
-        return _userAgent;
-    }
-    
-    // Provide default userAgent strings
-    //
-#if TARGET_OS_IPHONE
-    _userAgent = [NSString stringWithFormat:@"MBXMapKit (%@/%@) -- offline map", [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion]];
-#else
-    _userAgent = [NSString stringWithFormat:@"MBXMapKit (OS X/%@) -- offline map", [[NSProcessInfo processInfo] operatingSystemVersionString]];
-#endif
-    
-    return _userAgent;
-}
-
 
 - (void)setUpNewDataSession
 {
@@ -274,7 +258,7 @@
     config.allowsCellularAccess = YES;
     config.HTTPMaximumConnectionsPerHost = 4;
     config.URLCache = [NSURLCache sharedURLCache];
-    config.HTTPAdditionalHeaders = @{ @"User-Agent" : self.userAgent };
+    config.HTTPAdditionalHeaders = @{ @"User-Agent" : [MBXMapKit userAgent] };
     _dataSession = [NSURLSession sessionWithConfiguration:config];
     _activeDataSessionTasks = 0;
 }

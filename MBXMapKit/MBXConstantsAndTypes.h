@@ -8,6 +8,9 @@
 #ifndef MBXMapKit_MBXConstantsAndTypes_h
 #define MBXMapKit_MBXConstantsAndTypes_h
 
+#pragma mark - Library version
+
+extern NSString *const MBXMapKitVersion;
 
 #pragma mark - Constants for the MBXMapKit error domain
 
@@ -25,7 +28,6 @@ extern NSInteger const MBXMapKitErrorCodeOfflineMapHasNoDataForURL;
 extern NSInteger const MBXMapKitErrorCodeOfflineMapSqlite;
 /** There is a network connectivity problem such as airplane mode. */
 extern NSInteger const MBXMapKitErrorCodeURLSessionConnectivity;
-
 
 #pragma mark - Image quality constants
 
@@ -48,7 +50,5 @@ typedef NS_ENUM(NSUInteger, MBXRasterImageQuality) {
     /** 90% quality JPEG. */
     MBXRasterImageQualityJPEG90 = 7
 };
-
-
 
 #endif

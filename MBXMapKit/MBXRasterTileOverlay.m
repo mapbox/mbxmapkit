@@ -7,7 +7,6 @@
 
 #import "MBXMapKit.h"
 
-
 #pragma mark - Private API for creating verbose errors
 
 @interface NSError (MBXError)
@@ -156,7 +155,7 @@
     self = [super init];
     if (self)
     {
-        [self setupMapID:mapID includeMetadata:YES includeMarkers:YES imageQuality:MBXRasterImageQualityFull userAgent:nil];
+        [self setupMapID:mapID includeMetadata:YES includeMarkers:YES imageQuality:MBXRasterImageQualityFull];
     }
     return self;
 }
@@ -167,18 +166,18 @@
     self = [super init];
     if (self)
     {
-        [self setupMapID:mapID includeMetadata:includeMetadata includeMarkers:includeMarkers imageQuality:MBXRasterImageQualityFull userAgent:nil];
+        [self setupMapID:mapID includeMetadata:includeMetadata includeMarkers:includeMarkers imageQuality:MBXRasterImageQualityFull];
     }
     return self;
 }
 
 
-- (id)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality userAgent:(NSString *)userAgent
+- (id)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality
 {
     self = [super init];
     if (self)
     {
-        [self setupMapID:mapID includeMetadata:includeMetadata includeMarkers:includeMarkers imageQuality:imageQuality userAgent:userAgent];
+        [self setupMapID:mapID includeMetadata:includeMetadata includeMarkers:includeMarkers imageQuality:imageQuality];
     }
     return self;
 }
@@ -189,35 +188,20 @@
     if (self)
     {
         _offlineMapDatabase = offlineMapDatabase;
-        [self setupMapID:offlineMapDatabase.mapID includeMetadata:offlineMapDatabase.includesMetadata includeMarkers:offlineMapDatabase.includesMarkers imageQuality:offlineMapDatabase.imageQuality userAgent:nil];
+        [self setupMapID:offlineMapDatabase.mapID includeMetadata:offlineMapDatabase.includesMetadata includeMarkers:offlineMapDatabase.includesMarkers imageQuality:offlineMapDatabase.imageQuality];
     }
     return self;
 }
 
-
-- (void)setupMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality userAgent:(NSString *)userAgent
+- (void)setupMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality
 {
     // Configure the NSURLSessions
     //
-    NSString *configuredUserAgent;
-    if(userAgent)
-    {
-        configuredUserAgent = userAgent;
-    }
-    else
-    {
-#if TARGET_OS_IPHONE
-    configuredUserAgent = [NSString stringWithFormat:@"MBXMapKit (%@/%@)", [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion]];
-#else
-    configuredUserAgent = [NSString stringWithFormat:@"MBXMapKit (OS X/%@)", [[NSProcessInfo processInfo] operatingSystemVersionString]];
-#endif
-    }
-
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     config.allowsCellularAccess = YES;
     config.HTTPMaximumConnectionsPerHost = 16;
     config.URLCache = [NSURLCache sharedURLCache];
-    config.HTTPAdditionalHeaders = @{ @"User-Agent" : configuredUserAgent };
+    config.HTTPAdditionalHeaders = @{ @"User-Agent" : [MBXMapKit userAgent] };
     _dataSession = [NSURLSession sessionWithConfiguration:config];
 
 

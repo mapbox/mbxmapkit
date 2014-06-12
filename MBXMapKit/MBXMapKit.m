@@ -7,6 +7,11 @@
 
 #import "MBXMapKit.h"
 
+#import <objc/runtime.h>
+
+NSString *const MBXMapKitVersion = @"0.3.0";
+NSString *const MBXUserAgentDidChangeNotification = @"MBXUserAgentDidChangeNotification";
+const void *MBXUserAgentAssociatedObjectKey = @"MBXUserAgentAssociatedObjectKey";
 
 #pragma mark - Add support to MKMapView for using Mapbox-style center/zoom to configure the visible region
 
@@ -20,7 +25,6 @@
 
 @end
 
-
 #pragma mark - Constants for the MBXMapKit error domain
 
 NSString *const MBXMapKitErrorDomain = @"MBXMapKitErrorDomain";
@@ -31,6 +35,34 @@ NSInteger const MBXMapKitErrorCodeOfflineMapHasNoDataForURL = -4;
 NSInteger const MBXMapKitErrorCodeOfflineMapSqlite = -5;
 NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 
+#pragma mark - Global configuration
+
+@implementation MBXMapKit
+
++ (void)setUserAgent:(NSString *)userAgent
+{
+    objc_setAssociatedObject([UIApplication sharedApplication], MBXUserAgentAssociatedObjectKey, userAgent, OBJC_ASSOCIATION_COPY);
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:MBXUserAgentDidChangeNotification object:nil];
+}
+
++ (NSString *)userAgent
+{
+    NSString *userAgent = objc_getAssociatedObject([UIApplication sharedApplication], MBXUserAgentAssociatedObjectKey);
+
+    if ( ! userAgent)
+    {
+#if TARGET_OS_IPHONE
+        userAgent = [NSString stringWithFormat:@"MBXMapKit %@ (%@/%@)", MBXMapKitVersion, [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion]];
+#else
+        userAgent = [NSString stringWithFormat:@"MBXMapKit %@ (OS X/%@)", MBXMapKitVersion, [[NSProcessInfo processInfo] operatingSystemVersionString]];
+#endif
+    }
+
+    return userAgent;
+}
+
+@end
 
 #pragma mark - Helpers for creating verbose errors
 
