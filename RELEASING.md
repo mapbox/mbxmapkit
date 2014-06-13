@@ -5,6 +5,7 @@
 1. Switch to `master` at a point where the release code is ready to go. 
 1. Update `MBXMapKit.podspec` with the version and any other necessary changes. 
     - The local spec should reference `:branch => 'master'`, not a tag. 
+    - Be sure to lint the spec with `pod spec lint`. 
 1. Update the value of `MBXMapKitVersion` in `MBXMapKit.m` with the version. 
 1. Update `CHANGELOG.md` with change notes for the version. 
 1. Update `README.md` as appropriate. Note that it references the screenshot mentioned above. 
@@ -16,4 +17,5 @@
     - Run `cd CocoaPods` and ensure that you are on an up-to-date `master` branch. 
     - Copy `MBXMapKit.podspec` from `master` into a new folder in `./MBXMapKit/x.y.z` according to the version. 
         - The remote spec should reference `:tag => m.version.to_s`, not a branch. 
+        - Be sure to again lint the spec with `pod spec lint`. 
     - Add the new folder and file and commit it to CocoaPods to publish the release. 
