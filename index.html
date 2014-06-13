@@ -3,6 +3,7 @@ layout: pages
 category: overview
 title: MBXMapKit
 navigation:
+- title: Why use MBXMapKit?
 - title: Installation
   items:
   - text: CocoaPods
@@ -26,7 +27,7 @@ navigation:
 
   <div class='z1 contain'>
     <div class='pad2y center'>
-      <h2>Mapbox to iOS 7 with One Line of Code</h2>
+      <h2>Raster maps for iOS 7+</h2>
     </div>
 
     <div class='wireframe z1 contain clip mobile-splash col4 margin4'>
@@ -41,7 +42,7 @@ navigation:
 
 <div class='space-bottom2 pad2 quiet keyline-bottom keyline-left keyline-right fill-white prose round-bottom center clearfix'>
   <div class='col10 margin1'>
-    <p>A small <a href='https://github.com/mapbox/mbxmapkit/blob/master/CHANGELOG.md'>open source</a> library for building map applications on the Apple platform. Provides highly flexible visual styling &amp; offline use for iPhone, iPad, and Mac devices. </p>
+    <p>A small <a href='https://github.com/mapbox/mbxmapkit/blob/master/CHANGELOG.md'>open source</a> library which adds Mapbox raster map support to apps built with the MapKit framework on iOS 7+.</p>
   </div>
 </div>
 
@@ -61,7 +62,7 @@ var map = L.mapbox.map('map', 'examples.map-i87786ca', {
       --><a class='pad1x inline round-right keyline-left quiet dark fill-darken2' href='https://github.com/mapbox/mbxmapkit/releases'>{{site.version}}</a>
     </div>
 
-    Installation <em class='quiet'>Supports iOS versions 7.0+ &amp; OSX versions 10.9+</em>
+    Installation <em class='quiet'>Supports iOS versions 7.0+</em>
   </div>
   <nav class='fill-white round-bottom'>
     <div id='cocoapods' class='install pad1y pad2x keyline-bottom contain'>
@@ -99,6 +100,25 @@ var map = L.mapbox.map('map', 'examples.map-i87786ca', {
     </div>
   </nav>
 </div>
+
+<div class='prose pad2 doc round fill-white keyline-all space-bottom'>
+  <h2 id='why_use_mbxmapkit'>Why use MBXMapKit?</h2>
+  <p>As part of iOS 7, Apple added the ability to use custom tile overlays with the MapKit framework. MBXMapKit is a lightweight library which leverages MapKit's tile overlay capabilities to help you build awesome apps with Mapbox raster maps. An important thing to understand is that you aren't limited to just picking "Do I want Mapbox Streets or Mapbox Satellite?". The mapbox.com map editor and TileMill provide many options for custom styling and incorporating your own data into a maps hosted by Mapbox.</p>
+
+<p>Here are some examples of what you can do with MBXMapKit:</p>
+
+<ul>
+
+<li>Use a custom styled Mapbox world basemap instead of Apple's basemap. If you've added POI markers to your map with the mapbox.com map editor, MBXMapKit can fetch the marker metadata and icons and prepare custom point annotations for you.</li>
+
+<li>Create a transparent regional overlay (i.e. bring your own data) in TileMill, upload it to mapbox.com, then display it as a raster tile overlay on top of the basemap of your choice.</li>
+
+<li>Use MBXMapKit's offline map downloader to save regions from Mapbox maps onto your local storage for later use when a reliable network connection is not available.</li>
+
+<li>Use MBXMapKit tile overlays in combination with annotations and overlays from other sources, such as your own API. As of version 0.3.0, MBXMapKit is very careful not to disrupt  MapKit's normal functionality, so in general, what works with MapKit on its own should also work when you add MBXMapKit to the mix. If you find that isn't the case, bug reports are welcome.</li>
+</ul>
+</div>
+
 
 <div class='prose pad2 doc round fill-white keyline-all'>
   <h2 id='api_overview'>API overview</h2>
