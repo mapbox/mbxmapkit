@@ -1,6 +1,28 @@
 Changelog
 ---------
 
+### 0.3.0
+#### June 12, 2014
+
+- Major refactor of styling integration. 
+    - Instead of providing an `MBXMapView` subclass of Apple's `MKMapView`, there is now a `MBXRasterTileOverlay` class which can be added directly to a stock `MKMapView` just like Apple's `MKTileOverlay`. 
+    - `MBXRasterTileOverlay` has support for Mapbox map IDs and optionally setting the map center and zoom from Mapbox metadata as well as optionally auto-adding server-specified (Mapbox simplestyle) markers. 
+    - Includes a new `MBXRasterTileOverlayDelegate` protocol for callbacks pertaining to asynchronous marker and metadata loading, including errors received. 
+
+- First-class offline map database creation and subsequent use with `MBXOfflineMapDownloader` and its `MBXOfflineMapDatabase` document objects. 
+    - Includes optional support for saving offline JSON metadata and marker imagery as well. 
+    - Includes a new `MBXOfflineMapDownloaderDelegate` protocol for receiving updates to downloader progress and state, including errors received. 
+
+- Support for `NSURLCache` shared performance cache for network requests, which is now separate and distinct from offline map functionality. 
+
+- Added class `MBXPointAnnotation` for easier custom imagery. Used by `MBXRasterTileOverlay` when auto-adding Mapbox markers. 
+
+- Global, configurable user agent for Mapbox API requests with `+[MBXMapKit setUserAgent:]`. 
+
+- Prefixed category methods on Apple classes with `mbx_` for namespace safety. 
+
+- Bug fixes and performance improvements. 
+
 ### 0.2.1
 #### March 6, 2014
 
