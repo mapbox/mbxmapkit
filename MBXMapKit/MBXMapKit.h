@@ -31,16 +31,20 @@
 
 #pragma mark - MBXMapKit global settings
 
+/** Global convenience methods for the framework. */
 @interface MBXMapKit : NSObject
 
 /** @name Setting the User Agent for Mapbox API calls */
 
-/** Access and change the global user agent for Mapbox API HTTP requests using the library.
+/** Sets the global user agent for Mapbox API HTTP requests.
 *
 *   If unset, defaults to `MBXMapKit` followed by the library version, generic hardware model, and software version information.
 *
-*   Example: `MyMapApp/1.2` */
+*   Example: `MyMapApp/1.2`
+*   @param userAgent The desired user agent string. */
 + (void)setUserAgent:(NSString *)userAgent;
+
+/** Returns the global user agent for Mapbox API HTTP requests. */
 + (NSString *)userAgent;
 
 @end
