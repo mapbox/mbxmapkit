@@ -6,18 +6,17 @@ navigation:
 - title: Why use MBXMapKit?
 - title: Installation
   items:
-  - text: CocoaPods
-    hash: cocoapods
   - text: Source
     hash: source
 - title: API overview
   items:
   - text: Tile caching
     hash: tile_caching
-  - text: Retina support
-    hash: retina_support
 ---
 
+<!-- =================================================== -->
+<!-- = Pure-css wireframe phone on top of a static map = -->
+<!-- =================================================== -->
 <div class='row6 contain fill-grey round-top clip clearfix keyline-all'>
   <div id='map' class='row6 round-top col12 pin-top'></div>
 
@@ -39,90 +38,99 @@ navigation:
     </div>
   </div>
 </div>
-
-<div class='space-bottom2 pad2 quiet keyline-bottom keyline-left keyline-right fill-white prose round-bottom center clearfix'>
-  <div class='col10 margin1'>
-    <p>A small <a href='https://github.com/mapbox/mbxmapkit/blob/master/CHANGELOG.md'>open source</a> library which adds Mapbox raster map support to apps built with the MapKit framework on iOS 7+.</p>
-  </div>
-</div>
-
 <script>
 var map = L.mapbox.map('map', 'examples.map-i87786ca', {
   zoomControl: false,
   infoControl: false
 }).setView([38.9209, -77.0263], 15);
-
 </script>
 
-<div id='installation' class='keyline-all fill-darken0 space-bottom round'>
-  <div class='pad1y pad2x keyline-bottom strong small clearfix'>
 
-    <div class='fr'><!--
-      --><span class='fill-darken1 pad1x round-left dark inline'>MBXMapKit</span><!--
-      --><a class='pad1x inline round-right keyline-left quiet dark fill-darken2' href='https://github.com/mapbox/mbxmapkit/releases'>{{site.version}}</a>
-    </div>
-
-    Installation <em class='quiet'>Supports iOS versions 7.0+</em>
+<!-- =========== -->
+<!-- = Tagline = -->
+<!-- =========== -->
+<div class='space-bottom2 pad2 quiet keyline-bottom keyline-left keyline-right fill-white prose round-bottom center clearfix'>
+  <div class='col10 margin1'>
+    <p>
+    A small <a href='https://github.com/mapbox/mbxmapkit/blob/master/CHANGELOG.md'>open source</a> library
+    which adds Mapbox raster map support to apps built with the MapKit framework on iOS 7+.
+    </p>
   </div>
-  <nav class='fill-white round-bottom'>
-    <div id='cocoapods' class='install pad1y pad2x keyline-bottom contain'>
-      <a href='#cocoapods' class='block small strong'>CocoaPods</a>
-      <div class='pad1y prose'>
-        <div class='pin-right'>
-          <a href='#installation' class='icon x button quiet unround'></a>
-        </div>
-        <p>Follow these steps in order to use the MBXMapKit within your own Xcode 5 project using <a href='http://cocoapods.org'>CocoaPods</a>. This is the easiest installation method if you are familiar with CocoaPods.</p>
-        <ol>
-          <li>Obtain the map ID for your hosted map by clicking <strong>Publish</strong> and copying the <strong>Map ID</strong>.</li>
-          <li>Ensure that your <code>Podfile</code> is targeting <code>:ios</code> and <code>"7.0"</code> or <code>:osx</code> and <code>10.9</code>.</li>
-          <li>Add a line containing <code>pod "MBXMapKit"</code> to your <code>Podfile</code>.</li>
-          <li>Run <code>pod install</code> in the Terminal.</li>
-          <li>At a minimum, <code>#import &lt;MBXMapKit/MBXMapKit.h&gt;</code> and instantiate an <code>MBXMapView</code> in your code using the <code>-initWithFrame:mapID:</code> initializer and an <code>NSString</code> made from your <strong>Map ID</strong> obtained above.</li>
-        </ol>
-      </div>
-    </div>
-
-    <div id='source' class='install pad1y pad2x contain'>
-      <a href='#source' class='strong block small'>Source</a>
-      <div class='pad1y prose'>
-        <div class='pin-right'>
-          <a href='#installation' class='icon x button quiet unround'></a>
-        </div>
-        <p>Follow these steps in order to use MBXMapKit within your own Xcode 5 project while retaining the ability to edit the library source as you go. This is the most flexible installation method if you want to be able to modify the source code of the library.</p>
-        <ol>
-          <li>Obtain the map ID for your hosted map by clicking <strong>Publish</strong> and copying the <strong>Map ID</strong>.</li>
-          <li>Copy the library source code from the <a href='https://github.com/mapbox/mbxmapkit'>repository</a>.</li>
-          <li>Add <code>MBXMapKit.h</code> and <code>MBXMapKit.m</code> to your project’s file sources, either by dragging them into your project from Finder or via <code>File &gt; Add Files...</code>, in order to make the library available to your project.</li>
-          <li>Add MapKit to your app target’s <code>Link Binary With Libraries</code> build phase.</li>
-          <li>At a minimum, <code>#import MBXMapKit.h</code> and instantiate an <code>MBXMapView</code> in your code using the <code>-initWithFrame:mapID:</code> initializer and an <code>NSString</code> made from your <strong>Map ID</strong> obtained above.</li>
-        </ol>
-      </div>
-    </div>
-  </nav>
 </div>
 
+
+<!-- =========== -->
+<!-- = Install = -->
+<!-- =========== -->
+<div id='installation' class='keyline-all fill-darken0 space-bottom round'>
+
+  <div class='pad1y pad2x keyline-bottom strong small clearfix round-top'>
+    <!-- This is the two-tone "MBXMapKit|version" badge which requires zero whitespace between tags -->
+    <div class='fr'><span
+        class='fill-darken1 pad1x round-left dark inline'>MBXMapKit</span><a
+        class='pad1x inline round-right keyline-left quiet dark fill-darken2'
+        href='https://github.com/mapbox/mbxmapkit/releases'>{{site.version}}</a>
+    </div>
+    Installation <em class='quiet'>Supports iOS versions 7.0+</em>
+  </div>
+
+  <div id='source' class='fill-white pad1y pad2x contain prose round-bottom'>
+      <p>
+      The full procedure to install from source is described in the MBXMapKit
+      <a href="https://github.com/mapbox/mbxmapkit#installation">README</a> on GitHub.
+      The condensed version is: copy a total of 11 source files into your project, add the .m files
+      to your build target, then link with the MapKit framework and libsqlite3.
+      </p>
+  </div>
+</div>
+
+
+<!-- ====================== -->
+<!-- = Why use MBXMapKit? = -->
+<!-- ====================== -->
 <div class='prose pad2 doc round fill-white keyline-all space-bottom'>
   <h2 id='why_use_mbxmapkit'>Why use MBXMapKit?</h2>
-  <p>In iOS 7, Apple made it much easier to use custom map tile overlays with the MapKit framework, as well as adding the ability to completely replace Apple's maps. MBXMapKit is a lightweight library which leverages these capabilities to help you build awesome apps with Mapbox raster maps. An important thing to understand is that you aren't limited to just picking "Do I want Mapbox Streets or Mapbox Satellite?". The mapbox.com map editor and TileMill provide many options for custom styling and incorporating your own data into a maps hosted by Mapbox.</p>
+  <p>
+  In iOS 7, Apple made it much easier to use custom map tile overlays with the MapKit framework, as well as
+  adding the ability to completely replace Apple's maps. MBXMapKit is a lightweight library which leverages
+  these capabilities to help you build awesome apps with Mapbox raster maps. An important thing to understand
+  is that you aren't limited to just picking "Do I want Mapbox Streets or Mapbox Satellite?". The mapbox.com
+  map editor and TileMill provide many options for custom styling and incorporating your own data into maps
+  hosted by Mapbox.
+  </p>
 
 <p>Here are some examples of what you can do with MBXMapKit:</p>
 
 <ul>
 
-<li>Use a custom styled Mapbox world basemap instead of Apple's basemap. If you've added POI markers to your map with the mapbox.com map editor, MBXMapKit can fetch the marker metadata and icons and prepare custom point annotations for you.</li>
+<li>Use a custom styled Mapbox world basemap instead of Apple's basemap. If you've added POI markers to your
+map with the mapbox.com map editor, MBXMapKit can fetch the marker metadata and icons and prepare custom point
+annotations for you.</li>
 
-<li>Create a transparent regional overlay (i.e. bring your own data) in TileMill, upload it to mapbox.com, then display it as a raster tile overlay on top of the basemap of your choice.</li>
+<li>Create a transparent regional overlay (i.e. bring your own data) in TileMill, upload it to mapbox.com,
+then display it as a raster tile overlay on top of the basemap of your choice.</li>
 
-<li>Use MBXMapKit's offline map downloader to save regions from Mapbox maps onto your local storage for later use when a reliable network connection is not available.</li>
+<li>Use MBXMapKit's offline map downloader to save regions from Mapbox maps onto your local storage for later
+use when a reliable network connection is not available.</li>
 
-<li>Use MBXMapKit tile overlays in combination with annotations and overlays from other sources, such as your own API. As of version 0.3.0, MBXMapKit is very careful not to disrupt  MapKit's normal functionality, so in general, what works with MapKit on its own should also work when you add MBXMapKit to the mix. If you find that isn't the case, [bug reports](https://github.com/mapbox/mbxmapkit/issues/new) are welcome.</li>
+<li>Use MBXMapKit tile overlays in combination with annotations and overlays from other sources, such as your
+own API. As of version 0.3.0, MBXMapKit is very careful not to disrupt  MapKit's normal functionality, so in
+general, what works with MapKit on its own should also work when you add MBXMapKit to the mix. If you find
+that isn't the case, <a href="https://github.com/mapbox/mbxmapkit/issues/new">bug reports</a> are welcome.</li>
 </ul>
 </div>
 
 
+<!-- ================ -->
+<!-- = API Overview = -->
+<!-- ================ -->
 <div class='prose pad2 doc round fill-white keyline-all'>
   <h2 id='api_overview'>API overview</h2>
-  <p>MBXMapKit works identically to Apple’s MapKit, since it’s a subclass derivative, so check out <a href='https://developer.apple.com/library/ios/#documentation/MapKit/Reference/MapKit_Framework_Reference'>Apple’s MapKit documentation</a> for details on getting started. MBXMapKit provides several additional features:</p>
+  <p>
+  MBXMapKit works identically to Apple’s MapKit, since it’s a subclass
+  derivative, so check out
+  for details on getting started. MBXMapKit provides several additional features:
+  </p>
   <ul>
     <li>The option to set a <code>mapID</code> to use any Mapbox map.</li>
     <li>Toggle the visibility of Apple’s default maps under a Mapbox map.</li>
@@ -132,21 +140,35 @@ var map = L.mapbox.map('map', 'examples.map-i87786ca', {
     <li>Support for Mapbox-hosted <a href="https://www.mapbox.com/developers/api/maps/#geojson">simplestyle GeoJSON</a>.</li>
     <li>Support for the Mapbox <a href="https://www.mapbox.com/developers/api/static/#format">image quality API</a>.</li>
   </ul>
-  <p>Full API documentation is available right in Xcode, either inline or in Xcode's Quick Help inspector. You can also run the provided <code>install_docs.sh</code> script, which leverages <a href="http://gentlebytes.com/appledoc/">appledoc</a> to create and install a documentation set into Xcode's documentation viewer.</p>
+  <p>Full API documentation is available right in Xcode, either inline or in
+  Xcode's Quick Help inspector. You can also run the provided
+  <code>install_docs.sh</code> script, which leverages <a
+  href="http://gentlebytes.com/appledoc/">appledoc</a> to create and install a
+  documentation set into Xcode's documentation viewer.</p>
 
   <h3 id='tile_caching'>Tile caching</h3>
-  <p>Mapbox offers unrestricted control for caching our maps such as <a href='/maps/'>Mapbox Streets</a> on mobile devices with MBXMapKit.</p>
+  <p>Mapbox offers unrestricted control for caching our maps such as <a
+  href='/maps/'>Mapbox Streets</a> on mobile devices with MBXMapKit.</p>
 
   <div class='note small'>
     <strong>Caching usage</strong><br />
-    You can cache maps for as much and as long as you like but you may not run a proxy or intermediate cache between Mapbox and devices or furher redistribute maps from a devices cache. For the full details see our <a href='/tos/'>Terms of Service</a>.
+    You can cache maps for as much and as long as you like but you may not run
+    a proxy or intermediate cache between Mapbox and devices or furher
+    redistribute maps from a devices cache. For the full details see our <a
+    href='/tos/'>Terms of Service</a>.
   </div>
 
   <h3 id='retina_support'>Retina support</h3>
-  <p><a href='/maps'>Mapbox Streets</a> has retina support for tiles that can be utilized by MBXMapKit. This brings high-DPI display for devices such as the iPhone 4 and newer, retina iPads, and retina Macs.</p>
-  <p>Retina tiles are enhanced with wider streets and enlarged labels. A resulting image on retina-capable devices is incredibly sharp. Here’s a side-by-side comparison up close:</p>
+  <p><a href='/maps'>Mapbox Streets</a> has retina support for tiles that can
+  be utilized by MBXMapKit. This brings high-DPI display for devices such as
+  the iPhone 4 and newer, retina iPads, and retina Macs.</p>
+  <p>Retina tiles are enhanced with wider streets and enlarged labels. A
+  resulting image on retina-capable devices is incredibly sharp. Here’s a
+  side-by-side comparison up close:</p>
   <div class='center'>
     <img src='https://farm9.staticflickr.com/8142/7210334896_64ac0b3788.jpg' />
   </div>
-  <p>There's nothing special to do to support retina devices. Mapbox automatically adds the <code>@2x</code> suffix to map tile requests and the platform automatically adjusts the tile content as necessary.</p>
+  <p>There's nothing special to do to support retina devices. Mapbox
+  automatically adds the <code>@2x</code> suffix to map tile requests and the
+  platform automatically adjusts the tile content as necessary.</p>
 </div>
