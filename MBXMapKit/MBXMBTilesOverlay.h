@@ -27,6 +27,7 @@ extern NSString * const kFormatPNG;
 @property (readonly, nonatomic) NSString   *type;
 @property (readonly, nonatomic) NSString   *version;
 @property (readonly, nonatomic) NSString   *description;
+@property (readonly, nonatomic) NSString   *attribution;
 @property (readonly, nonatomic) NSString   *format;
 @property (readonly, nonatomic) MKMapRect  mapRect;
 @property (nonatomic          ) NSUInteger zoomLimit;

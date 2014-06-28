@@ -108,6 +108,12 @@
     }
 }
 
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [self.mapView removeOverlays:self.mapView.overlays];
+    [super viewDidDisappear:animated];
+}
+
 
 #pragma mark - Things for switching between maps
 
@@ -255,11 +261,13 @@
             [self resetMapViewAndRasterOverlayDefaults];
             _currentlyViewingAnOfflineMap = YES;
             
-            NSURL *mbtilesURL = [[NSBundle mainBundle] URLForResource:@"Sample Data/open-streets-dc" withExtension:@"mbtiles"];
+            NSURL *mbtilesURL = [[NSBundle mainBundle] URLForResource:@"Sample Data/USAMapZoom0to6" withExtension:@"mbtiles"];
             _mbtilesOverlay = [[MBXMBTilesOverlay alloc] initWithMBTilesURL:mbtilesURL];
-            _mbtilesOverlay.shouldOverzoom = YES;
-            [self.mapView setRegion:MKCoordinateRegionForMapRect(_mbtilesOverlay.mapRect)];
-            [_mapView addOverlay:_mbtilesOverlay];
+            if (_mbtilesOverlay) {
+                _mbtilesOverlay.shouldOverzoom = YES;
+                [self.mapView setRegion:MKCoordinateRegionForMapRect(_mbtilesOverlay.mapRect)];
+                [_mapView addOverlay:_mbtilesOverlay];
+            }
             break;
     }
 }

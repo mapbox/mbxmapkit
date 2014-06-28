@@ -19,22 +19,23 @@
 // See https://github.com/mapbox/mbtiles-spec/blob/master/1.1/spec.md
 //
 // required keys
-NSString * const kNameKey        = @"name";
-NSString * const kTypeKey        = @"type";
-NSString * const kVersionKey     = @"version";
-NSString * const kDescriptionKey = @"description";
-NSString * const kFormatKey      = @"format";
+NSString * const kMBTilesNameKey        = @"name";
+NSString * const kMBTilesTypeKey        = @"type";
+NSString * const kMBTilesVersionKey     = @"version";
+NSString * const kMBTilesDescriptionKey = @"description";
+NSString * const kMBTilesFormatKey      = @"format";
 
 // optional keys
-NSString * const kBoundsKey      = @"bounds";
+NSString * const kMBTilesBoundsKey      = @"bounds";
+NSString * const kMBTilesAttributionKey = @"attribution";
 
 // valid values for 'type'
-NSString * const kTypeOverlay    = @"overlay";
-NSString * const kTypeBaselayer  = @"baselayer";
+NSString * const kMBTilesTypeOverlay    = @"overlay";
+NSString * const kMBTilesTypeBaselayer  = @"baselayer";
 
 // valid values for 'format'
-NSString * const kFormatJPEG     = @"jpg";
-NSString * const kFormatPNG      = @"png";
+NSString * const kMBTilesFormatJPEG     = @"jpg";
+NSString * const kMBTilesFormatPNG      = @"png";
 
 #pragma mark - Private API for creating verbose errors
 
@@ -57,6 +58,7 @@ NSString * const kFormatPNG      = @"png";
 @property (readwrite, nonatomic) NSString   *type;
 @property (readwrite, nonatomic) NSString   *version;
 @property (readwrite, nonatomic) NSString   *description;
+@property (readwrite, nonatomic) NSString    *attribution;
 @property (readwrite, nonatomic) NSString   *format;
 @property (readwrite, nonatomic) MKMapRect  mapRect;
 
@@ -68,7 +70,10 @@ NSString * const kFormatPNG      = @"png";
 
 #pragma mark - MBXMBTilesOverlay, a subclass of MKTileOverlay
 
-@implementation MBXMBTilesOverlay
+@implementation MBXMBTilesOverlay {
+    dispatch_queue_t _tileLoadingQueue;
+    sqlite3 *_db;
+}
 
 #pragma mark - Initialization
 
@@ -88,15 +93,38 @@ NSString * const kFormatPNG      = @"png";
             
             _mbtilesUrl = theURL;
             
-            NSString *name        = [self sqliteMetadataForName:kNameKey];
-            NSString *type        = [self sqliteMetadataForName:kTypeKey];
-            NSString *version     = [self sqliteMetadataForName:kVersionKey];
-            NSString *description = [self sqliteMetadataForName:kDescriptionKey];
-            NSString *format      = [self sqliteMetadataForName:kFormatKey];
+            // Set up dispatch queue for sqlite access
+            //
+            _tileLoadingQueue = dispatch_queue_create([[_mbtilesUrl path] cStringUsingEncoding:NSUTF8StringEncoding], DISPATCH_QUEUE_SERIAL);
+            
+            // Set up database on newly created queue
+            //
+            assert(sqlite3_threadsafe()==2);
+            
+            // Open the database read-only and multi-threaded. The slightly obscure c-style variable names here and below are
+            // used to stay consistent with the sqlite documentaion. See http://sqlite.org/c3ref/open.html
+            int rc;
+            NSString *dbPath = [self.mbtilesUrl path];
+            const char *filename = [dbPath cStringUsingEncoding:NSUTF8StringEncoding];
+            
+            rc = sqlite3_open_v2(filename, &_db, SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, NULL);
+            if (rc)
+            {
+                NSLog(@"Can't open database %@: %s", dbPath, sqlite3_errmsg(_db));
+                sqlite3_close(_db);
+                self = nil;
+            }
+            
+            // Query basic metadata
+            
+            NSString *name        = [self sqliteMetadataForName:kMBTilesNameKey];
+            NSString *type        = [self sqliteMetadataForName:kMBTilesTypeKey];
+            NSString *version     = [self sqliteMetadataForName:kMBTilesVersionKey];
+            NSString *description = [self sqliteMetadataForName:kMBTilesDescriptionKey];
+            NSString *format      = [self sqliteMetadataForName:kMBTilesFormatKey];
             
             if (name && version && description
-                && ([type isEqualToString:kTypeOverlay] || [type isEqualToString:kTypeBaselayer])
-                && ([format isEqualToString:kFormatJPEG] || [format isEqualToString:kFormatPNG]))
+                && ([format isEqualToString:kMBTilesFormatJPEG] || [format isEqualToString:kMBTilesFormatPNG]))
             {
                 // Reaching this point means that the specified mbtiles file at mbtilesURL pointed to an sqlite file which had
                 // all the required values in its metadata table to pass the MBTiles spec 1.1.
@@ -108,7 +136,15 @@ NSString * const kFormatPNG      = @"png";
                 _format      = format;
                 
                 // check if a bounds key exists
-                NSString *bounds = [self sqliteMetadataForName:kBoundsKey];
+                NSString *bounds = [self sqliteMetadataForName:kMBTilesBoundsKey];
+                
+                // check if a attribution key exists
+                NSString *attribution = [self sqliteMetadataForName:kMBTilesAttributionKey];
+                
+                if (attribution)
+                {
+                    _attribution = attribution;
+                }
                 
                 if (bounds)
                 {
@@ -125,7 +161,7 @@ NSString * const kFormatPNG      = @"png";
                         _mapRect = MKMapRectNull;
                     }
                     else
-                    {
+                    {                        
                         // Construct MKCoordinateRegion
                         MKMapRect boundingRect;
                         
@@ -152,12 +188,19 @@ NSString * const kFormatPNG      = @"png";
                 
                 // Check if MKMapkit can render the overlay opaquely.
                 //
-                if ([_type isEqualToString:kTypeBaselayer])
+                if ([_type isEqualToString:kMBTilesTypeBaselayer])
                 {
                     self.canReplaceMapContent = YES;
                 }
-                self.canReplaceMapContent = YES;
+                
                 _initializedProperly = YES;
+                
+                // If overzooming is enabled, the desired zoom limit can be reduced by the user later.
+                // By default, we would overzoom all the way down.
+                //
+                _zoomLimit = 20;
+                _shouldOverzoom = NO;
+                
             }
             else
             {
@@ -165,16 +208,21 @@ NSString * const kFormatPNG      = @"png";
                 //
                 self = nil;
             }
-            
-            // If overzooming is enabled, the desired zoom limit can be reduced by the user later.
-            // By default, we overzoom all the way down.
+        }
+        else
+        {
+            // Invalid URL passed in
             //
-            _zoomLimit = 20;
-            _shouldOverzoom = NO;
-            
+            self = nil;
         }
     }
+    
     return self;
+}
+
+- (void)dealloc
+{
+    sqlite3_close(_db);
 }
 
 - (MKTileOverlayPath)enclosingTileForOverzoomedPath:(MKTileOverlayPath)path atZoom:(NSInteger)zoom
@@ -259,35 +307,68 @@ NSString * const kFormatPNG      = @"png";
 
 - (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *tileData, NSError *error))result
 {
-    NSData *data;
     
-    if(self.mbtilesMaximumZ >= path.z) {
-        
-        // Within regular zoom limits: Retrieve and return the specified tile
+    void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
+    {
+        // Invoke the loadTileAtPath's completion handler
         //
-        NSError *error;
-        data = [self dataForPath:path withError:&error];
-        
-        if (error) {
-            NSLog(@"%s: %@", __PRETTY_FUNCTION__, error.userInfo[NSLocalizedFailureReasonErrorKey]);
+        if ([NSThread isMainThread])
+        {
+            result(data, nil);
         }
-    } else {
-        if (self.shouldOverzoom && path.z <= self.zoomLimit) {
-            // Overzoomed: Retrieve the enclosing tile at the higest available zoom level, scale, crop, and return
-            //
-            MKTileOverlayPath enclosingTilePath = [self enclosingTileForOverzoomedPath:path atZoom:self.mbtilesMaximumZ];
-            NSData *enclosingTile = [self dataForPath:enclosingTilePath withError:nil];
-            if(enclosingTile) {
-                data = [self extractTileAtPath:path fromTile:enclosingTile atPath:enclosingTilePath];
-            }
+        else
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                result(data, nil);
+            });
         }
-    }
+    };
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        result(data, nil);
-    });
+    [self asyncLoadMBTilesDataForPath:path workerBlock:nil completionHandler:completionHandler];
+    
     
 }
+
+- (void)asyncLoadMBTilesDataForPath:(MKTileOverlayPath)path
+                        workerBlock:(void(^)(NSData *, NSError **))workerBlock
+                  completionHandler:(void(^)(NSData *, NSError *))completionHandler
+{
+    dispatch_async(_tileLoadingQueue, ^{
+        
+        NSData *data;
+        NSError *error;
+        
+        if(self.mbtilesMaximumZ >= path.z)
+        {
+            
+            // Within regular zoom limits: Retrieve and return the specified tile
+            //
+            data = [self dataForPath:path withError:&error];
+            
+            if (error)
+            {
+                // NSLog(@"%s: %@", __PRETTY_FUNCTION__, error.userInfo[NSLocalizedFailureReasonErrorKey]);
+            }
+        } else {
+            if (self.shouldOverzoom && path.z <= self.zoomLimit)
+            {
+                // Overzoomed: Retrieve the enclosing tile at the higest available zoom level, scale, crop, and return
+                //
+                MKTileOverlayPath enclosingTilePath = [self enclosingTileForOverzoomedPath:path atZoom:self.mbtilesMaximumZ];
+                NSData *enclosingTile = [self dataForPath:enclosingTilePath withError:nil];
+                if(enclosingTile)
+                {
+                    data = [self extractTileAtPath:path fromTile:enclosingTile atPath:enclosingTilePath];
+                }
+            }
+        }
+        
+        if (workerBlock) workerBlock(data, &error);
+        
+        completionHandler(data, error);
+    });
+}
+
 
 - (NSData *)dataForPath:(MKTileOverlayPath)path withError:(NSError **)error
 {
@@ -335,43 +416,19 @@ NSString * const kFormatPNG      = @"png";
 
 - (NSData *)sqliteDataForSingleColumnQuery:(NSString *)query
 {
-    // MBXMapKit expects libsqlite to have been compiled with SQLITE_THREADSAFE=2 (multi-thread mode), which means
-    // that it can handle its own thread safety as long as you don't attempt to re-use database connections.
-    // Since the queries here are all SELECT's, locking for writes shouldn't be an issue.
-    // Some relevant sqlite documentation:
-    // - http://sqlite.org/faq.html#q5
-    // - http://www.sqlite.org/threadsafe.html
-    // - http://www.sqlite.org/c3ref/threadsafe.html
-    // - http://www.sqlite.org/c3ref/c_config_covering_index_scan.html#sqliteconfigmultithread
-    //
-    assert(sqlite3_threadsafe()==2);
-    
-    // Open the database read-only and multi-threaded. The slightly obscure c-style variable names here and below are
-    // used to stay consistent with the sqlite documentaion. See http://sqlite.org/c3ref/open.html
-    sqlite3 *db;
     int rc;
-    NSString *dbPath = [self.mbtilesUrl path];
-    const char *filename = [dbPath cStringUsingEncoding:NSUTF8StringEncoding];
-    
-    rc = sqlite3_open_v2(filename, &db, SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, NULL);
-    if (rc)
-    {
-        NSLog(@"Can't open database %@: %s", dbPath, sqlite3_errmsg(db));
-        sqlite3_close(db);
-        return nil;
-    }
     
     // Prepare the query, see http://sqlite.org/c3ref/prepare.html
     const char *zSql = [query cStringUsingEncoding:NSUTF8StringEncoding];
     int nByte = (int)[query lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
     sqlite3_stmt *ppStmt;
     const char *pzTail;
-    rc = sqlite3_prepare_v2(db, zSql, nByte, &ppStmt, &pzTail);
+    rc = sqlite3_prepare_v2(_db, zSql, nByte, &ppStmt, &pzTail);
     if (rc)
     {
-        NSLog(@"Problem preparing sql statement: %s", sqlite3_errmsg(db));
+        NSLog(@"Problem preparing sql statement: %s", sqlite3_errmsg(_db));
         sqlite3_finalize(ppStmt);
-        sqlite3_close(db);
+        sqlite3_close(_db);
         return nil;
     }
     
@@ -404,12 +461,12 @@ NSString * const kFormatPNG      = @"png";
     }
     else
     {
-        NSLog(@"sqlite3_step() produced an error: %s", sqlite3_errmsg(db));
+        NSLog(@"sqlite3_step() produced an error: %s", sqlite3_errmsg(_db));
     }
     
     // Clean up
     sqlite3_finalize(ppStmt);
-    sqlite3_close(db);
+    
     return data;
 }
 
