@@ -3,15 +3,25 @@ layout: pages
 category: overview
 title: MBXMapKit
 navigation:
-- title: Why use MBXMapKit?
 - title: Installation
-  items:
-  - text: Source
-    hash: source
+  hash: installation
+- title: Why use MBXMapKit?
+  hash: why_use_mbxmapkit
 - title: API overview
+  hash: api_overview
   items:
-  - text: Tile caching
-    hash: tile_caching
+  - text: MBXRasterTileOverlay.h
+    hash: mbxrastertileoverlay
+  - text: MBXOfflineMapDownloader.h
+    hash: mbxofflinemapdownloader
+  - text: MBXOfflineMapDatabase.h
+    hash: mbxofflinemapdatabase
+  - text: MBXPointAnnotation.h
+    hash: mbxpointannotation
+  - text: MBXConstantsAndTypes.h
+    hash: mbxconstantsandtypes
+  - text: MBXMapKit.h
+    hash: mbxmapkit
 ---
 
 <!-- =================================================== -->
@@ -78,8 +88,8 @@ var map = L.mapbox.map('map', 'examples.map-i87786ca', {
       <p>
       The full procedure to install from source is described in the MBXMapKit
       <a href="https://github.com/mapbox/mbxmapkit#installation">README</a> on GitHub.
-      The condensed version is: copy a total of 11 source files into your project, add the .m files
-      to your build target, then link with the MapKit framework and libsqlite3.
+      The condensed version is: copy a total of 11 source files from GitHub into your project, add the .m
+      files to your build target, then link with the MapKit framework and libsqlite3.
       </p>
   </div>
 </div>
@@ -127,48 +137,136 @@ that isn't the case, <a href="https://github.com/mapbox/mbxmapkit/issues/new">bu
 <div class='prose pad2 doc round fill-white keyline-all'>
   <h2 id='api_overview'>API overview</h2>
   <p>
-  MBXMapKit works identically to Apple’s MapKit, since it’s a subclass
-  derivative, so check out
-  for details on getting started. MBXMapKit provides several additional features:
+  MBXMapKit extends Apple’s MapKit framework to provide support for raster tile overlays and marker icons
+  hosted by Mapbox. Rather than subclassing <code>MKMapView</code> itself, MBXMapKit provides subclass
+  instances of Apple's <code>MKTileOverlay</code> and <code>MKShape</code> classes so you can use them with
+  your own <code>MKMapView</code> according to Apple's MapKit API.  Also, MBXMapKit provides delegate callback
+  notifications to help you smoothly make use of asynchronously loaded resources such as map metadata, marker
+  icons, and offline maps.
   </p>
-  <ul>
-    <li>The option to set a <code>mapID</code> to use any Mapbox map.</li>
-    <li>Toggle the visibility of Apple’s default maps under a Mapbox map.</li>
-    <li>Control offline map tile caching duration.</li>
-    <li>Swap in a completely custom offline map to the tile caching system.</li>
-    <li>Support for the Mapbox <a href="https://www.mapbox.com/developers/api/static/#markers">markers API</a> and <a href="https://www.mapbox.com/maki/">Maki</a>.</li>
-    <li>Support for Mapbox-hosted <a href="https://www.mapbox.com/developers/api/maps/#geojson">simplestyle GeoJSON</a>.</li>
-    <li>Support for the Mapbox <a href="https://www.mapbox.com/developers/api/static/#format">image quality API</a>.</li>
-  </ul>
-  <p>Full API documentation is available right in Xcode, either inline or in
-  Xcode's Quick Help inspector. You can also run the provided
-  <code>install_docs.sh</code> script, which leverages <a
-  href="http://gentlebytes.com/appledoc/">appledoc</a> to create and install a
-  documentation set into Xcode's documentation viewer.</p>
 
-  <h3 id='tile_caching'>Tile caching</h3>
-  <p>Mapbox offers unrestricted control for caching our maps such as <a
-  href='/maps/'>Mapbox Streets</a> on mobile devices with MBXMapKit.</p>
+  <p>
+  Full API documentation is available right in Xcode, either inline or in Xcode's Quick Help inspector. You
+  can also run the provided <code>install_docs.sh</code> script, which leverages
+  <a href="http://gentlebytes.com/appledoc/">appledoc</a> to create and install a documentation set into
+  Xcode's documentation viewer.
+  </p>
 
-  <div class='note small'>
-    <strong>Caching usage</strong><br />
-    You can cache maps for as much and as long as you like but you may not run
-    a proxy or intermediate cache between Mapbox and devices or furher
-    redistribute maps from a devices cache. For the full details see our <a
-    href='/tos/'>Terms of Service</a>.
-  </div>
+  <h3 id='mbxrastertileoverlay'><a
+  href="https://github.com/mapbox/mbxmapkit/blob/master/MBXMapKit/MBXRasterTileOverlay.h"
+  >MBXRasterTileOverlay.h</a></h3>
+    <p>
+      <code>MBXRasterTileOverlay</code> is a subclass of <a
+      href="https://developer.apple.com/library/ios/documentation/MapKit/Reference/MKTileOverlay_class/Reference/Reference.html"
+      >MKTileOverlay</a>, and it provides raster tile layers that you can initialize from a Mapbox
+      map ID or an offline map database object. All network requests run through the <a
+      href="https://developer.apple.com/library/mac/documentation/cocoa/reference/foundation/Classes/NSURLCache_Class/Reference/Reference.html"
+      >NSURLCache</a> <code>sharedURLCache</code> for performance caching. <code>MBXRasterTileOverlay</code>
+      provides automatic support for retina tiles and optional support for map metadata, map markers, and the
+      Mapbox image quality API.
+    </p>
 
-  <h3 id='retina_support'>Retina support</h3>
-  <p><a href='/maps'>Mapbox Streets</a> has retina support for tiles that can
-  be utilized by MBXMapKit. This brings high-DPI display for devices such as
-  the iPhone 4 and newer, retina iPads, and retina Macs.</p>
-  <p>Retina tiles are enhanced with wider streets and enlarged labels. A
-  resulting image on retina-capable devices is incredibly sharp. Here’s a
-  side-by-side comparison up close:</p>
-  <div class='center'>
-    <img src='https://farm9.staticflickr.com/8142/7210334896_64ac0b3788.jpg' />
-  </div>
-  <p>There's nothing special to do to support retina devices. Mapbox
-  automatically adds the <code>@2x</code> suffix to map tile requests and the
-  platform automatically adjusts the tile content as necessary.</p>
+    <p>
+      <code>MBXRasterTileOverlayDelegate</code> provides callback notifications which allow you to update your
+      MKMapView when MBXMapKit's asynchronously loaded map metadata and marker icons become available.
+    </p>
+
+  <h3 id='mbxofflinemapdownloader'><a
+  href="https://github.com/mapbox/mbxmapkit/blob/master/MBXMapKit/MBXOfflineMapDownloader.h"
+  >MBXOfflineMapDownloader.h</a></h3>
+    <p>
+      <code>MBXOfflineMapDownloader</code> provides a mechanism for persistent storage and retrieval of
+      offline map databases which contain all the files needed to present a specific map region while
+      offline.
+    </p>
+
+    <p>
+      The <code>MBXOfflineMapDownloaderDelegate</code> protocol provides callback notifications which allow
+      you to track the progress of downloading a map region for offline use. Please note that
+      requesting large map regions can result in very large numbers of map views for your Mapbox
+      hosting plan. You may want to use the estimated file counts provided by
+      <code>MBXOfflineMapDownloaderDelegate</code>, or some other mechanism of your own design, to impose
+      limits on the size of the map regions your app will allow for offline use.
+    </p>
+    
+    <p>
+      It's important to understand that MBXMapKit makes the distinction between persistent storage and and
+      performance caching, and <code>MBXOfflineMapDownloader</code> uses both of those for different purposes.
+      For the performance caching part, tiles, metadata, and marker icons are downloaded through the
+      <code>NSURLCache</code>'s <code>sharedURLCache</code>. The persistent storage part happens when the
+      map data is written out to an sqlite database. For the purposes of Mapbox's Terms of
+      Service, <code>MBXOfflineMapDownloader</code> implements an "offline cache", but the map data is 
+      actually stored as a document to make sure it only gets removed <em>when you want it to be removed</em>.
+      Separating cache and storage allows MBXMapKit to leverage <code>NSURLCache</code> without the risk
+      of your offline map data disappearing at inopportune times. By default offline map data is excluded
+      from iCloud backups, but that can be changed with a persistent global setting.</p>
+    </p>
+      
+    <p>
+      <code>MBXOfflineMapDownloader</code> stores offline map data in an sqlite schema which is designed to
+      integrate smoothly with <code>MBXRasterTileOvlerlay</code> and which is not meant to be included in
+      app bundles or otherwise shared. In the spirit of Mapbox's
+      <a href="https://www.mapbox.com/tos/">terms of service</a> for offline caching,
+      <code>MBXOfflineMapDownloader</code> provides access to offline maps at the level of instantiated
+      <code>MBXOfflineMapDatabase</code> objects rather than giving direct access to the offline map data on
+      disk.
+    </p>
+
+    <p>
+      <strong>Caching policy:</strong> The Mapbox <a href="https://www.mapbox.com/tos/">terms of service</a>
+      allow you to cache as much offline map data as you like for as long as you like, but you are not allowed
+      to run a proxy or intermediate cache between Mapbox and devices, and you are not allowed to extract data
+      from a device's "offline cache" and redistribute it.  Obviously these restrictions would be possible to
+      circumvent, but please don't.  Our goal is to provide enough functionality in the offline map downloader
+      that there isn't any need to bother about the low level details anyway. Feedback and suggestions are
+      <a href="https://github.com/mapbox/mbxmapkit/issues/new">welcome</a>.
+    </p>
+
+  <h3 id='mbxofflinemapdatabase'><a
+  href="https://github.com/mapbox/mbxmapkit/blob/master/MBXMapKit/MBXOfflineMapDatabase.h"
+  >MBXOfflineMapDatabase.h</a></h3>
+
+    <p>
+      <code>MBXOfflineMapDatabase</code> objects are used by <code>MBXRasterTileOverlay</code> to display
+      offline maps. <code>MBXOfflineMapDatabase</code> instances provide access to disk storage which is
+      managed by the internal implementation of <code>MBXOfflineMapDownloader</code>. Please refer to the
+      public api of <code>MBXOfflineMapDownloader</code> for options to obtain offline map database objects
+      and to remove offline map databases from disk.
+    </p>
+
+
+  <h3 id='mbxpointannotation'><a
+  href="https://github.com/mapbox/mbxmapkit/blob/master/MBXMapKit/MBXPointAnnotation.h"
+  >MBXPointAnnotation.h</a></h3>
+
+    <p>
+      <code>MBXPointAnnotation</code> is a subclass of <a
+      href="https://developer.apple.com/library/ios/documentation/MapKit/Reference/MKShape_class/Reference/Reference.html"
+      >MKShape</a> which implements the <a
+      href="https://developer.apple.com/library/ios/documentation/mapkit/reference/mkannotation_protocol/Reference/Reference.html"
+      >MKAnnotation</a> protocol. When <code>MBXRasterTileOverlay</code> loads maps which have markers, it can
+      create an array of <code>MBXPointAnnotation</code> objects with the appropriate coordinates, titles, 
+      subtitles, and Maki marker icons for you to use with your <code>MKMapView</code>.
+    </p>
+
+
+  <h3 id='mbxconstantsandtypes'><a
+  href="https://github.com/mapbox/mbxmapkit/blob/master/MBXMapKit/MBXConstantsAndTypes.h"
+  >MBXConstantsAndTypes.h</a></h3>
+
+    <p>
+      <code>MBXConstantsAndTypes.h</code> provides the MBXMapKit version number, error codes, and image
+      quality constants for use with <code>MBXRasterTileOverlay</code>.
+    </p>
+
+
+  <h3 id='mbxmapkit'><a
+  href="https://github.com/mapbox/mbxmapkit/blob/master/MBXMapKit/MBXMapKit.h"
+  >MBXMapKit.h</a></h3>
+
+    <p>
+      <code>MBXMapKit.h</code> includes all the other header files, and it provides a couple things which
+      don't quite fit elsewhere: a category on <code>MKMapView</code> to center a map with a center coordinate
+      and zoom level, and a property to override MBXMapKit's default user agent string.
+    </p>
 </div>

@@ -20,7 +20,7 @@ section: mbxmapkit
         </div>
         {% for heading in page.navigation %}
           <div class='space-bottom'>
-            <a class='small block quiet truncate' href='#{{heading.title|replace:' ','_'}}'><strong>{{heading.title}}</strong></a>
+            <a class='small block quiet truncate' href='#{{heading.hash}}'><strong>{{heading.title}}</strong></a>
           {% for item in heading.items %}
             <a class='small block truncate' href='#{{item.hash}}'>{{item.text}}</a>
           {% endfor %}
