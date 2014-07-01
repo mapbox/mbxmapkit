@@ -22,6 +22,7 @@
 		012A0DBB1909D5FC005B69D7 /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79431909D1D200EF8AD1 /* MBXPointAnnotation.m */; };
 		012A0DBC1909D5FC005B69D7 /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79451909D1D200EF8AD1 /* MBXRasterTileOverlay.m */; };
 		01F84DFC1928B8BF002A2814 /* MBXMBTilesOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F84DFB1928B8BF002A2814 /* MBXMBTilesOverlay.m */; };
+		441BE0FE192A86D000813D09 /* Sample Data in Resources */ = {isa = PBXBuildFile; fileRef = 441BE0FD192A86D000813D09 /* Sample Data */; };
 		DD1AFFC11912F52400711D4D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD1AFFC01912F52400711D4D /* Foundation.framework */; };
 		DD1AFFC71912F69700711D4D /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD1AFFC61912F69700711D4D /* libsqlite3.dylib */; };
 /* End PBXBuildFile section */
@@ -54,6 +55,7 @@
 		017F79451909D1D200EF8AD1 /* MBXRasterTileOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXRasterTileOverlay.m; sourceTree = "<group>"; };
 		01F84DFA1928B8BF002A2814 /* MBXMBTilesOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBXMBTilesOverlay.h; path = ../MBXMapKit/MBXMBTilesOverlay.h; sourceTree = "<group>"; };
 		01F84DFB1928B8BF002A2814 /* MBXMBTilesOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBXMBTilesOverlay.m; path = ../MBXMapKit/MBXMBTilesOverlay.m; sourceTree = "<group>"; };
+		441BE0FD192A86D000813D09 /* Sample Data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Sample Data"; sourceTree = SOURCE_ROOT; };
 		DD1AFFC01912F52400711D4D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		DD1AFFC61912F69700711D4D /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -92,6 +94,7 @@
 		012A0D821909D3F6005B69D7 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				441BE0FD192A86D000813D09 /* Sample Data */,
 				012A0D831909D3F6005B69D7 /* MBXMapKit iOS-Info.plist */,
 				012A0D841909D3F6005B69D7 /* InfoPlist.strings */,
 				012A0D871909D3F6005B69D7 /* main.m */,
@@ -217,6 +220,7 @@
 				012A0DAB1909D515005B69D7 /* Main_iPad.storyboard in Resources */,
 				012A0D861909D3F6005B69D7 /* InfoPlist.strings in Resources */,
 				012A0D8E1909D3F6005B69D7 /* Images.xcassets in Resources */,
+				441BE0FE192A86D000813D09 /* Sample Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -30,6 +30,8 @@ NSInteger const MBXMapKitErrorCodeDownloadingCanceled = -3;
 NSInteger const MBXMapKitErrorCodeOfflineMapHasNoDataForURL = -4;
 NSInteger const MBXMapKitErrorCodeOfflineMapSqlite = -5;
 NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
+NSInteger const MBXMapKitErrorCodeMBTilesDatabaseHasNoDataForPath = -7;
+
 
 
 #pragma mark - Helpers for creating verbose errors

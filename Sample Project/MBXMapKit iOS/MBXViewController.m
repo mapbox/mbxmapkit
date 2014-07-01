@@ -13,6 +13,7 @@
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (nonatomic) MBXRasterTileOverlay *rasterOverlay;
+@property (nonatomic) MBXMBTilesOverlay *mbtilesOverlay;
 @property (nonatomic) UIActionSheet *actionSheet;
 
 @property (weak, nonatomic) IBOutlet UIView *offlineMapProgressView;
@@ -107,6 +108,12 @@
     }
 }
 
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [self.mapView removeOverlays:self.mapView.overlays];
+    [super viewDidDisappear:animated];
+}
+
 
 #pragma mark - Things for switching between maps
 
@@ -114,7 +121,7 @@
 {
     // This is the list of options for selecting which map should be shown by the demo app
     //
-    return [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"World baselayer, no Apple",@"World overlay, Apple satellite",@"World baselayer, Apple labels",@"Regional baselayer, no Apple",@"Regional overlay, Apple streets",@"Alpha overlay, Apple streets", @"Offline map downloader", @"Offline map viewer", @"Attribution",nil];
+    return [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"World baselayer, no Apple",@"World overlay, Apple satellite",@"World baselayer, Apple labels",@"Regional baselayer, no Apple",@"Regional overlay, Apple streets",@"Alpha overlay, Apple streets", @"Offline map downloader", @"Offline map viewer", @"MBTiles database",nil];
 }
 
 
@@ -250,8 +257,17 @@
             [_mapView addOverlay:_rasterOverlay];
             break;
         case 8:
-            // Show Attribution
-            [self attribution:_rasterOverlay.attribution];
+            // MBTiles Database
+            [self resetMapViewAndRasterOverlayDefaults];
+            _currentlyViewingAnOfflineMap = YES;
+            
+            NSURL *mbtilesURL = [[NSBundle mainBundle] URLForResource:@"Sample Data/USAMapZoom0to6" withExtension:@"mbtiles"];
+            _mbtilesOverlay = [[MBXMBTilesOverlay alloc] initWithMBTilesURL:mbtilesURL];
+            if (_mbtilesOverlay) {
+                _mbtilesOverlay.shouldOverzoom = YES;
+                [self.mapView setRegion:MKCoordinateRegionForMapRect(_mbtilesOverlay.mapRect)];
+                [_mapView addOverlay:_mbtilesOverlay];
+            }
             break;
     }
 }
@@ -480,7 +496,8 @@
 {
     // This is boilerplate code to connect tile overlay layers with suitable renderers
     //
-    if ([overlay isKindOfClass:[MBXRasterTileOverlay class]])
+    if ([overlay isKindOfClass:[MBXRasterTileOverlay class]]
+        || [overlay isKindOfClass:[MBXMBTilesOverlay class]])
     {
         MKTileOverlayRenderer *renderer = [[MKTileOverlayRenderer alloc] initWithTileOverlay:overlay];
         return renderer;

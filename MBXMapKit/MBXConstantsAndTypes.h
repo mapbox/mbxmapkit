@@ -18,6 +18,7 @@ extern NSInteger const MBXMapKitErrorCodeDownloadingCanceled;
 extern NSInteger const MBXMapKitErrorCodeOfflineMapHasNoDataForURL;
 extern NSInteger const MBXMapKitErrorCodeOfflineMapSqlite;
 extern NSInteger const MBXMapKitErrorCodeURLSessionConnectivity;
+extern NSInteger const MBXMapKitErrorCodeMBTilesDatabaseHasNoDataForPath;
 
 
 #pragma mark - Image quality constants
