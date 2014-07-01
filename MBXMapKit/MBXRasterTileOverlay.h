@@ -10,7 +10,6 @@
 
 @class MBXRasterTileOverlay;
 @class MBXOfflineMapDatabase;
-@class MBXMBTilesDatabase;
 
 
 #pragma mark - Constants for the MBXMapKit error domain
@@ -81,9 +80,6 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
  *   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized.
  */
 - (id)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase;
-
-
-- (id)initWithMBTilesDatabase:(MBXMBTilesDatabase *)mbtilesDatabase;
 
 
 /** @name Delegate */
