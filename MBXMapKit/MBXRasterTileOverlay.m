@@ -120,18 +120,25 @@
 
     if ([size hasPrefix:@"l"])
     {
-        [marker appendString:@"l-"]; // large
+        [marker appendString:@"l"]; // large
     }
     else if ([size hasPrefix:@"s"])
     {
-        [marker appendString:@"s-"]; // small
+        [marker appendString:@"s"]; // small
     }
     else
     {
-        [marker appendString:@"m-"]; // default to medium
+        [marker appendString:@"m"]; // default to medium
     }
 
-    [marker appendFormat:@"%@+",symbol];
+    if ([symbol length] > 0)
+    {
+        [marker appendFormat:@"-%@+",symbol];
+    }
+    else
+    {
+        [marker appendString:@"+"];
+    }
 
     [marker appendString:[color stringByReplacingOccurrencesOfString:@"#" withString:@""]];
 
