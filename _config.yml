@@ -1,5 +1,5 @@
 api: https://122e4e-mapbox.global.ssl.fastly.net
 url: https://122e4e-mapbox.global.ssl.fastly.net
 baseurl: /mbxmapkit
-version: v0.2.1
+version: v0.3.0
 pygments: true
