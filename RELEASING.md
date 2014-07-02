@@ -10,7 +10,7 @@
 1. Update `CHANGELOG.md` with change notes for the version. 
 1. Update `README.md` as appropriate. Note that it references the screenshot mentioned above. 
 1. Create a tag with the version in `master` and push the tag. 
-1. Update the website docs in the `mb-pages` branch as appropriate. Be sure to update `version` in `_config.mb-pages.yml`. These docs might also reference the screenshot if it was updated above, so be sure to check context. 
+1. Update the website docs in the `mb-pages` branch as appropriate. Be sure to update `version` in `_config.yml` and `_config.mb-pages.yml`. These docs might also reference the screenshot if it was updated above, so be sure to check context. 
 1. Release on CocoaPods: 
     - Switch to the `packaging` branch. 
     - Run `git submodule update` to bring the CocoaPods working copy up to date. 
