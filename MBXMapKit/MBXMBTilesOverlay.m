@@ -71,7 +71,6 @@ NSString * const kMBTilesFormatPNG      = @"png";
 #pragma mark - MBXMBTilesOverlay, a subclass of MKTileOverlay
 
 @implementation MBXMBTilesOverlay {
-    dispatch_queue_t _tileLoadingQueue;
     sqlite3 *_db;
 }
 
@@ -93,11 +92,7 @@ NSString * const kMBTilesFormatPNG      = @"png";
             
             _mbtilesUrl = theURL;
             
-            // Set up dispatch queue for sqlite access
-            //
-            _tileLoadingQueue = dispatch_queue_create([[_mbtilesUrl path] cStringUsingEncoding:NSUTF8StringEncoding], DISPATCH_QUEUE_SERIAL);
-            
-            // Set up database on newly created queue
+            // Set up database connection for overlay
             //
             assert(sqlite3_threadsafe()==2);
             
@@ -324,49 +319,46 @@ NSString * const kMBTilesFormatPNG      = @"png";
         }
     };
     
-    [self asyncLoadMBTilesDataForPath:path workerBlock:nil completionHandler:completionHandler];
+    [self loadMBTilesDataForPath:path workerBlock:nil completionHandler:completionHandler];
     
     
 }
 
-- (void)asyncLoadMBTilesDataForPath:(MKTileOverlayPath)path
+- (void)loadMBTilesDataForPath:(MKTileOverlayPath)path
                         workerBlock:(void(^)(NSData *, NSError **))workerBlock
                   completionHandler:(void(^)(NSData *, NSError *))completionHandler
 {
-    dispatch_async(_tileLoadingQueue, ^{
+    NSData *data;
+    NSError *error;
+    
+    if(self.mbtilesMaximumZ >= path.z)
+    {
         
-        NSData *data;
-        NSError *error;
+        // Within regular zoom limits: Retrieve and return the specified tile
+        //
+        data = [self dataForPath:path withError:&error];
         
-        if(self.mbtilesMaximumZ >= path.z)
+        if (error)
         {
-            
-            // Within regular zoom limits: Retrieve and return the specified tile
+            // NSLog(@"%s: %@", __PRETTY_FUNCTION__, error.userInfo[NSLocalizedFailureReasonErrorKey]);
+        }
+    } else {
+        if (self.shouldOverzoom && path.z <= self.zoomLimit)
+        {
+            // Overzoomed: Retrieve the enclosing tile at the higest available zoom level, scale, crop, and return
             //
-            data = [self dataForPath:path withError:&error];
-            
-            if (error)
+            MKTileOverlayPath enclosingTilePath = [self enclosingTileForOverzoomedPath:path atZoom:self.mbtilesMaximumZ];
+            NSData *enclosingTile = [self dataForPath:enclosingTilePath withError:nil];
+            if(enclosingTile)
             {
-                // NSLog(@"%s: %@", __PRETTY_FUNCTION__, error.userInfo[NSLocalizedFailureReasonErrorKey]);
-            }
-        } else {
-            if (self.shouldOverzoom && path.z <= self.zoomLimit)
-            {
-                // Overzoomed: Retrieve the enclosing tile at the higest available zoom level, scale, crop, and return
-                //
-                MKTileOverlayPath enclosingTilePath = [self enclosingTileForOverzoomedPath:path atZoom:self.mbtilesMaximumZ];
-                NSData *enclosingTile = [self dataForPath:enclosingTilePath withError:nil];
-                if(enclosingTile)
-                {
-                    data = [self extractTileAtPath:path fromTile:enclosingTile atPath:enclosingTilePath];
-                }
+                data = [self extractTileAtPath:path fromTile:enclosingTile atPath:enclosingTilePath];
             }
         }
-        
-        if (workerBlock) workerBlock(data, &error);
-        
-        completionHandler(data, error);
-    });
+    }
+    
+    if (workerBlock) workerBlock(data, &error);
+    
+    completionHandler(data, error);
 }
 
 
