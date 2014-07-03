@@ -172,6 +172,11 @@
     [_rasterOverlay invalidateAndCancel];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     _currentlyViewingAnOfflineMap = NO;
+    
+    if (_mbtilesOverlay)
+    {
+        [_mapView removeOverlay:_mbtilesOverlay];
+    }
 }
 
 
