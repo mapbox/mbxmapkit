@@ -47,4 +47,4 @@ echo -e "$CONTENT" | \
   sed 's, Class Reference,,g' | \
   sed 's, Protocol Reference,,g' | \
   # Link header files to GitHub.
-  sed 's,>\(.*\.h\)<,><a href="https://github.com/mapbox/mbxmapkit/blob/master/\1">\1</a><,'
+  sed 's,>\(.*\.h\)<,><a href="https://github.com/mapbox/mbxmapkit/blob/master/MBXMapKit/\1">\1</a><,'
