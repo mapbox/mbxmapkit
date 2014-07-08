@@ -26,7 +26,7 @@ navigation:
 
   <div class='z1 contain'>
     <div class='pad2y center'>
-      <h2>Mapbox to iOS 7 with One Line of Code</h2>
+      <h2>Easy Mapbox integration with Apple's MapKit</h2>
     </div>
 
     <div class='wireframe z1 contain clip mobile-splash col4 margin4'>
@@ -70,13 +70,13 @@ var map = L.mapbox.map('map', 'examples.map-i87786ca', {
         <div class='pin-right'>
           <a href='#installation' class='icon x button quiet unround'></a>
         </div>
-        <p>Follow these steps in order to use the MBXMapKit within your own Xcode 5 project using <a href='http://cocoapods.org'>CocoaPods</a>. This is the easiest installation method if you are familiar with CocoaPods.</p>
+        <p>Follow these steps in order to use the MBXMapKit within your own Xcode 5+ project using <a href='http://cocoapods.org'>CocoaPods</a>. This is the easiest installation method if you are familiar with CocoaPods.</p>
         <ol>
           <li>Obtain the map ID for your hosted map by clicking <strong>Publish</strong> and copying the <strong>Map ID</strong>.</li>
           <li>Ensure that your <code>Podfile</code> is targeting <code>:ios</code> and <code>"7.0"</code> or <code>:osx</code> and <code>10.9</code>.</li>
           <li>Add a line containing <code>pod "MBXMapKit"</code> to your <code>Podfile</code>.</li>
           <li>Run <code>pod install</code> in the Terminal.</li>
-          <li>At a minimum, <code>#import &lt;MBXMapKit/MBXMapKit.h&gt;</code> and instantiate an <code>MBXMapView</code> in your code using the <code>-initWithFrame:mapID:</code> initializer and an <code>NSString</code> made from your <strong>Map ID</strong> obtained above.</li>
+          <li>At a minimum, <code>#import &lt;MBXMapKit/MBXMapKit.h&gt;</code>, instantiate an <code>MBXRasterTileOverlay</code> in your code using the <code>-initWithMapID:</code> initializer and an <code>NSString</code> made from your <strong>Map ID</strong> obtained above, and add the overlay to your <code>MKMapView</code>.</li>
         </ol>
       </div>
     </div>
@@ -87,13 +87,13 @@ var map = L.mapbox.map('map', 'examples.map-i87786ca', {
         <div class='pin-right'>
           <a href='#installation' class='icon x button quiet unround'></a>
         </div>
-        <p>Follow these steps in order to use MBXMapKit within your own Xcode 5 project while retaining the ability to edit the library source as you go. This is the most flexible installation method if you want to be able to modify the source code of the library.</p>
+        <p>Follow these steps in order to use MBXMapKit within your own Xcode 5+ project while retaining the ability to edit the library source as you go. This is the most flexible installation method if you want to be able to modify the source code of the library.</p>
         <ol>
           <li>Obtain the map ID for your hosted map by clicking <strong>Publish</strong> and copying the <strong>Map ID</strong>.</li>
           <li>Copy the library source code from the <a href='https://github.com/mapbox/mbxmapkit'>repository</a>.</li>
-          <li>Add <code>MBXMapKit.h</code> and <code>MBXMapKit.m</code> to your project’s file sources, either by dragging them into your project from Finder or via <code>File &gt; Add Files...</code>, in order to make the library available to your project.</li>
-          <li>Add MapKit to your app target’s <code>Link Binary With Libraries</code> build phase.</li>
-          <li>At a minimum, <code>#import MBXMapKit.h</code> and instantiate an <code>MBXMapView</code> in your code using the <code>-initWithFrame:mapID:</code> initializer and an <code>NSString</code> made from your <strong>Map ID</strong> obtained above.</li>
+          <li>Add the <code>.h</code> and <code>.m</code> files in the <code>MBXMapKit</code> folder to your project’s file sources, either by dragging them into your project from Finder or via <code>File &gt; Add Files...</code>, in order to make the library available to your project.</li>
+          <li>Add <code>MapKit.framework</code> and <code>libsqlite3.dylib</code> to your app target’s <code>Link Binary With Libraries</code> build phase.</li>
+          <li>At a minimum, <code>#import &lt;MBXMapKit/MBXMapKit.h&gt;</code>, instantiate an <code>MBXRasterTileOverlay</code> in your code using the <code>-initWithMapID:</code> initializer and an <code>NSString</code> made from your <strong>Map ID</strong> obtained above, and add the overlay to your <code>MKMapView</code>.</li>
         </ol>
       </div>
     </div>
@@ -101,25 +101,30 @@ var map = L.mapbox.map('map', 'examples.map-i87786ca', {
 </div>
 
 <div class='prose pad2 doc round fill-white keyline-all'>
-  <h2 id='api_overview'>API overview</h2>
-  <p>MBXMapKit works identically to Apple’s MapKit, since it’s a subclass derivative, so check out <a href='https://developer.apple.com/library/ios/#documentation/MapKit/Reference/MapKit_Framework_Reference'>Apple’s MapKit documentation</a> for details on getting started. MBXMapKit provides several additional features:</p>
+  <h2 id='api_overview'>Feature overview</h2>
+  <p>MBXMapKit makes it easy to integrate custom maps that you've made with Mapbox into your MapKit projects. Using MBXMapKit, you can:</p>
   <ul>
-    <li>The option to set a <code>mapID</code> to use any Mapbox map.</li>
-    <li>Toggle the visibility of Apple’s default maps under a Mapbox map.</li>
-    <li>Control offline map tile caching duration.</li>
-    <li>Swap in a completely custom offline map to the tile caching system.</li>
-    <li>Support for the Mapbox <a href="https://www.mapbox.com/developers/api/static/#markers">markers API</a> and <a href="https://www.mapbox.com/maki/">Maki</a>.</li>
-    <li>Support for Mapbox-hosted <a href="https://www.mapbox.com/developers/api/maps/#geojson">simplestyle GeoJSON</a>.</li>
-    <li>Support for the Mapbox <a href="https://www.mapbox.com/developers/api/static/#format">image quality API</a>.</li>
+    <li>Use a custom styled Mapbox map made with <a href="https://www.mapbox.com/foundations/make-your-first-map/">the Mapbox online editor</a> to completely replace Apple's maps.</li>
+    <li>Create a transparent regional overlay in <a href="http://mapbox.com/tilemill">TileMill</a>, upload it to Mapbox, then add it as an overlay to any MapKit-based map.</li>
+    <li>Download Mapbox maps, including any server-side markers and their icons, for completely and unlimited offline use when a network connection isn't available.</li>
+    <li>Control the image quality of downloaded maps in order to optimize bandwidth use.</li>
+  </ul>
+
+  <h2 id='api_overview'>API overview</h2>
+  <p>MBXMapKit's main workhorse is <code>MBXRasterTileOverlay</code>, which makes it easy to add raster map tile layers (either replacing or adding to existing map content). To familiarize yourself with overlays, check out <a href='https://developer.apple.com/library/ios/#documentation/MapKit/Reference/MapKit_Framework_Reference'>Apple’s MapKit documentation</a> for details on getting started. Using overlays means that Apple's framework is only added to, allowing for all of its strengths to be leveraged as well as existing MapKit-based code to be easily migrated to MBXMapKit.</p>
+  <ul>
+    <li><code>MBXRasterTileOverlay</code> lets you easily add one or more overlays using either a Mapbox <a href="https://www.mapbox.com/foundations/glossary/#mapid">Map ID</a> for online, Mapbox-hosted maps, or a previously-cached <code>MBXOfflineMapDatabase</code>.</li>
+    <li>The <code>MBXRasterTileOverlayDelegate</code> protocol works with overlays to allow you to tap into overlay lifecycle events such as metadata and marker loading and possible errors encountered along the way.</li>
+    <li><code>MBXOfflineMapDownloader</code> is a shared object for downloading offline maps tile-by-tile. Mapbox offers unrestricted control for caching our maps such as <a href='/maps/'>Mapbox Streets</a> on mobile devices with MBXMapKit.</li>
+    <li>The <code>MBXOfflineMapDownloaderDelegate</code> protocol lets you track the state and progress of map download operations.</li>
   </ul>
   <p>Full API documentation is available right in Xcode, either inline or in Xcode's Quick Help inspector. You can also run the provided <code>install_docs.sh</code> script, which leverages <a href="http://gentlebytes.com/appledoc/">appledoc</a> to create and install a documentation set into Xcode's documentation viewer.</p>
 
   <h3 id='tile_caching'>Tile caching</h3>
-  <p>Mapbox offers unrestricted control for caching our maps such as <a href='/maps/'>Mapbox Streets</a> on mobile devices with MBXMapKit.</p>
 
   <div class='note small'>
     <strong>Caching usage</strong><br />
-    You can cache maps for as much and as long as you like but you may not run a proxy or intermediate cache between Mapbox and devices or furher redistribute maps from a devices cache. For the full details see our <a href='/tos/'>Terms of Service</a>.
+    You can cache maps for as much and as long as you like but you may not run a proxy or intermediate cache between Mapbox and devices or further redistribute maps from a devices cache. For the full details see our <a href='/tos/'>Terms of Service</a>.
   </div>
 
   <h3 id='retina_support'>Retina support</h3>
