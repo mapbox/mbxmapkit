@@ -132,6 +132,19 @@
     self.invalid = YES;
 }
 
+- (NSDate*)createdAt
+{
+    NSFileManager* fm = [NSFileManager defaultManager];
+    NSDictionary* attrs = [fm attributesOfItemAtPath:_path error:nil];
+    
+    if (attrs != nil) {
+        NSDate *date = (NSDate*)[attrs objectForKey: NSFileCreationDate];
+        return date;
+    }
+    
+    return nil;
+}
+
 
 #pragma mark - sqlite stuff
 
