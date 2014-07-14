@@ -132,7 +132,7 @@
     self.invalid = YES;
 }
 
-- (NSDate*)createdAt
+- (NSDate*)creationDate
 {
     NSFileManager* fm = [NSFileManager defaultManager];
     NSDictionary* attrs = [fm attributesOfItemAtPath:_path error:nil];

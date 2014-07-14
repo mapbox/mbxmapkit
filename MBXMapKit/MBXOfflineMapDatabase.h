@@ -47,7 +47,7 @@
 @property (readonly, nonatomic, getter=isInvalid) BOOL invalid;
 
 /** Initial creation date of the offline map database. */
-@property (readonly, nonatomic) NSDate *createdAt;
+@property (readonly, nonatomic) NSDate *creationDate;
 
 - (instancetype)init __attribute__((unavailable("To instantiate MBXOfflineMapDatabase objects, please use the capabilities provided by MBXOfflineMapDownloader.")));
 
