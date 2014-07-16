@@ -838,7 +838,7 @@
         //
         if(includeMetadata)
         {
-            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@.json",mapID]];
+            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@.json?secure",mapID]];
         }
         if(includeMarkers)
         {
