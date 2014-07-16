@@ -34,7 +34,15 @@
 /** Global convenience methods for the framework. */
 @interface MBXMapKit : NSObject
 
-/** @name Setting the User Agent for Mapbox API calls */
+/** @name Authorizing Access */
+
+/** Sets the global access token for Mapbox API HTTP requests. Obtain an access token on the [Mapbox account page](https://www.mapbox.com/account/apps/). */
++ (void)setAccessToken:(NSString *)accessToken;
+
+/** Returns the global access token for Mapbox API HTTP requests. */
++ (NSString *)accessToken;
+
+/** @name Using a Custom User Agent */
 
 /** Sets the global user agent for Mapbox API HTTP requests.
 *

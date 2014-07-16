@@ -16,6 +16,7 @@
 #import <objc/runtime.h>
 
 NSString *const MBXMapKitVersion = @"0.3.0";
+const void *MBXAccessTokenAssociatedObjectKey = @"MBXAccessTokenAssociatedObjectKey";
 const void *MBXUserAgentAssociatedObjectKey = @"MBXUserAgentAssociatedObjectKey";
 
 #pragma mark - Add support to MKMapView for using Mapbox-style center/zoom to configure the visible region
@@ -43,6 +44,26 @@ NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 #pragma mark - Global configuration
 
 @implementation MBXMapKit
+
++ (void)setAccessToken:(NSString *)accessToken
+{
+#if TARGET_OS_IPHONE
+    objc_setAssociatedObject([UIApplication sharedApplication], MBXAccessTokenAssociatedObjectKey, accessToken, OBJC_ASSOCIATION_COPY);
+#else
+    objc_setAssociatedObject([NSApplication sharedApplication], MBXAccessTokenAssociatedObjectKey, accessToken, OBJC_ASSOCIATION_COPY);
+#endif
+}
+
++ (NSString *)accessToken
+{
+#if TARGET_OS_IPHONE
+    NSString *accessToken = objc_getAssociatedObject([UIApplication sharedApplication], MBXAccessTokenAssociatedObjectKey);
+#else
+    NSString *accessToken = objc_getAssociatedObject([NSApplication sharedApplication], MBXAccessTokenAssociatedObjectKey);
+#endif
+
+    return accessToken;
+}
 
 + (void)setUserAgent:(NSString *)userAgent
 {

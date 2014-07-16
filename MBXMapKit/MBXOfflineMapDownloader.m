@@ -834,17 +834,27 @@
 
         NSMutableArray *urls = [[NSMutableArray alloc] init];
 
+        NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
+        NSString *dataName = ([MBXMapKit accessToken] ? @"features.json" : @"markers.geojson");
+        NSString *accessToken = ([MBXMapKit accessToken] ? [@"access_token=" stringByAppendingString:[MBXMapKit accessToken]] : nil);
+
         // Include URLs for the metadata and markers json if applicable
         //
         if(includeMetadata)
         {
-            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@.json?secure",mapID]];
+            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@.json?secure%@",
+                                version,
+                                mapID,
+                                (accessToken ? [@"&" stringByAppendingString:accessToken] : @"")]];
         }
         if(includeMarkers)
         {
-            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson",mapID]];
+            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%@%@",
+                                version,
+                                mapID,
+                                dataName,
+                                (accessToken ? [@"?" stringByAppendingString:accessToken] : @"")]];
         }
-
 
         // Loop through the zoom levels and lat/lon bounds to generate a list of urls which should be included in the offline map
         //
@@ -868,7 +878,8 @@
             {
                 for(NSUInteger y=minY; y<=maxY; y++)
                 {
-                    [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/%ld/%ld/%ld%@.%@",
+                    [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%ld/%ld/%ld%@.%@%@",
+                                     ([MBXMapKit accessToken] ? @"v4" : @"v3"),
                                      mapID,
                                      (long)zoom,
                                      (long)x,
@@ -881,7 +892,8 @@
                                      //
                                      @"",
 #endif
-                                     [MBXRasterTileOverlay qualityExtensionForImageQuality:_imageQuality]
+                                     [MBXRasterTileOverlay qualityExtensionForImageQuality:_imageQuality],
+                                     ([MBXMapKit accessToken] ? [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]] : @"")
                                      ]
                      ];
                 }
@@ -889,11 +901,12 @@
         }
 
 
-        // Determine if we need to add marker icon urls (i.e. parse markers.geojson), and if so, add them
+        // Determine if we need to add marker icon urls (i.e. parse markers.geojson/features.json), and if so, add them
         //
         if(includeMarkers)
         {
-            NSURL *geojson = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson",mapID]];
+            NSString *dataName = ([MBXMapKit accessToken] ? @"features.json" : @"markers.geojson");
+            NSURL *geojson = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/%@", mapID, dataName]];
             NSURLSessionDataTask *task;
             NSURLRequest *request = [NSURLRequest requestWithURL:geojson cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
             task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
@@ -901,7 +914,7 @@
                 if(error)
                 {
                     // We got a session level error which probably indicates a connectivity problem such as airplane mode.
-                    // Since we must fetch and parse markers.geojson in order to determine which marker icons need to be
+                    // Since we must fetch and parse markers.geojson/features.json in order to determine which marker icons need to be
                     // added to the list of urls to download, the lack of network connectivity is a non-recoverable error
                     // here.
                     //
@@ -912,7 +925,7 @@
                 {
                     if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
                     {
-                        // The url for markers.geojson didn't work (some maps don't have any markers). Notify the delegate of the
+                        // The url for markers.geojson/features.json didn't work (some maps don't have any markers). Notify the delegate of the
                         // problem, and stop attempting to add marker icons, but don't bail out on whole the offline map download.
                         // The delegate can decide for itself whether it wants to continue or cancel.
                         //

@@ -151,7 +151,10 @@
     [marker appendString:@".png"];
 #endif
 
-    return [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/marker/%@", marker]];
+    NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
+    NSString *accessToken = ([MBXMapKit accessToken] ? [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]] : @"");
+
+    return [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/marker/%@%@", version, marker, accessToken]];
 }
 
 
@@ -212,14 +215,22 @@
     config.HTTPAdditionalHeaders = @{ @"User-Agent" : [MBXMapKit userAgent] };
     _dataSession = [NSURLSession sessionWithConfiguration:config];
 
-
     // Save the map configuration
     //
+    NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
+    NSString *dataName = ([MBXMapKit accessToken] ? @"features.json" : @"markers.geojson");
+    NSString *accessToken = ([MBXMapKit accessToken] ? [@"access_token=" stringByAppendingString:[MBXMapKit accessToken]] : nil);
     _mapID = mapID;
     _imageQuality = imageQuality;
-    _metadataURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@.json?secure", _mapID]];
-    _markersURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/markers.geojson", _mapID]];
-
+    _metadataURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@.json?secure%@",
+                                            version,
+                                            _mapID,
+                                         (accessToken ? [@"&" stringByAppendingString:accessToken] : @"")]];
+    _markersURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%@%@",
+                                           version,
+                                           _mapID,
+                                           dataName,
+                                           (accessToken ? [@"?" stringByAppendingString:accessToken] : @"")]];
 
     // Default to covering up Apple's map
     //
@@ -279,13 +290,15 @@
         return;
     }
 
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/%ld/%ld/%ld%@.%@",
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%ld/%ld/%ld%@.%@%@",
+                                       ([MBXMapKit accessToken] ? @"v4" : @"v3"),
                                        _mapID,
                                        (long)path.z,
                                        (long)path.x,
                                        (long)path.y,
                                        (path.contentScaleFactor > 1.0 ? @"@2x" : @""),
-                                       [MBXRasterTileOverlay qualityExtensionForImageQuality:_imageQuality]
+                                       [MBXRasterTileOverlay qualityExtensionForImageQuality:_imageQuality],
+                                       ([MBXMapKit accessToken] ? [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]] : @"")
                                        ]];
 
     void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
@@ -472,7 +485,7 @@
         {
             if(_activeMarkerIconRequests <= 0)
             {
-                // Handle the case where all the marker icons URLs finished loading before the markers.geojson finished parsing
+                // Handle the case where all the marker icons URLs finished loading before the markers.geojson/features.json finished parsing
                 //
                 _markers = [NSArray arrayWithArray:_mutableMarkers];
                 [self notifyDelegateDidLoadMarkers:_markers withError:error];
