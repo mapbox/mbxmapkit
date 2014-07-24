@@ -3,11 +3,13 @@ Pod::Spec.new do |m|
   m.name    = 'MBXMapKit'
   m.version = '0.3.0'
 
-  m.summary     = 'Lightweight Mapbox integration with MapKit on iOS and OS X.'
-  m.description = 'Lightweight Mapbox integration with MapKit on iOS and OS X for custom map styles and complete offline control.'
-  m.homepage    = 'https://www.mapbox.com/mbxmapkit/'
-  m.license     = 'BSD'
-  m.author      = { 'Mapbox' => 'mobile@mapbox.com' }
+  m.summary          = 'Lightweight Mapbox integration with MapKit on iOS and OS X.'
+  m.description      = 'Lightweight Mapbox integration with MapKit on iOS and OS X for custom map styles and complete offline control.'
+  m.homepage         = 'https://www.mapbox.com/mbxmapkit/'
+  m.license          = 'BSD'
+  m.author           = { 'Mapbox' => 'mobile@mapbox.com' }
+  m.screenshot       = 'https://raw.githubusercontent.com/mapbox/mbxmapkit/packaging/screenshot.png'
+  m.social_media_url = 'https://twitter.com/Mapbox'
 
   m.source = { :git => 'https://github.com/mapbox/mbxmapkit.git', :branch => 'master' }
 
