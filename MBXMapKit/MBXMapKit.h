@@ -36,7 +36,8 @@
 
 /** @name Authorizing Access */
 
-/** Sets the global access token for Mapbox API HTTP requests. Obtain an access token on the [Mapbox account page](https://www.mapbox.com/account/apps/). */
+/** Sets the global access token for Mapbox API HTTP requests. Obtain an access token on the [Mapbox account page](https://www.mapbox.com/account/apps/).
+*   @param accessToken A Mapbox API access token. */
 + (void)setAccessToken:(NSString *)accessToken;
 
 /** Returns the global access token for Mapbox API HTTP requests. */
