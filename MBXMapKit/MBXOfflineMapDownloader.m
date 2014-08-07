@@ -46,6 +46,7 @@
 
 @interface MBXOfflineMapDownloader ()
 
+@property (readwrite, nonatomic) NSString *uniqueID;
 @property (readwrite, nonatomic) NSString *mapID;
 @property (readwrite, nonatomic) BOOL includesMetadata;
 @property (readwrite, nonatomic) BOOL includesMarkers;
@@ -807,6 +808,7 @@
 
         // Start a download job to retrieve all the resources needed for using the specified map offline
         //
+        _uniqueID = [[NSUUID UUID] UUIDString];
         _mapID = mapID;
         _includesMetadata = includeMetadata;
         _includesMarkers = includeMarkers;
@@ -819,6 +821,7 @@
 
         NSDictionary *metadataDictionary =
         @{
+          @"uniqueID": _uniqueID,
           @"mapID": mapID,
           @"includesMetadata" : includeMetadata?@"YES":@"NO",
           @"includesMarkers" : includeMarkers?@"YES":@"NO",
@@ -1169,5 +1172,16 @@
     }
 }
 
+- (void)removeOfflineMapDatabaseWithID:(NSString *)uniqueID
+{
+    for (MBXOfflineMapDatabase *database in [self offlineMapDatabases])
+    {
+        if ([database.uniqueID isEqualToString:uniqueID])
+        {
+            [self removeOfflineMapDatabase:database];
+            return;
+        }
+    }
+}
 
 @end

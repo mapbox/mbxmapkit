@@ -179,8 +179,12 @@ typedef NS_ENUM(NSUInteger, MBXOfflineMapDownloaderState) {
 
 /** @name Removing Offline Maps */
 
-/** Invalidates an offline map and removes its associated backing database on disk. This is designed for managing the disk storage consumed by offline maps. 
+/** Invalidates a given offline map and removes its associated backing database on disk. This is designed for managing the disk storage consumed by offline maps.
 *   @param offlineMapDatabase The offline map database to invalidate. */
 - (void)removeOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase;
+
+/** Invalidates the offline map with the given unique identifier and removes its associated backing database on disk. This is designed for managing the disk storage consumed by offline maps.
+*   @param uniqueID The unique ID of the map database to invalidate. */
+- (void)removeOfflineMapDatabaseWithID:(NSString *)uniqueID;
 
 @end
