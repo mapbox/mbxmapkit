@@ -13,11 +13,7 @@
 
 #import "MBXMapKit.h"
 
-#import <objc/runtime.h>
-
 NSString *const MBXMapKitVersion = @"0.3.0";
-const void *MBXAccessTokenAssociatedObjectKey = @"MBXAccessTokenAssociatedObjectKey";
-const void *MBXUserAgentAssociatedObjectKey = @"MBXUserAgentAssociatedObjectKey";
 
 #pragma mark - Add support to MKMapView for using Mapbox-style center/zoom to configure the visible region
 
@@ -43,44 +39,48 @@ NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 
 #pragma mark - Global configuration
 
+@interface MBXMapKit ()
+
+@property (nonatomic) NSString *accessToken;
+@property (nonatomic) NSString *userAgent;
+
+@end
+
+#pragma mark -
+
 @implementation MBXMapKit
+
++ (instancetype)sharedInstance
+{
+    static id _sharedInstance = nil;
+    static dispatch_once_t onceToken;
+
+    dispatch_once(&onceToken, ^(void)
+    {
+        _sharedInstance = [[self alloc] init];
+    });
+
+    return _sharedInstance;
+}
 
 + (void)setAccessToken:(NSString *)accessToken
 {
-#if TARGET_OS_IPHONE
-    objc_setAssociatedObject([UIApplication sharedApplication], MBXAccessTokenAssociatedObjectKey, accessToken, OBJC_ASSOCIATION_COPY);
-#else
-    objc_setAssociatedObject([NSApplication sharedApplication], MBXAccessTokenAssociatedObjectKey, accessToken, OBJC_ASSOCIATION_COPY);
-#endif
+    [[MBXMapKit sharedInstance] setAccessToken:accessToken];
 }
 
 + (NSString *)accessToken
 {
-#if TARGET_OS_IPHONE
-    NSString *accessToken = objc_getAssociatedObject([UIApplication sharedApplication], MBXAccessTokenAssociatedObjectKey);
-#else
-    NSString *accessToken = objc_getAssociatedObject([NSApplication sharedApplication], MBXAccessTokenAssociatedObjectKey);
-#endif
-
-    return accessToken;
+    return [[MBXMapKit sharedInstance] accessToken];
 }
 
 + (void)setUserAgent:(NSString *)userAgent
 {
-#if TARGET_OS_IPHONE
-    objc_setAssociatedObject([UIApplication sharedApplication], MBXUserAgentAssociatedObjectKey, userAgent, OBJC_ASSOCIATION_COPY);
-#else
-    objc_setAssociatedObject([NSApplication sharedApplication], MBXUserAgentAssociatedObjectKey, userAgent, OBJC_ASSOCIATION_COPY);
-#endif
+    [[MBXMapKit sharedInstance] setUserAgent:userAgent];
 }
 
 + (NSString *)userAgent
 {
-#if TARGET_OS_IPHONE
-    NSString *userAgent = objc_getAssociatedObject([UIApplication sharedApplication], MBXUserAgentAssociatedObjectKey);
-#else
-    NSString *userAgent = objc_getAssociatedObject([NSApplication sharedApplication], MBXUserAgentAssociatedObjectKey);
-#endif
+    NSString *userAgent = [[MBXMapKit sharedInstance] userAgent];
 
     if ( ! userAgent)
     {
@@ -89,6 +89,8 @@ NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 #else
         userAgent = [NSString stringWithFormat:@"MBXMapKit %@ (OS X/%@)", MBXMapKitVersion, [[NSProcessInfo processInfo] operatingSystemVersionString]];
 #endif
+
+        [[MBXMapKit sharedInstance] setUserAgent:userAgent];
     }
 
     return userAgent;
