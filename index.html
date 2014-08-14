@@ -92,7 +92,7 @@ var map = L.mapbox.map('map', 'examples.map-i87786ca', {
           <li>Obtain the map ID for your hosted map by clicking <strong>Publish</strong> and copying the <strong>Map ID</strong>.</li>
           <li>Copy the library source code from the <a href='https://github.com/mapbox/mbxmapkit'>repository</a>.</li>
           <li>Add the <code>.h</code> and <code>.m</code> files in the <code>MBXMapKit</code> folder to your project’s file sources, either by dragging them into your project from Finder or via <code>File &gt; Add Files...</code>, in order to make the library available to your project.</li>
-          <li>Add <code>MapKit.framework</code> and <code>libsqlite3.dylib</code> to your app target’s <code>Link Binary With Libraries</code> build phase.</li>
+          <li>Add <code>libsqlite3.dylib</code> to your app target’s <code>Link Binary With Libraries</code> build phase.</li>
           <li>At a minimum, <code>#import &lt;MBXMapKit/MBXMapKit.h&gt;</code>, instantiate an <code>MBXRasterTileOverlay</code> in your code using the <code>-initWithMapID:</code> initializer and an <code>NSString</code> made from your <strong>Map ID</strong> obtained above, and add the overlay to your <code>MKMapView</code>.</li>
         </ol>
       </div>
