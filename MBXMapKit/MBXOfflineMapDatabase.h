@@ -22,7 +22,10 @@
 
 /** @name Getting and Setting Properties */
 
-/** The map ID from which the map resources in this offline map were downloaded. */
+/** A unique identifier for the offline map database. */
+@property (readonly, nonatomic) NSString *uniqueID;
+
+/** The Mapbox map ID from which the map resources in this offline map were downloaded. */
 @property (readonly, nonatomic) NSString *mapID;
 
 /** Whether this offline map database includes the map's metadata JSON. */

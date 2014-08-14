@@ -26,6 +26,7 @@
 
 @interface MBXOfflineMapDatabase ()
 
+@property (readwrite, nonatomic) NSString *uniqueID;
 @property (readwrite, nonatomic) NSString *mapID;
 @property (readwrite, nonatomic) BOOL includesMetadata;
 @property (readwrite, nonatomic) BOOL includesMarkers;
@@ -54,6 +55,7 @@
     {
         _path = path;
 
+        NSString *uniqueID = [self sqliteMetadataForName:@"uniqueID"];
         NSString *mapID = [self sqliteMetadataForName:@"mapID"];
         NSString *includesMetadata = [self sqliteMetadataForName:@"includesMetadata"];
         NSString *includesMarkers = [self sqliteMetadataForName:@"includesMarkers"];
@@ -65,6 +67,18 @@
         NSString *minimumZ = [self sqliteMetadataForName:@"minimumZ"];
         NSString *maximumZ = [self sqliteMetadataForName:@"maximumZ"];
 
+        if ( ! uniqueID)
+        {
+            uniqueID = [NSString stringWithFormat:@"%@-%@-%@-%@-%@-%@-%@-%f",
+                           mapID,
+                           region_latitude,
+                           region_longitude,
+                           region_latitude_delta,
+                           region_longitude_delta,
+                           minimumZ,
+                           maximumZ,
+                           [[self creationDate] timeIntervalSince1970]];
+        }
 
         if (mapID && includesMetadata && includesMarkers && imageQuality
             && region_latitude && region_longitude && region_latitude_delta && region_longitude_delta
@@ -75,7 +89,8 @@
             // all the required values in its metadata table. That means the file passed the test for being a valid
             // offline map database.
             //
-            _mapID =     mapID;
+            _uniqueID = uniqueID;
+            _mapID = mapID;
             _includesMetadata = [includesMetadata boolValue];
             _includesMarkers =  [includesMarkers boolValue];
 
