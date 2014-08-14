@@ -5,7 +5,7 @@
 //  Copyright (c) 2014 Mapbox. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
 @interface MBXAppDelegate : UIResponder <UIApplicationDelegate>
 

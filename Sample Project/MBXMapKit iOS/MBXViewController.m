@@ -8,7 +8,6 @@
 #import "MBXViewController.h"
 #import "MBXMapKit.h"
 
-
 @interface MBXViewController ()
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;

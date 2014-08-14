@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		012A0D801909D3F6005B69D7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 014DA1EC18C45AE000AB33F8 /* UIKit.framework */; };
 		012A0D861909D3F6005B69D7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 012A0D841909D3F6005B69D7 /* InfoPlist.strings */; };
 		012A0D881909D3F6005B69D7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 012A0D871909D3F6005B69D7 /* main.m */; };
 		012A0D8E1909D3F6005B69D7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 012A0D8D1909D3F6005B69D7 /* Images.xcassets */; };
@@ -15,14 +14,12 @@
 		012A0DAC1909D515005B69D7 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 012A0DA91909D515005B69D7 /* Main_iPhone.storyboard */; };
 		012A0DB11909D52E005B69D7 /* MBXAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 012A0DAE1909D52E005B69D7 /* MBXAppDelegate.m */; };
 		012A0DB21909D52E005B69D7 /* MBXViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 012A0DB01909D52E005B69D7 /* MBXViewController.m */; };
-		012A0DB41909D58E005B69D7 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 012A0DB31909D58E005B69D7 /* MapKit.framework */; };
 		012A0DB81909D5FC005B69D7 /* MBXMapKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F793D1909D1D200EF8AD1 /* MBXMapKit.m */; };
 		012A0DB91909D5FC005B69D7 /* MBXOfflineMapDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F793F1909D1D200EF8AD1 /* MBXOfflineMapDatabase.m */; };
 		012A0DBA1909D5FC005B69D7 /* MBXOfflineMapDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79411909D1D200EF8AD1 /* MBXOfflineMapDownloader.m */; };
 		012A0DBB1909D5FC005B69D7 /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79431909D1D200EF8AD1 /* MBXPointAnnotation.m */; };
 		012A0DBC1909D5FC005B69D7 /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79451909D1D200EF8AD1 /* MBXRasterTileOverlay.m */; };
-		DD1AFFC11912F52400711D4D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD1AFFC01912F52400711D4D /* Foundation.framework */; };
-		DD1AFFC71912F69700711D4D /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD1AFFC61912F69700711D4D /* libsqlite3.dylib */; };
+		DDB97D07199D72A5006EC3A6 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DDB97D06199D72A5006EC3A6 /* libsqlite3.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,8 +35,6 @@
 		012A0DAE1909D52E005B69D7 /* MBXAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXAppDelegate.m; sourceTree = "<group>"; };
 		012A0DAF1909D52E005B69D7 /* MBXViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXViewController.h; sourceTree = "<group>"; };
 		012A0DB01909D52E005B69D7 /* MBXViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXViewController.m; sourceTree = "<group>"; };
-		012A0DB31909D58E005B69D7 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		014DA1EC18C45AE000AB33F8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0161CFE619140CEA00692A7A /* MBXConstantsAndTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MBXConstantsAndTypes.h; path = ../MBXMapKit/MBXConstantsAndTypes.h; sourceTree = "<group>"; };
 		017F793C1909D1D200EF8AD1 /* MBXMapKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXMapKit.h; sourceTree = "<group>"; };
 		017F793D1909D1D200EF8AD1 /* MBXMapKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXMapKit.m; sourceTree = "<group>"; };
@@ -51,8 +46,7 @@
 		017F79431909D1D200EF8AD1 /* MBXPointAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXPointAnnotation.m; sourceTree = "<group>"; };
 		017F79441909D1D200EF8AD1 /* MBXRasterTileOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXRasterTileOverlay.h; sourceTree = "<group>"; };
 		017F79451909D1D200EF8AD1 /* MBXRasterTileOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXRasterTileOverlay.m; sourceTree = "<group>"; };
-		DD1AFFC01912F52400711D4D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		DD1AFFC61912F69700711D4D /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		DDB97D06199D72A5006EC3A6 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,10 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD1AFFC11912F52400711D4D /* Foundation.framework in Frameworks */,
-				012A0DB41909D58E005B69D7 /* MapKit.framework in Frameworks */,
-				012A0D801909D3F6005B69D7 /* UIKit.framework in Frameworks */,
-				DD1AFFC71912F69700711D4D /* libsqlite3.dylib in Frameworks */,
+				DDB97D07199D72A5006EC3A6 /* libsqlite3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,17 +88,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		014DA1E718C45AE000AB33F8 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				DD1AFFC01912F52400711D4D /* Foundation.framework */,
-				012A0DB31909D58E005B69D7 /* MapKit.framework */,
-				014DA1EC18C45AE000AB33F8 /* UIKit.framework */,
-				DD1AFFC61912F69700711D4D /* libsqlite3.dylib */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		017F793B1909D1D200EF8AD1 /* MBXMapKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -127,12 +107,21 @@
 			path = ../mbxmapkit;
 			sourceTree = "<group>";
 		};
+		DDB97D08199D72AB006EC3A6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DDB97D06199D72A5006EC3A6 /* libsqlite3.dylib */,
+			);
+			name = Frameworks;
+			path = ../mbxmapkit;
+			sourceTree = "<group>";
+		};
 		DDD5905A17D7D086009291B8 = {
 			isa = PBXGroup;
 			children = (
 				012A0D811909D3F6005B69D7 /* Sample App (iOS) */,
 				017F793B1909D1D200EF8AD1 /* MBXMapKit */,
-				014DA1E718C45AE000AB33F8 /* Frameworks */,
+				DDB97D08199D72AB006EC3A6 /* Frameworks */,
 				DDD5906417D7D086009291B8 /* Products */,
 			);
 			sourceTree = "<group>";

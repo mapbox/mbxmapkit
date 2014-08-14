@@ -30,9 +30,7 @@ The way that MBXMapKit is designed to be used revolves around the idea of instan
 
 ### Linking Requirements
 
-MBXMapKit requires `libsqlite3.dylib` and `MapKit.framework` to be linked with your build target in order to compile properly.
-
-
+MBXMapKit requires `libsqlite3.dylib` to be linked with your build target in order to compile properly.
 
 ### Getting Help
 
@@ -70,7 +68,7 @@ To include MBXMapKit in your app you will need to:
  
  1. Make sure you have the map capability turned on for your build target (select project, select build target, select *Capabilities* tab, flip the switch to `ON` for Maps).
  
- 1. Make sure that your build target is linked with `libsqlite3.dylib` and `MapKit.framework` (select project, select build target, select *Build Phases* tab, expand *Link Binary With Libraries*, and check the list). When you turn on the map capability, the MapKit framework should be added automatically, but you will probably need to add `libsqlite3.dylib` unless you are already using SQLite for something.
+ 1. Make sure that your build target is linked with `libsqlite3.dylib` (select project, select build target, select *Build Phases* tab, expand *Link Binary With Libraries*, and check the list). When you turn on the map capability, the MapKit framework should be added automatically, but you will probably need to add `libsqlite3.dylib` unless you are already using SQLite for something.
  
  1. Study the view controller in the iOS sample app. It's meant to be liberally copied and pasted. In particular, take a look at `-viewDidLoad`, `-resetMapViewAndRasterOverlayDefaults`, `-actionSheet:clickedButtonAtIndex:`, the `MBXOfflineMapDownloaderDelegate` callbacks, `-mapView:rendererForOverlay:`, `-mapView:viewForAnnotation:`, and the `MBXRasterTileOverlayDelegate` callbacks.
  

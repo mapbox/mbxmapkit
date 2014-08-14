@@ -22,11 +22,6 @@ Pod::Spec.new do |m|
 
   m.documentation_url = 'https://www.mapbox.com/mbxmapkit/'
 
-  m.framework = 'Foundation'
-  m.framework = 'MapKit'
-  m.ios.framework = 'UIKit'
-  m.osx.framework = 'AppKit'
-
   m.library = 'sqlite3'
 
 end

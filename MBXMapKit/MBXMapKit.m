@@ -6,9 +6,9 @@
 //
 
 #if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
+@import UIKit;
 #else
-#import <AppKit/AppKit.h>
+@import AppKit;
 #endif
 
 #import "MBXMapKit.h"

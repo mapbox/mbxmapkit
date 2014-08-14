@@ -5,8 +5,9 @@
 //  Copyright (c) 2014 Mapbox. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import <MapKit/MapKit.h>
+@import UIKit;
+@import MapKit;
+
 #import "MBXMapKit.h"
 
 @interface MBXViewController : UIViewController <UIActionSheetDelegate, MKMapViewDelegate, MBXRasterTileOverlayDelegate, MBXOfflineMapDownloaderDelegate, UIAlertViewDelegate>
