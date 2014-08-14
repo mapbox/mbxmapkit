@@ -1,6 +1,17 @@
 Changelog
 ---------
 
+### 0.4.0
+#### August 14, 2014
+
+- Added support for Mapbox `v4` API and access tokens in tile and metadata requests. 
+- Added `uniqueID` property to offline map databases for use when multiple regions with the same `mapID` are saved. 
+- Added `creationDate` reference property to offline map databases. 
+- Now ensures that all Mapbox API requests are over HTTPS. 
+- Moved to `@import` modules for UIKit/AppKit linking requirements. 
+- Fixed a bug with marker icon request URL formatting. 
+- Some light refactoring. 
+
 ### 0.3.0
 #### June 12, 2014
 
