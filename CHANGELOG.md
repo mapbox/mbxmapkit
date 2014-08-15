@@ -4,7 +4,7 @@ Changelog
 ### 0.4.0
 #### August 14, 2014
 
-- Added support for Mapbox `v4` API and access tokens in tile and metadata requests. 
+- Added support for Mapbox `v4` API and [access tokens](https://www.mapbox.com/developers/api/#access-tokens) in tile and metadata requests. 
 - Added `uniqueID` property to offline map databases for use when multiple regions with the same `mapID` are saved. 
 - Added `creationDate` reference property to offline map databases. 
 - Now ensures that all Mapbox API requests are over HTTPS. 
