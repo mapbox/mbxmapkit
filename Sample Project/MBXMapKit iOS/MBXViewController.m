@@ -38,10 +38,6 @@
 {
     [super viewDidLoad];
 
-    // Set the Mapbox access token for API access.
-    //
-    [MBXMapKit setAccessToken:@"pk.eyJ1IjoianVzdGluIiwiYSI6IlpDbUJLSUEifQ.4mG8vhelFMju6HpIY-Hi5A"];
-
     // Configure the amount of storage to use for NSURLCache's shared cache: You can also omit this and allow NSURLCache's
     // to use its default cache size. These sizes determines how much storage will be used for performance caching of HTTP
     // requests made by MBXOfflineMapDownloader and MBXRasterTileOverlay. Please note that these values apply only to the

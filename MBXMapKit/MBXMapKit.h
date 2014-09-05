@@ -36,11 +36,9 @@
 
 /** @name Authorizing Access */
 
-/** Sets the global access token for Mapbox API HTTP requests. Obtain an access token on your [Mapbox account page](https://www.mapbox.com/account/apps/). Setting an access token will use Mapbox's `v4` API, otherwise `v3` will be used. At a future date, `v3` support will be phased out of the library.
-*   @param accessToken A Mapbox API access token. */
-+ (void)setAccessToken:(NSString *)accessToken;
-
-/** Returns the global access token for Mapbox API HTTP requests. */
+/** Returns the global access token for Mapbox API HTTP requests. 
+*
+*   @warning Use of the Mapbox `v4` API is currently not supported. */
 + (NSString *)accessToken;
 
 /** @name Using a Custom User Agent */
