@@ -686,21 +686,21 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 
         if ([self.pendingTileRenders count] == 0)
         {
-            if (self.delegate && [self.delegate respondsToSelector:@selector(tileOverlayDidFinishRendering:fullyRendered:)])
-            {
-                [NSObject cancelPreviousPerformRequestsWithTarget:self];
+            [NSObject cancelPreviousPerformRequestsWithTarget:self];
 
-                [self performSelector:@selector(notifyRenderDelegateWithSuccess:)
-                           withObject:@(self.renderCompletionState == MBXRenderCompletionStateFull)
-                           afterDelay:0.5];
-            }
+            [self performSelector:@selector(notifyRenderDelegateWithSuccess:)
+                       withObject:@(self.renderCompletionState == MBXRenderCompletionStateFull)
+                       afterDelay:0.5];
         }
     });
 }
 
 - (void)notifyRenderDelegateWithSuccess:(NSNumber *)flag
 {
-    [self.delegate tileOverlayDidFinishRendering:self fullyRendered:[flag boolValue]];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(tileOverlayDidFinishRendering:fullyRendered:)])
+    {
+        [self.delegate tileOverlayDidFinishRendering:self fullyRendered:[flag boolValue]];
+    }
 
     self.renderCompletionState = MBXRenderCompletionStateUnknown;
 }
