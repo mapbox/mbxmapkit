@@ -10,7 +10,7 @@
 typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
     MBXRenderCompletionStateUnknown = 0,
     MBXRenderCompletionStatePartial = 1,
-    MBXRenderCompletionStateSuccess = 2
+    MBXRenderCompletionStateFull = 2
 };
 
 #pragma mark - Private API for creating verbose errors
@@ -329,7 +329,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
         }
     };
 
-    if (self.renderCompletionState == MBXRenderCompletionStateUnknown) self.renderCompletionState = MBXRenderCompletionStateSuccess;
+    if (self.renderCompletionState == MBXRenderCompletionStateUnknown) self.renderCompletionState = MBXRenderCompletionStateFull;
 
     [self addPendingRender:url removePendingRender:nil];
 
@@ -640,7 +640,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
         }
         completionHandler(data,error);
 
-        if (error && weakSelf.renderCompletionState == MBXRenderCompletionStateSuccess) weakSelf.renderCompletionState = MBXRenderCompletionStatePartial;
+        if (error && weakSelf.renderCompletionState == MBXRenderCompletionStateFull) weakSelf.renderCompletionState = MBXRenderCompletionStatePartial;
 
         [weakSelf addPendingRender:nil removePendingRender:url];
     }
@@ -668,7 +668,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 
             completionHandler(data,error);
 
-            if (error && weakSelf.renderCompletionState == MBXRenderCompletionStateSuccess) weakSelf.renderCompletionState = MBXRenderCompletionStatePartial;
+            if (error && weakSelf.renderCompletionState == MBXRenderCompletionStateFull) weakSelf.renderCompletionState = MBXRenderCompletionStatePartial;
 
             [weakSelf addPendingRender:nil removePendingRender:url];
         }];
@@ -691,7 +691,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
                 [NSObject cancelPreviousPerformRequestsWithTarget:self];
 
                 [self performSelector:@selector(notifyRenderDelegateWithSuccess:)
-                           withObject:@(self.renderCompletionState == MBXRenderCompletionStateSuccess)
+                           withObject:@(self.renderCompletionState == MBXRenderCompletionStateFull)
                            afterDelay:0.5];
             }
         }
