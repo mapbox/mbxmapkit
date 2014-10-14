@@ -44,6 +44,11 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 *   @param overlay The raster tile overlay which is finished loading metadata and markers. */
 - (void)tileOverlayDidFinishLoadingMetadataAndMarkers:(MBXRasterTileOverlay *)overlay;
 
+/** Notifies the delegate that the map has finished rendering all visible tiles. 
+*   @param overlay The raster tile overlay that was rendering its tiles. 
+*   @param fullyRendered This parameter is set to `YES` if the overlay was able to render all tiles completely or `NO` if errors prevented all tiles from being rendered. */
+- (void)tileOverlayDidFinishRendering:(MBXRasterTileOverlay *)overlay fullyRendered:(BOOL)fullyRendered;
+
 @end
 
 
