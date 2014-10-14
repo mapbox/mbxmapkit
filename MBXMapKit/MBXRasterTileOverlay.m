@@ -51,8 +51,8 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 
 #pragma mark - Private properties for rendering completion notification
 
-@property (readwrite,nonatomic) NSMutableSet *pendingTileRenders;
-@property (readwrite,nonatomic) MBXRenderCompletionState renderCompletionState;
+@property (nonatomic) NSMutableSet *pendingTileRenders;
+@property (nonatomic) MBXRenderCompletionState renderCompletionState;
 
 #pragma mark - Properties for asynchronous downloading of metadata and markers
 
@@ -681,6 +681,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
     dispatch_async(dispatch_get_main_queue(), ^(void)
     {
         if (addURL) [self.pendingTileRenders addObject:addURL];
+
         if ([self.pendingTileRenders containsObject:removeURL]) [self.pendingTileRenders removeObject:removeURL];
 
         if ([self.pendingTileRenders count] == 0)
