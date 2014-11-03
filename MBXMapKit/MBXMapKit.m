@@ -65,6 +65,8 @@ NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 
 + (void)setAccessToken:(NSString *)accessToken
 {
+    NSAssert([[[UIDevice currentDevice] systemVersion] integerValue] >= 8, @"use of access tokens and the Mapbox v4 API requires iOS 8 and up");
+
     [[MBXMapKit sharedInstance] setAccessToken:accessToken];
 }
 

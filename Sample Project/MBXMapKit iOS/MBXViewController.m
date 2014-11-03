@@ -38,9 +38,12 @@
 {
     [super viewDidLoad];
 
-    // Set the Mapbox access token for API access.
+    // Set the Mapbox access token for API access if on iOS 8+
     //
-    [MBXMapKit setAccessToken:@"pk.eyJ1IjoianVzdGluIiwiYSI6IlpDbUJLSUEifQ.4mG8vhelFMju6HpIY-Hi5A"];
+    if ([[[UIDevice currentDevice] systemVersion] integerValue] >= 8)
+    {
+        [MBXMapKit setAccessToken:@"pk.eyJ1IjoianVzdGluIiwiYSI6IlpDbUJLSUEifQ.4mG8vhelFMju6HpIY-Hi5A"];
+    }
 
     // Configure the amount of storage to use for NSURLCache's shared cache: You can also omit this and allow NSURLCache's
     // to use its default cache size. These sizes determines how much storage will be used for performance caching of HTTP
