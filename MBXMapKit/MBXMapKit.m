@@ -27,6 +27,17 @@ NSString *const MBXMapKitVersion = @"0.5.0";
     [self setRegion:region animated:animated];
 }
 
+- (CGFloat)mbx_zoomLevel
+{
+    CGFloat zoomLevel = self.region.span.longitudeDelta;
+    zoomLevel /= 360;
+    zoomLevel /= (self.frame.size.width / 256);
+    zoomLevel = log2f(zoomLevel);
+    zoomLevel = fabs(zoomLevel);
+
+    return zoomLevel;
+}
+
 @end
 
 #pragma mark - Constants for the MBXMapKit error domain

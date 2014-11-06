@@ -27,6 +27,9 @@
 *   @param animated Specify `YES` if you want the map view to scroll to the new location or `NO` if you want the map to display the new location immediately. */
 - (void)mbx_setCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate zoomLevel:(NSUInteger)zoomLevel animated:(BOOL)animated;
 
+/** Returns the current zoom level of the map. */
+- (CGFloat)mbx_zoomLevel;
+
 @end
 
 #pragma mark - MBXMapKit global settings
