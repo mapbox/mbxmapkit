@@ -23,7 +23,7 @@
 
 /** Changes the center coordinate and zoom level of the map and optionally animates the change.
 *   @param centerCoordinate The new center coordinate for the map.
-*   @param zoomLevel The new zoom level for the map.
+*   @param zoomLevel The new zoom level for the map. Acceptable values range from a minimium of `0` (full world, if able to be shown in the current `frame`) to a maximum of `20` (the highest detail that MapKit supports). 
 *   @param animated Specify `YES` if you want the map view to scroll to the new location or `NO` if you want the map to display the new location immediately. */
 - (void)mbx_setCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate zoomLevel:(NSUInteger)zoomLevel animated:(BOOL)animated;
 
