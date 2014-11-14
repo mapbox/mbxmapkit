@@ -169,7 +169,7 @@
 				ORGANIZATIONNAME = MapBox;
 				TargetAttributes = {
 					012A0D7C1909D3F6005B69D7 = {
-						DevelopmentTeam = GJZR2MEM28;
+						DevelopmentTeam = U8B2JGE4C6;
 						SystemCapabilities = {
 							com.apple.iOS = {
 								enabled = 1;
@@ -277,6 +277,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MBXMapKit iOS/MBXMapKit iOS-Prefix.pch";
@@ -298,6 +299,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MBXMapKit iOS/MBXMapKit iOS-Prefix.pch";
