@@ -223,7 +223,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=$HOME/bin:/usr/local/bin:/usr/bin\n\n#\n# don't burn during Debug builds\n#\nif [[ ${CONFIGURATION} != \"Release\" ]]; then\n    echo \"Skipping icon burning due to ${CONFIGURATION} configuration\"\n    exit 0\nfi\n\necho \"Burning app icons...\"\n\n#\n# retrieve git info\n#\ncommit=`git rev-parse --short HEAD`\nbranch=`git rev-parse --abbrev-ref HEAD`\nrepo=`git remote show -n origin | grep 'Fetch URL' | sed -e 's/.*github\\.com:mapbox\\///' -e 's/\\.git$//' -e 's/^mapbox-//'`\n\n#\n# work directly in app bundle\n#\nbundle_path=\"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\necho \"working in ${bundle_path}\"\ncd \"${bundle_path}\"\n\nfor file in `find . -type f -name Icon\\*.png`\ndo\n    iconoblast \"$file\" $commit $branch $repo\ndone\ncd \"$OLDPWD\"";
+			shellScript = "export PATH=$HOME/bin:/usr/local/bin:/usr/bin\n\n#\n# don't burn during Debug builds\n#\nif [[ ${CONFIGURATION} != \"Release\" ]]; then\n    echo \"Skipping icon burning due to ${CONFIGURATION} configuration\"\n    exit 0\nfi\n\necho \"Burning app icons...\"\n\n#\n# retrieve git info\n#\ncommit=`git rev-parse --short HEAD`\nbranch=`git rev-parse --abbrev-ref HEAD`\nrepo=`git remote show -n origin | grep 'Fetch URL' | sed -e 's/.*github\\.com:mapbox\\///' -e 's/\\.git$//' -e 's/^mapbox-//'`\n\n#\n# work directly in app bundle\n#\nbundle_path=\"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\necho \"working in ${bundle_path}\"\ncd \"${bundle_path}\"\n\nfor file in `find . -type f -name AppIcon\\*.png`\ndo\n    iconoblast \"$file\" $commit $branch $repo\ndone\ncd \"$OLDPWD\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
