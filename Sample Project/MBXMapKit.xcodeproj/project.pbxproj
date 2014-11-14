@@ -19,22 +19,8 @@
 		012A0DBB1909D5FC005B69D7 /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79431909D1D200EF8AD1 /* MBXPointAnnotation.m */; };
 		012A0DBC1909D5FC005B69D7 /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79451909D1D200EF8AD1 /* MBXRasterTileOverlay.m */; };
 		DDB97D07199D72A5006EC3A6 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DDB97D06199D72A5006EC3A6 /* libsqlite3.dylib */; };
-		DDC92F7E1A153AAD0082BDE8 /* Icon-40.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F6E1A153AAD0082BDE8 /* Icon-40.png */; };
-		DDC92F7F1A153AAD0082BDE8 /* Icon-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F6F1A153AAD0082BDE8 /* Icon-40@2x.png */; };
-		DDC92F801A153AAD0082BDE8 /* Icon-60.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F701A153AAD0082BDE8 /* Icon-60.png */; };
-		DDC92F811A153AAD0082BDE8 /* Icon-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F711A153AAD0082BDE8 /* Icon-60@2x.png */; };
-		DDC92F821A153AAD0082BDE8 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F721A153AAD0082BDE8 /* Icon-72.png */; };
-		DDC92F831A153AAD0082BDE8 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F731A153AAD0082BDE8 /* Icon-72@2x.png */; };
-		DDC92F841A153AAD0082BDE8 /* Icon-76.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F741A153AAD0082BDE8 /* Icon-76.png */; };
-		DDC92F851A153AAD0082BDE8 /* Icon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F751A153AAD0082BDE8 /* Icon-76@2x.png */; };
-		DDC92F861A153AAD0082BDE8 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F761A153AAD0082BDE8 /* Icon-Small-50.png */; };
-		DDC92F871A153AAD0082BDE8 /* Icon-Small-50@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F771A153AAD0082BDE8 /* Icon-Small-50@2x.png */; };
-		DDC92F881A153AAD0082BDE8 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F781A153AAD0082BDE8 /* Icon-Small.png */; };
-		DDC92F891A153AAD0082BDE8 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F791A153AAD0082BDE8 /* Icon-Small@2x.png */; };
-		DDC92F8A1A153AAD0082BDE8 /* Icon-Spotlight-40.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F7A1A153AAD0082BDE8 /* Icon-Spotlight-40.png */; };
-		DDC92F8B1A153AAD0082BDE8 /* Icon-Spotlight-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F7B1A153AAD0082BDE8 /* Icon-Spotlight-40@2x.png */; };
-		DDC92F8C1A153AAD0082BDE8 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F7C1A153AAD0082BDE8 /* Icon.png */; };
-		DDC92F8D1A153AAD0082BDE8 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F7D1A153AAD0082BDE8 /* Icon@2x.png */; };
+		DDC92F961A1544CD0082BDE8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F951A1544CD0082BDE8 /* Images.xcassets */; };
+		DDC92FC61A158CFB0082BDE8 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDC92FC51A158CFB0082BDE8 /* LaunchScreen.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,22 +47,8 @@
 		017F79441909D1D200EF8AD1 /* MBXRasterTileOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXRasterTileOverlay.h; sourceTree = "<group>"; };
 		017F79451909D1D200EF8AD1 /* MBXRasterTileOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXRasterTileOverlay.m; sourceTree = "<group>"; };
 		DDB97D06199D72A5006EC3A6 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		DDC92F6E1A153AAD0082BDE8 /* Icon-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-40.png"; sourceTree = "<group>"; };
-		DDC92F6F1A153AAD0082BDE8 /* Icon-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-40@2x.png"; sourceTree = "<group>"; };
-		DDC92F701A153AAD0082BDE8 /* Icon-60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-60.png"; sourceTree = "<group>"; };
-		DDC92F711A153AAD0082BDE8 /* Icon-60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-60@2x.png"; sourceTree = "<group>"; };
-		DDC92F721A153AAD0082BDE8 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
-		DDC92F731A153AAD0082BDE8 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
-		DDC92F741A153AAD0082BDE8 /* Icon-76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-76.png"; sourceTree = "<group>"; };
-		DDC92F751A153AAD0082BDE8 /* Icon-76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-76@2x.png"; sourceTree = "<group>"; };
-		DDC92F761A153AAD0082BDE8 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
-		DDC92F771A153AAD0082BDE8 /* Icon-Small-50@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50@2x.png"; sourceTree = "<group>"; };
-		DDC92F781A153AAD0082BDE8 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
-		DDC92F791A153AAD0082BDE8 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
-		DDC92F7A1A153AAD0082BDE8 /* Icon-Spotlight-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Spotlight-40.png"; sourceTree = "<group>"; };
-		DDC92F7B1A153AAD0082BDE8 /* Icon-Spotlight-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Spotlight-40@2x.png"; sourceTree = "<group>"; };
-		DDC92F7C1A153AAD0082BDE8 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		DDC92F7D1A153AAD0082BDE8 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		DDC92F951A1544CD0082BDE8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		DDC92FC51A158CFB0082BDE8 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +72,8 @@
 				012A0DB01909D52E005B69D7 /* MBXViewController.m */,
 				012A0DA71909D515005B69D7 /* Main_iPad.storyboard */,
 				012A0DA91909D515005B69D7 /* Main_iPhone.storyboard */,
+				DDC92F951A1544CD0082BDE8 /* Images.xcassets */,
+				DDC92FC51A158CFB0082BDE8 /* LaunchScreen.xib */,
 				012A0D821909D3F6005B69D7 /* Supporting Files */,
 			);
 			name = "Sample App (iOS)";
@@ -113,7 +87,6 @@
 				012A0D841909D3F6005B69D7 /* InfoPlist.strings */,
 				012A0D871909D3F6005B69D7 /* main.m */,
 				012A0D891909D3F6005B69D7 /* MBXMapKit iOS-Prefix.pch */,
-				DDC92F6D1A153AAD0082BDE8 /* img */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -144,29 +117,6 @@
 			);
 			name = Frameworks;
 			path = ../mbxmapkit;
-			sourceTree = "<group>";
-		};
-		DDC92F6D1A153AAD0082BDE8 /* img */ = {
-			isa = PBXGroup;
-			children = (
-				DDC92F6E1A153AAD0082BDE8 /* Icon-40.png */,
-				DDC92F6F1A153AAD0082BDE8 /* Icon-40@2x.png */,
-				DDC92F701A153AAD0082BDE8 /* Icon-60.png */,
-				DDC92F711A153AAD0082BDE8 /* Icon-60@2x.png */,
-				DDC92F721A153AAD0082BDE8 /* Icon-72.png */,
-				DDC92F731A153AAD0082BDE8 /* Icon-72@2x.png */,
-				DDC92F741A153AAD0082BDE8 /* Icon-76.png */,
-				DDC92F751A153AAD0082BDE8 /* Icon-76@2x.png */,
-				DDC92F761A153AAD0082BDE8 /* Icon-Small-50.png */,
-				DDC92F771A153AAD0082BDE8 /* Icon-Small-50@2x.png */,
-				DDC92F781A153AAD0082BDE8 /* Icon-Small.png */,
-				DDC92F791A153AAD0082BDE8 /* Icon-Small@2x.png */,
-				DDC92F7A1A153AAD0082BDE8 /* Icon-Spotlight-40.png */,
-				DDC92F7B1A153AAD0082BDE8 /* Icon-Spotlight-40@2x.png */,
-				DDC92F7C1A153AAD0082BDE8 /* Icon.png */,
-				DDC92F7D1A153AAD0082BDE8 /* Icon@2x.png */,
-			);
-			path = img;
 			sourceTree = "<group>";
 		};
 		DDD5905A17D7D086009291B8 = {
@@ -251,25 +201,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DDC92F8C1A153AAD0082BDE8 /* Icon.png in Resources */,
-				DDC92F7E1A153AAD0082BDE8 /* Icon-40.png in Resources */,
 				012A0DAC1909D515005B69D7 /* Main_iPhone.storyboard in Resources */,
-				DDC92F831A153AAD0082BDE8 /* Icon-72@2x.png in Resources */,
-				DDC92F891A153AAD0082BDE8 /* Icon-Small@2x.png in Resources */,
-				DDC92F801A153AAD0082BDE8 /* Icon-60.png in Resources */,
-				DDC92F811A153AAD0082BDE8 /* Icon-60@2x.png in Resources */,
-				DDC92F851A153AAD0082BDE8 /* Icon-76@2x.png in Resources */,
+				DDC92F961A1544CD0082BDE8 /* Images.xcassets in Resources */,
 				012A0DAB1909D515005B69D7 /* Main_iPad.storyboard in Resources */,
-				DDC92F821A153AAD0082BDE8 /* Icon-72.png in Resources */,
-				DDC92F881A153AAD0082BDE8 /* Icon-Small.png in Resources */,
-				DDC92F841A153AAD0082BDE8 /* Icon-76.png in Resources */,
-				DDC92F871A153AAD0082BDE8 /* Icon-Small-50@2x.png in Resources */,
-				DDC92F861A153AAD0082BDE8 /* Icon-Small-50.png in Resources */,
-				DDC92F8A1A153AAD0082BDE8 /* Icon-Spotlight-40.png in Resources */,
-				DDC92F8D1A153AAD0082BDE8 /* Icon@2x.png in Resources */,
-				DDC92F8B1A153AAD0082BDE8 /* Icon-Spotlight-40@2x.png in Resources */,
 				012A0D861909D3F6005B69D7 /* InfoPlist.strings in Resources */,
-				DDC92F7F1A153AAD0082BDE8 /* Icon-40@2x.png in Resources */,
+				DDC92FC61A158CFB0082BDE8 /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,7 +277,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MBXMapKit iOS/MBXMapKit iOS-Prefix.pch";
@@ -363,7 +298,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MBXMapKit iOS/MBXMapKit iOS-Prefix.pch";
