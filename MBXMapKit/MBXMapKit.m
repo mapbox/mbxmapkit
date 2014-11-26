@@ -5,6 +5,8 @@
 //  Copyright (c) 2014 Mapbox. All rights reserved.
 //
 
+#import "TargetConditionals.h"
+
 #if TARGET_OS_IPHONE
 @import UIKit;
 #else
