@@ -13,6 +13,7 @@
 #import "MBXOfflineMapDownloader.h"
 #import "MBXPointAnnotation.h"
 #import "MBXRasterTileOverlay.h"
+#import "MBXRasterTileRenderer.h"
 
 #pragma mark - MKMapView category
 
