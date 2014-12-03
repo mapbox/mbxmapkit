@@ -103,4 +103,8 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
     UIGraphicsPopContext();
 }
 
+- (void)reloadData {
+    [self setNeedsDisplay];
+}
+
 @end
