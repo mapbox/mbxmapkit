@@ -1,6 +1,15 @@
+//
+//  MBXRasterTileRenderer.m
+//  MBXMapKit
+//
+//  Copyright (c) 2014 Mapbox. All rights reserved.
+//
+
 #import "MBXRasterTileRenderer.h"
 
 const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
+
+#pragma mark - Private API
 
 @interface MBXRasterTileRenderer ()
 
@@ -9,6 +18,8 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
 @end
 
 @implementation MBXRasterTileRenderer
+
+#pragma mark - Setup
 
 - (id)initWithOverlay:(id<MKOverlay>)overlay {
     NSAssert([overlay isKindOfClass:[MKTileOverlay class]], @"overlay must be an MKTileOverlay");
@@ -25,6 +36,8 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
 - (id)initWithTileOverlay:(MKTileOverlay *)overlay {
     return [self initWithOverlay:overlay];
 }
+
+#pragma mark - Utility
 
 - (MKTileOverlayPath)pathForMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale {
     MKTileOverlay *tileOverlay = (MKTileOverlay *)self.overlay;
@@ -52,6 +65,8 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
 
     return xyz;
 }
+
+#pragma mark - MKOverlayRenderer Overrides
 
 - (BOOL)canDrawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale {
     MKTileOverlay *tileOverlay = (MKTileOverlay *)self.overlay;
@@ -136,6 +151,8 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
     [image drawInRect:rect];
     UIGraphicsPopContext();
 }
+
+#pragma mark - MKTileOverlayRenderer Compatibility
 
 - (void)reloadData {
     [self setNeedsDisplay];
