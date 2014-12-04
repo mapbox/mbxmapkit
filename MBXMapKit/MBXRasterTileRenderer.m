@@ -66,18 +66,29 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
     return xyz;
 }
 
+- (void)addImageData:(NSData *)data toCache:(NSMutableArray *)cache forXYZ:(NSString *)xyz {
+    while (cache.count >= MBXRasterTileRendererLRUCacheSize) {
+        [cache removeObjectAtIndex:0];
+    }
+    [cache addObject:@{
+        @"xyz": xyz,
+        @"data": data
+    }];
+}
+
 #pragma mark - MKOverlayRenderer Overrides
 
 - (BOOL)canDrawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale {
     MKTileOverlay *tileOverlay = (MKTileOverlay *)self.overlay;
     MKTileOverlayPath path = [self pathForMapRect:mapRect zoomScale:zoomScale];
-    BOOL bigTiles = (tileOverlay.tileSize.width / 256 > 1);
-    if (bigTiles) {
+    BOOL usingBigTiles = (tileOverlay.tileSize.width == 512);
+    MKTileOverlayPath childPath = path;
+    if (usingBigTiles) {
         path.x /= 2;
         path.y /= 2;
         path.z -= 1;
     }
-    NSString *xyz = [self xyzForPath:path];
+    NSString *xyz = [self xyzForPath:childPath];
     BOOL tileReady = NO;
 
     @synchronized(self) {
@@ -89,34 +100,46 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
     } else {
         __weak typeof(self) weakSelf = self;
         [(MKTileOverlay *)weakSelf.overlay loadTileAtPath:path result:^(NSData *tileData, NSError *error) {
-            if (tileData) {
-                @synchronized(weakSelf) {
-                    while (weakSelf.tiles.count >= MBXRasterTileRendererLRUCacheSize) {
-                        [weakSelf.tiles removeObjectAtIndex:0];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                if (tileData) {
+                    UIImage *image = nil;
+                    if (usingBigTiles && (image = [UIImage imageWithData:tileData])) {
+                        for (NSUInteger x = 0; x < 2; x++) {
+                            for (NSUInteger y = 0; y < 2; y++) {
+                                CGRect cropRect = CGRectMake(0, 0, 256, 256);
+                                cropRect.origin.x += (x * 256);
+                                cropRect.origin.y += (y * 256);
+                                MKTileOverlayPath quarterPath = {
+                                    .x = path.x * 2 + x,
+                                    .y = path.y * 2 + y,
+                                    .z = path.z + 1,
+                                    .contentScaleFactor = weakSelf.contentScaleFactor
+                                };
+                                NSString *quarterXYZ = [weakSelf xyzForPath:quarterPath];
+                                @synchronized(weakSelf) {
+                                    if (![[weakSelf.tiles valueForKeyPath:@"xyz"] containsObject:quarterXYZ]) {
+                                        CGImageRef quarterImage = CGImageCreateWithImageInRect(image.CGImage, cropRect);
+                                        NSData *quarterData = UIImagePNGRepresentation([UIImage imageWithCGImage:quarterImage]);
+                                        [weakSelf addImageData:quarterData toCache:weakSelf.tiles forXYZ:quarterXYZ];
+                                    }
+                                }
+                            }
+                        }
+                    } else if (!usingBigTiles) {
+                        @synchronized(weakSelf) {
+                            [weakSelf addImageData:tileData toCache:weakSelf.tiles forXYZ:xyz];
+                        }
                     }
-                    [weakSelf.tiles addObject:@{
-                        @"xyz": xyz,
-                        @"data": tileData
-                    }];
                 }
                 [weakSelf setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
-            }
+            });
         }];
         return NO;
     }
 }
 
 - (void)drawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale inContext:(CGContextRef)context {
-    MKTileOverlay *tileOverlay = (MKTileOverlay *)self.overlay;
-    CGRect rect = [self rectForMapRect:mapRect];
     MKTileOverlayPath path = [self pathForMapRect:mapRect zoomScale:zoomScale];
-    BOOL bigTiles = (tileOverlay.tileSize.width / 256 > 1);
-    MKTileOverlayPath childPath = path;
-    if (bigTiles) {
-        path.x /= 2;
-        path.y /= 2;
-        path.z -= 1;
-    }
     NSString *xyz = [self xyzForPath:path];
     UIImage *image = nil;
     BOOL success = NO;
@@ -138,17 +161,8 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
         return [self setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
     }
 
-    if (bigTiles) {
-        CGFloat childSize = image.size.width / 2;
-        CGRect cropRect = CGRectMake(0, 0, childSize, childSize);
-        if (childPath.x > path.x * 2) cropRect.origin.x += childSize;
-        if (childPath.y > path.y * 2) cropRect.origin.y += childSize;
-        CGImageRef croppedImage = CGImageCreateWithImageInRect(image.CGImage, cropRect);
-        image = [UIImage imageWithCGImage:croppedImage];
-    }
-
     UIGraphicsPushContext(context);
-    [image drawInRect:rect];
+    [image drawInRect:[self rectForMapRect:mapRect]];
     UIGraphicsPopContext();
 }
 

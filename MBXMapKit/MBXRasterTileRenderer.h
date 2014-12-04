@@ -21,6 +21,6 @@
 /** Forces tiles to be reloaded and displayed.
 *
 *   Use this method to remove the overlay’s existing tile images and reload them from the original source. This method automatically causes the renderer to redraw the new tiles as soon as they are loaded into memory. */
- - (void)reloadData;
+- (void)reloadData;
 
 @end
