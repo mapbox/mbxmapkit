@@ -783,6 +783,41 @@
     return success;
 }
 
+#pragma mark - Get Tiles Number
+
+-(NSUInteger)totalFilesExpectedToWriteForMapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ{
+    
+    NSUInteger totalSize = 0;
+    
+    CLLocationDegrees minLat = mapRegion.center.latitude - (mapRegion.span.latitudeDelta / 2.0);
+    CLLocationDegrees maxLat = minLat + mapRegion.span.latitudeDelta;
+    CLLocationDegrees minLon = mapRegion.center.longitude - (mapRegion.span.longitudeDelta / 2.0);
+    CLLocationDegrees maxLon = minLon + mapRegion.span.longitudeDelta;
+    NSUInteger minX;
+    NSUInteger maxX;
+    NSUInteger minY;
+    NSUInteger maxY;
+    NSUInteger tilesPerSide;
+    for(NSUInteger zoom = minimumZ; zoom <= maximumZ; zoom++)
+    {
+        tilesPerSide = pow(2.0, zoom);
+        minX = floor(((minLon + 180.0) / 360.0) * tilesPerSide);
+        maxX = floor(((maxLon + 180.0) / 360.0) * tilesPerSide);
+        minY = floor((1.0 - (logf(tanf(maxLat * M_PI / 180.0) + 1.0 / cosf(maxLat * M_PI / 180.0)) / M_PI)) / 2.0 * tilesPerSide);
+        maxY = floor((1.0 - (logf(tanf(minLat * M_PI / 180.0) + 1.0 / cosf(minLat * M_PI / 180.0)) / M_PI)) / 2.0 * tilesPerSide);
+        for(NSUInteger x=minX; x<=maxX; x++)
+        {
+            for(NSUInteger y=minY; y<=maxY; y++)
+            {
+                totalSize++;
+            }
+        }
+    }
+    
+    return totalSize;
+    
+}
+
 
 #pragma mark - API: Begin an offline map download
 

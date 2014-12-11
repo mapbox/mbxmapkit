@@ -136,6 +136,18 @@ typedef NS_ENUM(NSUInteger, MBXOfflineMapDownloaderState) {
 
 #pragma mark -
 
+/** @name Get numer of tiles BEFORE starting download */
+
+/** Get number of tiles before starting download, instead calling delegate method.
+ *   @param mapID The map ID from which to download offline map data.
+ *   @param mapRegion The region of the map for which to download tiles.
+ *   @param minimumZ The minimum zoom level for which to download tiles.
+ *   @param maximumZ The maximum zoom level for which to download tiles. */
+
+- (NSUInteger)totalFilesExpectedToWriteForMapRegion:(MKCoordinateRegion)mapRegion minimumZ:(NSInteger)minimumZ maximumZ:(NSInteger)maximumZ;
+
+#pragma mark -
+
 /** @name Managing Active Download Jobs */
 
 /** Begins an offline map download job including metadata and markers using the default (full) image quality.
