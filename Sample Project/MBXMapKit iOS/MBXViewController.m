@@ -66,6 +66,7 @@
     [sharedDownloader setDelegate:self];
 
     // Turn off distracting MKMapView features which aren't relevant to this demonstration
+    _mapView.showsBuildings = NO;
     _mapView.rotateEnabled = NO;
     _mapView.pitchEnabled = NO;
 
