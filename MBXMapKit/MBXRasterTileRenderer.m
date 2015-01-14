@@ -102,8 +102,11 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
         [(MKTileOverlay *)weakSelf.overlay loadTileAtPath:path result:^(NSData *tileData, NSError *error) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 if (tileData) {
-                    UIImage *image = nil;
-                    if (usingBigTiles && (image = [UIImage imageWithData:tileData])) {
+                    __block UIImage *image = nil;
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                        image = [UIImage imageWithData:tileData];
+                    });
+                    if (usingBigTiles && image) {
                         for (NSUInteger x = 0; x < 2; x++) {
                             for (NSUInteger y = 0; y < 2; y++) {
                                 CGRect cropRect = CGRectMake(0, 0, 256, 256);
@@ -125,7 +128,7 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
                                 }
                             }
                         }
-                    } else if (!usingBigTiles) {
+                    } else if (!usingBigTiles && image) {
                         @synchronized(weakSelf) {
                             [weakSelf addImageData:tileData toCache:weakSelf.tiles forXYZ:xyz];
                         }
