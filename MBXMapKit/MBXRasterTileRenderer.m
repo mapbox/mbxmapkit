@@ -7,6 +7,9 @@
 
 #import "MBXRasterTileRenderer.h"
 
+#import <ImageIO/ImageIO.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+
 const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
 
 #pragma mark - Private API
@@ -102,11 +105,11 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
         [(MKTileOverlay *)weakSelf.overlay loadTileAtPath:path result:^(NSData *tileData, NSError *error) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 if (tileData) {
-                    __block UIImage *image = nil;
-                    dispatch_sync(dispatch_get_main_queue(), ^{
-                        image = [UIImage imageWithData:tileData];
-                    });
-                    if (usingBigTiles && image) {
+                    CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)tileData);
+                    CGImageRef imageRef = CGImageCreateWithPNGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
+                    if (!imageRef) imageRef = CGImageCreateWithJPEGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
+                    CGDataProviderRelease(provider);
+                    if (usingBigTiles && imageRef) {
                         for (NSUInteger x = 0; x < 2; x++) {
                             for (NSUInteger y = 0; y < 2; y++) {
                                 CGRect cropRect = CGRectMake(0, 0, 256, 256);
@@ -121,18 +124,24 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
                                 NSString *quarterXYZ = [weakSelf xyzForPath:quarterPath];
                                 @synchronized(weakSelf) {
                                     if (![[weakSelf.tiles valueForKeyPath:@"xyz"] containsObject:quarterXYZ]) {
-                                        CGImageRef quarterImage = CGImageCreateWithImageInRect(image.CGImage, cropRect);
-                                        NSData *quarterData = UIImagePNGRepresentation([UIImage imageWithCGImage:quarterImage]);
+                                        CGImageRef quarterImageRef = CGImageCreateWithImageInRect(imageRef, cropRect);
+                                        NSMutableData *quarterData = [NSMutableData data];
+                                        CGImageDestinationRef imageDestinationRef = CGImageDestinationCreateWithData((CFMutableDataRef)quarterData, kUTTypePNG, 1, nil);
+                                        CGImageDestinationAddImage(imageDestinationRef, quarterImageRef, nil);
+                                        CGImageDestinationFinalize(imageDestinationRef);
+                                        CFRelease(imageDestinationRef);
+                                        CGImageRelease(quarterImageRef);
                                         [weakSelf addImageData:quarterData toCache:weakSelf.tiles forXYZ:quarterXYZ];
                                     }
                                 }
                             }
                         }
-                    } else if (!usingBigTiles && image) {
+                    } else if (!usingBigTiles && imageRef) {
                         @synchronized(weakSelf) {
                             [weakSelf addImageData:tileData toCache:weakSelf.tiles forXYZ:xyz];
                         }
                     }
+                    CGImageRelease(imageRef);
                 }
                 [weakSelf setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
             });
@@ -144,29 +153,37 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
 - (void)drawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale inContext:(CGContextRef)context {
     MKTileOverlayPath path = [self pathForMapRect:mapRect zoomScale:zoomScale];
     NSString *xyz = [self xyzForPath:path];
-    UIImage *image = nil;
-    BOOL success = NO;
+    CGImageRef imageRef = nil;
 
     @synchronized(self) {
         NSUInteger index = [[self.tiles valueForKeyPath:@"xyz"] indexOfObject:xyz];
         if (index != NSNotFound) {
             NSDictionary *tile = self.tiles[index];
             [self.tiles removeObject:tile];
-            image = [UIImage imageWithData:tile[@"data"]];
-            if (image != nil) {
-                [self.tiles addObject:tile];
-                success = YES;
+            CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)tile[@"data"]);
+            if (provider) {
+                imageRef = CGImageCreateWithPNGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
+                if (!imageRef) imageRef = CGImageCreateWithJPEGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
+                CGDataProviderRelease(provider);
+                if (imageRef) {
+                    [self.tiles addObject:tile];
+                }
             }
         }
     }
 
-    if (!success) {
+    if (!imageRef) {
         return [self setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
     }
 
-    UIGraphicsPushContext(context);
-    [image drawInRect:[self rectForMapRect:mapRect]];
-    UIGraphicsPopContext();
+    CGRect tileRect = CGRectMake(0, 0, 256, 256);
+    UIGraphicsBeginImageContext(tileRect.size);
+    CGContextDrawImage(UIGraphicsGetCurrentContext(), tileRect, imageRef);
+    CGImageRelease(imageRef);
+    CGImageRef flippedImageRef = UIGraphicsGetImageFromCurrentImageContext().CGImage;
+    UIGraphicsEndImageContext();
+
+    CGContextDrawImage(context, [self rectForMapRect:mapRect], flippedImageRef);
 }
 
 #pragma mark - MKTileOverlayRenderer Compatibility
