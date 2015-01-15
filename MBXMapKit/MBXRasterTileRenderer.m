@@ -153,23 +153,25 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
 - (void)drawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale inContext:(CGContextRef)context {
     MKTileOverlayPath path = [self pathForMapRect:mapRect zoomScale:zoomScale];
     NSString *xyz = [self xyzForPath:path];
-    CGImageRef imageRef = nil;
+    NSData *tileData = nil;
 
     @synchronized(self) {
         NSUInteger index = [[self.tiles valueForKeyPath:@"xyz"] indexOfObject:xyz];
         if (index != NSNotFound) {
             NSDictionary *tile = self.tiles[index];
             [self.tiles removeObject:tile];
-            CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)tile[@"data"]);
-            if (provider) {
-                imageRef = CGImageCreateWithPNGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
-                if (!imageRef) imageRef = CGImageCreateWithJPEGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
-                CGDataProviderRelease(provider);
-                if (imageRef) {
-                    [self.tiles addObject:tile];
-                }
-            }
+            [self.tiles addObject:tile];
+            tileData = tile[@"data"];
         }
+    }
+
+    CGImageRef imageRef = nil;
+
+    CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)tileData);
+    if (provider) {
+        imageRef = CGImageCreateWithPNGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
+        if (!imageRef) imageRef = CGImageCreateWithJPEGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
+        CGDataProviderRelease(provider);
     }
 
     if (!imageRef) {
