@@ -112,9 +112,6 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
                     if (usingBigTiles && imageRef) {
                         for (NSUInteger x = 0; x < 2; x++) {
                             for (NSUInteger y = 0; y < 2; y++) {
-                                CGRect cropRect = CGRectMake(0, 0, 256, 256);
-                                cropRect.origin.x += (x * 256);
-                                cropRect.origin.y += (y * 256);
                                 MKTileOverlayPath quarterPath = {
                                     .x = path.x * 2 + x,
                                     .y = path.y * 2 + y,
@@ -124,14 +121,7 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
                                 NSString *quarterXYZ = [weakSelf xyzForPath:quarterPath];
                                 @synchronized(weakSelf) {
                                     if (![[weakSelf.tiles valueForKeyPath:@"xyz"] containsObject:quarterXYZ]) {
-                                        CGImageRef quarterImageRef = CGImageCreateWithImageInRect(imageRef, cropRect);
-                                        NSMutableData *quarterData = [NSMutableData data];
-                                        CGImageDestinationRef imageDestinationRef = CGImageDestinationCreateWithData((CFMutableDataRef)quarterData, kUTTypePNG, 1, nil);
-                                        CGImageDestinationAddImage(imageDestinationRef, quarterImageRef, nil);
-                                        CGImageDestinationFinalize(imageDestinationRef);
-                                        CFRelease(imageDestinationRef);
-                                        CGImageRelease(quarterImageRef);
-                                        [weakSelf addImageData:quarterData toCache:weakSelf.tiles forXYZ:quarterXYZ];
+                                        [weakSelf addImageData:tileData toCache:weakSelf.tiles forXYZ:quarterXYZ];
                                     }
                                 }
                             }
@@ -178,10 +168,18 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
         return [self setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
     }
 
+    if (CGImageGetWidth(imageRef) == 512) {
+        CGRect cropRect = CGRectMake(0, 0, 256, 256);
+        cropRect.origin.x += (path.x % 2 ? 256 : 0);
+        cropRect.origin.y += (path.y % 2 ? 256 : 0);
+        CGImageRef croppedImageRef = CGImageCreateWithImageInRect(imageRef, cropRect);
+        CGImageRelease(imageRef);
+        imageRef = croppedImageRef;
+    }
+
     CGRect tileRect = CGRectMake(0, 0, 256, 256);
     UIGraphicsBeginImageContext(tileRect.size);
     CGContextDrawImage(UIGraphicsGetCurrentContext(), tileRect, imageRef);
-    CGImageRelease(imageRef);
     CGImageRef flippedImageRef = UIGraphicsGetImageFromCurrentImageContext().CGImage;
     UIGraphicsEndImageContext();
 
