@@ -83,12 +83,12 @@
     return path;
 }
 
-+ (void)addImageData:(NSData *)data toRenderer:(MBXRasterTileRenderer *)renderer forXYZ:(NSString *)xyz usingParents:(BOOL)usingParents {
++ (void)addImageData:(NSData *)data toRenderer:(MBXRasterTileRenderer *)renderer forXYZ:(NSString *)xyz usingBigTiles:(BOOL)usingBigTiles {
     while (renderer.tiles.count >= [renderer cacheMaxSize]) {
         [renderer.tiles removeObjectAtIndex:0];
     }
 
-    if (usingParents) {
+    if (usingBigTiles) {
         MKTileOverlayPath parentPath = [[renderer class] pathForXYZ:xyz scaleFactor:renderer.contentScaleFactor];
         parentPath.x /= 2;
         parentPath.y /= 2;
@@ -112,9 +112,9 @@
     }
 }
 
-+ (NSData *)imageDataFromRenderer:(MBXRasterTileRenderer *)renderer forXYZ:(NSString *)xyz usingParents:(BOOL)usingParents {
++ (NSData *)imageDataFromRenderer:(MBXRasterTileRenderer *)renderer forXYZ:(NSString *)xyz usingBigTiles:(BOOL)usingBigTiles {
     NSString *searchXYZ;
-    if (usingParents) {
+    if (usingBigTiles) {
         MKTileOverlayPath path = [[renderer class] pathForXYZ:xyz scaleFactor:renderer.contentScaleFactor];
         path.x /= 2;
         path.y /= 2;
@@ -176,7 +176,7 @@
     BOOL tileReady = NO;
 
     @synchronized(self) {
-        tileReady = ([[self class] imageDataFromRenderer:self forXYZ:xyz usingParents:usingBigTiles] != nil);
+        tileReady = ([[self class] imageDataFromRenderer:self forXYZ:xyz usingBigTiles:usingBigTiles] != nil);
     }
 
     if (tileReady) {
@@ -198,7 +198,7 @@
                             [[weakSelf class] addImageData:tileData
                                                 toRenderer:weakSelf
                                                     forXYZ:xyz
-                                              usingParents:usingBigTiles];
+                                             usingBigTiles:usingBigTiles];
                         }
                     }
                     CGImageRelease(imageRef);
@@ -219,7 +219,7 @@
     @synchronized(self) {
         tileData = [[self class] imageDataFromRenderer:self
                                                 forXYZ:xyz
-                                          usingParents:(((MKTileOverlay *)self.overlay).tileSize.width == 512)];
+                                         usingBigTiles:(((MKTileOverlay *)self.overlay).tileSize.width == 512)];
 
         if (!tileData) {
             return [self setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
