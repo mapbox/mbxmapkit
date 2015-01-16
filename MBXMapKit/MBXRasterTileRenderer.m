@@ -7,11 +7,6 @@
 
 #import "MBXRasterTileRenderer.h"
 
-#import <ImageIO/ImageIO.h>
-#import <MobileCoreServices/MobileCoreServices.h>
-
-const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
-
 #pragma mark - Private API
 
 @interface MBXRasterTileRenderer ()
@@ -42,6 +37,14 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
 
 #pragma mark - Utility
 
+- (NSUInteger)cacheMaxSize {
+    if (((MKTileOverlay *)self.overlay).tileSize.width == 512) {
+        return 12;
+    } else {
+        return 48;
+    }
+}
+
 - (MKTileOverlayPath)pathForMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale {
     MKTileOverlay *tileOverlay = (MKTileOverlay *)self.overlay;
     CGFloat factor = tileOverlay.tileSize.width / 256;
@@ -60,7 +63,7 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
     return path;
 }
 
-- (NSString *)xyzForPath:(MKTileOverlayPath)path {
++ (NSString *)xyzForPath:(MKTileOverlayPath)path {
     NSString *xyz = [NSString stringWithFormat:@"%li-%li-%li",
         (long)path.x,
         (long)path.y,
@@ -69,14 +72,72 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
     return xyz;
 }
 
-- (void)addImageData:(NSData *)data toCache:(NSMutableArray *)cache forXYZ:(NSString *)xyz {
-    while (cache.count >= MBXRasterTileRendererLRUCacheSize) {
-        [cache removeObjectAtIndex:0];
++ (MKTileOverlayPath)pathForXYZ:(NSString *)xyz scaleFactor:(CGFloat)scaleFactor {
+    MKTileOverlayPath path = {
+        .x = [[xyz componentsSeparatedByString:@"-"][0] integerValue],
+        .y = [[xyz componentsSeparatedByString:@"-"][1] integerValue],
+        .z = [[xyz componentsSeparatedByString:@"-"][2] integerValue],
+        .contentScaleFactor = scaleFactor
+    };
+
+    return path;
+}
+
++ (void)addImageData:(NSData *)data toRenderer:(MBXRasterTileRenderer *)renderer forXYZ:(NSString *)xyz usingParents:(BOOL)usingParents {
+    while (renderer.tiles.count >= [renderer cacheMaxSize]) {
+        [renderer.tiles removeObjectAtIndex:0];
     }
-    [cache addObject:@{
-        @"xyz": xyz,
-        @"data": data
-    }];
+
+    if (usingParents) {
+        MKTileOverlayPath parentPath = [[renderer class] pathForXYZ:xyz scaleFactor:renderer.contentScaleFactor];
+        parentPath.x /= 2;
+        parentPath.y /= 2;
+        parentPath.z--;
+
+        NSString *parentXYZ = [[renderer class] xyzForPath:parentPath];
+
+        if (![[renderer.tiles valueForKeyPath:@"xyz"] containsObject:parentXYZ]) {
+            [renderer.tiles addObject:@{
+                @"xyz": parentXYZ,
+                @"data": data
+            }];
+        }
+    } else {
+        if (![[renderer.tiles valueForKeyPath:@"xyz"] containsObject:xyz]) {
+            [renderer.tiles addObject:@{
+                @"xyz": xyz,
+                @"data": data
+            }];
+        }
+    }
+}
+
++ (NSData *)imageDataFromRenderer:(MBXRasterTileRenderer *)renderer forXYZ:(NSString *)xyz usingParents:(BOOL)usingParents {
+    NSString *searchXYZ;
+    if (usingParents) {
+        MKTileOverlayPath path = [[renderer class] pathForXYZ:xyz scaleFactor:renderer.contentScaleFactor];
+        path.x /= 2;
+        path.y /= 2;
+        path.z--;
+        searchXYZ = [[renderer class] xyzForPath:path];
+    } else {
+        searchXYZ = xyz;
+    }
+
+    NSDictionary *tile = nil;
+
+    for (tile in renderer.tiles) {
+        if ([tile[@"xyz"] isEqualToString:searchXYZ]) {
+            break;
+        }
+    }
+
+    if (!tile) return nil;
+
+    [renderer.tiles removeObject:tile];
+    [renderer.tiles addObject:tile];
+
+    return tile[@"data"];
 }
 
 #pragma mark - MKOverlayRenderer Overrides
@@ -91,11 +152,11 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
         path.y /= 2;
         path.z -= 1;
     }
-    NSString *xyz = [self xyzForPath:childPath];
+    NSString *xyz = [[self class] xyzForPath:childPath];
     BOOL tileReady = NO;
 
     @synchronized(self) {
-        tileReady = [[self.tiles valueForKeyPath:@"xyz"] containsObject:xyz];
+        tileReady = ([[self class] imageDataFromRenderer:self forXYZ:xyz usingParents:usingBigTiles] != nil);
     }
 
     if (tileReady) {
@@ -109,26 +170,12 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
                     CGImageRef imageRef = CGImageCreateWithPNGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
                     if (!imageRef) imageRef = CGImageCreateWithJPEGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
                     CGDataProviderRelease(provider);
-                    if (usingBigTiles && imageRef) {
-                        for (NSUInteger x = 0; x < 2; x++) {
-                            for (NSUInteger y = 0; y < 2; y++) {
-                                MKTileOverlayPath quarterPath = {
-                                    .x = path.x * 2 + x,
-                                    .y = path.y * 2 + y,
-                                    .z = path.z + 1,
-                                    .contentScaleFactor = weakSelf.contentScaleFactor
-                                };
-                                NSString *quarterXYZ = [weakSelf xyzForPath:quarterPath];
-                                @synchronized(weakSelf) {
-                                    if (![[weakSelf.tiles valueForKeyPath:@"xyz"] containsObject:quarterXYZ]) {
-                                        [weakSelf addImageData:tileData toCache:weakSelf.tiles forXYZ:quarterXYZ];
-                                    }
-                                }
-                            }
-                        }
-                    } else if (!usingBigTiles && imageRef) {
+                    if (imageRef) {
                         @synchronized(weakSelf) {
-                            [weakSelf addImageData:tileData toCache:weakSelf.tiles forXYZ:xyz];
+                            [[weakSelf class] addImageData:tileData
+                                                toRenderer:weakSelf
+                                                    forXYZ:xyz
+                                              usingParents:usingBigTiles];
                         }
                     }
                     CGImageRelease(imageRef);
@@ -142,17 +189,14 @@ const NSUInteger MBXRasterTileRendererLRUCacheSize = 50;
 
 - (void)drawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale inContext:(CGContextRef)context {
     MKTileOverlayPath path = [self pathForMapRect:mapRect zoomScale:zoomScale];
-    NSString *xyz = [self xyzForPath:path];
+    NSString *xyz = [[self class] xyzForPath:path];
     NSData *tileData = nil;
 
     @synchronized(self) {
-        NSUInteger index = [[self.tiles valueForKeyPath:@"xyz"] indexOfObject:xyz];
-        if (index != NSNotFound) {
-            NSDictionary *tile = self.tiles[index];
-            [self.tiles removeObject:tile];
-            [self.tiles addObject:tile];
-            tileData = tile[@"data"];
-        }
+        tileData = [[self class] imageDataFromRenderer:self
+                                                forXYZ:xyz
+                                          usingParents:(((MKTileOverlay *)self.overlay).tileSize.width == 512)];
+        if (!tileData) return;
     }
 
     CGImageRef imageRef = nil;
