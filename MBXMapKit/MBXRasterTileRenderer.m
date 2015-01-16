@@ -132,7 +132,9 @@
         }
     }
 
-    if (!tile) return nil;
+    if (!tile) {
+        return nil;
+    }
 
     [renderer.tiles removeObject:tile];
     [renderer.tiles addObject:tile];
@@ -196,7 +198,10 @@
         tileData = [[self class] imageDataFromRenderer:self
                                                 forXYZ:xyz
                                           usingParents:(((MKTileOverlay *)self.overlay).tileSize.width == 512)];
-        if (!tileData) return;
+
+        if (!tileData) {
+            return [self setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
+        }
     }
 
     CGImageRef imageRef = nil;
