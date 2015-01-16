@@ -142,6 +142,24 @@
     return tile[@"data"];
 }
 
++ (BOOL)dataIsPNG:(NSData *)data {
+    unsigned char *b = (unsigned char *)data.bytes;
+    if (data.length > 4 && b[0] == 0x89 && b[1] == 0x50 && b[2] == 0x4e && b[3] == 0x47) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
++ (BOOL)dataIsJPEG:(NSData *)data {
+    unsigned char *b = (unsigned char *)data.bytes;
+    if (data.length > 4 && b[0] == 0xff && b[1] == 0xd8 && b[2] == 0xff && b[3] == 0xe0) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
 #pragma mark - MKOverlayRenderer Overrides
 
 - (BOOL)canDrawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale {
@@ -169,9 +187,12 @@
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 if (tileData) {
                     CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)tileData);
-                    CGImageRef imageRef = CGImageCreateWithPNGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
-                    if (!imageRef) imageRef = CGImageCreateWithJPEGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
-                    CGDataProviderRelease(provider);
+                    CGImageRef imageRef = nil;
+                    if ([[weakSelf class] dataIsPNG:tileData]) {
+                        imageRef = CGImageCreateWithPNGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
+                    } else if ([[weakSelf class] dataIsJPEG:tileData]) {
+                        imageRef = CGImageCreateWithJPEGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
+                    }
                     if (imageRef) {
                         @synchronized(weakSelf) {
                             [[weakSelf class] addImageData:tileData
@@ -181,6 +202,7 @@
                         }
                     }
                     CGImageRelease(imageRef);
+                    CGDataProviderRelease(provider);
                 }
                 [weakSelf setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
             });
@@ -208,8 +230,11 @@
 
     CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)tileData);
     if (provider) {
-        imageRef = CGImageCreateWithPNGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
-        if (!imageRef) imageRef = CGImageCreateWithJPEGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
+        if ([[self class] dataIsPNG:tileData]) {
+            imageRef = CGImageCreateWithPNGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
+        } else if ([[self class] dataIsJPEG:tileData]) {
+            imageRef = CGImageCreateWithJPEGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
+        }
         CGDataProviderRelease(provider);
     }
 
