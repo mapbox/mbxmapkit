@@ -212,18 +212,20 @@
         return [self setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
     }
 
+    CGImageRef croppedImageRef = nil;
+
     if (CGImageGetWidth(imageRef) == 512) {
         CGRect cropRect = CGRectMake(0, 0, 256, 256);
         cropRect.origin.x += (path.x % 2 ? 256 : 0);
         cropRect.origin.y += (path.y % 2 ? 256 : 0);
-        CGImageRef croppedImageRef = CGImageCreateWithImageInRect(imageRef, cropRect);
-        CGImageRelease(imageRef);
-        imageRef = croppedImageRef;
+        croppedImageRef = CGImageCreateWithImageInRect(imageRef, cropRect);
     }
 
     CGRect tileRect = CGRectMake(0, 0, 256, 256);
     UIGraphicsBeginImageContext(tileRect.size);
-    CGContextDrawImage(UIGraphicsGetCurrentContext(), tileRect, imageRef);
+    CGContextDrawImage(UIGraphicsGetCurrentContext(), tileRect, (croppedImageRef ? croppedImageRef : imageRef));
+    CGImageRelease(croppedImageRef);
+    CGImageRelease(imageRef);
     CGImageRef flippedImageRef = UIGraphicsGetImageFromCurrentImageContext().CGImage;
     UIGraphicsEndImageContext();
 
