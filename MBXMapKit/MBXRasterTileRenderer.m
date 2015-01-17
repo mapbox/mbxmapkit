@@ -197,18 +197,19 @@
     } else {
         __weak typeof(self) weakSelf = self;
         [(MKTileOverlay *)weakSelf.overlay loadTileAtPath:path result:^(NSData *tileData, NSError *error) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                if (tileData) {
-                    CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)tileData);
+            if (tileData) {
+                NSData *tileDataCopy = [[NSData alloc] initWithBytes:tileData.bytes length:tileData.length];
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)tileDataCopy);
                     CGImageRef imageRef = nil;
-                    if ([[weakSelf class] dataIsPNG:tileData]) {
+                    if ([[weakSelf class] dataIsPNG:tileDataCopy]) {
                         imageRef = CGImageCreateWithPNGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
-                    } else if ([[weakSelf class] dataIsJPEG:tileData]) {
+                    } else if ([[weakSelf class] dataIsJPEG:tileDataCopy]) {
                         imageRef = CGImageCreateWithJPEGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
                     }
                     if (imageRef) {
                         @synchronized(weakSelf) {
-                            [[weakSelf class] addImageData:tileData
+                            [[weakSelf class] addImageData:tileDataCopy
                                                 toRenderer:weakSelf
                                                     forXYZ:xyz
                                              usingBigTiles:usingBigTiles];
@@ -216,9 +217,9 @@
                     }
                     CGImageRelease(imageRef);
                     CGDataProviderRelease(provider);
-                }
-                [weakSelf setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
-            });
+                });
+            }
+            [weakSelf setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
         }];
         return NO;
     }
