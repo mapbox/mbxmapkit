@@ -26,6 +26,15 @@
 
     if (self) {
         _tiles = [NSMutableArray new];
+
+        [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidReceiveMemoryWarningNotification
+                                                          object:[UIApplication sharedApplication]
+                                                           queue:nil
+                                                      usingBlock:^(NSNotification *note) {
+                                                          @synchronized(self) {
+                                                              [self.tiles removeAllObjects];
+                                                          }
+                                                      }];
     }
 
     return self;
@@ -33,6 +42,10 @@
 
 - (id)initWithTileOverlay:(MKTileOverlay *)overlay {
     return [self initWithOverlay:overlay];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Utility
