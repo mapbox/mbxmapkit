@@ -327,7 +327,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
         }
         else
         {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
+            dispatch_sync(dispatch_get_main_queue(), ^(void){
                 result(data, error);
             });
         }
