@@ -11,8 +11,8 @@ an `MKMapView` is supported as long as the proper values of
 
 `MBXMBTilesOverlay` provides overzooming. When `loadTileAtPath:result:`
 receives a request for tiles at a higher zoom than the MBTiles file's maximum
-zoom level, it will an appropriately scaled and cropped sub-tile from the
-MBTiles file's maximum zoom level. Note that if the MBTiles file's metadata
+zoom level, it will return an appropriately scaled and cropped sub-tile from
+the MBTiles file's maximum zoom level. Note that if the MBTiles file's metadata
 table provides an inaccurate maximum zoom level, overzooming will not work.
 
 In order for the tile overlay to appear on your map, your `MKMapView`'s
@@ -21,6 +21,11 @@ delegate must implement `mapView:rendererForOverlay:` from the
 you can implement logic in `mapView:rendererForOverlay:` to identify that
 `MBXMBTiles` object and return an `MKTileOverlayRenderer` with its `alpha`
 property set to something other than 1.
+
+## Dependencies
+
+`MBXMBTilesOverlay` uses libsqlite3 and the MapKit framework, so you will need
+to enable the Maps entitlement and link against libsqlite3.
 
 ## Known Issues
 
