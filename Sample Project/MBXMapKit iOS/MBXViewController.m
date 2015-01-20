@@ -340,9 +340,6 @@
             if(_currentlyViewingAnOfflineMap)
             {
                 [self resetMapViewAndRasterOverlayDefaults];
-                _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithOfflineMapDatabase:nil];
-                _rasterOverlay.delegate = self;
-                [_mapView addOverlay:_rasterOverlay];
             }
             for(MBXOfflineMapDatabase *db in [MBXOfflineMapDownloader sharedOfflineMapDownloader].offlineMapDatabases)
             {
