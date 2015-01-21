@@ -908,8 +908,16 @@
         //
         if(includeMarkers)
         {
+            NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
             NSString *dataName = ([MBXMapKit accessToken] ? @"features.json" : @"markers.geojson");
-            NSURL *geojson = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/%@", mapID, dataName]];
+            NSString *accessToken = ([MBXMapKit accessToken] ? [@"access_token=" stringByAppendingString:[MBXMapKit accessToken]] : nil);
+
+            NSURL *geojson = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%@%@",
+                version,
+                mapID,
+                dataName,
+                (accessToken ? [@"?" stringByAppendingString:accessToken] : @"")]];
+
             NSURLSessionDataTask *task;
             NSURLRequest *request = [NSURLRequest requestWithURL:geojson cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
             task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
