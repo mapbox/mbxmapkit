@@ -947,7 +947,6 @@
         NSMutableArray *urls = [[NSMutableArray alloc] init];
 
         NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
-//        NSString *dataName = ([MBXMapKit accessToken] ? @"features.json" : @"markers.geojson");
         NSString *accessToken = ([MBXMapKit accessToken] ? [@"access_token=" stringByAppendingString:[MBXMapKit accessToken]] : nil);
 
         // Include URLs for the metadata and markers json if applicable
@@ -959,14 +958,6 @@
                                 mapID,
                                 (accessToken ? [@"&" stringByAppendingString:accessToken] : @"")]];
         }
-//        if(includeMarkers)
-//        {
-//            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%@%@",
-//                                version,
-//                                mapID,
-//                                dataName,
-//                                (accessToken ? [@"?" stringByAppendingString:accessToken] : @"")]];
-//        }
 
         // Loop through the zoom levels and lat/lon bounds to generate a list of urls which should be included in the offline map
         //
@@ -1012,102 +1003,21 @@
             }
         }
 
-/*
-        // Determine if we need to add marker icon urls (i.e. parse markers.geojson/features.json), and if so, add them
+        // There aren't any marker icons to worry about, so just create database and start downloading
         //
-        if(includeMarkers)
+        NSError *error;
+        [self sqliteCreateDatabaseUsingMetadata:metadataDictionary urlArray:urls withError:&error];
+        if(error)
         {
-            NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
-            NSString *dataName = ([MBXMapKit accessToken] ? @"features.json" : @"markers.geojson");
-            NSString *accessToken = ([MBXMapKit accessToken] ? [@"access_token=" stringByAppendingString:[MBXMapKit accessToken]] : nil);
-
-            NSURL *geojson = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%@%@",
-                version,
-                mapID,
-                dataName,
-                (accessToken ? [@"?" stringByAppendingString:accessToken] : @"")]];
-
-            NSURLSessionDataTask *task;
-            NSURLRequest *request = [NSURLRequest requestWithURL:geojson cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
-            task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
-            {
-                if(error)
-                {
-                    // We got a session level error which probably indicates a connectivity problem such as airplane mode.
-                    // Since we must fetch and parse markers.geojson/features.json in order to determine which marker icons need to be
-                    // added to the list of urls to download, the lack of network connectivity is a non-recoverable error
-                    // here.
-                    //
-                    [self notifyDelegateOfNetworkConnectivityError:error];
-                    [self cancelImmediatelyWithError:error];
-                }
-                else
-                {
-                    if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
-                    {
-                        // The url for markers.geojson/features.json didn't work (some maps don't have any markers). Notify the delegate of the
-                        // problem, and stop attempting to add marker icons, but don't bail out on whole the offline map download.
-                        // The delegate can decide for itself whether it wants to continue or cancel.
-                        //
-                        [self notifyDelegateOfHTTPStatusError:((NSHTTPURLResponse *)response).statusCode url:response.URL];
-                    }
-                    else
-                    {
-                        // The marker geojson was successfully retrieved, so parse it for marker icons. Note that we shouldn't
-                        // try to save it here, because it may already be in the download queue and saving it twice will mess
-                        // up the count of urls to be downloaded!
-                        //
-                        NSArray *markerIconURLStrings = [self parseMarkerIconURLStringsFromGeojsonData:(NSData *)data];
-                        if(markerIconURLStrings)
-                        {
-                            [urls addObjectsFromArray:markerIconURLStrings];
-                        }
-                    }
-
-
-                    // ==========================================================================================================
-                    // == WARNING! WARNING! WARNING!                                                                           ==
-                    // == This stuff is a duplicate of the code immediately below it, but this copy is inside of a completion  ==
-                    // == block while the other isn't. You will be sad and confused if you try to eliminate the "duplication". ==
-                    //===========================================================================================================
-
-                    // Create the database and start the download
-                    //
-                    NSError *error;
-                    [self sqliteCreateDatabaseUsingMetadata:metadataDictionary urlArray:urls withError:&error];
-                    if(error)
-                    {
-                        [self cancelImmediatelyWithError:error];
-                    }
-                    else
-                    {
-                        [self notifyDelegateOfInitialCount];
-                        [self startDownloading];
-                    }
-                }
-            }];
-            [task resume];
+            [self cancelImmediatelyWithError:error];
         }
         else
         {
-*/
-            // There aren't any marker icons to worry about, so just create database and start downloading
-            //
-            NSError *error;
-            [self sqliteCreateDatabaseUsingMetadata:metadataDictionary urlArray:urls withError:&error];
-            if(error)
-            {
-                [self cancelImmediatelyWithError:error];
-            }
-            else
-            {
-                [self notifyDelegateOfInitialCount];
-                [self startDownloading];
-            }
-//        }
+            [self notifyDelegateOfInitialCount];
+            [self startDownloading];
+        }
     }];
 }
-
 
 - (NSArray *)parseMarkerIconURLStringsFromGeojsonData:(NSData *)data
 {
