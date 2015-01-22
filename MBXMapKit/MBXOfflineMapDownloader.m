@@ -420,7 +420,7 @@
                         else
                         {
                             // Since the URL was successfully retrieved, save the data
-                            NSLog(@"total expected: %lu; total actually: %lu", _totalFilesExpectedToWrite, _totalFilesWritten);
+                            NSLog(@"total expected: %lu; total actually: %lu", (unsigned long)_totalFilesExpectedToWrite, (unsigned long)_totalFilesWritten);
 
                             // Inspect download first
                             NSString *pathExtension = url.pathExtension;
@@ -529,54 +529,7 @@
         }
         else
         {
-//            NSMutableString *query = [[NSMutableString alloc] init];
-//            [query appendString:@"PRAGMA foreign_keys=ON;\n"];
-//            [query appendString:@"BEGIN TRANSACTION;\n"];
-//            for(NSString *url in urls)
-//            {
-//                [query appendFormat:@"INSERT INTO \"resources\" VALUES('%@',NULL,NULL);\n",url];
-//            }
-//            [query appendString:@"COMMIT;"];
-//            
-//            // Save them to DB and they'll get picked up on later chunks of 30
-//            // Open the database read-write and multi-threaded. The slightly obscure c-style variable names here and below are
-//            // used to stay consistent with the sqlite documentaion.
-//            NSError *error;
-//            sqlite3 *db;
-//            int rc;
-//            const char *filename = [_partialDatabasePath cStringUsingEncoding:NSUTF8StringEncoding];
-//            rc = sqlite3_open_v2(filename, &db, SQLITE_OPEN_READWRITE, NULL);
-//            if (rc)
-//            {
-//                // Opening the database failed... something is very wrong.
-//                //
-//                if(error != NULL)
-//                {
-//                    error = [NSError mbx_errorCannotOpenOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
-//                }
-//                sqlite3_close(db);
-//            }
-//            else
-//            {
-//                // Success!
-//                //
-//                const char *zSql = [query cStringUsingEncoding:NSUTF8StringEncoding];
-//                char *errmsg;
-//                sqlite3_exec(db, zSql, NULL, NULL, &errmsg);
-//                if(error && errmsg != NULL)
-//                {
-//                    error = [NSError mbx_errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:errmsg];
-//                    sqlite3_free(errmsg);
-//                }
-//                sqlite3_close(db);
-//                // Update Total Files Expected To Write
-//                _totalFilesExpectedToWrite += [urls count];
-//                [self notifyDelegateOfInitialCount];
-//            }
-            
-            
-            // Creating the database file worked, so now start an atomic commit
-            //
+            // Opening the database file worked, so now start an atomic commit
             NSMutableString *query = [[NSMutableString alloc] init];
             [query appendString:@"PRAGMA foreign_keys=ON;\n"];
             [query appendString:@"BEGIN TRANSACTION;\n"];
@@ -612,7 +565,6 @@
         if(error)
         {
             // Oops, that didn't work. Notify the delegate.
-            //
             [self notifyDelegateOfSqliteError:error];
         }
         else
@@ -621,29 +573,10 @@
             //
 //            _totalFilesWritten += 1;
 //            [self notifyDelegateOfProgress];
-            NSLog(@"totalFilesExpectedToWrite orig = %lu", _totalFilesExpectedToWrite);
+            NSLog(@"totalFilesExpectedToWrite orig = %lu", (unsigned long)_totalFilesExpectedToWrite);
             _totalFilesExpectedToWrite += [urls count];
-            NSLog(@"totalFilesExpectedToWrite updated = %lu", _totalFilesExpectedToWrite);
+            NSLog(@"totalFilesExpectedToWrite updated = %lu", (unsigned long)_totalFilesExpectedToWrite);
             [self notifyDelegateOfInitialCount];
-            
-//            // If all the downloads are done, clean up and notify the delegate
-//            //
-//            if(_totalFilesWritten >= _totalFilesExpectedToWrite)
-//            {
-//                if(_state == MBXOfflineMapDownloaderStateRunning)
-//                {
-//                    // This is what to do when we've downloaded all the files
-//                    //
-//                    MBXOfflineMapDatabase *offlineMap = [self completeDatabaseAndInstantiateOfflineMapWithError:&error];
-//                    if(offlineMap && !error) {
-//                        [_mutableOfflineMapDatabases addObject:offlineMap];
-//                    }
-//                    [self notifyDelegateOfCompletionWithOfflineMapDatabase:offlineMap withError:error];
-//                    
-//                    _state = MBXOfflineMapDownloaderStateAvailable;
-//                    [self notifyDelegateOfStateChange];
-//                }
-//            }
         }
         
         // If this was the last of a batch of urls in the data session's download queue, and there are more urls
