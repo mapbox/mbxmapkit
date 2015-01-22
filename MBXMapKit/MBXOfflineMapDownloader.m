@@ -422,71 +422,26 @@
                             //
                             [self sqliteSaveDownloadedData:data forURL:url];
                             
-                            // If this was TileJSON data, parse it looking for data / markers to add to URL ToGet List
-                            id tileJSON = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-                            if (tileJSON != nil) {
-                                NSLog(@"tileJSON is not nil.  %@", tileJSON);
-                                if ([tileJSON isKindOfClass:[NSDictionary class]])
+                            if ([url.pathExtension rangeOfString:@"json" options:NSCaseInsensitiveSearch].location != NSNotFound)
+                            {
+                                // Likely JSON, let's parse it to make sure, and then figure out what to do with it based on it's flavor
+                                
+                                id json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+                                if (json != nil)
                                 {
-                                    NSDictionary *tj = (NSDictionary *)tileJSON;
-                                    NSArray *tjData = (NSArray *)[tj objectForKey:@"data"];
-                                    if (tjData != nil)
+                                    NSLog(@"json is not nil.  %@", json);
+                                    if ([json isKindOfClass:[NSDictionary class]])
                                     {
-                                        // Add the TileJSON's data URLs to the list to download
-                                        NSMutableString *query = [[NSMutableString alloc] init];
-                                        [query appendString:@"PRAGMA foreign_keys=ON;\n"];
-                                        [query appendString:@"BEGIN TRANSACTION;\n"];
-                                        for(NSString *url in tjData)
+                                        // If this is TileJSON flavored JSON, parse it looking for the data key which has the markers urls to add to URL ToGet List
+                                        NSDictionary *tj = (NSDictionary *)json;
+                                        NSArray *tjData = (NSArray *)[tj objectForKey:@"data"];
+                                        if (tjData != nil)
                                         {
-                                            [query appendFormat:@"INSERT INTO \"resources\" VALUES('%@',NULL,NULL);\n",url];
-                                        }
-                                        [query appendString:@"COMMIT;"];
-                                        
-                                        // Save them to DB and they'll get picked up on later chunks of 30
-                                        // Open the database read-write and multi-threaded. The slightly obscure c-style variable names here and below are
-                                        // used to stay consistent with the sqlite documentaion.
-                                        sqlite3 *db;
-                                        int rc;
-                                        const char *filename = [_partialDatabasePath cStringUsingEncoding:NSUTF8StringEncoding];
-                                        rc = sqlite3_open_v2(filename, &db, SQLITE_OPEN_READWRITE, NULL);
-                                        if (rc)
-                                        {
-                                            // Opening the database failed... something is very wrong.
-                                            //
-                                            if(error != NULL)
-                                            {
-                                                error = [NSError mbx_errorCannotOpenOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
-                                            }
-                                            sqlite3_close(db);
-                                        }
-                                        else
-                                        {
-                                            // Success!
-                                            //
-                                            const char *zSql = [query cStringUsingEncoding:NSUTF8StringEncoding];
-                                            char *errmsg;
-                                            sqlite3_exec(db, zSql, NULL, NULL, &errmsg);
-                                            if(error && errmsg != NULL)
-                                            {
-                                                error = [NSError mbx_errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:errmsg];
-                                                sqlite3_free(errmsg);
-                                            }
-                                            sqlite3_close(db);
-                                            // Update Total Files Expected To Write
-                                            _totalFilesExpectedToWrite += [tjData count];
-                                            [self notifyDelegateOfInitialCount];
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // It's JSON so parse it to see if there any Marker URLs
-                                        NSArray *markerURLs = [self parseMarkerIconURLStringsFromGeojsonData:data];
-                                        if (markerURLs != nil)
-                                        {
+                                            // Yep, this is TileJSON so grab data URLs and add the list to download
                                             NSMutableString *query = [[NSMutableString alloc] init];
                                             [query appendString:@"PRAGMA foreign_keys=ON;\n"];
                                             [query appendString:@"BEGIN TRANSACTION;\n"];
-                                            for(NSString *url in markerURLs)
+                                            for(NSString *url in tjData)
                                             {
                                                 [query appendFormat:@"INSERT INTO \"resources\" VALUES('%@',NULL,NULL);\n",url];
                                             }
@@ -523,12 +478,64 @@
                                                 }
                                                 sqlite3_close(db);
                                                 // Update Total Files Expected To Write
-                                                _totalFilesExpectedToWrite += [markerURLs count];
+                                                _totalFilesExpectedToWrite += [tjData count];
                                                 [self notifyDelegateOfInitialCount];
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // It's non TileJSON flavored JSON so parse it to see if there any Marker URLs
+                                            NSArray *markerURLs = [self parseMarkerIconURLStringsFromGeojsonData:data];
+                                            if (markerURLs != nil)
+                                            {
+                                                NSMutableString *query = [[NSMutableString alloc] init];
+                                                [query appendString:@"PRAGMA foreign_keys=ON;\n"];
+                                                [query appendString:@"BEGIN TRANSACTION;\n"];
+                                                for(NSString *url in markerURLs)
+                                                {
+                                                    [query appendFormat:@"INSERT INTO \"resources\" VALUES('%@',NULL,NULL);\n",url];
+                                                }
+                                                [query appendString:@"COMMIT;"];
+                                                
+                                                // Save them to DB and they'll get picked up on later chunks of 30
+                                                // Open the database read-write and multi-threaded. The slightly obscure c-style variable names here and below are
+                                                // used to stay consistent with the sqlite documentaion.
+                                                sqlite3 *db;
+                                                int rc;
+                                                const char *filename = [_partialDatabasePath cStringUsingEncoding:NSUTF8StringEncoding];
+                                                rc = sqlite3_open_v2(filename, &db, SQLITE_OPEN_READWRITE, NULL);
+                                                if (rc)
+                                                {
+                                                    // Opening the database failed... something is very wrong.
+                                                    //
+                                                    if(error != NULL)
+                                                    {
+                                                        error = [NSError mbx_errorCannotOpenOfflineMapDatabase:_partialDatabasePath sqliteError:sqlite3_errmsg(db)];
+                                                    }
+                                                    sqlite3_close(db);
+                                                }
+                                                else
+                                                {
+                                                    // Success!
+                                                    //
+                                                    const char *zSql = [query cStringUsingEncoding:NSUTF8StringEncoding];
+                                                    char *errmsg;
+                                                    sqlite3_exec(db, zSql, NULL, NULL, &errmsg);
+                                                    if(error && errmsg != NULL)
+                                                    {
+                                                        error = [NSError mbx_errorQueryFailedForOfflineMapDatabase:_partialDatabasePath sqliteError:errmsg];
+                                                        sqlite3_free(errmsg);
+                                                    }
+                                                    sqlite3_close(db);
+                                                    // Update Total Files Expected To Write
+                                                    _totalFilesExpectedToWrite += [markerURLs count];
+                                                    [self notifyDelegateOfInitialCount];
+                                                }
                                             }
                                         }
                                     }
                                 }
+                                // END OF JSON
                             }
                         }
                     }
