@@ -55,8 +55,8 @@
 @property (readwrite, nonatomic) NSInteger minimumZ;
 @property (readwrite, nonatomic) NSInteger maximumZ;
 @property (readwrite, nonatomic) MBXOfflineMapDownloaderState state;
-@property (readwrite,nonatomic) NSUInteger totalFilesWritten;
-@property (readwrite,nonatomic) NSUInteger totalFilesExpectedToWrite;
+@property (readwrite, atomic) volatile NSUInteger totalFilesWritten;
+@property (readwrite, atomic) volatile NSUInteger totalFilesExpectedToWrite;
 
 @property (nonatomic) NSMutableArray *mutableOfflineMapDatabases;
 @property (nonatomic) NSString *partialDatabasePath;
@@ -382,6 +382,7 @@
 - (void)startDownloading
 {
     assert(![NSThread isMainThread]);
+    NSLog(@"startDownloading called");
 
     [_sqliteQueue addOperationWithBlock:^{
         NSError *error;
@@ -419,18 +420,30 @@
                         else
                         {
                             // Since the URL was successfully retrieved, save the data
-                            //
-                            [self sqliteSaveDownloadedData:data forURL:url];
+                            NSLog(@"total expected: %lu; total actually: %lu", _totalFilesExpectedToWrite, _totalFilesWritten);
+
+                            // Inspect download first
                             NSString *pathExtension = url.pathExtension;
+//                            NSLog(@"pathExtension = '%@', url = '%@'", pathExtension, url.absoluteString);
                             NSLog(@"pathExtension = '%@'", pathExtension);
+                            
+//                            if ([pathExtension rangeOfString:@"geojson" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+//                                NSLog(@"geojson found");
+//                                if ([pathExtension rangeOfString:@"json" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+//                                    NSLog(@"json tripped on a geojson pathextension");
+//                                } else {
+//                                    NSLog(@"json DID NOT trip on a geojson pathextension");
+//                                }
+//                            }
                             
                             if ([pathExtension rangeOfString:@"json" options:NSCaseInsensitiveSearch].location != NSNotFound)
                             {
+                                NSLog(@"Tripped pathExtension = '%@'", pathExtension);
                                 // Likely JSON, let's parse it to make sure, and then figure out what to do with it based on it's flavor
                                 id json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
                                 if (json != nil)
                                 {
-//                                    NSLog(@"json is not nil.  %@", json);
+                                    NSLog(@"json is not nil.  %@", json);
                                     if ([json isKindOfClass:[NSDictionary class]])
                                     {
                                         // If this is TileJSON flavored JSON, parse it looking for the data key which has the markers urls to add to URL ToGet List
@@ -439,6 +452,7 @@
                                         if (tjData != nil)
                                         {
                                             // Yep, this is TileJSON so grab data URLs and add the list to download
+                                            NSLog(@"TileJSON resources to add = '%lu'", (unsigned long)tjData.count);
                                             [self sqliteSaveResourceURLs:tjData];
                                         }
                                         else
@@ -447,13 +461,25 @@
                                             NSArray *markerURLs = [self parseMarkerIconURLStringsFromGeojsonData:data];
                                             if (markerURLs != nil)
                                             {
+                                                NSLog(@"Marker URL resources to add = '%lu'", (unsigned long)markerURLs.count);
                                                 [self sqliteSaveResourceURLs:markerURLs];
                                             }
                                         }
                                     }
+                                    else
+                                    {
+                                        NSLog(@"json wasn't a NSDictionary so no processing was done.  Here it is: %s", json);
+                                    }
+                                }
+                                else
+                                {
+                                    NSLog(@"json was nil (aka not serialized).  Here's what the data is: %@", data);
                                 }
                                 // END OF JSON
                             }
+                            
+                            // Save the downloaded data
+                            [self sqliteSaveDownloadedData:data forURL:url];
                         }
                     }
                 }];
@@ -566,6 +592,7 @@
                 NSMutableString *query2 = [[NSMutableString alloc] init];
                 for(NSString *url in urls)
                 {
+                    NSLog(@"Resource URL to add to database = '%@'", url);
                     [query2 appendFormat:@"INSERT INTO \"resources\" VALUES('%@',NULL,NULL);\n",url];
                 }
                 [query2 appendString:@"COMMIT;"];
@@ -593,7 +620,9 @@
             //
 //            _totalFilesWritten += 1;
 //            [self notifyDelegateOfProgress];
+            NSLog(@"totalFilesExpectedToWrite orig = %lu", _totalFilesExpectedToWrite);
             _totalFilesExpectedToWrite += [urls count];
+            NSLog(@"totalFilesExpectedToWrite updated = %lu", _totalFilesExpectedToWrite);
             [self notifyDelegateOfInitialCount];
             
 //            // If all the downloads are done, clean up and notify the delegate
@@ -619,10 +648,10 @@
         // If this was the last of a batch of urls in the data session's download queue, and there are more urls
         // to be downloaded, get another batch of urls from the database and keep working.
         //
-        if(_activeDataSessionTasks > 0)
-        {
-            _activeDataSessionTasks -= 1;
-        }
+//        if(_activeDataSessionTasks > 0)
+//        {
+//            _activeDataSessionTasks -= 1;
+//        }
         if(_activeDataSessionTasks == 0 && _totalFilesWritten < _totalFilesExpectedToWrite)
         {
             [self startDownloading];

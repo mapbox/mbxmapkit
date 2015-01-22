@@ -118,10 +118,10 @@ typedef NS_ENUM(NSUInteger, MBXOfflineMapDownloaderState) {
 @property (readonly, nonatomic) NSInteger maximumZ;
 
 /** If a download job is running or suspended, the number of files which have been written so far. */
-@property (readonly,nonatomic) NSUInteger totalFilesWritten;
+@property (readonly,atomic) volatile NSUInteger totalFilesWritten;
 
 /** If a download job is running or suspended, the number of files which still need to be written to finish the job. */
-@property (readonly,nonatomic) NSUInteger totalFilesExpectedToWrite;
+@property (readonly,atomic) volatile NSUInteger totalFilesExpectedToWrite;
 
 /** An array of `MBXOfflineMapDatabase` objects representing all completed offline map databases on disk. This is designed, in combination with the properties provided by `MBXOfflineMapDatabase`, to allow enumeration and management of the maps which are available on disk. */
 @property (readonly, nonatomic) NSArray *offlineMapDatabases;
