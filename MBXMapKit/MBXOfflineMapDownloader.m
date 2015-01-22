@@ -427,23 +427,24 @@
 //                            NSLog(@"pathExtension = '%@', url = '%@'", pathExtension, url.absoluteString);
                             NSLog(@"pathExtension = '%@'", pathExtension);
                             
-//                            if ([pathExtension rangeOfString:@"geojson" options:NSCaseInsensitiveSearch].location != NSNotFound) {
-//                                NSLog(@"geojson found");
-//                                if ([pathExtension rangeOfString:@"json" options:NSCaseInsensitiveSearch].location != NSNotFound) {
-//                                    NSLog(@"json tripped on a geojson pathextension");
-//                                } else {
-//                                    NSLog(@"json DID NOT trip on a geojson pathextension");
-//                                }
-//                            }
-                            
                             if ([pathExtension rangeOfString:@"json" options:NSCaseInsensitiveSearch].location != NSNotFound)
                             {
-                                NSLog(@"Tripped pathExtension = '%@'", pathExtension);
+                                NSLog(@"Tripped JSON pathExtension = '%@'", pathExtension);
+
                                 // Likely JSON, let's parse it to make sure, and then figure out what to do with it based on it's flavor
-                                id json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+                                NSMutableString *jsonString = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+
+                                // Clean Up JSONP
+                                if ([jsonString hasPrefix:@"grid("])
+                                {
+                                    [jsonString replaceCharactersInRange:NSMakeRange(0, 5) withString:@""];
+                                    [jsonString replaceCharactersInRange:NSMakeRange([jsonString length] - 2, 2) withString:@""];
+                                }
+                                
+                                id json = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
                                 if (json != nil)
                                 {
-                                    NSLog(@"json is not nil.  %@", json);
+                                    NSLog(@"json is not nil.");
                                     if ([json isKindOfClass:[NSDictionary class]])
                                     {
                                         // If this is TileJSON flavored JSON, parse it looking for the data key which has the markers urls to add to URL ToGet List
@@ -458,17 +459,17 @@
                                         else
                                         {
                                             // It's non TileJSON flavored JSON so parse it to see if there any Marker URLs
-                                            NSArray *markerURLs = [self parseMarkerIconURLStringsFromGeojsonData:data];
+                                            NSArray *markerURLs = [self parseMarkerIconURLStringsFromGeojsonData:[jsonString dataUsingEncoding:NSUTF8StringEncoding]];
+                                            NSLog(@"Marker URL resources to add = '%lu'", (unsigned long)markerURLs.count);
                                             if (markerURLs != nil)
                                             {
-                                                NSLog(@"Marker URL resources to add = '%lu'", (unsigned long)markerURLs.count);
                                                 [self sqliteSaveResourceURLs:markerURLs];
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        NSLog(@"json wasn't a NSDictionary so no processing was done.  Here it is: %s", json);
+                                        NSLog(@"json wasn't a NSDictionary so no processing was done.  Here it is: %@", json);
                                     }
                                 }
                                 else
