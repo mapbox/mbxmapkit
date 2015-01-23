@@ -257,6 +257,16 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 
     // Initiate asynchronous metadata and marker loading
     //
+    if(includeMarkers)
+    {
+        _mutableMarkers = [[NSMutableArray alloc] init];
+        //        [self asyncLoadMarkers];
+    }
+    else
+    {
+        _didFinishLoadingMarkers = YES;
+    }
+    
     if(includeMetadata)
     {
         [self asyncLoadMetadata];
@@ -264,16 +274,6 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
     else
     {
         _didFinishLoadingMetadata = YES;
-    }
-
-    if(includeMarkers)
-    {
-        _mutableMarkers = [[NSMutableArray alloc] init];
-//        [self asyncLoadMarkers];
-    }
-    else
-    {
-        _didFinishLoadingMarkers = YES;
     }
 }
 
