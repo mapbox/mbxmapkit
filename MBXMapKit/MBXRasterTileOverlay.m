@@ -228,7 +228,6 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
     // Save the map configuration
     //
     NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
-//    NSString *dataName = ([MBXMapKit accessToken] ? @"features.json" : @"markers.geojson");
     NSString *accessToken = ([MBXMapKit accessToken] ? [@"access_token=" stringByAppendingString:[MBXMapKit accessToken]] : nil);
     _mapID = mapID;
     _imageQuality = imageQuality;
@@ -236,11 +235,6 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
                                             version,
                                             _mapID,
                                          (accessToken ? [@"&" stringByAppendingString:accessToken] : @"")]];
-//    _markersURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%@%@",
-//                                           version,
-//                                           _mapID,
-//                                           dataName,
-//                                           (accessToken ? [@"?" stringByAppendingString:accessToken] : @"")]];
 
     // Use larger tiles if on v4 API
     //
@@ -260,7 +254,6 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
     if(includeMarkers)
     {
         _mutableMarkers = [[NSMutableArray alloc] init];
-        //        [self asyncLoadMarkers];
     }
     else
     {
