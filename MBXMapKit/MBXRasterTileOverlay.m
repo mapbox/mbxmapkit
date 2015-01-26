@@ -13,6 +13,9 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
     MBXRenderCompletionStateFull = 2
 };
 
+typedef void (^MBXRasterTileOverlayWorkerBlock)(NSData *data, NSError **error);
+typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error);
+
 #pragma mark - Private API for creating verbose errors
 
 @interface NSError (MBXError)
@@ -297,7 +300,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 }
 
 
-- (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *, NSError *))result
+- (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *tileData, NSError *error))result
 {
     if (_sessionHasBeenInvalidated)
     {
@@ -317,8 +320,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
                                        ([MBXMapKit accessToken] ? [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]] : @"")
                                        ]];
 
-    void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
-    {
+    MBXRasterTileOverlayCompletionBlock completionHandler = ^(NSData *data, NSError *error) {
         // Invoke the loadTileAtPath's completion handler
         //
         if ([NSThread isMainThread])
@@ -327,7 +329,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
         }
         else
         {
-            dispatch_sync(dispatch_get_main_queue(), ^(void){
+            dispatch_sync(dispatch_get_main_queue(), ^{
                 result(data, error);
             });
         }
@@ -370,7 +372,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
     {
         _metadataForPendingNotification = nil;
         _metadataErrorForPendingNotification = nil;
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^{
             [_delegate tileOverlay:self didLoadMetadata:metadata withError:error];
         });
     }
@@ -388,7 +390,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
     {
         _markersForPendingNotification = nil;
         _markersErrorForPendingNotification = nil;
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^{
             [_delegate tileOverlay:self didLoadMarkers:markers withError:error];
         });
     }
@@ -405,7 +407,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
     if([_delegate respondsToSelector:@selector(tileOverlayDidFinishLoadingMetadataAndMarkers:)])
     {
         _needToNotifyDelegateThatMetadataAndMarkersAreFinished = NO;
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^{
             [_delegate tileOverlayDidFinishLoadingMetadataAndMarkers:self];
         });
     }
@@ -423,8 +425,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 {
     // This block is run only if data for the URL is successfully retrieved
     //
-    void(^workerBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error)
-    {
+    MBXRasterTileOverlayWorkerBlock workerBlock = ^(NSData *data, NSError **error) {
         id markers;
         id value;
         NSDictionary *simplestyleJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
@@ -483,8 +484,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 
     // This block runs at the end of all error handling and data processing associated with the URL
     //
-    void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
-    {
+    MBXRasterTileOverlayCompletionBlock completionHandler = ^(NSData *data, NSError *error) {
         if(error) {
             // At this point, it's possible there was an HTTP or network error. It could also be the
             // case that some of the the markers are in the process of successfully loading their icons,
@@ -533,8 +533,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 {
     // This block is run only if data for the URL is successfully retrieved
     //
-    void(^workerBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error){
-
+    MBXRasterTileOverlayWorkerBlock workerBlock = ^(NSData *data, NSError **error) {
 #if TARGET_OS_IPHONE
         point.image = [[UIImage alloc] initWithData:data scale:[[UIScreen mainScreen] scale]];
 #else
@@ -550,8 +549,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 
     // This block runs at the end of all error handling and data processing associated with the URL
     //
-    void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
-    {
+    MBXRasterTileOverlayCompletionBlock completionHandler = ^(NSData *data, NSError *error) {
         if(_markerIconLoaderMayInitiateDelegateCallback && _activeMarkerIconRequests <= 0)
         {
             _markers = [NSArray arrayWithArray:_mutableMarkers];
@@ -572,8 +570,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 {
     // This block is run only if data for the URL is successfully retrieved
     //
-    void(^workerBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error)
-    {
+    MBXRasterTileOverlayWorkerBlock workerBlock = ^(NSData *data, NSError **error) {
         _tileJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
         if(!*error)
         {
@@ -600,8 +597,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 
     // This block runs at the end of all error handling and data processing associated with the URL
     //
-    void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
-    {
+    MBXRasterTileOverlayCompletionBlock completionHandler = ^(NSData *data, NSError *error) {
         [self notifyDelegateDidLoadMetadata:_tileJSONDictionary withError:error];
 
         _didFinishLoadingMetadata = YES;
@@ -614,7 +610,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 }
 
 
-- (void)asyncLoadURL:(NSURL *)url workerBlock:(void(^)(NSData *,NSError **))workerBlock completionHandler:(void (^)(NSData *, NSError *))completionHandler
+- (void)asyncLoadURL:(NSURL *)url workerBlock:(MBXRasterTileOverlayWorkerBlock)workerBlock completionHandler:(MBXRasterTileOverlayCompletionBlock)completionHandler
 {
     // This method exists to:
     // 1. Encapsulte the boilderplate network code for checking HTTP status which is needed for every data session task
@@ -654,8 +650,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
         //
         NSURLSessionDataTask *task;
         NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
-        task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
-        {
+        task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             if (!error)
             {
                 if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
@@ -682,8 +677,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 
 - (void)addPendingRender:(NSURL *)addURL removePendingRender:(NSURL *)removeURL
 {
-    dispatch_async(dispatch_get_main_queue(), ^(void)
-    {
+    dispatch_async(dispatch_get_main_queue(), ^{
         if (addURL) [self.pendingTileRenders addObject:addURL];
 
         if ([self.pendingTileRenders containsObject:removeURL]) [self.pendingTileRenders removeObject:removeURL];
