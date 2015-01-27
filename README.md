@@ -25,25 +25,11 @@ You are responsible for managing your own `MKMapView`, and MBXMapKit will stay o
 
 With MBXMapKit, there is a clear distinction between performance caching and persistent offline storage. If iOS decides it needs to free up disk space by deleting items in app cache directories, offline map data won't be affected.
 
-### Linking Requirements
+### Requirements
 
-MBXMapKit requires `libsqlite3.dylib` to be linked with your build target in order to compile properly. This is related to offline map storage. 
-
-### Getting Help
-
-If you have questions about how to use MBXMapKit, or are encountering problems, here are our suggestions for how to proceed:
-
- 1. Read all of this README, review the documentation in the MBXMapKit header files, and check if what you're trying to do is similar to anything in the sample app.
- 
- 2. Search the web for your problem or error message. This can be very helpful for distinguishing MBXMapKit specific problems from more general issues with MKMapKit, and it may also guide you to relevant GitHub issues or StackOverflow questions. In many cases, documentation and blog posts about using MKMapKit will also be applicable to MBXMapKit.
- 
- 3. Familiarize yourself with the documentation and developer resources on Mapbox.com ([Help](https://www.mapbox.com/help/), [Guides](https://www.mapbox.com/guides/), and [Developers](https://www.mapbox.com/developers/)).
- 
- 4. Take a look at the MBXMapKit [issues](https://github.com/mapbox/mbxmapkit/issues?state=open) on GitHub.
- 
- 5. Take a look at [Mapbox questions](http://stackoverflow.com/questions/tagged/mapbox?sort=votes&pageSize=100) on StackOverflow.
-
- 6. If none of that helps, you can file an [issue](https://github.com/mapbox/mbxmapkit/issues?state=open) on GitHub, ask a question on [StackOverflow](http://stackoverflow.com/questions/tagged/mapbox?sort=votes&pageSize=100), or [contact Mapbox support](https://www.mapbox.com/help/).
+ * iOS 7.0+
+ * Xcode 5+
+ * Automatic Reference Counting (ARC)
 
 ### Getting the Latest Release from GitHub
 
@@ -66,6 +52,26 @@ To include MBXMapKit in your app you will need to:
  1. Study the view controller in the iOS sample app. It's meant to be liberally copied and pasted. In particular, take a look at `-viewDidLoad`, `-resetMapViewAndRasterOverlayDefaults`, `-actionSheet:clickedButtonAtIndex:`, the `MBXOfflineMapDownloaderDelegate` callbacks, `-mapView:rendererForOverlay:`, `-mapView:viewForAnnotation:`, and the `MBXRasterTileOverlayDelegate` callbacks if you have any questions about how things work.
  
  1. **Provide some prominent means to display any applicable map data copyright attribution messages.** For maps which include [OpenStreetMap](http://mapbox.com/about/maps) data, that means you need something which links to the OSM copyright page (see sample app for an example). More details are available at https://www.mapbox.com/help/attribution/ and http://www.openstreetmap.org/copyright. 
+
+### Linking Requirements
+
+MBXMapKit requires `libsqlite3.dylib` to be linked with your build target in order to compile properly. This is related to offline map storage. 
+
+### Getting Help
+
+If you have questions about how to use MBXMapKit, or are encountering problems, here are our suggestions for how to proceed:
+
+ 1. Read all of this README, review the documentation in the MBXMapKit header files, and check if what you're trying to do is similar to anything in the sample app.
+ 
+ 2. Search the web for your problem or error message. This can be very helpful for distinguishing MBXMapKit specific problems from more general issues with MKMapKit, and it may also guide you to relevant GitHub issues or StackOverflow questions. In many cases, documentation and blog posts about using MKMapKit will also be applicable to MBXMapKit.
+ 
+ 3. Familiarize yourself with the documentation and developer resources on Mapbox.com ([Help](https://www.mapbox.com/help/), [Guides](https://www.mapbox.com/guides/), and [Developers](https://www.mapbox.com/developers/)).
+ 
+ 4. Take a look at the MBXMapKit [issues](https://github.com/mapbox/mbxmapkit/issues?state=open) on GitHub.
+ 
+ 5. Take a look at [Mapbox questions](http://stackoverflow.com/questions/tagged/mapbox?sort=votes&pageSize=100) on StackOverflow.
+
+ 6. If none of that helps, you can file an [issue](https://github.com/mapbox/mbxmapkit/issues?state=open) on GitHub, ask a question on [StackOverflow](http://stackoverflow.com/questions/tagged/mapbox?sort=votes&pageSize=100), or [contact Mapbox support](https://www.mapbox.com/help/).
 
 ### Understanding the Sample App
 
@@ -90,12 +96,6 @@ A quick tour:
 MBXMapKit is officially supported for iOS 7.0 and later. While iOS is the main priority, we also hope to keep things OS X friendly (10.9 and later since MapKit is required). That means you may notice instances of `#if TARGET_OS_IPHONE` around `UIImage`/`NSImage` and such, and it's possible the OS X side of some of those things may be broken. 
 
 If you encounter an OS X related problem and want to file an issue or pull request on GitHub, it would be welcome and appreciated. In particular, if you're working on an OS X app which needs something more than Mapbox.js in a `WebView` (offline maps?) we'd [like to hear about it](http://github.com/mapbox/mbxmapkit/issues/new).
-
-### Requirements
-
- * iOS 7.0+
- * Xcode 5+
- * Automatic Reference Counting (ARC)
 
 ### See Also
 
