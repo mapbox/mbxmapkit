@@ -618,8 +618,6 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
     // 3. Provide a hook point for implementing alternate methods (i.e. offline map database) of fetching data for a URL
     //
 
-    __weak MBXRasterTileOverlay *weakSelf = self;
-
     if (_offlineMapDatabase)
     {
         // If this assert fails, it's probably because MBXOfflineMapDownloader's removeOfflineMapDatabase: method has been invoked
@@ -640,9 +638,9 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
         }
         completionHandler(data,error);
 
-        if (error && weakSelf.renderCompletionState == MBXRenderCompletionStateFull) weakSelf.renderCompletionState = MBXRenderCompletionStatePartial;
+        if (error && self.renderCompletionState == MBXRenderCompletionStateFull) self.renderCompletionState = MBXRenderCompletionStatePartial;
 
-        [weakSelf addPendingRender:nil removePendingRender:url];
+        [self addPendingRender:nil removePendingRender:url];
     }
     else
     {
@@ -651,25 +649,32 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
         NSURLSessionDataTask *task;
         NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
         task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+
+            NSError *outError = nil;
+
             if (!error)
             {
                 if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
                 {
-                    error = [self statusErrorFromHTTPResponse:response];
+                    outError = [self statusErrorFromHTTPResponse:response];
                 }
                 else
                 {
                     // Since the URL was successfully retrieved, invoke the block to process its data
                     //
-                    if (workerBlock) workerBlock(data, &error);
+                    if (workerBlock) workerBlock(data, &outError);
                 }
             }
+            else
+            {
+                outError = [error copy];
+            }
 
-            completionHandler(data,error);
+            completionHandler(data, outError);
 
-            if (error && weakSelf.renderCompletionState == MBXRenderCompletionStateFull) weakSelf.renderCompletionState = MBXRenderCompletionStatePartial;
+            if (outError && self.renderCompletionState == MBXRenderCompletionStateFull) self.renderCompletionState = MBXRenderCompletionStatePartial;
 
-            [weakSelf addPendingRender:nil removePendingRender:url];
+            [self addPendingRender:nil removePendingRender:url];
         }];
         [task resume];
     }
