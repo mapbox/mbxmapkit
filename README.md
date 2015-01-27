@@ -53,10 +53,6 @@ To include MBXMapKit in your app you will need to:
  
  1. **Provide some prominent means to display any applicable map data copyright attribution messages.** For maps which include [OpenStreetMap](http://mapbox.com/about/maps) data, that means you need something which links to the OSM copyright page (see sample app for an example). More details are available at https://www.mapbox.com/help/attribution/ and http://www.openstreetmap.org/copyright. 
 
-### Linking Requirements
-
-MBXMapKit requires `libsqlite3.dylib` to be linked with your build target in order to compile properly. This is related to offline map storage. 
-
 ### Getting Help
 
 If you have questions about how to use MBXMapKit, or are encountering problems, here are our suggestions for how to proceed:
