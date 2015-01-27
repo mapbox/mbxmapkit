@@ -59,7 +59,6 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
 
 #pragma mark - Properties for asynchronous downloading of metadata and markers
 
-@property (nonatomic) NSURLSession *dataSession;
 @property (nonatomic) NSDictionary *tileJSONDictionary;
 @property (nonatomic) NSDictionary *simplestyleJSONDictionary;
 @property (nonatomic) BOOL sessionHasBeenInvalidated;
@@ -123,6 +122,21 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
     return qualityExtension;
 }
 
++ (NSURLCache *)overlayURLCache
+{
+    return [NSURLCache sharedURLCache];
+}
+
++ (NSURLRequest *)overlayURLRequestForURL:(NSURL *)requestURL
+{
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
+    request.cachePolicy = NSURLRequestUseProtocolCachePolicy;
+    request.timeoutInterval = 60;
+    request.allowsCellularAccess = YES;
+    [request addValue:[MBXMapKit userAgent] forHTTPHeaderField:@"User-Agent"];
+
+    return request;
+}
 
 + (NSURL *)markerIconURLForSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color
 {
@@ -219,15 +233,6 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
 
 - (void)setupMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality
 {
-    // Configure the NSURLSessions
-    //
-    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-    config.allowsCellularAccess = YES;
-    config.HTTPMaximumConnectionsPerHost = 16;
-    config.URLCache = [NSURLCache sharedURLCache];
-    config.HTTPAdditionalHeaders = @{ @"User-Agent" : [MBXMapKit userAgent] };
-    _dataSession = [NSURLSession sessionWithConfiguration:config];
-
     // Save the map configuration
     //
     NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
@@ -285,7 +290,6 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
 {
     _delegate = nil;
     _sessionHasBeenInvalidated = YES;
-    [_dataSession invalidateAndCancel];
 }
 
 
@@ -646,37 +650,36 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
     {
         // In the normal case, use HTTP network requests to fetch data for URLs
         //
-        NSURLSessionDataTask *task;
-        NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
-        task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        [NSURLConnection sendAsynchronousRequest:[[self class] overlayURLRequestForURL:url]
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
+                               {
+                                   NSError *outError = nil;
 
-            NSError *outError = nil;
+                                   if (!error)
+                                   {
+                                       if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
+                                       {
+                                           outError = [self statusErrorFromHTTPResponse:response];
+                                       }
+                                       else
+                                       {
+                                           // Since the URL was successfully retrieved, invoke the block to process its data
+                                           //
+                                           if (workerBlock) workerBlock(data, &outError);
+                                       }
+                                   }
+                                   else
+                                   {
+                                       outError = [error copy];
+                                   }
 
-            if (!error)
-            {
-                if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
-                {
-                    outError = [self statusErrorFromHTTPResponse:response];
-                }
-                else
-                {
-                    // Since the URL was successfully retrieved, invoke the block to process its data
-                    //
-                    if (workerBlock) workerBlock(data, &outError);
-                }
-            }
-            else
-            {
-                outError = [error copy];
-            }
+                                   completionHandler(data, outError);
 
-            completionHandler(data, outError);
+                                   if (outError && self.renderCompletionState == MBXRenderCompletionStateFull) self.renderCompletionState = MBXRenderCompletionStatePartial;
 
-            if (outError && self.renderCompletionState == MBXRenderCompletionStateFull) self.renderCompletionState = MBXRenderCompletionStatePartial;
-
-            [self addPendingRender:nil removePendingRender:url];
-        }];
-        [task resume];
+                                   [self addPendingRender:nil removePendingRender:url];
+                               }];
     }
 }
 
@@ -734,14 +737,14 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
 
 - (void)clearCachedMetadata
 {
-    NSURLRequest *request = [NSURLRequest requestWithURL:_metadataURL];
-    [_dataSession.configuration.URLCache removeCachedResponseForRequest:request];
+    NSURLRequest *request = [[self class] overlayURLRequestForURL:_metadataURL];
+    [[[self class] overlayURLCache] removeCachedResponseForRequest:request];
 }
 
 - (void)clearCachedMarkers
 {
-    NSURLRequest *request = [NSURLRequest requestWithURL:_markersURL];
-    [_dataSession.configuration.URLCache removeCachedResponseForRequest:request];
+    NSURLRequest *request = [[self class] overlayURLRequestForURL:_markersURL];
+    [[[self class] overlayURLCache] removeCachedResponseForRequest:request];
 }
 
 
