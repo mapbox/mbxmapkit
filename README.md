@@ -17,7 +17,7 @@ The main features which MBXMapKit adds to MapKit are:
 
  * **Performance Caching:** MBXMapKit uses `NSURLSession` and `NSURLCache` for performance caching of the tiles, JSON metadata, and icons required for loading maps. In contrast to the [Mapbox iOS SDK](http://mapbox.com/mapbox-ios-sdk) and earlier versions of MBXMapKit, this is a traditional cache which is not designed to be used for long term persistence of map data while offline. That capability is provided by a separate mechanism.
 
-### Conceptual Overview
+### Concepts
 
 The fundamental concept to understand about MBXMapKit is that it is designed to add features to Apple's MapKit rather than to replace or encapsulate MapKit. 
 
@@ -31,7 +31,7 @@ With MBXMapKit, there is a clear distinction between performance caching and per
  * Xcode 5+
  * Automatic Reference Counting (ARC)
 
-### Getting the Latest Release from GitHub
+### Releases
 
 Generally speaking, MBXMapKit follows the conventions described by GitHub's [Release Your Software](https://github.com/blog/1547-release-your-software) post.
 
@@ -53,7 +53,7 @@ To include MBXMapKit in your app you will need to:
  
  1. **Provide some prominent means to display any applicable map data copyright attribution messages.** For maps which include [OpenStreetMap](http://mapbox.com/about/maps) data, that means you need something which links to the OSM copyright page (see sample app for an example). More details are available at https://www.mapbox.com/help/attribution/ and http://www.openstreetmap.org/copyright. 
 
-### Getting Help
+### Support
 
 If you have questions about how to use MBXMapKit, or are encountering problems, here are our suggestions for how to proceed:
 
@@ -69,7 +69,7 @@ If you have questions about how to use MBXMapKit, or are encountering problems, 
 
  6. If none of that helps, you can file an [issue](https://github.com/mapbox/mbxmapkit/issues?state=open) on GitHub, ask a question on [StackOverflow](http://stackoverflow.com/questions/tagged/mapbox?sort=votes&pageSize=100), or [contact Mapbox support](https://www.mapbox.com/help/).
 
-### Understanding the Sample App
+### Sample App
 
 The sample app is meant to demonstrate the full capabilities of MBXMapKit and to show examples of different ways to configure an `MKMapView`. We've also found it to be useful for testing for responsiveness and visual glitching during work on the API implementation.
 
@@ -87,7 +87,7 @@ A quick tour:
  
  1. Note how the *Offline map viewer* will show the most recent offline map region which was completely downloaded at the time you switched to *Offline map viewer*. Note how the offline map includes markers, initial centering, and initial zoom, even when airplane mode is enabled. There is also a button with a confirmation dialog for deleting all the stored maps. While the sample app only shows the most recently downloaded offline map, the API is designed so that you can enumerate all the available offline maps and use whichever ones you want.
 
-### Supported Platforms
+### Platforms
 
 MBXMapKit is officially supported for iOS 7.0 and later. While iOS is the main priority, we also hope to keep things OS X friendly (10.9 and later since MapKit is required). That means you may notice instances of `#if TARGET_OS_IPHONE` around `UIImage`/`NSImage` and such, and it's possible the OS X side of some of those things may be broken. 
 
