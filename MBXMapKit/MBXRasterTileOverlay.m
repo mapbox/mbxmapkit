@@ -339,7 +339,8 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
         }
     };
 
-    if (self.renderCompletionState == MBXRenderCompletionStateUnknown) self.renderCompletionState = MBXRenderCompletionStateFull;
+    [self setRenderCompletionState:MBXRenderCompletionStateFull
+                  ifCurrentStateIs:MBXRenderCompletionStateUnknown];
 
     [self addPendingRender:url removePendingRender:nil];
 
@@ -642,7 +643,11 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
         }
         completionHandler(data,error);
 
-        if (error && self.renderCompletionState == MBXRenderCompletionStateFull) self.renderCompletionState = MBXRenderCompletionStatePartial;
+        if (error)
+        {
+            [self setRenderCompletionState:MBXRenderCompletionStatePartial
+                          ifCurrentStateIs:MBXRenderCompletionStateFull];
+        }
 
         [self addPendingRender:nil removePendingRender:url];
     }
@@ -676,7 +681,11 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
 
                                    completionHandler(data, outError);
 
-                                   if (outError && self.renderCompletionState == MBXRenderCompletionStateFull) self.renderCompletionState = MBXRenderCompletionStatePartial;
+                                   if (outError)
+                                   {
+                                       [self setRenderCompletionState:MBXRenderCompletionStatePartial
+                                                     ifCurrentStateIs:MBXRenderCompletionStateFull];
+                                   }
 
                                    [self addPendingRender:nil removePendingRender:url];
                                }];
@@ -708,7 +717,7 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
         [self.delegate tileOverlayDidFinishRendering:self fullyRendered:[flag boolValue]];
     }
 
-    self.renderCompletionState = MBXRenderCompletionStateUnknown;
+    [self setRenderCompletionState:MBXRenderCompletionStateUnknown];
 }
 
 #pragma mark - Helper methods
@@ -732,6 +741,31 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
     return [NSError mbx_errorWithCode:MBXMapKitErrorCodeDictionaryMissingKeys reason:reason description:@"Dictionary missing keys error"];
 }
 
+- (void)setRenderCompletionState:(MBXRenderCompletionState)newState
+{
+    if ( ! [NSThread mainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _renderCompletionState = newState;
+        });
+    } else {
+        _renderCompletionState = newState;
+    }
+}
+
+- (void)setRenderCompletionState:(MBXRenderCompletionState)newState ifCurrentStateIs:(MBXRenderCompletionState)checkState
+{
+    if ( ! [NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (_renderCompletionState == checkState) {
+                _renderCompletionState = newState;
+            }
+        });
+    } else {
+        if (_renderCompletionState == checkState) {
+            _renderCompletionState = newState;
+        }
+    }
+}
 
 #pragma mark - Methods for clearing cached metadata and markers
 
