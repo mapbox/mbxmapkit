@@ -18,6 +18,7 @@
 		012A0DBA1909D5FC005B69D7 /* MBXOfflineMapDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79411909D1D200EF8AD1 /* MBXOfflineMapDownloader.m */; };
 		012A0DBB1909D5FC005B69D7 /* MBXPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79431909D1D200EF8AD1 /* MBXPointAnnotation.m */; };
 		012A0DBC1909D5FC005B69D7 /* MBXRasterTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F79451909D1D200EF8AD1 /* MBXRasterTileOverlay.m */; };
+		DDA62C701A38BD2900B01B80 /* MBXRasterTileRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = DDA62C6F1A38BD2900B01B80 /* MBXRasterTileRenderer.m */; };
 		DDB97D07199D72A5006EC3A6 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DDB97D06199D72A5006EC3A6 /* libsqlite3.dylib */; };
 		DDC92F961A1544CD0082BDE8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DDC92F951A1544CD0082BDE8 /* Images.xcassets */; };
 		DDC92FC61A158CFB0082BDE8 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDC92FC51A158CFB0082BDE8 /* LaunchScreen.xib */; };
@@ -46,6 +47,8 @@
 		017F79431909D1D200EF8AD1 /* MBXPointAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXPointAnnotation.m; sourceTree = "<group>"; };
 		017F79441909D1D200EF8AD1 /* MBXRasterTileOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXRasterTileOverlay.h; sourceTree = "<group>"; };
 		017F79451909D1D200EF8AD1 /* MBXRasterTileOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXRasterTileOverlay.m; sourceTree = "<group>"; };
+		DDA62C6E1A38BD2900B01B80 /* MBXRasterTileRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBXRasterTileRenderer.h; path = ../MBXMapKit/MBXRasterTileRenderer.h; sourceTree = "<group>"; };
+		DDA62C6F1A38BD2900B01B80 /* MBXRasterTileRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBXRasterTileRenderer.m; path = ../MBXMapKit/MBXRasterTileRenderer.m; sourceTree = "<group>"; };
 		DDB97D06199D72A5006EC3A6 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		DDC92F951A1544CD0082BDE8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		DDC92FC51A158CFB0082BDE8 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
@@ -105,6 +108,8 @@
 				017F79431909D1D200EF8AD1 /* MBXPointAnnotation.m */,
 				017F79441909D1D200EF8AD1 /* MBXRasterTileOverlay.h */,
 				017F79451909D1D200EF8AD1 /* MBXRasterTileOverlay.m */,
+				DDA62C6E1A38BD2900B01B80 /* MBXRasterTileRenderer.h */,
+				DDA62C6F1A38BD2900B01B80 /* MBXRasterTileRenderer.m */,
 			);
 			name = MBXMapKit;
 			path = ../mbxmapkit;
@@ -234,6 +239,7 @@
 			files = (
 				012A0DB81909D5FC005B69D7 /* MBXMapKit.m in Sources */,
 				012A0DB91909D5FC005B69D7 /* MBXOfflineMapDatabase.m in Sources */,
+				DDA62C701A38BD2900B01B80 /* MBXRasterTileRenderer.m in Sources */,
 				012A0DBA1909D5FC005B69D7 /* MBXOfflineMapDownloader.m in Sources */,
 				012A0DBB1909D5FC005B69D7 /* MBXPointAnnotation.m in Sources */,
 				012A0DBC1909D5FC005B69D7 /* MBXRasterTileOverlay.m in Sources */,

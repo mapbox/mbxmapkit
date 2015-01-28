@@ -74,7 +74,9 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 *
 *   Also by default, asynchronous network requests will be started to load the metadata (center coordinate, zoom, etc) and markers associated with your map ID, if there are any. To receive notification when the asynchronous requests complete, set a delegate which implements `MBXRasterTileOverlayDelegate`.
 *
-*   In order for the tile overlay to appear on your map, your `MKMapView`'s delegate must implement `mapView:rendererForOverlay:` from the `MKMapViewDelegate` protocol. In order for markers to appear on your map, you must also provide an implementation for `mapView:viewForAnnotation:` which returns an `MKAnnotationView` initialized from an `MBXPointAnnotation`, including the image property.
+*   In order for the tile overlay to appear on your map, your `MKMapView`'s delegate must implement `mapView:rendererForOverlay:` from the `MKMapViewDelegate` protocol and return an instance of `MBXRasterTileRenderer`. 
+    In order for markers to appear on your map, you must also provide an implementation for `mapView:viewForAnnotation:` 
+    which returns an `MKAnnotationView` initialized from an `MBXPointAnnotation`, including the image property.
 *
 *   @param mapID The Mapbox map ID.
 *   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized.

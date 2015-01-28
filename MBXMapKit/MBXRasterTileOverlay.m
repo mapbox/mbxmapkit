@@ -13,6 +13,9 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
     MBXRenderCompletionStateFull = 2
 };
 
+typedef void (^MBXRasterTileOverlayWorkerBlock)(NSData *data, NSError **error);
+typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error);
+
 #pragma mark - Private API for creating verbose errors
 
 @interface NSError (MBXError)
@@ -56,7 +59,6 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 
 #pragma mark - Properties for asynchronous downloading of metadata and markers
 
-@property (nonatomic) NSURLSession *dataSession;
 @property (nonatomic) NSDictionary *tileJSONDictionary;
 @property (nonatomic) NSDictionary *simplestyleJSONDictionary;
 @property (nonatomic) BOOL sessionHasBeenInvalidated;
@@ -120,6 +122,21 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
     return qualityExtension;
 }
 
++ (NSURLCache *)overlayURLCache
+{
+    return [NSURLCache sharedURLCache];
+}
+
++ (NSURLRequest *)overlayURLRequestForURL:(NSURL *)requestURL
+{
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
+    request.cachePolicy = NSURLRequestUseProtocolCachePolicy;
+    request.timeoutInterval = 60;
+    request.allowsCellularAccess = YES;
+    [request addValue:[MBXMapKit userAgent] forHTTPHeaderField:@"User-Agent"];
+
+    return request;
+}
 
 + (NSURL *)markerIconURLForSize:(NSString *)size symbol:(NSString *)symbol color:(NSString *)color
 {
@@ -216,15 +233,6 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 
 - (void)setupMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality
 {
-    // Configure the NSURLSessions
-    //
-    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-    config.allowsCellularAccess = YES;
-    config.HTTPMaximumConnectionsPerHost = 16;
-    config.URLCache = [NSURLCache sharedURLCache];
-    config.HTTPAdditionalHeaders = @{ @"User-Agent" : [MBXMapKit userAgent] };
-    _dataSession = [NSURLSession sessionWithConfiguration:config];
-
     // Save the map configuration
     //
     NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
@@ -244,7 +252,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 
     // Use larger tiles if on v4 API
     //
-    if ([MBXMapKit accessToken]) self.tileSize = CGSizeMake(512, 512);
+    if ([MBXMapKit accessToken] && [[UIScreen mainScreen] scale] > 1) self.tileSize = CGSizeMake(512, 512);
 
     // Default to covering up Apple's map
     //
@@ -282,7 +290,6 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 {
     _delegate = nil;
     _sessionHasBeenInvalidated = YES;
-    [_dataSession invalidateAndCancel];
 }
 
 
@@ -297,7 +304,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 }
 
 
-- (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *, NSError *))result
+- (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *tileData, NSError *error))result
 {
     if (_sessionHasBeenInvalidated)
     {
@@ -317,8 +324,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
                                        ([MBXMapKit accessToken] ? [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]] : @"")
                                        ]];
 
-    void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
-    {
+    MBXRasterTileOverlayCompletionBlock completionHandler = ^(NSData *data, NSError *error) {
         // Invoke the loadTileAtPath's completion handler
         //
         if ([NSThread isMainThread])
@@ -327,13 +333,14 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
         }
         else
         {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
+            dispatch_sync(dispatch_get_main_queue(), ^{
                 result(data, error);
             });
         }
     };
 
-    if (self.renderCompletionState == MBXRenderCompletionStateUnknown) self.renderCompletionState = MBXRenderCompletionStateFull;
+    [self setRenderCompletionState:MBXRenderCompletionStateFull
+                  ifCurrentStateIs:MBXRenderCompletionStateUnknown];
 
     [self addPendingRender:url removePendingRender:nil];
 
@@ -370,7 +377,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
     {
         _metadataForPendingNotification = nil;
         _metadataErrorForPendingNotification = nil;
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^{
             [_delegate tileOverlay:self didLoadMetadata:metadata withError:error];
         });
     }
@@ -388,7 +395,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
     {
         _markersForPendingNotification = nil;
         _markersErrorForPendingNotification = nil;
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^{
             [_delegate tileOverlay:self didLoadMarkers:markers withError:error];
         });
     }
@@ -405,7 +412,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
     if([_delegate respondsToSelector:@selector(tileOverlayDidFinishLoadingMetadataAndMarkers:)])
     {
         _needToNotifyDelegateThatMetadataAndMarkersAreFinished = NO;
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^{
             [_delegate tileOverlayDidFinishLoadingMetadataAndMarkers:self];
         });
     }
@@ -423,8 +430,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 {
     // This block is run only if data for the URL is successfully retrieved
     //
-    void(^workerBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error)
-    {
+    MBXRasterTileOverlayWorkerBlock workerBlock = ^(NSData *data, NSError **error) {
         id markers;
         id value;
         NSDictionary *simplestyleJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
@@ -483,8 +489,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 
     // This block runs at the end of all error handling and data processing associated with the URL
     //
-    void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
-    {
+    MBXRasterTileOverlayCompletionBlock completionHandler = ^(NSData *data, NSError *error) {
         if(error) {
             // At this point, it's possible there was an HTTP or network error. It could also be the
             // case that some of the the markers are in the process of successfully loading their icons,
@@ -533,8 +538,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 {
     // This block is run only if data for the URL is successfully retrieved
     //
-    void(^workerBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error){
-
+    MBXRasterTileOverlayWorkerBlock workerBlock = ^(NSData *data, NSError **error) {
 #if TARGET_OS_IPHONE
         point.image = [[UIImage alloc] initWithData:data scale:[[UIScreen mainScreen] scale]];
 #else
@@ -550,8 +554,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 
     // This block runs at the end of all error handling and data processing associated with the URL
     //
-    void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
-    {
+    MBXRasterTileOverlayCompletionBlock completionHandler = ^(NSData *data, NSError *error) {
         if(_markerIconLoaderMayInitiateDelegateCallback && _activeMarkerIconRequests <= 0)
         {
             _markers = [NSArray arrayWithArray:_mutableMarkers];
@@ -572,8 +575,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 {
     // This block is run only if data for the URL is successfully retrieved
     //
-    void(^workerBlock)(NSData *,NSError **) = ^(NSData *data, NSError **error)
-    {
+    MBXRasterTileOverlayWorkerBlock workerBlock = ^(NSData *data, NSError **error) {
         _tileJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
         if(!*error)
         {
@@ -600,8 +602,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 
     // This block runs at the end of all error handling and data processing associated with the URL
     //
-    void(^completionHandler)(NSData *,NSError *) = ^(NSData *data, NSError *error)
-    {
+    MBXRasterTileOverlayCompletionBlock completionHandler = ^(NSData *data, NSError *error) {
         [self notifyDelegateDidLoadMetadata:_tileJSONDictionary withError:error];
 
         _didFinishLoadingMetadata = YES;
@@ -614,15 +615,13 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
 }
 
 
-- (void)asyncLoadURL:(NSURL *)url workerBlock:(void(^)(NSData *,NSError **))workerBlock completionHandler:(void (^)(NSData *, NSError *))completionHandler
+- (void)asyncLoadURL:(NSURL *)url workerBlock:(MBXRasterTileOverlayWorkerBlock)workerBlock completionHandler:(MBXRasterTileOverlayCompletionBlock)completionHandler
 {
     // This method exists to:
     // 1. Encapsulte the boilderplate network code for checking HTTP status which is needed for every data session task
     // 2. Provide a single configuration point where it is possible to set breakpoints and adjust the caching policy for all HTTP requests
     // 3. Provide a hook point for implementing alternate methods (i.e. offline map database) of fetching data for a URL
     //
-
-    __weak MBXRasterTileOverlay *weakSelf = self;
 
     if (_offlineMapDatabase)
     {
@@ -644,46 +643,58 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
         }
         completionHandler(data,error);
 
-        if (error && weakSelf.renderCompletionState == MBXRenderCompletionStateFull) weakSelf.renderCompletionState = MBXRenderCompletionStatePartial;
+        if (error)
+        {
+            [self setRenderCompletionState:MBXRenderCompletionStatePartial
+                          ifCurrentStateIs:MBXRenderCompletionStateFull];
+        }
 
-        [weakSelf addPendingRender:nil removePendingRender:url];
+        [self addPendingRender:nil removePendingRender:url];
     }
     else
     {
         // In the normal case, use HTTP network requests to fetch data for URLs
         //
-        NSURLSessionDataTask *task;
-        NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
-        task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
-        {
-            if (!error)
-            {
-                if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
-                {
-                    error = [self statusErrorFromHTTPResponse:response];
-                }
-                else
-                {
-                    // Since the URL was successfully retrieved, invoke the block to process its data
-                    //
-                    if (workerBlock) workerBlock(data, &error);
-                }
-            }
+        [NSURLConnection sendAsynchronousRequest:[[self class] overlayURLRequestForURL:url]
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
+                               {
+                                   NSError *outError = nil;
 
-            completionHandler(data,error);
+                                   if (!error)
+                                   {
+                                       if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode != 200)
+                                       {
+                                           outError = [self statusErrorFromHTTPResponse:response];
+                                       }
+                                       else
+                                       {
+                                           // Since the URL was successfully retrieved, invoke the block to process its data
+                                           //
+                                           if (workerBlock) workerBlock(data, &outError);
+                                       }
+                                   }
+                                   else
+                                   {
+                                       outError = [error copy];
+                                   }
 
-            if (error && weakSelf.renderCompletionState == MBXRenderCompletionStateFull) weakSelf.renderCompletionState = MBXRenderCompletionStatePartial;
+                                   completionHandler(data, outError);
 
-            [weakSelf addPendingRender:nil removePendingRender:url];
-        }];
-        [task resume];
+                                   if (outError)
+                                   {
+                                       [self setRenderCompletionState:MBXRenderCompletionStatePartial
+                                                     ifCurrentStateIs:MBXRenderCompletionStateFull];
+                                   }
+
+                                   [self addPendingRender:nil removePendingRender:url];
+                               }];
     }
 }
 
 - (void)addPendingRender:(NSURL *)addURL removePendingRender:(NSURL *)removeURL
 {
-    dispatch_async(dispatch_get_main_queue(), ^(void)
-    {
+    dispatch_async(dispatch_get_main_queue(), ^{
         if (addURL) [self.pendingTileRenders addObject:addURL];
 
         if ([self.pendingTileRenders containsObject:removeURL]) [self.pendingTileRenders removeObject:removeURL];
@@ -706,7 +717,7 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
         [self.delegate tileOverlayDidFinishRendering:self fullyRendered:[flag boolValue]];
     }
 
-    self.renderCompletionState = MBXRenderCompletionStateUnknown;
+    [self setRenderCompletionState:MBXRenderCompletionStateUnknown];
 }
 
 #pragma mark - Helper methods
@@ -730,19 +741,44 @@ typedef NS_ENUM(NSUInteger, MBXRenderCompletionState) {
     return [NSError mbx_errorWithCode:MBXMapKitErrorCodeDictionaryMissingKeys reason:reason description:@"Dictionary missing keys error"];
 }
 
+- (void)setRenderCompletionState:(MBXRenderCompletionState)newState
+{
+    if ( ! [NSThread mainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _renderCompletionState = newState;
+        });
+    } else {
+        _renderCompletionState = newState;
+    }
+}
+
+- (void)setRenderCompletionState:(MBXRenderCompletionState)newState ifCurrentStateIs:(MBXRenderCompletionState)checkState
+{
+    if ( ! [NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (_renderCompletionState == checkState) {
+                _renderCompletionState = newState;
+            }
+        });
+    } else {
+        if (_renderCompletionState == checkState) {
+            _renderCompletionState = newState;
+        }
+    }
+}
 
 #pragma mark - Methods for clearing cached metadata and markers
 
 - (void)clearCachedMetadata
 {
-    NSURLRequest *request = [NSURLRequest requestWithURL:_metadataURL];
-    [_dataSession.configuration.URLCache removeCachedResponseForRequest:request];
+    NSURLRequest *request = [[self class] overlayURLRequestForURL:_metadataURL];
+    [[[self class] overlayURLCache] removeCachedResponseForRequest:request];
 }
 
 - (void)clearCachedMarkers
 {
-    NSURLRequest *request = [NSURLRequest requestWithURL:_markersURL];
-    [_dataSession.configuration.URLCache removeCachedResponseForRequest:request];
+    NSURLRequest *request = [[self class] overlayURLRequestForURL:_markersURL];
+    [[[self class] overlayURLCache] removeCachedResponseForRequest:request];
 }
 
 
