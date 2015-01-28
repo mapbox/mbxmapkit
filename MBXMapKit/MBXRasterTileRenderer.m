@@ -12,6 +12,7 @@
 @interface MBXRasterTileRenderer ()
 
 @property (nonatomic) NSMutableArray *tiles;
+@property (nonatomic) NSMutableSet *activeDownloads;
 
 @end
 
@@ -26,6 +27,8 @@
 
     if (self) {
         _tiles = [NSMutableArray new];
+
+        _activeDownloads = [NSMutableSet set];
 
         [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidReceiveMemoryWarningNotification
                                                           object:[UIApplication sharedApplication]
@@ -196,31 +199,45 @@
         return YES;
     } else {
         __weak typeof(self) weakSelf = self;
-        [(MKTileOverlay *)weakSelf.overlay loadTileAtPath:path result:^(NSData *tileData, NSError *error) {
-            if (tileData) {
-                NSData *tileDataCopy = [[NSData alloc] initWithBytes:tileData.bytes length:tileData.length];
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)tileDataCopy);
-                    CGImageRef imageRef = nil;
-                    if ([[weakSelf class] dataIsPNG:tileDataCopy]) {
-                        imageRef = CGImageCreateWithPNGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
-                    } else if ([[weakSelf class] dataIsJPEG:tileDataCopy]) {
-                        imageRef = CGImageCreateWithJPEGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
-                    }
-                    if (imageRef) {
-                        @synchronized(weakSelf) {
-                            [[weakSelf class] addImageData:tileDataCopy
-                                                toRenderer:weakSelf
-                                                    forXYZ:xyz
-                                             usingBigTiles:usingBigTiles];
-                        }
-                    }
-                    CGImageRelease(imageRef);
-                    CGDataProviderRelease(provider);
-                });
+        BOOL tileActive = NO;
+        @synchronized(weakSelf) {
+            tileActive = ([weakSelf.activeDownloads containsObject:xyz]);
+            if ( ! tileActive) {
+                [weakSelf.activeDownloads addObject:xyz];
             }
+        }
+        if ( ! tileActive) {
+            [(MKTileOverlay *)weakSelf.overlay loadTileAtPath:path result:^(NSData *tileData, NSError *error) {
+                @synchronized(weakSelf) {
+                    [weakSelf.activeDownloads removeObject:xyz];
+                }
+                if (tileData) {
+                    NSData *tileDataCopy = [[NSData alloc] initWithBytes:tileData.bytes length:tileData.length];
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)tileDataCopy);
+                        CGImageRef imageRef = nil;
+                        if ([[weakSelf class] dataIsPNG:tileDataCopy]) {
+                            imageRef = CGImageCreateWithPNGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
+                        } else if ([[weakSelf class] dataIsJPEG:tileDataCopy]) {
+                            imageRef = CGImageCreateWithJPEGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
+                        }
+                        if (imageRef) {
+                            @synchronized(weakSelf) {
+                                [[weakSelf class] addImageData:tileDataCopy
+                                                    toRenderer:weakSelf
+                                                        forXYZ:xyz
+                                                 usingBigTiles:usingBigTiles];
+                            }
+                        }
+                        CGImageRelease(imageRef);
+                        CGDataProviderRelease(provider);
+                    });
+                }
+                [weakSelf setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
+            }];
+        } else {
             [weakSelf setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
-        }];
+        }
         return NO;
     }
 }
