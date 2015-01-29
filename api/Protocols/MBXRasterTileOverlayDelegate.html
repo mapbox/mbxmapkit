@@ -1,0 +1,464 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="html/html; charset=utf-8" />
+		<title>MBXRasterTileOverlayDelegate Protocol Reference</title>
+		<meta id="xcode-display" name="xcode-display" content="render"/>
+		<link rel="stylesheet" type="text/css" href="../css/styles.css" media="all" />
+		<link rel="stylesheet" type="text/css" media="print" href="../css/stylesPrint.css" />
+		<meta name="generator" content="appledoc 2.2 (build 963)" />
+	</head>
+	<body>
+		<header id="top_header">
+			<div id="library" class="hideInXcode">
+				<h1><a id="libraryTitle" href="../index.html">MBXMapKit 0.5.0 </a></h1>
+				<a id="developerHome" href="../index.html">Mapbox</a>
+			</div>
+			
+			<div id="title" role="banner">
+				<h1 class="hideInXcode">MBXRasterTileOverlayDelegate Protocol Reference</h1>
+			</div>
+			<ul id="headerButtons" role="toolbar">
+				<li id="toc_button">
+					<button aria-label="Show Table of Contents" role="checkbox" class="open" id="table_of_contents"><span class="disclosure"></span>Table of Contents</button>
+				</li>
+				<li id="jumpto_button" role="navigation">
+					<select id="jumpTo">
+	<option value="top">Jump To&#133;</option>
+	
+	<option value="overview">Overview</option>
+	
+	
+	
+	
+	<option value="tasks">Tasks</option>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<option value="instance_methods">Instance Methods</option>
+	
+	<option value="//api/name/tileOverlay:didLoadMarkers:withError:">&nbsp;&nbsp;&nbsp;&nbsp;- tileOverlay:didLoadMarkers:withError:</option>
+	
+	<option value="//api/name/tileOverlay:didLoadMetadata:withError:">&nbsp;&nbsp;&nbsp;&nbsp;- tileOverlay:didLoadMetadata:withError:</option>
+	
+	<option value="//api/name/tileOverlayDidFinishLoadingMetadataAndMarkers:">&nbsp;&nbsp;&nbsp;&nbsp;- tileOverlayDidFinishLoadingMetadataAndMarkers:</option>
+	
+	
+	
+</select>
+				</li>
+			</ul>
+		</header>
+		<nav id="tocContainer" class="isShowingTOC">
+			<ul id="toc" role="tree">
+				
+<li role="treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#overview">Overview</a></span></li>
+
+
+
+
+<li role="treeitem" id="task_treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#tasks">Tasks</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Observing Download Completion">Observing Download Completion</a></span></li>
+	
+</ul></li>
+
+
+
+
+
+
+
+
+
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#instance_methods">Instance Methods</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/tileOverlay:didLoadMarkers:withError:">tileOverlay:didLoadMarkers:withError:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/tileOverlay:didLoadMetadata:withError:">tileOverlay:didLoadMetadata:withError:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/tileOverlayDidFinishLoadingMetadataAndMarkers:">tileOverlayDidFinishLoadingMetadataAndMarkers:</a></span></li>
+	
+</ul></li>
+
+
+			</ul>
+		</nav>
+		<article>
+			<div id="contents" class="isShowingTOC" role="main">
+				<a title="MBXRasterTileOverlayDelegate Protocol Reference" name="top"></a>
+				<div class="main-navigation navigation-top">
+					<ul>
+	<li><a href="../index.html">Index</a></li>
+	<li><a href="../hierarchy.html">Hierarchy</a></li>
+</ul>
+				</div>
+				<div id="header">
+					<div class="section-header">
+						<h1 class="title title-header">MBXRasterTileOverlayDelegate Protocol Reference</h1>
+					</div>		
+				</div>
+				<div id="container">	
+					
+					<div class="section section-specification"><table cellspacing="0"><tbody>
+						<tr>
+	<td class="specification-title">Conforms to</td>
+	<td class="specification-value">NSObject</td>
+</tr><tr>
+	<td class="specification-title">Declared in</td>
+	<td class="specification-value">MBXRasterTileOverlay.h</td>
+</tr>
+						</tbody></table></div>
+					
+                    
+                    
+					
+					<div class="section section-overview">
+						<a title="Overview" name="overview"></a>
+						<h2 class="subtitle subtitle-overview">Overview</h2>
+						<p>The <code>MBXRasterTileOverlayDelegate</code> protocol provides notifications about asynchronous loading of map metadata and markers for raster image-based maps when using the <a href="../Classes/MBXRasterTileOverlay.html"><code>MBXRasterTileOverlay</code></a> class.</p>
+					</div>
+					
+					
+					
+					
+					
+					<div class="section section-tasks">
+						<a title="Tasks" name="tasks"></a>
+						<h2 class="subtitle subtitle-tasks">Tasks</h2>
+						
+						
+						<a title="Observing Download Completion" name="task_Observing Download Completion"></a>
+						
+<h3 class="subsubtitle task-title">Observing Download Completion</h3>
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/tileOverlay:didLoadMetadata:withError:">&ndash;&nbsp;tileOverlay:didLoadMetadata:withError:</a></code>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/tileOverlay:didLoadMarkers:withError:">&ndash;&nbsp;tileOverlay:didLoadMarkers:withError:</a></code>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/tileOverlayDidFinishLoadingMetadataAndMarkers:">&ndash;&nbsp;tileOverlayDidFinishLoadingMetadataAndMarkers:</a></code>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+					</div>
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					<div class="section section-methods">
+						<a title="Instance Methods" name="instance_methods"></a>
+						<h2 class="subtitle subtitle-methods">Instance Methods</h2>
+						
+						<div class="section-method">
+	<a name="//api/name/tileOverlay:didLoadMarkers:withError:" title="tileOverlay:didLoadMarkers:withError:"></a>
+	<h3 class="subsubtitle method-title">tileOverlay:didLoadMarkers:withError:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Notifies the delegate that asynchronous loading of the maps&rsquo;s marker JSON and associated marker icons are complete. This is designed to facilitate adding the array of markers to an <code>MKMapView</code>.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)tileOverlay:(MBXRasterTileOverlay *)<em>overlay</em> didLoadMarkers:(NSArray *)<em>markers</em> withError:(NSError *)<em>error</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>overlay</em></dt>
+			<dd><p>The raster tile overlay which has loaded its markers.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>markers</em></dt>
+			<dd><p>An array of <a href="../Classes/MBXPointAnnotation.html"><code>MBXPointAnnotation</code></a> objects created by parsing the map&rsquo;s marker JSON and loading any referenced marker icons from the Mapbox API. This can be <code>nil</code> if the map has no markers or if there was an error.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>error</em></dt>
+			<dd><p>The error encountered. This is <code>nil</code> unless there was an error.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Notifies the delegate that asynchronous loading of the maps&rsquo;s marker JSON and associated marker icons are complete. This is designed to facilitate adding the array of markers to an <code>MKMapView</code>.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXRasterTileOverlay.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/tileOverlay:didLoadMetadata:withError:" title="tileOverlay:didLoadMetadata:withError:"></a>
+	<h3 class="subsubtitle method-title">tileOverlay:didLoadMetadata:withError:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Notifies the delegate that asynchronous loading of the maps&rsquo;s metadata JSON is complete. This is designed to facilitate setting an <code>MKMapView</code>&rsquo;s center point, initial zoom, and zoom limits.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)tileOverlay:(MBXRasterTileOverlay *)<em>overlay</em> didLoadMetadata:(NSDictionary *)<em>metadata</em> withError:(NSError *)<em>error</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>overlay</em></dt>
+			<dd><p>The raster tile overlay which has loaded its metadata JSON.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>metadata</em></dt>
+			<dd><p>The metadata JSON dictionary. This value may be <code>nil</code> if there was an error.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>error</em></dt>
+			<dd><p>The error encountered. This is <code>nil</code> unless there was an error.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Notifies the delegate that asynchronous loading of the maps&rsquo;s metadata JSON is complete. This is designed to facilitate setting an <code>MKMapView</code>&rsquo;s center point, initial zoom, and zoom limits.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXRasterTileOverlay.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/tileOverlayDidFinishLoadingMetadataAndMarkers:" title="tileOverlayDidFinishLoadingMetadataAndMarkers:"></a>
+	<h3 class="subsubtitle method-title">tileOverlayDidFinishLoadingMetadataAndMarkers:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Notifies the delegate that there is no more asynchronous work to be done in order to load the map&rsquo;s metadata and markers. This is designed to facilitate hiding a network activity indicator.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)tileOverlayDidFinishLoadingMetadataAndMarkers:(MBXRasterTileOverlay *)<em>overlay</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>overlay</em></dt>
+			<dd><p>The raster tile overlay which is finished loading metadata and markers.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Notifies the delegate that there is no more asynchronous work to be done in order to load the map&rsquo;s metadata and markers. This is designed to facilitate hiding a network activity indicator.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXRasterTileOverlay.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+					</div>
+					
+					
+                    
+                    
+				</div>
+				<div class="main-navigation navigation-bottom">
+					<ul>
+	<li><a href="../index.html">Index</a></li>
+	<li><a href="../hierarchy.html">Hierarchy</a></li>
+</ul>
+				</div>
+				<div id="footer">
+					<hr />
+					<div class="footer-copyright">
+						<p><span class="copyright">&copy; 2015 Mapbox. All rights reserved. (Last updated: 2015-01-28)</span><br />
+						
+						<span class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2 (build 963)</a>.</span></p>
+						
+					</div>
+				</div>
+			</div>
+		</article>
+		<script type="text/javascript">
+			function jumpToChange()
+			{
+				window.location.hash = this.options[this.selectedIndex].value;
+			}
+			
+			function toggleTOC()
+			{
+				var contents = document.getElementById('contents');
+				var tocContainer = document.getElementById('tocContainer');
+				
+				if (this.getAttribute('class') == 'open')
+				{
+					this.setAttribute('class', '');
+					contents.setAttribute('class', '');
+					tocContainer.setAttribute('class', '');
+					
+					window.name = "hideTOC";
+				}
+				else
+				{
+					this.setAttribute('class', 'open');
+					contents.setAttribute('class', 'isShowingTOC');
+					tocContainer.setAttribute('class', 'isShowingTOC');
+					
+					window.name = "";
+				}
+				return false;
+			}
+			
+			function toggleTOCEntryChildren(e)
+			{
+				e.stopPropagation();
+				var currentClass = this.getAttribute('class');
+				if (currentClass == 'children') {
+					this.setAttribute('class', 'children open');
+				}
+				else if (currentClass == 'children open') {
+					this.setAttribute('class', 'children');
+				}
+				return false;
+			}
+			
+			function tocEntryClick(e)
+			{
+				e.stopPropagation();
+				return true;
+			}
+			
+			function init()
+			{
+				var selectElement = document.getElementById('jumpTo');
+				selectElement.addEventListener('change', jumpToChange, false);
+				
+				var tocButton = document.getElementById('table_of_contents');
+				tocButton.addEventListener('click', toggleTOC, false);
+				
+				var taskTreeItem = document.getElementById('task_treeitem');
+				if (taskTreeItem.getElementsByTagName('li').length > 0)
+				{
+					taskTreeItem.setAttribute('class', 'children');
+					taskTreeItem.firstChild.setAttribute('class', 'disclosure');
+				}
+				
+				var tocList = document.getElementById('toc');
+				
+				var tocEntries = tocList.getElementsByTagName('li');
+				for (var i = 0; i < tocEntries.length; i++) {
+					tocEntries[i].addEventListener('click', toggleTOCEntryChildren, false);
+				}
+				
+				var tocLinks = tocList.getElementsByTagName('a');
+				for (var i = 0; i < tocLinks.length; i++) {
+					tocLinks[i].addEventListener('click', tocEntryClick, false);
+				}
+				
+				if (window.name == "hideTOC") {
+					toggleTOC.call(tocButton);
+				}
+			}
+			
+			window.onload = init;
+			
+			// If showing in Xcode, hide the TOC and Header
+			if (navigator.userAgent.match(/xcode/i)) {
+				document.getElementById("contents").className = "hideInXcode"
+				document.getElementById("tocContainer").className = "hideInXcode"
+				document.getElementById("top_header").className = "hideInXcode"
+			}
+			
+		</script>
+	</body>
+</html>

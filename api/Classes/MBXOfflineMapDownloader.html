@@ -1,0 +1,1571 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="html/html; charset=utf-8" />
+		<title>MBXOfflineMapDownloader Class Reference</title>
+		<meta id="xcode-display" name="xcode-display" content="render"/>
+		<link rel="stylesheet" type="text/css" href="../css/styles.css" media="all" />
+		<link rel="stylesheet" type="text/css" media="print" href="../css/stylesPrint.css" />
+		<meta name="generator" content="appledoc 2.2 (build 963)" />
+	</head>
+	<body>
+		<header id="top_header">
+			<div id="library" class="hideInXcode">
+				<h1><a id="libraryTitle" href="../index.html">MBXMapKit 0.5.0 </a></h1>
+				<a id="developerHome" href="../index.html">Mapbox</a>
+			</div>
+			
+			<div id="title" role="banner">
+				<h1 class="hideInXcode">MBXOfflineMapDownloader Class Reference</h1>
+			</div>
+			<ul id="headerButtons" role="toolbar">
+				<li id="toc_button">
+					<button aria-label="Show Table of Contents" role="checkbox" class="open" id="table_of_contents"><span class="disclosure"></span>Table of Contents</button>
+				</li>
+				<li id="jumpto_button" role="navigation">
+					<select id="jumpTo">
+	<option value="top">Jump To&#133;</option>
+	
+	<option value="overview">Overview</option>
+	
+	
+	
+	
+	<option value="tasks">Tasks</option>
+	
+	
+	
+	
+	
+	<option value="properties">Properties</option>
+	
+	<option value="//api/name/delegate">&nbsp;&nbsp;&nbsp;&nbsp;delegate</option>
+	
+	<option value="//api/name/imageQuality">&nbsp;&nbsp;&nbsp;&nbsp;imageQuality</option>
+	
+	<option value="//api/name/includesMarkers">&nbsp;&nbsp;&nbsp;&nbsp;includesMarkers</option>
+	
+	<option value="//api/name/includesMetadata">&nbsp;&nbsp;&nbsp;&nbsp;includesMetadata</option>
+	
+	<option value="//api/name/mapID">&nbsp;&nbsp;&nbsp;&nbsp;mapID</option>
+	
+	<option value="//api/name/mapRegion">&nbsp;&nbsp;&nbsp;&nbsp;mapRegion</option>
+	
+	<option value="//api/name/maximumZ">&nbsp;&nbsp;&nbsp;&nbsp;maximumZ</option>
+	
+	<option value="//api/name/minimumZ">&nbsp;&nbsp;&nbsp;&nbsp;minimumZ</option>
+	
+	<option value="//api/name/offlineMapDatabases">&nbsp;&nbsp;&nbsp;&nbsp;offlineMapDatabases</option>
+	
+	<option value="//api/name/offlineMapsAreExcludedFromBackup">&nbsp;&nbsp;&nbsp;&nbsp;offlineMapsAreExcludedFromBackup</option>
+	
+	<option value="//api/name/state">&nbsp;&nbsp;&nbsp;&nbsp;state</option>
+	
+	<option value="//api/name/totalFilesExpectedToWrite">&nbsp;&nbsp;&nbsp;&nbsp;totalFilesExpectedToWrite</option>
+	
+	<option value="//api/name/totalFilesWritten">&nbsp;&nbsp;&nbsp;&nbsp;totalFilesWritten</option>
+	
+	
+	
+	
+	<option value="class_methods">Class Methods</option>
+	
+	<option value="//api/name/sharedOfflineMapDownloader">&nbsp;&nbsp;&nbsp;&nbsp;+ sharedOfflineMapDownloader</option>
+	
+	
+	
+	
+	<option value="instance_methods">Instance Methods</option>
+	
+	<option value="//api/name/beginDownloadingMapID:mapRegion:minimumZ:maximumZ:">&nbsp;&nbsp;&nbsp;&nbsp;- beginDownloadingMapID:mapRegion:minimumZ:maximumZ:</option>
+	
+	<option value="//api/name/beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:">&nbsp;&nbsp;&nbsp;&nbsp;- beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:</option>
+	
+	<option value="//api/name/beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:imageQuality:">&nbsp;&nbsp;&nbsp;&nbsp;- beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:imageQuality:</option>
+	
+	<option value="//api/name/cancel">&nbsp;&nbsp;&nbsp;&nbsp;- cancel</option>
+	
+	<option value="//api/name/removeOfflineMapDatabase:">&nbsp;&nbsp;&nbsp;&nbsp;- removeOfflineMapDatabase:</option>
+	
+	<option value="//api/name/removeOfflineMapDatabaseWithID:">&nbsp;&nbsp;&nbsp;&nbsp;- removeOfflineMapDatabaseWithID:</option>
+	
+	<option value="//api/name/resume">&nbsp;&nbsp;&nbsp;&nbsp;- resume</option>
+	
+	<option value="//api/name/suspend">&nbsp;&nbsp;&nbsp;&nbsp;- suspend</option>
+	
+	
+	
+</select>
+				</li>
+			</ul>
+		</header>
+		<nav id="tocContainer" class="isShowingTOC">
+			<ul id="toc" role="tree">
+				
+<li role="treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#overview">Overview</a></span></li>
+
+
+
+
+<li role="treeitem" id="task_treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#tasks">Tasks</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Accessing the Shared Downloader">Accessing the Shared Downloader</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Getting and Setting Attributes">Getting and Setting Attributes</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Managing the Delegate">Managing the Delegate</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Managing Active Download Jobs">Managing Active Download Jobs</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Removing Offline Maps">Removing Offline Maps</a></span></li>
+	
+</ul></li>
+
+
+
+
+
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#properties">Properties</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/delegate">delegate</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/imageQuality">imageQuality</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/includesMarkers">includesMarkers</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/includesMetadata">includesMetadata</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/mapID">mapID</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/mapRegion">mapRegion</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/maximumZ">maximumZ</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/minimumZ">minimumZ</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/offlineMapDatabases">offlineMapDatabases</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/offlineMapsAreExcludedFromBackup">offlineMapsAreExcludedFromBackup</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/state">state</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/totalFilesExpectedToWrite">totalFilesExpectedToWrite</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/totalFilesWritten">totalFilesWritten</a></span></li>
+	
+</ul></li>
+
+
+
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#class_methods">Class Methods</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/sharedOfflineMapDownloader">sharedOfflineMapDownloader</a></span></li>
+	
+</ul></li>
+
+
+
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#instance_methods">Instance Methods</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/beginDownloadingMapID:mapRegion:minimumZ:maximumZ:">beginDownloadingMapID:mapRegion:minimumZ:maximumZ:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:">beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:imageQuality:">beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:imageQuality:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/cancel">cancel</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/removeOfflineMapDatabase:">removeOfflineMapDatabase:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/removeOfflineMapDatabaseWithID:">removeOfflineMapDatabaseWithID:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/resume">resume</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/suspend">suspend</a></span></li>
+	
+</ul></li>
+
+
+			</ul>
+		</nav>
+		<article>
+			<div id="contents" class="isShowingTOC" role="main">
+				<a title="MBXOfflineMapDownloader Class Reference" name="top"></a>
+				<div class="main-navigation navigation-top">
+					<ul>
+	<li><a href="../index.html">Index</a></li>
+	<li><a href="../hierarchy.html">Hierarchy</a></li>
+</ul>
+				</div>
+				<div id="header">
+					<div class="section-header">
+						<h1 class="title title-header">MBXOfflineMapDownloader Class Reference</h1>
+					</div>		
+				</div>
+				<div id="container">	
+					
+					<div class="section section-specification"><table cellspacing="0"><tbody>
+						<tr>
+	<td class="specification-title">Inherits from</td>
+	<td class="specification-value">NSObject</td>
+</tr><tr>
+	<td class="specification-title">Declared in</td>
+	<td class="specification-value">MBXOfflineMapDownloader.h</td>
+</tr>
+						</tbody></table></div>
+					
+                    
+                    
+					
+					<div class="section section-overview">
+						<a title="Overview" name="overview"></a>
+						<h2 class="subtitle subtitle-overview">Overview</h2>
+						<p><code>MBXOfflineMapDownloader</code> is a class for managing the downloading of offline maps.</p>
+
+<p>A single, shared instance of <code>MBXOfflineMapDownloader</code> exists and should be accessed with the <a href="#//api/name/sharedOfflineMapDownloader"><code>sharedOfflineMapDownloader</code></a> class method.</p>
+					</div>
+					
+					
+					
+					
+					
+					<div class="section section-tasks">
+						<a title="Tasks" name="tasks"></a>
+						<h2 class="subtitle subtitle-tasks">Tasks</h2>
+						
+						
+						<a title="Accessing the Shared Downloader" name="task_Accessing the Shared Downloader"></a>
+						<h3 class="subsubtitle task-title">Accessing the Shared Downloader</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/sharedOfflineMapDownloader">+&nbsp;sharedOfflineMapDownloader</a></code>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+						
+						<a title="Getting and Setting Attributes" name="task_Getting and Setting Attributes"></a>
+						<h3 class="subsubtitle task-title">Getting and Setting Attributes</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/state">&nbsp;&nbsp;state</a></code>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/mapID">&nbsp;&nbsp;mapID</a></code>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/includesMetadata">&nbsp;&nbsp;includesMetadata</a></code>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/includesMarkers">&nbsp;&nbsp;includesMarkers</a></code>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/imageQuality">&nbsp;&nbsp;imageQuality</a></code>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/mapRegion">&nbsp;&nbsp;mapRegion</a></code>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/minimumZ">&nbsp;&nbsp;minimumZ</a></code>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/maximumZ">&nbsp;&nbsp;maximumZ</a></code>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/totalFilesWritten">&nbsp;&nbsp;totalFilesWritten</a></code>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/totalFilesExpectedToWrite">&nbsp;&nbsp;totalFilesExpectedToWrite</a></code>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/offlineMapDatabases">&nbsp;&nbsp;offlineMapDatabases</a></code>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/offlineMapsAreExcludedFromBackup">&nbsp;&nbsp;offlineMapsAreExcludedFromBackup</a></code>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li>
+						</ul>
+						
+						
+						<a title="Managing the Delegate" name="task_Managing the Delegate"></a>
+						<h3 class="subsubtitle task-title">Managing the Delegate</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/delegate">&nbsp;&nbsp;delegate</a></code>
+	</span>
+	<span class="task-item-suffix">property</span>
+	
+</li>
+						</ul>
+						
+						
+						<a title="Managing Active Download Jobs" name="task_Managing Active Download Jobs"></a>
+						<h3 class="subsubtitle task-title">Managing Active Download Jobs</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/beginDownloadingMapID:mapRegion:minimumZ:maximumZ:">&ndash;&nbsp;beginDownloadingMapID:mapRegion:minimumZ:maximumZ:</a></code>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:">&ndash;&nbsp;beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:</a></code>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:imageQuality:">&ndash;&nbsp;beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:imageQuality:</a></code>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/cancel">&ndash;&nbsp;cancel</a></code>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/resume">&ndash;&nbsp;resume</a></code>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/suspend">&ndash;&nbsp;suspend</a></code>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+						
+						<a title="Removing Offline Maps" name="task_Removing Offline Maps"></a>
+						<h3 class="subsubtitle task-title">Removing Offline Maps</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/removeOfflineMapDatabase:">&ndash;&nbsp;removeOfflineMapDatabase:</a></code>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/removeOfflineMapDatabaseWithID:">&ndash;&nbsp;removeOfflineMapDatabaseWithID:</a></code>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+					</div>
+					
+					
+					
+					
+					
+					<div class="section section-methods">
+						<a title="Properties" name="properties"></a>
+						<h2 class="subtitle subtitle-methods">Properties</h2>
+						
+						<div class="section-method">
+	<a name="//api/name/delegate" title="delegate"></a>
+	<h3 class="subsubtitle method-title">delegate</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>The delegate which should receive notifications as the offline map downloader&rsquo;s <a href="#//api/name/state">state</a> and progress change.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic) id&lt;MBXOfflineMapDownloaderDelegate&gt; delegate</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>The delegate which should receive notifications as the offline map downloader&rsquo;s <a href="#//api/name/state">state</a> and progress change.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/imageQuality" title="imageQuality"></a>
+	<h3 class="subsubtitle method-title">imageQuality</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>If a download job is running or suspended, the image quality which was specified for downloading the job&rsquo;s map tiles.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (readonly, nonatomic) MBXRasterImageQuality imageQuality</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>If a download job is running or suspended, the image quality which was specified for downloading the job&rsquo;s map tiles.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/includesMarkers" title="includesMarkers"></a>
+	<h3 class="subsubtitle method-title">includesMarkers</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>If a download job is running or suspended, whether the job was specified to include markers.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (readonly, nonatomic) BOOL includesMarkers</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>If a download job is running or suspended, whether the job was specified to include markers.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/includesMetadata" title="includesMetadata"></a>
+	<h3 class="subsubtitle method-title">includesMetadata</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>If a download job is running or suspended, whether the job was specified to include metadata.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (readonly, nonatomic) BOOL includesMetadata</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>If a download job is running or suspended, whether the job was specified to include metadata.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/mapID" title="mapID"></a>
+	<h3 class="subsubtitle method-title">mapID</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>If a download job is running or suspended, the map ID which was used to begin that job.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (readonly, nonatomic) NSString *mapID</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>If a download job is running or suspended, the map ID which was used to begin that job.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/mapRegion" title="mapRegion"></a>
+	<h3 class="subsubtitle method-title">mapRegion</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>If a download job is running or suspended, the map region which was specified to begin the job.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (readonly, nonatomic) MKCoordinateRegion mapRegion</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>If a download job is running or suspended, the map region which was specified to begin the job.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/maximumZ" title="maximumZ"></a>
+	<h3 class="subsubtitle method-title">maximumZ</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>If a download job is running or suspended, the maximum zoom which was specified to begin the job.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (readonly, nonatomic) NSInteger maximumZ</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>If a download job is running or suspended, the maximum zoom which was specified to begin the job.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/minimumZ" title="minimumZ"></a>
+	<h3 class="subsubtitle method-title">minimumZ</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>If a download job is running or suspended, the minimum zoom which was specified to begin the job.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (readonly, nonatomic) NSInteger minimumZ</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>If a download job is running or suspended, the minimum zoom which was specified to begin the job.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/offlineMapDatabases" title="offlineMapDatabases"></a>
+	<h3 class="subsubtitle method-title">offlineMapDatabases</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>An array of <a href="../Classes/MBXOfflineMapDatabase.html"><code>MBXOfflineMapDatabase</code></a> objects representing all completed offline map databases on disk. This is designed, in combination with the properties provided by <a href="../Classes/MBXOfflineMapDatabase.html"><code>MBXOfflineMapDatabase</code></a>, to allow enumeration and management of the maps which are available on disk.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (readonly, nonatomic) NSArray *offlineMapDatabases</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>An array of <a href="../Classes/MBXOfflineMapDatabase.html"><code>MBXOfflineMapDatabase</code></a> objects representing all completed offline map databases on disk. This is designed, in combination with the properties provided by <a href="../Classes/MBXOfflineMapDatabase.html"><code>MBXOfflineMapDatabase</code></a>, to allow enumeration and management of the maps which are available on disk.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/offlineMapsAreExcludedFromBackup" title="offlineMapsAreExcludedFromBackup"></a>
+	<h3 class="subsubtitle method-title">offlineMapsAreExcludedFromBackup</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Whether offline map databases should be excluded from iCloud and iTunes backups. This defaults to <code>YES</code>. If you want to make a change, the value will persist across app launches since it changes the offline map folder&rsquo;s resource value on disk.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (nonatomic) BOOL offlineMapsAreExcludedFromBackup</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Whether offline map databases should be excluded from iCloud and iTunes backups. This defaults to <code>YES</code>. If you want to make a change, the value will persist across app launches since it changes the offline map folder&rsquo;s resource value on disk.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/state" title="state"></a>
+	<h3 class="subsubtitle method-title">state</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>The offline map downloader&rsquo;s current state.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (readonly, nonatomic) MBXOfflineMapDownloaderState state</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>The offline map downloader&rsquo;s current state.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/totalFilesExpectedToWrite" title="totalFilesExpectedToWrite"></a>
+	<h3 class="subsubtitle method-title">totalFilesExpectedToWrite</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>If a download job is running or suspended, the number of files which still need to be written to finish the job.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (readonly, nonatomic) NSUInteger totalFilesExpectedToWrite</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>If a download job is running or suspended, the number of files which still need to be written to finish the job.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/totalFilesWritten" title="totalFilesWritten"></a>
+	<h3 class="subsubtitle method-title">totalFilesWritten</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>If a download job is running or suspended, the number of files which have been written so far.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>@property (readonly, nonatomic) NSUInteger totalFilesWritten</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>If a download job is running or suspended, the number of files which have been written so far.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+					</div>
+					
+					
+					
+					<div class="section section-methods">
+						<a title="Class Methods" name="class_methods"></a>
+						<h2 class="subtitle subtitle-methods">Class Methods</h2>
+						
+						<div class="section-method">
+	<a name="//api/name/sharedOfflineMapDownloader" title="sharedOfflineMapDownloader"></a>
+	<h3 class="subsubtitle method-title">sharedOfflineMapDownloader</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Returns the shared offline map downloader.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>+ (MBXOfflineMapDownloader *)sharedOfflineMapDownloader</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Returns the shared offline map downloader.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+					</div>
+					
+					
+					
+					<div class="section section-methods">
+						<a title="Instance Methods" name="instance_methods"></a>
+						<h2 class="subtitle subtitle-methods">Instance Methods</h2>
+						
+						<div class="section-method">
+	<a name="//api/name/beginDownloadingMapID:mapRegion:minimumZ:maximumZ:" title="beginDownloadingMapID:mapRegion:minimumZ:maximumZ:"></a>
+	<h3 class="subsubtitle method-title">beginDownloadingMapID:mapRegion:minimumZ:maximumZ:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Begins an offline map download job including metadata and markers using the default (full) image quality.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)beginDownloadingMapID:(NSString *)<em>mapID</em> mapRegion:(MKCoordinateRegion)<em>mapRegion</em> minimumZ:(NSInteger)<em>minimumZ</em> maximumZ:(NSInteger)<em>maximumZ</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>mapID</em></dt>
+			<dd><p>The map ID from which to download offline map data.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>mapRegion</em></dt>
+			<dd><p>The region of the map for which to download tiles.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>minimumZ</em></dt>
+			<dd><p>The minimum zoom level for which to download tiles.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>maximumZ</em></dt>
+			<dd><p>The maximum zoom level for which to download tiles.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Begins an offline map download job including metadata and markers using the default (full) image quality.</p><div class="warning"><p><strong>Warning:</strong> It is recommended to check the return value of the offlineMapDownloader:totalFilesExpectedToWrite: <a href="#//api/name/delegate">delegate</a> method to ensure that an unexpectedly large number of resources aren&rsquo;t going to be loaded. Map tile counts increase exponentially with increasing zoom level.</p></div>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:" title="beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:"></a>
+	<h3 class="subsubtitle method-title">beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Begins an offline map download job using the default (full) image quality.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)beginDownloadingMapID:(NSString *)<em>mapID</em> mapRegion:(MKCoordinateRegion)<em>mapRegion</em> minimumZ:(NSInteger)<em>minimumZ</em> maximumZ:(NSInteger)<em>maximumZ</em> includeMetadata:(BOOL)<em>includeMetadata</em> includeMarkers:(BOOL)<em>includeMarkers</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>mapID</em></dt>
+			<dd><p>The map ID from which to download offline map data.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>mapRegion</em></dt>
+			<dd><p>The region of the map for which to download tiles.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>minimumZ</em></dt>
+			<dd><p>The minimum zoom level for which to download tiles.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>maximumZ</em></dt>
+			<dd><p>The maximum zoom level for which to download tiles.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>includeMetadata</em></dt>
+			<dd><p>Whether to include the map&rsquo;s metadata (for values such as the initial center point and zoom) in the offline map.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>includeMarkers</em></dt>
+			<dd><p>Whether to include the map&rsquo;s marker image resources in the offline map.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Begins an offline map download job using the default (full) image quality.</p><div class="warning"><p><strong>Warning:</strong> It is recommended to check the return value of the offlineMapDownloader:totalFilesExpectedToWrite: <a href="#//api/name/delegate">delegate</a> method to ensure that an unexpectedly large number of resources aren&rsquo;t going to be loaded. Map tile counts increase exponentially with increasing zoom level.</p></div>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:imageQuality:" title="beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:imageQuality:"></a>
+	<h3 class="subsubtitle method-title">beginDownloadingMapID:mapRegion:minimumZ:maximumZ:includeMetadata:includeMarkers:imageQuality:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Begins an offline map download job.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)beginDownloadingMapID:(NSString *)<em>mapID</em> mapRegion:(MKCoordinateRegion)<em>mapRegion</em> minimumZ:(NSInteger)<em>minimumZ</em> maximumZ:(NSInteger)<em>maximumZ</em> includeMetadata:(BOOL)<em>includeMetadata</em> includeMarkers:(BOOL)<em>includeMarkers</em> imageQuality:(MBXRasterImageQuality)<em>imageQuality</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>mapID</em></dt>
+			<dd><p>The map ID from which to download offline map data.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>mapRegion</em></dt>
+			<dd><p>The region of the map for which to download tiles.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>minimumZ</em></dt>
+			<dd><p>The minimum zoom level for which to download tiles.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>maximumZ</em></dt>
+			<dd><p>The maximum zoom level for which to download tiles.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>includeMetadata</em></dt>
+			<dd><p>Whether to include the map&rsquo;s metadata (for values such as the initial center point and zoom) in the offline map.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>includeMarkers</em></dt>
+			<dd><p>Whether to include the map&rsquo;s marker image resources in the offline map.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>imageQuality</em></dt>
+			<dd><p>The image quality to when requesting tiles.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Begins an offline map download job.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/cancel" title="cancel"></a>
+	<h3 class="subsubtitle method-title">cancel</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Cancels the current offline map download job and discards any associated resources.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)cancel</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Cancels the current offline map download job and discards any associated resources.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/removeOfflineMapDatabase:" title="removeOfflineMapDatabase:"></a>
+	<h3 class="subsubtitle method-title">removeOfflineMapDatabase:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Invalidates a given offline map and removes its associated backing database on disk. This is designed for managing the disk storage consumed by offline maps.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)removeOfflineMapDatabase:(MBXOfflineMapDatabase *)<em>offlineMapDatabase</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>offlineMapDatabase</em></dt>
+			<dd><p>The offline map database to invalidate.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Invalidates a given offline map and removes its associated backing database on disk. This is designed for managing the disk storage consumed by offline maps.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/removeOfflineMapDatabaseWithID:" title="removeOfflineMapDatabaseWithID:"></a>
+	<h3 class="subsubtitle method-title">removeOfflineMapDatabaseWithID:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Invalidates the offline map with the given unique identifier and removes its associated backing database on disk. This is designed for managing the disk storage consumed by offline maps.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)removeOfflineMapDatabaseWithID:(NSString *)<em>uniqueID</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>uniqueID</em></dt>
+			<dd><p>The unique ID of the map database to invalidate.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Invalidates the offline map with the given unique identifier and removes its associated backing database on disk. This is designed for managing the disk storage consumed by offline maps.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/resume" title="resume"></a>
+	<h3 class="subsubtitle method-title">resume</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Resumes a previously suspended offline map download job.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)resume</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Resumes a previously suspended offline map download job.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/suspend" title="suspend"></a>
+	<h3 class="subsubtitle method-title">suspend</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Suspends a currently running offline map download job.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)suspend</code></div>
+
+    
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Suspends a currently running offline map download job.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+					</div>
+					
+					
+                    
+                    
+				</div>
+				<div class="main-navigation navigation-bottom">
+					<ul>
+	<li><a href="../index.html">Index</a></li>
+	<li><a href="../hierarchy.html">Hierarchy</a></li>
+</ul>
+				</div>
+				<div id="footer">
+					<hr />
+					<div class="footer-copyright">
+						<p><span class="copyright">&copy; 2015 Mapbox. All rights reserved. (Last updated: 2015-01-28)</span><br />
+						
+						<span class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2 (build 963)</a>.</span></p>
+						
+					</div>
+				</div>
+			</div>
+		</article>
+		<script type="text/javascript">
+			function jumpToChange()
+			{
+				window.location.hash = this.options[this.selectedIndex].value;
+			}
+			
+			function toggleTOC()
+			{
+				var contents = document.getElementById('contents');
+				var tocContainer = document.getElementById('tocContainer');
+				
+				if (this.getAttribute('class') == 'open')
+				{
+					this.setAttribute('class', '');
+					contents.setAttribute('class', '');
+					tocContainer.setAttribute('class', '');
+					
+					window.name = "hideTOC";
+				}
+				else
+				{
+					this.setAttribute('class', 'open');
+					contents.setAttribute('class', 'isShowingTOC');
+					tocContainer.setAttribute('class', 'isShowingTOC');
+					
+					window.name = "";
+				}
+				return false;
+			}
+			
+			function toggleTOCEntryChildren(e)
+			{
+				e.stopPropagation();
+				var currentClass = this.getAttribute('class');
+				if (currentClass == 'children') {
+					this.setAttribute('class', 'children open');
+				}
+				else if (currentClass == 'children open') {
+					this.setAttribute('class', 'children');
+				}
+				return false;
+			}
+			
+			function tocEntryClick(e)
+			{
+				e.stopPropagation();
+				return true;
+			}
+			
+			function init()
+			{
+				var selectElement = document.getElementById('jumpTo');
+				selectElement.addEventListener('change', jumpToChange, false);
+				
+				var tocButton = document.getElementById('table_of_contents');
+				tocButton.addEventListener('click', toggleTOC, false);
+				
+				var taskTreeItem = document.getElementById('task_treeitem');
+				if (taskTreeItem.getElementsByTagName('li').length > 0)
+				{
+					taskTreeItem.setAttribute('class', 'children');
+					taskTreeItem.firstChild.setAttribute('class', 'disclosure');
+				}
+				
+				var tocList = document.getElementById('toc');
+				
+				var tocEntries = tocList.getElementsByTagName('li');
+				for (var i = 0; i < tocEntries.length; i++) {
+					tocEntries[i].addEventListener('click', toggleTOCEntryChildren, false);
+				}
+				
+				var tocLinks = tocList.getElementsByTagName('a');
+				for (var i = 0; i < tocLinks.length; i++) {
+					tocLinks[i].addEventListener('click', tocEntryClick, false);
+				}
+				
+				if (window.name == "hideTOC") {
+					toggleTOC.call(tocButton);
+				}
+			}
+			
+			window.onload = init;
+			
+			// If showing in Xcode, hide the TOC and Header
+			if (navigator.userAgent.match(/xcode/i)) {
+				document.getElementById("contents").className = "hideInXcode"
+				document.getElementById("tocContainer").className = "hideInXcode"
+				document.getElementById("top_header").className = "hideInXcode"
+			}
+			
+		</script>
+	</body>
+</html>

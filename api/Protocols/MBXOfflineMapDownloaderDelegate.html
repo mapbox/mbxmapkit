@@ -1,0 +1,623 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="html/html; charset=utf-8" />
+		<title>MBXOfflineMapDownloaderDelegate Protocol Reference</title>
+		<meta id="xcode-display" name="xcode-display" content="render"/>
+		<link rel="stylesheet" type="text/css" href="../css/styles.css" media="all" />
+		<link rel="stylesheet" type="text/css" media="print" href="../css/stylesPrint.css" />
+		<meta name="generator" content="appledoc 2.2 (build 963)" />
+	</head>
+	<body>
+		<header id="top_header">
+			<div id="library" class="hideInXcode">
+				<h1><a id="libraryTitle" href="../index.html">MBXMapKit 0.5.0 </a></h1>
+				<a id="developerHome" href="../index.html">Mapbox</a>
+			</div>
+			
+			<div id="title" role="banner">
+				<h1 class="hideInXcode">MBXOfflineMapDownloaderDelegate Protocol Reference</h1>
+			</div>
+			<ul id="headerButtons" role="toolbar">
+				<li id="toc_button">
+					<button aria-label="Show Table of Contents" role="checkbox" class="open" id="table_of_contents"><span class="disclosure"></span>Table of Contents</button>
+				</li>
+				<li id="jumpto_button" role="navigation">
+					<select id="jumpTo">
+	<option value="top">Jump To&#133;</option>
+	
+	<option value="overview">Overview</option>
+	
+	
+	
+	
+	<option value="tasks">Tasks</option>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<option value="instance_methods">Instance Methods</option>
+	
+	<option value="//api/name/offlineMapDownloader:didCompleteOfflineMapDatabase:withError:">&nbsp;&nbsp;&nbsp;&nbsp;- offlineMapDownloader:didCompleteOfflineMapDatabase:withError:</option>
+	
+	<option value="//api/name/offlineMapDownloader:didEncounterRecoverableError:">&nbsp;&nbsp;&nbsp;&nbsp;- offlineMapDownloader:didEncounterRecoverableError:</option>
+	
+	<option value="//api/name/offlineMapDownloader:stateChangedTo:">&nbsp;&nbsp;&nbsp;&nbsp;- offlineMapDownloader:stateChangedTo:</option>
+	
+	<option value="//api/name/offlineMapDownloader:totalFilesExpectedToWrite:">&nbsp;&nbsp;&nbsp;&nbsp;- offlineMapDownloader:totalFilesExpectedToWrite:</option>
+	
+	<option value="//api/name/offlineMapDownloader:totalFilesWritten:totalFilesExpectedToWrite:">&nbsp;&nbsp;&nbsp;&nbsp;- offlineMapDownloader:totalFilesWritten:totalFilesExpectedToWrite:</option>
+	
+	
+	
+</select>
+				</li>
+			</ul>
+		</header>
+		<nav id="tocContainer" class="isShowingTOC">
+			<ul id="toc" role="tree">
+				
+<li role="treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#overview">Overview</a></span></li>
+
+
+
+
+<li role="treeitem" id="task_treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#tasks">Tasks</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Observing Changes to the Downloader&apos;s State">Observing Changes to the Downloader&apos;s State</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Obtaining Information About Download Jobs">Obtaining Information About Download Jobs</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Ending Download Jobs">Ending Download Jobs</a></span></li>
+	
+</ul></li>
+
+
+
+
+
+
+
+
+
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#instance_methods">Instance Methods</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/offlineMapDownloader:didCompleteOfflineMapDatabase:withError:">offlineMapDownloader:didCompleteOfflineMapDatabase:withError:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/offlineMapDownloader:didEncounterRecoverableError:">offlineMapDownloader:didEncounterRecoverableError:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/offlineMapDownloader:stateChangedTo:">offlineMapDownloader:stateChangedTo:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/offlineMapDownloader:totalFilesExpectedToWrite:">offlineMapDownloader:totalFilesExpectedToWrite:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/offlineMapDownloader:totalFilesWritten:totalFilesExpectedToWrite:">offlineMapDownloader:totalFilesWritten:totalFilesExpectedToWrite:</a></span></li>
+	
+</ul></li>
+
+
+			</ul>
+		</nav>
+		<article>
+			<div id="contents" class="isShowingTOC" role="main">
+				<a title="MBXOfflineMapDownloaderDelegate Protocol Reference" name="top"></a>
+				<div class="main-navigation navigation-top">
+					<ul>
+	<li><a href="../index.html">Index</a></li>
+	<li><a href="../hierarchy.html">Hierarchy</a></li>
+</ul>
+				</div>
+				<div id="header">
+					<div class="section-header">
+						<h1 class="title title-header">MBXOfflineMapDownloaderDelegate Protocol Reference</h1>
+					</div>		
+				</div>
+				<div id="container">	
+					
+					<div class="section section-specification"><table cellspacing="0"><tbody>
+						<tr>
+	<td class="specification-title">Conforms to</td>
+	<td class="specification-value">NSObject</td>
+</tr><tr>
+	<td class="specification-title">Declared in</td>
+	<td class="specification-value">MBXOfflineMapDownloader.h</td>
+</tr>
+						</tbody></table></div>
+					
+                    
+                    
+					
+					<div class="section section-overview">
+						<a title="Overview" name="overview"></a>
+						<h2 class="subtitle subtitle-overview">Overview</h2>
+						<p>The <code>MBXOfflineMapDownloaderDelegate</code> protocol provides notifications of download progress and state machine transitions for the shared offline map downloader.</p>
+					</div>
+					
+					
+					
+					
+					
+					<div class="section section-tasks">
+						<a title="Tasks" name="tasks"></a>
+						<h2 class="subtitle subtitle-tasks">Tasks</h2>
+						
+						
+						<a title="Observing Changes to the Downloader&apos;s State" name="task_Observing Changes to the Downloader&apos;s State"></a>
+						<h3 class="subsubtitle task-title">Observing Changes to the Downloader&apos;s State</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/offlineMapDownloader:stateChangedTo:">&ndash;&nbsp;offlineMapDownloader:stateChangedTo:</a></code>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+						
+						<a title="Obtaining Information About Download Jobs" name="task_Obtaining Information About Download Jobs"></a>
+						<h3 class="subsubtitle task-title">Obtaining Information About Download Jobs</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/offlineMapDownloader:totalFilesExpectedToWrite:">&ndash;&nbsp;offlineMapDownloader:totalFilesExpectedToWrite:</a></code>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/offlineMapDownloader:totalFilesWritten:totalFilesExpectedToWrite:">&ndash;&nbsp;offlineMapDownloader:totalFilesWritten:totalFilesExpectedToWrite:</a></code>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+						
+						<a title="Ending Download Jobs" name="task_Ending Download Jobs"></a>
+						<h3 class="subsubtitle task-title">Ending Download Jobs</h3>
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/offlineMapDownloader:didEncounterRecoverableError:">&ndash;&nbsp;offlineMapDownloader:didEncounterRecoverableError:</a></code>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/offlineMapDownloader:didCompleteOfflineMapDatabase:withError:">&ndash;&nbsp;offlineMapDownloader:didCompleteOfflineMapDatabase:withError:</a></code>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+					</div>
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					<div class="section section-methods">
+						<a title="Instance Methods" name="instance_methods"></a>
+						<h2 class="subtitle subtitle-methods">Instance Methods</h2>
+						
+						<div class="section-method">
+	<a name="//api/name/offlineMapDownloader:didCompleteOfflineMapDatabase:withError:" title="offlineMapDownloader:didCompleteOfflineMapDatabase:withError:"></a>
+	<h3 class="subsubtitle method-title">offlineMapDownloader:didCompleteOfflineMapDatabase:withError:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Notifies the delegate that an offline map download job has finished.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)offlineMapDownloader:(MBXOfflineMapDownloader *)<em>offlineMapDownloader</em> didCompleteOfflineMapDatabase:(MBXOfflineMapDatabase *)<em>offlineMapDatabase</em> withError:(NSError *)<em>error</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>offlineMapDownloader</em></dt>
+			<dd><p>The offline map downloader which finished a job.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>offlineMapDatabase</em></dt>
+			<dd><p>An offline map database which you can use to create an <a href="../Classes/MBXRasterTileOverlay.html"><code>MBXRasterTileOverlay</code></a>. This paramtere may be <code>nil</code> if there was an error.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>error</em></dt>
+			<dd><p>The error which stopped the offline map download job. For successful completion, this parameter will be <code>nil</code>.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Notifies the delegate that an offline map download job has finished.</p>
+
+<p>If the error parameter is <code>nil</code>, the job completed successfully. Otherwise, a non-recoverable error was encountered.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/offlineMapDownloader:didEncounterRecoverableError:" title="offlineMapDownloader:didEncounterRecoverableError:"></a>
+	<h3 class="subsubtitle method-title">offlineMapDownloader:didEncounterRecoverableError:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Notifies the delegate that something unexpected, but not necessarily bad, has happened. This is designed to provide an opportunity to recognize potential configuration problems with your map. For example, you might receive an HTTP 404 response for a map tile if you request a map region which extends outside of your map data&rsquo;s coverage area.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)offlineMapDownloader:(MBXOfflineMapDownloader *)<em>offlineMapDownloader</em> didEncounterRecoverableError:(NSError *)<em>error</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>offlineMapDownloader</em></dt>
+			<dd><p>The offline map downloader.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>error</em></dt>
+			<dd><p>The error encountered.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Notifies the delegate that something unexpected, but not necessarily bad, has happened. This is designed to provide an opportunity to recognize potential configuration problems with your map. For example, you might receive an HTTP 404 response for a map tile if you request a map region which extends outside of your map data&rsquo;s coverage area.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/offlineMapDownloader:stateChangedTo:" title="offlineMapDownloader:stateChangedTo:"></a>
+	<h3 class="subsubtitle method-title">offlineMapDownloader:stateChangedTo:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Notifies the delegate that the offline map downloader&rsquo;s state has changed. This is designed to facilitate user interface updates such as enabling and disabling buttons and network activity indicators.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)offlineMapDownloader:(MBXOfflineMapDownloader *)<em>offlineMapDownloader</em> stateChangedTo:(MBXOfflineMapDownloaderState)<em>state</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>offlineMapDownloader</em></dt>
+			<dd><p>The offline map downloader whose state has changed.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>state</em></dt>
+			<dd><p>The new state of the downloader.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Notifies the delegate that the offline map downloader&rsquo;s state has changed. This is designed to facilitate user interface updates such as enabling and disabling buttons and network activity indicators.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/offlineMapDownloader:totalFilesExpectedToWrite:" title="offlineMapDownloader:totalFilesExpectedToWrite:"></a>
+	<h3 class="subsubtitle method-title">offlineMapDownloader:totalFilesExpectedToWrite:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Notifies the delegate of the number of resources which will be requested as part of the current offline map download job. This is designed to facilitate a user interface update to show a progress indicator, as well as to enable sanity checks for whether the number of tiles being requested is reasonable.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)offlineMapDownloader:(MBXOfflineMapDownloader *)<em>offlineMapDownloader</em> totalFilesExpectedToWrite:(NSUInteger)<em>totalFilesExpectedToWrite</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>offlineMapDownloader</em></dt>
+			<dd><p>The offline map downloader whose state has changed.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>totalFilesExpectedToWrite</em></dt>
+			<dd><p>An estimated count of the number of resources that will be downloaded. This is primarily determined from the map region and zoom limits which were used to begin a download job, but it also potentially includes JSON and marker icon resources.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Notifies the delegate of the number of resources which will be requested as part of the current offline map download job. This is designed to facilitate a user interface update to show a progress indicator, as well as to enable sanity checks for whether the number of tiles being requested is reasonable.</p><div class="warning"><p><strong>Warning:</strong> Since the offline map downloader does not impose any arbitrary upper limit on the number of resources which may be requested from the Mapbox APIs, it is possible to request a very large amount of data. You might want to provide your own checks or accounting mechanisms to manage the number of resources that your apps request from the API.</p></div>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/offlineMapDownloader:totalFilesWritten:totalFilesExpectedToWrite:" title="offlineMapDownloader:totalFilesWritten:totalFilesExpectedToWrite:"></a>
+	<h3 class="subsubtitle method-title">offlineMapDownloader:totalFilesWritten:totalFilesExpectedToWrite:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Notifies the delegate of changes to the percentage completion of an offline map download job. This is designed to facilitate updating a progress indicator.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>- (void)offlineMapDownloader:(MBXOfflineMapDownloader *)<em>offlineMapDownloader</em> totalFilesWritten:(NSUInteger)<em>totalFilesWritten</em> totalFilesExpectedToWrite:(NSUInteger)<em>totalFilesExpectedToWrite</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>offlineMapDownloader</em></dt>
+			<dd><p>The offline map downloader.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>totalFilesWritten</em></dt>
+			<dd><p>The number of files which have been downloaded and saved to the database on disk.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>totalFilesExpectedToWrite</em></dt>
+			<dd><p>An estimated count of the number of resources that will be downloaded. This is primarily determined from the map region and zoom limits which were used to begin a download job, but it also potentially includes JSON and marker icon resources.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>Notifies the delegate of changes to the percentage completion of an offline map download job. This is designed to facilitate updating a progress indicator.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">MBXOfflineMapDownloader.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+					</div>
+					
+					
+                    
+                    
+				</div>
+				<div class="main-navigation navigation-bottom">
+					<ul>
+	<li><a href="../index.html">Index</a></li>
+	<li><a href="../hierarchy.html">Hierarchy</a></li>
+</ul>
+				</div>
+				<div id="footer">
+					<hr />
+					<div class="footer-copyright">
+						<p><span class="copyright">&copy; 2015 Mapbox. All rights reserved. (Last updated: 2015-01-28)</span><br />
+						
+						<span class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2 (build 963)</a>.</span></p>
+						
+					</div>
+				</div>
+			</div>
+		</article>
+		<script type="text/javascript">
+			function jumpToChange()
+			{
+				window.location.hash = this.options[this.selectedIndex].value;
+			}
+			
+			function toggleTOC()
+			{
+				var contents = document.getElementById('contents');
+				var tocContainer = document.getElementById('tocContainer');
+				
+				if (this.getAttribute('class') == 'open')
+				{
+					this.setAttribute('class', '');
+					contents.setAttribute('class', '');
+					tocContainer.setAttribute('class', '');
+					
+					window.name = "hideTOC";
+				}
+				else
+				{
+					this.setAttribute('class', 'open');
+					contents.setAttribute('class', 'isShowingTOC');
+					tocContainer.setAttribute('class', 'isShowingTOC');
+					
+					window.name = "";
+				}
+				return false;
+			}
+			
+			function toggleTOCEntryChildren(e)
+			{
+				e.stopPropagation();
+				var currentClass = this.getAttribute('class');
+				if (currentClass == 'children') {
+					this.setAttribute('class', 'children open');
+				}
+				else if (currentClass == 'children open') {
+					this.setAttribute('class', 'children');
+				}
+				return false;
+			}
+			
+			function tocEntryClick(e)
+			{
+				e.stopPropagation();
+				return true;
+			}
+			
+			function init()
+			{
+				var selectElement = document.getElementById('jumpTo');
+				selectElement.addEventListener('change', jumpToChange, false);
+				
+				var tocButton = document.getElementById('table_of_contents');
+				tocButton.addEventListener('click', toggleTOC, false);
+				
+				var taskTreeItem = document.getElementById('task_treeitem');
+				if (taskTreeItem.getElementsByTagName('li').length > 0)
+				{
+					taskTreeItem.setAttribute('class', 'children');
+					taskTreeItem.firstChild.setAttribute('class', 'disclosure');
+				}
+				
+				var tocList = document.getElementById('toc');
+				
+				var tocEntries = tocList.getElementsByTagName('li');
+				for (var i = 0; i < tocEntries.length; i++) {
+					tocEntries[i].addEventListener('click', toggleTOCEntryChildren, false);
+				}
+				
+				var tocLinks = tocList.getElementsByTagName('a');
+				for (var i = 0; i < tocLinks.length; i++) {
+					tocLinks[i].addEventListener('click', tocEntryClick, false);
+				}
+				
+				if (window.name == "hideTOC") {
+					toggleTOC.call(tocButton);
+				}
+			}
+			
+			window.onload = init;
+			
+			// If showing in Xcode, hide the TOC and Header
+			if (navigator.userAgent.match(/xcode/i)) {
+				document.getElementById("contents").className = "hideInXcode"
+				document.getElementById("tocContainer").className = "hideInXcode"
+				document.getElementById("top_header").className = "hideInXcode"
+			}
+			
+		</script>
+	</body>
+</html>
