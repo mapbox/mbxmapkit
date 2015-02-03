@@ -236,7 +236,6 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
     // Save the map configuration
     //
     NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
-    NSString *dataName = ([MBXMapKit accessToken] ? @"features.json" : @"markers.geojson");
     NSString *accessToken = ([MBXMapKit accessToken] ? [@"access_token=" stringByAppendingString:[MBXMapKit accessToken]] : nil);
     _mapID = mapID;
     _imageQuality = imageQuality;
@@ -244,11 +243,6 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
                                             version,
                                             _mapID,
                                          (accessToken ? [@"&" stringByAppendingString:accessToken] : @"")]];
-    _markersURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%@%@",
-                                           version,
-                                           _mapID,
-                                           dataName,
-                                           (accessToken ? [@"?" stringByAppendingString:accessToken] : @"")]];
 
     // Use larger tiles if on v4 API
     //
@@ -265,6 +259,15 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
 
     // Initiate asynchronous metadata and marker loading
     //
+    if(includeMarkers)
+    {
+        _mutableMarkers = [[NSMutableArray alloc] init];
+    }
+    else
+    {
+        _didFinishLoadingMarkers = YES;
+    }
+    
     if(includeMetadata)
     {
         [self asyncLoadMetadata];
@@ -272,16 +275,6 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
     else
     {
         _didFinishLoadingMetadata = YES;
-    }
-
-    if(includeMarkers)
-    {
-        _mutableMarkers = [[NSMutableArray alloc] init];
-        [self asyncLoadMarkers];
-    }
-    else
-    {
-        _didFinishLoadingMarkers = YES;
     }
 }
 
@@ -433,7 +426,18 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
     MBXRasterTileOverlayWorkerBlock workerBlock = ^(NSData *data, NSError **error) {
         id markers;
         id value;
-        NSDictionary *simplestyleJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
+
+        // Need to add JSONP Cleaning
+        NSMutableString *jsonString = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        
+        // Clean Up JSONP
+        if ([jsonString hasPrefix:@"grid("])
+        {
+            [jsonString replaceCharactersInRange:NSMakeRange(0, 5) withString:@""];
+            [jsonString replaceCharactersInRange:NSMakeRange([jsonString length] - 2, 2) withString:@""];
+        }
+        
+        NSDictionary *simplestyleJSONDictionary = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:error];
         if(!*error)
         {
             // Find point features in the markers dictionary (if there are any) and add them to the map.
@@ -606,8 +610,14 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
         [self notifyDelegateDidLoadMetadata:_tileJSONDictionary withError:error];
 
         _didFinishLoadingMetadata = YES;
+
         if(_didFinishLoadingMarkers) {
             [self notifyDelegateDidFinishLoadingMetadataAndMarkersForOverlay];
+        } else {
+          // Load the Markers
+          _markersURL = [NSURL URLWithString:_tileJSONDictionary[@"data"][0]];
+          NSLog(@"_markersURL set to = '%@'", _markersURL);
+          [self asyncLoadMarkers];
         }
     };
 
