@@ -424,7 +424,6 @@
 
                             // Inspect download first
                             NSString *pathExtension = url.pathExtension;
-//                            NSLog(@"pathExtension = '%@', url = '%@'", pathExtension, url.absoluteString);
                             NSLog(@"pathExtension = '%@'", pathExtension);
                             
                             if ([pathExtension rangeOfString:@"json" options:NSCaseInsensitiveSearch].location != NSNotFound)
@@ -581,11 +580,6 @@
         
         // If this was the last of a batch of urls in the data session's download queue, and there are more urls
         // to be downloaded, get another batch of urls from the database and keep working.
-        //
-//        if(_activeDataSessionTasks > 0)
-//        {
-//            _activeDataSessionTasks -= 1;
-//        }
         if(_activeDataSessionTasks == 0 && _totalFilesWritten < _totalFilesExpectedToWrite)
         {
             [self startDownloading];
