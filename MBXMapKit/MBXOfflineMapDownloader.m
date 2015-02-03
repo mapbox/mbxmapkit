@@ -447,13 +447,13 @@
                                     if ([json isKindOfClass:[NSDictionary class]])
                                     {
                                         // If this is TileJSON flavored JSON, parse it looking for the data key which has the markers urls to add to URL ToGet List
-                                        NSDictionary *tj = (NSDictionary *)json;
-                                        NSArray *tjData = (NSArray *)[tj objectForKey:@"data"];
-                                        if (tjData != nil)
+                                        NSDictionary *tileJson = (NSDictionary *)json;
+                                        NSArray *tileJsonData = (NSArray *)[tileJson objectForKey:@"data"];
+                                        if (tileJsonData != nil)
                                         {
                                             // Yep, this is TileJSON so grab data URLs and add the list to download
-                                            NSLog(@"TileJSON resources to add = '%lu'", (unsigned long)tjData.count);
-                                            [self sqliteSaveResourceURLs:tjData];
+                                            NSLog(@"TileJSON resources to add = '%lu'", (unsigned long)tileJsonData.count);
+                                            [self sqliteSaveResourceURLs:tileJsonData];
                                         }
                                         else
                                         {
