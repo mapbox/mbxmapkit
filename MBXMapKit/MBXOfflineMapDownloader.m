@@ -424,11 +424,9 @@
 
                             // Inspect download first
                             NSString *pathExtension = url.pathExtension;
-                            NSLog(@"pathExtension = '%@'", pathExtension);
                             
                             if ([pathExtension rangeOfString:@"json" options:NSCaseInsensitiveSearch].location != NSNotFound)
                             {
-                                NSLog(@"Tripped JSON pathExtension = '%@'", pathExtension);
 
                                 // Likely JSON, let's parse it to make sure, and then figure out what to do with it based on it's flavor
                                 NSMutableString *jsonString = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -443,7 +441,6 @@
                                 id json = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
                                 if (json != nil)
                                 {
-                                    NSLog(@"json is not nil.");
                                     if ([json isKindOfClass:[NSDictionary class]])
                                     {
                                         // If this is TileJSON flavored JSON, parse it looking for the data key which has the markers urls to add to URL ToGet List
@@ -466,14 +463,6 @@
                                             }
                                         }
                                     }
-                                    else
-                                    {
-                                        NSLog(@"json wasn't a NSDictionary so no processing was done.  Here it is: %@", json);
-                                    }
-                                }
-                                else
-                                {
-                                    NSLog(@"json was nil (aka not serialized).  Here's what the data is: %@", data);
                                 }
                                 // END OF JSON
                             }
@@ -572,9 +561,7 @@
             //
 //            _totalFilesWritten += 1;
 //            [self notifyDelegateOfProgress];
-            NSLog(@"totalFilesExpectedToWrite orig = %lu", (unsigned long)_totalFilesExpectedToWrite);
             _totalFilesExpectedToWrite += [urls count];
-            NSLog(@"totalFilesExpectedToWrite updated = %lu", (unsigned long)_totalFilesExpectedToWrite);
             [self notifyDelegateOfInitialCount];
         }
         
