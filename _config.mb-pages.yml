@@ -2,5 +2,5 @@ url: https://www.mapbox.com
 api: https://www.mapbox.com/core
 tileApi: https://api.tiles.mapbox.com
 baseurl: /mbxmapkit
-version: v0.6.0
+version: v0.7.0
 pygments: true
