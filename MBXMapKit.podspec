@@ -1,7 +1,7 @@
 Pod::Spec.new do |m|
 
   m.name    = 'MBXMapKit'
-  m.version = '0.6.0'
+  m.version = '0.7.0'
 
   m.summary          = 'Lightweight Mapbox integration with MapKit on iOS.'
   m.description      = 'Lightweight Mapbox integration with MapKit on iOS for custom map styles and complete offline control.'
