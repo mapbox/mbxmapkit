@@ -837,26 +837,19 @@
 
         NSMutableArray *urls = [[NSMutableArray alloc] init];
 
-        NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
-        NSString *dataName = ([MBXMapKit accessToken] ? @"features.json" : @"markers.geojson");
-        NSString *accessToken = ([MBXMapKit accessToken] ? [@"access_token=" stringByAppendingString:[MBXMapKit accessToken]] : nil);
-
         // Include URLs for the metadata and markers json if applicable
         //
         if(includeMetadata)
         {
-            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@.json?secure%@",
-                                version,
+            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v4/%@.json?secure%@",
                                 mapID,
-                                (accessToken ? [@"&" stringByAppendingString:accessToken] : @"")]];
+                                [@"&access_token=" stringByAppendingString:[MBXMapKit accessToken]]]];
         }
         if(includeMarkers)
         {
-            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%@%@",
-                                version,
+            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v4/%@/features.json%@",
                                 mapID,
-                                dataName,
-                                (accessToken ? [@"?" stringByAppendingString:accessToken] : @"")]];
+                                [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]]]];
         }
 
         // Loop through the zoom levels and lat/lon bounds to generate a list of urls which should be included in the offline map
@@ -881,8 +874,7 @@
             {
                 for(NSUInteger y=minY; y<=maxY; y++)
                 {
-                    [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%ld/%ld/%ld%@.%@%@",
-                                     ([MBXMapKit accessToken] ? @"v4" : @"v3"),
+                    [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v4/%@/%ld/%ld/%ld%@.%@%@",
                                      mapID,
                                      (long)zoom,
                                      (long)x,
@@ -896,7 +888,7 @@
                                      @"",
 #endif
                                      [MBXRasterTileOverlay qualityExtensionForImageQuality:_imageQuality],
-                                     ([MBXMapKit accessToken] ? [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]] : @"")
+                                     [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]]
                                      ]
                      ];
                 }
@@ -908,15 +900,9 @@
         //
         if(includeMarkers)
         {
-            NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
-            NSString *dataName = ([MBXMapKit accessToken] ? @"features.json" : @"markers.geojson");
-            NSString *accessToken = ([MBXMapKit accessToken] ? [@"access_token=" stringByAppendingString:[MBXMapKit accessToken]] : nil);
-
-            NSURL *geojson = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%@%@",
-                version,
+            NSURL *geojson = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v4/%@/features.json%@",
                 mapID,
-                dataName,
-                (accessToken ? [@"?" stringByAppendingString:accessToken] : @"")]];
+                [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]]]];
 
             NSURLSessionDataTask *task;
             NSURLRequest *request = [NSURLRequest requestWithURL:geojson cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];

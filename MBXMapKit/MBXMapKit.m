@@ -85,6 +85,8 @@ NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 
 + (NSString *)accessToken
 {
+    NSAssert([[MBXMapKit sharedInstance] accessToken], @"An access token is required in order to use the Mapbox API. Obtain a token on your Mapbox account page at https://www.mapbox.com/account/apps/.");
+
     return [[MBXMapKit sharedInstance] accessToken];
 }
 

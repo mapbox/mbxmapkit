@@ -178,10 +178,8 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
     [marker appendString:@".png"];
 #endif
 
-    NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
-    NSString *accessToken = ([MBXMapKit accessToken] ? [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]] : @"");
-
-    return [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/marker/%@%@", version, marker, accessToken]];
+    return [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v4/marker/%@%@", marker,
+                                    [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]]]];
 }
 
 
@@ -233,33 +231,20 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
 
 - (void)setupMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality
 {
-    // Warn developer if not on v4 & access tokens
-    //
-    if ( ! [MBXMapKit accessToken])
-    {
-        NSLog(@"Deprecation warning: please switch to using access tokens and the Mapbox v4 API. See MBXMapKit.setAccessToken() and https://mapbox.com/accounts/apps/.");
-    }
-
     // Save the map configuration
     //
-    NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
-    NSString *dataName = ([MBXMapKit accessToken] ? @"features.json" : @"markers.geojson");
-    NSString *accessToken = ([MBXMapKit accessToken] ? [@"access_token=" stringByAppendingString:[MBXMapKit accessToken]] : nil);
     _mapID = mapID;
     _imageQuality = imageQuality;
-    _metadataURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@.json?secure%@",
-                                            version,
+    _metadataURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v4/%@.json?secure%@",
                                             _mapID,
-                                         (accessToken ? [@"&" stringByAppendingString:accessToken] : @"")]];
-    _markersURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%@%@",
-                                           version,
-                                           _mapID,
-                                           dataName,
-                                           (accessToken ? [@"?" stringByAppendingString:accessToken] : @"")]];
+                                            [@"&access_token=" stringByAppendingString:[MBXMapKit accessToken]]]];
+    _markersURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v4/%@/features.json%@",
+                                            _mapID,
+                                            [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]]]];
 
-    // Use larger tiles if on v4 API
+    // Use larger tiles if on retina
     //
-    if ([MBXMapKit accessToken] && [[UIScreen mainScreen] scale] > 1) self.tileSize = CGSizeMake(512, 512);
+    if ([[UIScreen mainScreen] scale] > 1) self.tileSize = CGSizeMake(512, 512);
 
     // Default to covering up Apple's map
     //
@@ -320,15 +305,14 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
         return;
     }
 
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%ld/%ld/%ld%@.%@%@",
-                                       ([MBXMapKit accessToken] ? @"v4" : @"v3"),
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v4/%@/%ld/%ld/%ld%@.%@%@",
                                        _mapID,
                                        (long)path.z,
                                        (long)path.x,
                                        (long)path.y,
                                        (path.contentScaleFactor > 1.0 ? @"@2x" : @""),
                                        [MBXRasterTileOverlay qualityExtensionForImageQuality:_imageQuality],
-                                       ([MBXMapKit accessToken] ? [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]] : @"")
+                                       [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]]
                                        ]];
 
     MBXRasterTileOverlayCompletionBlock completionHandler = ^(NSData *data, NSError *error) {
