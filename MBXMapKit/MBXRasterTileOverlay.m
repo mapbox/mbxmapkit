@@ -233,6 +233,13 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
 
 - (void)setupMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality
 {
+    // Warn developer if not on v4 & access tokens
+    //
+    if ( ! [MBXMapKit accessToken])
+    {
+        NSLog(@"Deprecation warning: please switch to using access tokens and the Mapbox v4 API. See MBXMapKit.setAccessToken() and https://mapbox.com/accounts/apps/.");
+    }
+
     // Save the map configuration
     //
     NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
