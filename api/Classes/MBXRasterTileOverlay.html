@@ -183,7 +183,7 @@
 						<h2 class="subtitle subtitle-overview">Overview</h2>
 						<p>The <code>MBXRasterTileOverlay</code> class provides an <code>MKTileOverlay</code> subclass instance which loads Mapbox-hosted custom-styled map tiles, either live from Mapbox.com, or in offline mode using an <a href="../Classes/MBXOfflineMapDatabase.html"><code>MBXOfflineMapDatabase</code></a> instance.</p>
 
-<p>You can use an <code>MBXRasterTileOverlay</code> instance with an <code>MKMapView</code> map as you would any other <code>MKTileOverlay</code>. In particular, the use of multiple overlays on an <code>MKMapView</code> is supported as long as the proper values of <a href="#//api/name/canReplaceMapContent"><code>canReplaceMapContent</code></a> are set for each. Also, it is not possible to change the map ID of an overlay once it has been initialized, but you can easily add and remove overlays using the methods provided by <code>MKMapView</code>. To avoid a possible crash, be sure to call <a href="#//api/name/invalidateAndCancel"><code>invalidateAndCancel</code></a> prior to removing an <code>MBXRasterTileOverlay</code> from an <code>MKMapView</code>.</p><div class="warning"><p><strong>Warning:</strong> Please note that you are responsible for getting permission to use the map data, and for ensuring your use adheres to the relevant terms of use.</p></div><div class="bug"><p><strong>Bug:</strong> To avoid crashes in <code>MKMapView</code> due to asynchronous completion handlers referencing objects that no longer exist, it is very important to call the <a href="#//api/name/invalidateAndCancel"><code>invalidateAndCancel</code></a> method before removing an <code>MBXRasterTileOverlay</code> from your <code>MKMapView</code>.</p></div>
+<p>You can use an <code>MBXRasterTileOverlay</code> instance with an <code>MKMapView</code> map as you would any other <code>MKTileOverlay</code>. In particular, the use of multiple overlays on an <code>MKMapView</code> is supported as long as the proper values of <a href="#//api/name/canReplaceMapContent"><code>canReplaceMapContent</code></a> are set for each. Also, it is not possible to change the map ID of an overlay once it has been initialized, but you can easily add and remove overlays using the methods provided by <code>MKMapView</code>.</p><div class="warning"><p><strong>Warning:</strong> Please note that you are responsible for getting permission to use the map data, and for ensuring your use adheres to the relevant terms of use.</p></div><div class="warning"><p><strong>Warning:</strong> To avoid crashes in <code>MKMapView</code> due to asynchronous completion handlers referencing objects that no longer exist, it is very important to call the <a href="#//api/name/invalidateAndCancel"><code>invalidateAndCancel</code></a> method before removing an <code>MBXRasterTileOverlay</code> from your <code>MKMapView</code>.</p></div>
 					</div>
 					
 					
@@ -335,7 +335,7 @@
 	
 	
 	<div class="method-subsection brief-description">
-		<p>A default plain text attribution message suitable for displaying in an alert dialog (see metadata dictionary for an HTML string)</p>
+		<p>A default plain text attribution message suitable for displaying in an alert dialog.</p>
 	</div>		
 	
     
@@ -352,7 +352,7 @@
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>A default plain text attribution message suitable for displaying in an alert dialog (see metadata dictionary for an HTML string)</p>
+		<p>A default plain text attribution message suitable for displaying in an alert dialog.</p>
 	</div>
 	
 	
@@ -421,7 +421,7 @@
 	
 	
 	<div class="method-subsection brief-description">
-		<p>The map&rsquo;s center coordinate as parsed from the metadata JSON (see tileOverlay:didLoadMetadata:withError:)</p>
+		<p>The map&rsquo;s center coordinate as parsed from the metadata JSON.</p>
 	</div>		
 	
     
@@ -438,7 +438,7 @@
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>The map&rsquo;s center coordinate as parsed from the metadata JSON (see tileOverlay:didLoadMetadata:withError:)</p>
+		<p>The map&rsquo;s center coordinate as parsed from the metadata JSON.</p>
 	</div>
 	
 	
@@ -462,7 +462,7 @@
 	
 	
 	<div class="method-subsection brief-description">
-		<p>The map&rsquo;s initial zoom level as parsed from the metadata JSON (see tileOverlay:didLoadMetadata:withError:)</p>
+		<p>The map&rsquo;s initial zoom level as parsed from the metadata JSON.</p>
 	</div>		
 	
     
@@ -479,7 +479,7 @@
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>The map&rsquo;s initial zoom level as parsed from the metadata JSON (see tileOverlay:didLoadMetadata:withError:)</p>
+		<p>The map&rsquo;s initial zoom level as parsed from the metadata JSON.</p>
 	</div>
 	
 	
@@ -544,7 +544,7 @@
 	
 	
 	<div class="method-subsection brief-description">
-		<p>The map ID this raster tile overlay was initialized with</p>
+		<p>The map ID with which this raster tile overlay was initialized.</p>
 	</div>		
 	
     
@@ -561,7 +561,7 @@
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>The map ID this raster tile overlay was initialized with</p>
+		<p>The map ID with which this raster tile overlay was initialized.</p>
 	</div>
 	
 	
@@ -585,7 +585,7 @@
 	
 	
 	<div class="method-subsection brief-description">
-		<p>The map&rsquo;s array of <a href="../Classes/MBXPointAnnotation.html"><code>MBXPointAnnotation</code></a> marker annotations as parsed from the marker JSON (see tileOverlay:didLoadMarkers:withError:)</p>
+		<p>The map&rsquo;s array of <a href="../Classes/MBXPointAnnotation.html"><code>MBXPointAnnotation</code></a> marker annotations as parsed from the marker JSON.</p>
 	</div>		
 	
     
@@ -602,7 +602,7 @@
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>The map&rsquo;s array of <a href="../Classes/MBXPointAnnotation.html"><code>MBXPointAnnotation</code></a> marker annotations as parsed from the marker JSON (see tileOverlay:didLoadMarkers:withError:)</p>
+		<p>The map&rsquo;s array of <a href="../Classes/MBXPointAnnotation.html"><code>MBXPointAnnotation</code></a> marker annotations as parsed from the marker JSON.</p>
 	</div>
 	
 	
@@ -718,27 +718,31 @@
 	
 	
 	<div class="method-subsection brief-description">
-		<p>Initialize a map view with a given Mapbox map ID.
-*
-*   By default, <a href="#//api/name/canReplaceMapContent"><code>canReplaceMapContent</code></a> will be set to <code>YES</code>, which means Apple&rsquo;s maps will be hidden, and if the map ID represents a map with partial-world coverage, areas for which the map has no tiles will appear blank. If you have a full-world map with transparency and wish to show Apple&rsquo;s maps below it, set <a href="#//api/name/canReplaceMapContent"><code>canReplaceMapContent</code></a> to <code>NO</code> before adding your overlay to an <code>MKMapView</code>.
-*
-*   Also by default, asynchronous network requests will be started to load the metadata (<a href="#//api/name/center">center</a> coordinate, zoom, etc) and <a href="#//api/name/markers">markers</a> associated with your map ID, if there are any. To receive notification when the asynchronous requests complete, set a <a href="#//api/name/delegate">delegate</a> which implements <a href="../Protocols/MBXRasterTileOverlayDelegate.html"><code>MBXRasterTileOverlayDelegate</code></a>.
-*
-*   In order for the tile overlay to appear on your map, your <code>MKMapView</code>&rsquo;s <a href="#//api/name/delegate">delegate</a> must implement <code>mapView:rendererForOverlay:</code> from the <code>MKMapViewDelegate</code> protocol and return an instance of <a href="../Classes/MBXRasterTileRenderer.html"><code>MBXRasterTileRenderer</code></a>.
-    In order for <a href="#//api/name/markers">markers</a> to appear on your map, you must also provide an implementation for <code>mapView:viewForAnnotation:</code>
-    which returns an <code>MKAnnotationView</code> initialized from an <a href="../Classes/MBXPointAnnotation.html"><code>MBXPointAnnotation</code></a>, including the image property.
-*
-*   @param <a href="#//api/name/mapID">mapID</a> The Mapbox map ID.
-*   @return An initialized raster tile overlay, or <code>nil</code> if an overlay could not be initialized.</p>
+		<p>Initialize a map view with a given Mapbox map ID, automatically loading metadata and <a href="#//api/name/markers">markers</a>.</p>
 	</div>		
 	
     
 
-	<div class="method-subsection method-declaration"><code>- (id)initWithMapID:(NSString *)<em>mapID</em></code></div>
+	<div class="method-subsection method-declaration"><code>- (instancetype)initWithMapID:(NSString *)<em>mapID</em></code></div>
 
     
 	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>mapID</em></dt>
+			<dd><p>The Mapbox map ID.</p></dd>
+		</dl>
+		
+	</div>
 	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p>An initialized raster tile overlay, or <code>nil</code> if an overlay could not be initialized.</p>
+	</div>
 	
 	
 	
@@ -746,18 +750,15 @@
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>Initialize a map view with a given Mapbox map ID.
-*
-*   By default, <a href="#//api/name/canReplaceMapContent"><code>canReplaceMapContent</code></a> will be set to <code>YES</code>, which means Apple&rsquo;s maps will be hidden, and if the map ID represents a map with partial-world coverage, areas for which the map has no tiles will appear blank. If you have a full-world map with transparency and wish to show Apple&rsquo;s maps below it, set <a href="#//api/name/canReplaceMapContent"><code>canReplaceMapContent</code></a> to <code>NO</code> before adding your overlay to an <code>MKMapView</code>.
-*
-*   Also by default, asynchronous network requests will be started to load the metadata (<a href="#//api/name/center">center</a> coordinate, zoom, etc) and <a href="#//api/name/markers">markers</a> associated with your map ID, if there are any. To receive notification when the asynchronous requests complete, set a <a href="#//api/name/delegate">delegate</a> which implements <a href="../Protocols/MBXRasterTileOverlayDelegate.html"><code>MBXRasterTileOverlayDelegate</code></a>.
-*
-*   In order for the tile overlay to appear on your map, your <code>MKMapView</code>&rsquo;s <a href="#//api/name/delegate">delegate</a> must implement <code>mapView:rendererForOverlay:</code> from the <code>MKMapViewDelegate</code> protocol and return an instance of <a href="../Classes/MBXRasterTileRenderer.html"><code>MBXRasterTileRenderer</code></a>.
-    In order for <a href="#//api/name/markers">markers</a> to appear on your map, you must also provide an implementation for <code>mapView:viewForAnnotation:</code>
-    which returns an <code>MKAnnotationView</code> initialized from an <a href="../Classes/MBXPointAnnotation.html"><code>MBXPointAnnotation</code></a>, including the image property.
-*
-*   @param <a href="#//api/name/mapID">mapID</a> The Mapbox map ID.
-*   @return An initialized raster tile overlay, or <code>nil</code> if an overlay could not be initialized.</p>
+		<p>Initialize a map view with a given Mapbox map ID, automatically loading metadata and <a href="#//api/name/markers">markers</a>.</p>
+
+<p>By default, <a href="#//api/name/canReplaceMapContent"><code>canReplaceMapContent</code></a> will be set to <code>YES</code>, which means Apple&rsquo;s maps will be hidden, and if the map ID represents a map with partial-world coverage, areas for which the map has no tiles will appear blank. If you have a full-world map with transparency and wish to show Apple&rsquo;s maps below it, set <a href="#//api/name/canReplaceMapContent"><code>canReplaceMapContent</code></a> to <code>NO</code> before adding your overlay to an <code>MKMapView</code>.</p>
+
+<p>Also by default, asynchronous network requests will be started to load the metadata (<a href="#//api/name/center">center</a> coordinate, zoom, etc) and <a href="#//api/name/markers">markers</a> associated with your map ID, if there are any. To receive notification when the asynchronous requests complete, set a <a href="#//api/name/delegate">delegate</a> which implements <a href="../Protocols/MBXRasterTileOverlayDelegate.html"><code>MBXRasterTileOverlayDelegate</code></a>.</p>
+
+<p>In order for the tile overlay to appear on your map, you must implement <code>[MKMapViewDelegate mapView:rendererForOverlay:]</code> and return an instance of <a href="../Classes/MBXRasterTileRenderer.html"><code>MBXRasterTileRenderer</code></a>.</p>
+
+<p>In order for <a href="#//api/name/markers">markers</a> to appear on your map, you must implement <code>[MKMapViewDelegate mapView:viewForAnnotation:]</code> and return an <code>MKAnnotationView</code> initialized from an <a href="../Classes/MBXPointAnnotation.html"><code>MBXPointAnnotation</code></a>, including the <code>image</code> property.</p>
 	</div>
 	
 	
@@ -786,7 +787,7 @@
 	
     
 
-	<div class="method-subsection method-declaration"><code>- (id)initWithMapID:(NSString *)<em>mapID</em> includeMetadata:(BOOL)<em>includeMetadata</em> includeMarkers:(BOOL)<em>includeMarkers</em></code></div>
+	<div class="method-subsection method-declaration"><code>- (instancetype)initWithMapID:(NSString *)<em>mapID</em> includeMetadata:(BOOL)<em>includeMetadata</em> includeMarkers:(BOOL)<em>includeMarkers</em></code></div>
 
     
 	
@@ -852,7 +853,7 @@
 	
     
 
-	<div class="method-subsection method-declaration"><code>- (id)initWithMapID:(NSString *)<em>mapID</em> includeMetadata:(BOOL)<em>includeMetadata</em> includeMarkers:(BOOL)<em>includeMarkers</em> imageQuality:(MBXRasterImageQuality)<em>imageQuality</em></code></div>
+	<div class="method-subsection method-declaration"><code>- (instancetype)initWithMapID:(NSString *)<em>mapID</em> includeMetadata:(BOOL)<em>includeMetadata</em> includeMarkers:(BOOL)<em>includeMarkers</em> imageQuality:(MBXRasterImageQuality)<em>imageQuality</em></code></div>
 
     
 	
@@ -923,7 +924,7 @@
 	
     
 
-	<div class="method-subsection method-declaration"><code>- (id)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)<em>offlineMapDatabase</em></code></div>
+	<div class="method-subsection method-declaration"><code>- (instancetype)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)<em>offlineMapDatabase</em></code></div>
 
     
 	
