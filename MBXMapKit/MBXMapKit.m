@@ -15,7 +15,7 @@
 
 #import "MBXMapKit.h"
 
-NSString *const MBXMapKitVersion = @"0.5.0";
+NSString *const MBXMapKitVersion = @"0.6.0";
 
 #pragma mark - Add support to MKMapView for using Mapbox-style center/zoom to configure the visible region
 
