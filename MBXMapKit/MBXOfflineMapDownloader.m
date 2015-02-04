@@ -36,7 +36,7 @@
 
 @property (readonly, nonatomic) NSString *path;
 
-- (id)initWithContentsOfFile:(NSString *)path;
+- (instancetype)initWithContentsOfFile:(NSString *)path;
 - (void)invalidate;
 
 @end
@@ -91,7 +91,7 @@
 
 #pragma mark - Initialize and restore saved state from disk
 
-- (id)init
+- (instancetype)init
 {
     // MBXMapKit expects libsqlite to have been compiled with SQLITE_THREADSAFE=2 (multi-thread mode), which means
     // that it can handle its own thread safety as long as you don't attempt to re-use database connections.

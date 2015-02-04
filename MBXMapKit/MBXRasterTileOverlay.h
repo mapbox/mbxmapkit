@@ -81,7 +81,7 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 *   @param mapID The Mapbox map ID.
 *   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized.
 */
-- (id)initWithMapID:(NSString *)mapID;
+- (instancetype)initWithMapID:(NSString *)mapID;
 
 /** Initialize a map view with a given Mapbox map ID while specifying whether to load metadata and markers.
 *   @param mapID The Mapbox map ID.
@@ -89,7 +89,7 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 *   @param includeMarkers Whether to load the map's markers
 *   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized.
 */
-- (id)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers;
+- (instancetype)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers;
 
 /** Initialize a map view with a given Mapbox map ID while specifying whether to load metadata, whether to load markers, which image quality to request, and which user agent string to use.
 *   @param mapID The Mapbox map ID.
@@ -98,13 +98,13 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 *   @param imageQuality The image quality to use for requesting tiles
 *   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized.
 */
-- (id)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality;
+- (instancetype)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality;
 
 /** Initialize from an `MBXOfflineMapDatabase` object, using its stored values for metadata and markers, if it has any
 *   @param offlineMapDatabase An offline map database object obtained from `MBXOfflineMapDownloader`
 *   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized.
 */
-- (id)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase;
+- (instancetype)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase;
 
 /** @name Accessing the Delegate */
 

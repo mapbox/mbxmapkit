@@ -16,7 +16,7 @@
 *
 *   @param overlay The tile overlay object whose contents you want to draw.
 *   @return An initialized tile renderer object. */
-- (id)initWithTileOverlay:(MKTileOverlay *)overlay;
+- (instancetype)initWithTileOverlay:(MKTileOverlay *)overlay;
 
 /** Forces tiles to be reloaded and displayed.
 *

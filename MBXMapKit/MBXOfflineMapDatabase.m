@@ -47,7 +47,7 @@
 @implementation MBXOfflineMapDatabase
 
 
-- (id)initWithContentsOfFile:(NSString *)path
+- (instancetype)initWithContentsOfFile:(NSString *)path
 {
     self = [super init];
 

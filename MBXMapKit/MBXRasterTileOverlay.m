@@ -187,7 +187,7 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
 
 #pragma mark - Initialization
 
-- (id)initWithMapID:(NSString *)mapID;
+- (instancetype)initWithMapID:(NSString *)mapID;
 {
     self = [super init];
     if (self)
@@ -198,7 +198,7 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
 }
 
 
-- (id)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers
+- (instancetype)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers
 {
     self = [super init];
     if (self)
@@ -209,7 +209,7 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
 }
 
 
-- (id)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality
+- (instancetype)initWithMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality
 {
     self = [super init];
     if (self)
@@ -219,7 +219,7 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
     return self;
 }
 
-- (id)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase
+- (instancetype)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase
 {
     assert(offlineMapDatabase);
     self = [super init];

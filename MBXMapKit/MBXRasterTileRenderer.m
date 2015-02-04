@@ -20,7 +20,7 @@
 
 #pragma mark - Setup
 
-- (id)initWithOverlay:(id<MKOverlay>)overlay {
+- (instancetype)initWithOverlay:(id<MKOverlay>)overlay {
     NSAssert([overlay isKindOfClass:[MKTileOverlay class]], @"overlay must be an MKTileOverlay");
 
     self = [super initWithOverlay:overlay];
@@ -43,7 +43,7 @@
     return self;
 }
 
-- (id)initWithTileOverlay:(MKTileOverlay *)overlay {
+- (instancetype)initWithTileOverlay:(MKTileOverlay *)overlay {
     return [self initWithOverlay:overlay];
 }
 
