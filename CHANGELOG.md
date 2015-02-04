@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+### 0.7.0
+#### February 4, 2015
+
+- Removed support for the Mapbox `v3` server API, requiring use of [access tokens](https://www.mapbox.com/developers/api/#access-tokens). 
+
 ### 0.6.0
 #### February 3, 2015
 
