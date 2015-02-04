@@ -11,7 +11,7 @@
 	<body>
 		<header id="top_header">
 			<div id="library" class="hideInXcode">
-				<h1><a id="libraryTitle" href="../index.html">MBXMapKit 0.5.0 </a></h1>
+				<h1><a id="libraryTitle" href="../index.html">MBXMapKit 0.6.0 </a></h1>
 				<a id="developerHome" href="../index.html">Mapbox</a>
 			</div>
 			
@@ -718,7 +718,18 @@
 	
 	
 	<div class="method-subsection brief-description">
-		<p>Initialize a map view with a given Mapbox map ID.</p>
+		<p>Initialize a map view with a given Mapbox map ID.
+*
+*   By default, <a href="#//api/name/canReplaceMapContent"><code>canReplaceMapContent</code></a> will be set to <code>YES</code>, which means Apple&rsquo;s maps will be hidden, and if the map ID represents a map with partial-world coverage, areas for which the map has no tiles will appear blank. If you have a full-world map with transparency and wish to show Apple&rsquo;s maps below it, set <a href="#//api/name/canReplaceMapContent"><code>canReplaceMapContent</code></a> to <code>NO</code> before adding your overlay to an <code>MKMapView</code>.
+*
+*   Also by default, asynchronous network requests will be started to load the metadata (<a href="#//api/name/center">center</a> coordinate, zoom, etc) and <a href="#//api/name/markers">markers</a> associated with your map ID, if there are any. To receive notification when the asynchronous requests complete, set a <a href="#//api/name/delegate">delegate</a> which implements <a href="../Protocols/MBXRasterTileOverlayDelegate.html"><code>MBXRasterTileOverlayDelegate</code></a>.
+*
+*   In order for the tile overlay to appear on your map, your <code>MKMapView</code>&rsquo;s <a href="#//api/name/delegate">delegate</a> must implement <code>mapView:rendererForOverlay:</code> from the <code>MKMapViewDelegate</code> protocol and return an instance of <a href="../Classes/MBXRasterTileRenderer.html"><code>MBXRasterTileRenderer</code></a>.
+    In order for <a href="#//api/name/markers">markers</a> to appear on your map, you must also provide an implementation for <code>mapView:viewForAnnotation:</code>
+    which returns an <code>MKAnnotationView</code> initialized from an <a href="../Classes/MBXPointAnnotation.html"><code>MBXPointAnnotation</code></a>, including the image property.
+*
+*   @param <a href="#//api/name/mapID">mapID</a> The Mapbox map ID.
+*   @return An initialized raster tile overlay, or <code>nil</code> if an overlay could not be initialized.</p>
 	</div>		
 	
     
@@ -727,22 +738,7 @@
 
     
 	
-	<div class="method-subsection arguments-section parameters">
-		<h4 class="method-subtitle parameter-title">Parameters</h4>
-		
-		<dl class="argument-def parameter-def">
-			<dt><em>mapID</em></dt>
-			<dd><p>The Mapbox map ID.</p></dd>
-		</dl>
-		
-	</div>
 	
-	
-	
-	<div class="method-subsection return">
-		<h4 class="method-subtitle parameter-title">Return Value</h4>
-		<p>An initialized raster tile overlay, or <code>nil</code> if an overlay could not be initialized.</p>
-	</div>
 	
 	
 	
@@ -750,13 +746,18 @@
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>Initialize a map view with a given Mapbox map ID.</p>
-
-<p>By default, <a href="#//api/name/canReplaceMapContent"><code>canReplaceMapContent</code></a> will be set to <code>YES</code>, which means Apple&rsquo;s maps will be hidden, and if the map ID represents a map with partial-world coverage, areas for which the map has no tiles will appear blank. If you have a full-world map with transparency and wish to show Apple&rsquo;s maps below it, set <a href="#//api/name/canReplaceMapContent"><code>canReplaceMapContent</code></a> to <code>NO</code> before adding your overlay to an <code>MKMapView</code>.</p>
-
-<p>Also by default, asynchronous network requests will be started to load the metadata (<a href="#//api/name/center">center</a> coordinate, zoom, etc) and <a href="#//api/name/markers">markers</a> associated with your map ID, if there are any. To receive notification when the asynchronous requests complete, set a <a href="#//api/name/delegate">delegate</a> which implements <a href="../Protocols/MBXRasterTileOverlayDelegate.html"><code>MBXRasterTileOverlayDelegate</code></a>.</p>
-
-<p>In order for the tile overlay to appear on your map, your <code>MKMapView</code>&rsquo;s <a href="#//api/name/delegate">delegate</a> must implement <code>mapView:rendererForOverlay:</code> from the <code>MKMapViewDelegate</code> protocol. In order for <a href="#//api/name/markers">markers</a> to appear on your map, you must also provide an implementation for <code>mapView:viewForAnnotation:</code> which returns an <code>MKAnnotationView</code> initialized from an <a href="../Classes/MBXPointAnnotation.html"><code>MBXPointAnnotation</code></a>, including the image property.</p>
+		<p>Initialize a map view with a given Mapbox map ID.
+*
+*   By default, <a href="#//api/name/canReplaceMapContent"><code>canReplaceMapContent</code></a> will be set to <code>YES</code>, which means Apple&rsquo;s maps will be hidden, and if the map ID represents a map with partial-world coverage, areas for which the map has no tiles will appear blank. If you have a full-world map with transparency and wish to show Apple&rsquo;s maps below it, set <a href="#//api/name/canReplaceMapContent"><code>canReplaceMapContent</code></a> to <code>NO</code> before adding your overlay to an <code>MKMapView</code>.
+*
+*   Also by default, asynchronous network requests will be started to load the metadata (<a href="#//api/name/center">center</a> coordinate, zoom, etc) and <a href="#//api/name/markers">markers</a> associated with your map ID, if there are any. To receive notification when the asynchronous requests complete, set a <a href="#//api/name/delegate">delegate</a> which implements <a href="../Protocols/MBXRasterTileOverlayDelegate.html"><code>MBXRasterTileOverlayDelegate</code></a>.
+*
+*   In order for the tile overlay to appear on your map, your <code>MKMapView</code>&rsquo;s <a href="#//api/name/delegate">delegate</a> must implement <code>mapView:rendererForOverlay:</code> from the <code>MKMapViewDelegate</code> protocol and return an instance of <a href="../Classes/MBXRasterTileRenderer.html"><code>MBXRasterTileRenderer</code></a>.
+    In order for <a href="#//api/name/markers">markers</a> to appear on your map, you must also provide an implementation for <code>mapView:viewForAnnotation:</code>
+    which returns an <code>MKAnnotationView</code> initialized from an <a href="../Classes/MBXPointAnnotation.html"><code>MBXPointAnnotation</code></a>, including the image property.
+*
+*   @param <a href="#//api/name/mapID">mapID</a> The Mapbox map ID.
+*   @return An initialized raster tile overlay, or <code>nil</code> if an overlay could not be initialized.</p>
 	</div>
 	
 	
@@ -1022,7 +1023,7 @@
 				<div id="footer">
 					<hr />
 					<div class="footer-copyright">
-						<p><span class="copyright">&copy; 2015 Mapbox. All rights reserved. (Last updated: 2015-01-28)</span><br />
+						<p><span class="copyright">&copy; 2015 Mapbox. All rights reserved. (Last updated: 2015-02-03)</span><br />
 						
 						<span class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2 (build 963)</a>.</span></p>
 						

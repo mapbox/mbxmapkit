@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>MBXMapKit 0.5.0 Reference</title>
+		<title>MBXMapKit 0.6.0 Reference</title>
 		<link rel="stylesheet" type="text/css" href="css/styles.css" media="all" />
 		<link rel="stylesheet" type="text/css" media="print" href="css/stylesPrint.css" />
 		<meta name="generator" content="appledoc 2.2 (build 963)" />
@@ -10,12 +10,12 @@
 	<body>
 		<header id="top_header">
 			<div id="library" class="hideInXcode">
-				<h1><a id="libraryTitle" href="index.html">MBXMapKit 0.5.0 </a></h1>
+				<h1><a id="libraryTitle" href="index.html">MBXMapKit 0.6.0 </a></h1>
 				<a id="developerHome" href="index.html">Mapbox</a>
 			</div>
 			
 			<div id="title" role="banner">
-				<h1 class="hideInXcode">MBXMapKit 0.5.0 Reference</h1>
+				<h1 class="hideInXcode">MBXMapKit 0.6.0 Reference</h1>
 			</div>
 			<ul id="headerButtons" role="toolbar"></ul>
 		</header>
@@ -26,7 +26,7 @@
 				</div>
 				<div id="header">
 					<div class="section-header">
-						<h1 class="title title-header">MBXMapKit 0.5.0 Reference</h1>
+						<h1 class="title title-header">MBXMapKit 0.6.0 Reference</h1>
 					</div>		
 				</div>
 				<div id="container">
@@ -36,7 +36,7 @@
 						
 						<h2><a href="Classes/MBXMapKit.html">MBXMapKit</a></h2>
 
-<p><a href="Classes/MBXMapKit.html">MBXMapKit</a> extends Apple&rsquo;s MapKit to integrate with maps hosted on <a href="http://mapbox.com">Mapbox</a>, combining the performance of native maps with the convenience and integration similar to <a href="http://mapbox.com/mapbox.js">Mapbox.js</a>. With <a href="Classes/MBXMapKit.html">MBXMapKit</a>, your app is responsible for providing and managing its own <code>MKMapView</code> instance, while <a href="Classes/MBXMapKit.html">MBXMapKit</a> provides tile overlays, annotations, and an offline map downloader so you can easily display maps from Mapbox both online and offline.</p>
+<p><a href="Classes/MBXMapKit.html">MBXMapKit</a> extends Apple&rsquo;s MapKit to integrate with maps hosted on <a href="http://mapbox.com">Mapbox</a>, combining the performance of native maps with convenience and integration similar to <a href="http://mapbox.com/mapbox.js">Mapbox.js</a>. With <a href="Classes/MBXMapKit.html">MBXMapKit</a>, your app is responsible for providing and managing its own <code>MKMapView</code> instance, while <a href="Classes/MBXMapKit.html">MBXMapKit</a> provides tile overlays, annotations, and an offline map downloader so you can easily display maps from Mapbox both online and offline.</p>
 
 <p><a href=""><img src="https://raw.github.com/mapbox/mbxmapkit/packaging/screenshot.png" alt="" /></a></p>
 
@@ -45,84 +45,20 @@
 <p>The main features which <a href="Classes/MBXMapKit.html">MBXMapKit</a> adds to MapKit are:</p>
 
 <ul>
-<li><p><strong>Mapbox Markers:</strong> If you&rsquo;ve configured markers for your map using the <a href="https://www.mapbox.com/editor">Mapbox online editor</a>, <a href="Classes/MBXMapKit.html">MBXMapKit</a> makes it easy to add them to your <code>MKMapView</code> as <code>MKShape</code> annotations. You&rsquo;ll need to include some simple boilerplate code in your view controller&rsquo;s <code>-mapView:viewForAnnotation:</code> to connect annotations with regular <code>MKAnnotationView</code> instances (see the iOS sample app).</p></li>
-<li><p><strong>Performance Caching:</strong> <a href="Classes/MBXMapKit.html">MBXMapKit</a> uses <code>NSURLSession</code> and <code>NSURLCache</code> for performance caching of the tiles, JSON metadata, and icons required for loading maps. In contrast to the <a href="http://mapbox.com/mapbox-ios-sdk">Mapbox iOS SDK</a> and earlier versions of <a href="Classes/MBXMapKit.html">MBXMapKit</a>, this is a traditional cache which is not designed to be used for long term persistence of map data while offline. That capability is provided by a separate mechanism.</p></li>
-<li><p><strong>Offline Maps:</strong> <a href="Classes/MBXMapKit.html">MBXMapKit</a> now includes an offline map downloader to manage the download of all resources (tiles, JSON metadata, and icons) necessary to display requested map regions while offline. The offline map downloader provides download progress updates, an internal mechanism for persistant storage of multiple offline map regions, the ability to remove specific offline map regions from disk, and the ability to include offline map data in iCloud backups (the default however is to <em>exclude</em> offline map data from backups).</p></li>
 <li><p><strong>Online Maps:</strong> You can initialize a raster tile layer using a <a href="https://www.mapbox.com/help/define-map-id/">Mapbox map ID</a>, and <a href="Classes/MBXMapKit.html">MBXMapKit</a> will handle the details of generating tile URLs and asynchronously loading metadata and markers. With MBXMapKit&rsquo;s delegate callbacks for asynchronously loaded resources, you have the option to immediately start rendering your map, then as the necessary data becomes available, to adjust the visible region and add markers to match how the map is configured in the Mapbox online editor.</p></li>
+<li><p><strong>Offline Maps:</strong> <a href="Classes/MBXMapKit.html">MBXMapKit</a> includes an offline map downloader to manage the download of all resources (tiles, JSON metadata, and marker icons) necessary to display requested map regions while offline. The offline map downloader provides download progress updates, an internal mechanism for persistant storage of multiple offline map regions, the ability to remove specific offline map regions from disk, and the ability to include offline map data in iCloud backups (the default however is to <em>exclude</em> offline map data from backups).</p></li>
+<li><p><strong>Mapbox Markers:</strong> If you&rsquo;ve configured markers for your map using the <a href="https://www.mapbox.com/editor">Mapbox online editor</a>, <a href="Classes/MBXMapKit.html">MBXMapKit</a> makes it easy to add them to your <code>MKMapView</code> as <code>MKShape</code> annotations. You&rsquo;ll need to include some simple boilerplate code in your view controller&rsquo;s <code>[MKMapViewDelegate mapView:viewForAnnotation:]</code> in order to connect annotations with regular <code>MKAnnotationView</code> instances (see the iOS sample app).</p></li>
+<li><p><strong>Performance Caching:</strong> <a href="Classes/MBXMapKit.html">MBXMapKit</a> uses <code>NSURLSession</code> and <code>NSURLCache</code> for performance caching of the tiles, JSON metadata, and icons required for loading maps. In contrast to the <a href="http://mapbox.com/mapbox-ios-sdk">Mapbox iOS SDK</a> and earlier versions of <a href="Classes/MBXMapKit.html">MBXMapKit</a>, this is a traditional cache which is not designed to be used for long term persistence of map data while offline. That capability is provided by a separate mechanism.</p></li>
 </ul>
 
 
-<h3>Conceptual Overview</h3>
+<h3>Concepts</h3>
 
-<p>The fundamental concept to understand about <a href="Classes/MBXMapKit.html">MBXMapKit</a> is that, as of version <code>0.3.0</code>, it is designed to add features to Apple&rsquo;s MapKit rather than to replace or encapsulate MapKit. The previous approach with versions <code>0.1.0</code> through <code>0.2.1</code> was to encapsulate MapKit by managing an instance of <code>MKMapView</code>, but that turned out to be impractical for apps which need more than a minimal level of control over the map&rsquo;s configuration.</p>
+<p>The fundamental concept to understand about <a href="Classes/MBXMapKit.html">MBXMapKit</a> is that it is designed to add features to Apple&rsquo;s MapKit rather than to replace or encapsulate MapKit.</p>
 
-<p>Starting with <a href="Classes/MBXMapKit.html">MBXMapKit</a> <code>0.3.0</code>, you are now responsible for managing your own <code>MKMapView</code>, and <a href="Classes/MBXMapKit.html">MBXMapKit</a> will stay out of your way. <a href="Classes/MBXMapKit.html">MBXMapKit</a> provides <code>MKTileOverlay</code> and <code>MKShape</code> subclass instances which you can add to your <code>MKMapView</code> in combination with overlays and annotations from other sources. To see how <a href="Classes/MBXMapKit.html">MBXMapKit</a> makes that process fairly painless, and for several examples of configuring <code>MKMapView</code> for different visual goals, please take a look at the <a href="./Sample%20Project/[MBXMapKit](Classes/MBXMapKit.html">view controller in the iOS sample app</a> iOS/MBXViewController.m).</p>
+<p>You are responsible for managing your own <code>MKMapView</code>, and <a href="Classes/MBXMapKit.html">MBXMapKit</a> will stay out of your way. <a href="Classes/MBXMapKit.html">MBXMapKit</a> provides <code>MKTileOverlay</code> and <code>MKShape</code> subclasses which you can add to your <code>MKMapView</code> in combination with overlays and annotations from other sources. To see how <a href="Classes/MBXMapKit.html">MBXMapKit</a> makes that process fairly painless, and for several examples of configuring <code>MKMapView</code> for different visual goals, please take a look at the <a href="./Sample%20Project/[MBXMapKit](Classes/MBXMapKit.html">view controller in the iOS sample app</a> iOS/MBXViewController.m).</p>
 
-<p>Another key idea introduced with <a href="Classes/MBXMapKit.html">MBXMapKit</a> <code>0.3.0</code> is that making a clear distinction between performance caching and persistent storage facilitates a straightforward and dependable implementation for offline maps. Both online and offline map data is requested through <code>NSURLCache</code> for performance, but the offline map data is subsequently stored separately on disk for persistence. So, if iOS decides it needs to free up disk space by deleting items in app cache directories, your offline map data won&rsquo;t be affected.</p>
-
-<p>The way that <a href="Classes/MBXMapKit.html">MBXMapKit</a> is designed to be used revolves around the idea of instantiating <a href="Classes/MBXRasterTileOverlay.html"><code>MBXRasterTileOverlay</code></a> instances (a subclass of <code>MKTileOverlay</code>) and adding them to, or removing them from, your <code>MKMapView</code>. Raster tile overlay objects are intended to be treated as immutable once they&rsquo;ve been initialized, although the fact that some map resources necessarily must be loaded asynchronously complicates the concept a bit. The design intention is that if you want to switch the map ID which is being shown in your <code>MKMapView</code>, the way to do it is remove the visible raster tile overlay which you initialized with the old map ID, then add a new raster tile overlay which you&rsquo;ve initialized with a new map ID. If you&rsquo;re expecting to set a map ID property, that won&rsquo;t work any more, but that&rsquo;s a good thing. The new approach introduced in <a href="Classes/MBXMapKit.html">MBXMapKit</a> <code>0.3.0</code> cooperates with the design of <code>MKMapKit</code> in a more natural manner than the old approach.</p>
-
-<h3>Linking Requirements</h3>
-
-<p><a href="Classes/MBXMapKit.html">MBXMapKit</a> requires <code>libsqlite3.dylib</code> to be linked with your build target in order to compile properly.</p>
-
-<h3>Getting Help</h3>
-
-<p>If you have questions about how to use <a href="Classes/MBXMapKit.html">MBXMapKit</a>, or are encountering problems, here are our suggestions for how to proceed:</p>
-
-<ol>
-<li><p>Read all of this README, review the documentation in the <a href="Classes/MBXMapKit.html">MBXMapKit</a> header files, and check if what you&rsquo;re trying to do is similar to anything in the sample app.</p></li>
-<li><p>Google your problem or error message. This can be very helpful for distinguishing <a href="Classes/MBXMapKit.html">MBXMapKit</a> specific problems from more general issues with MKMapKit, and it may also guide you to relevant GitHub issues or StackOverflow questions. In many cases, documentation and blog posts about using MKMapKit will also be applicable to <a href="Classes/MBXMapKit.html">MBXMapKit</a>.</p></li>
-<li><p>Familiarize yourself with the documentation and developer resources on Mapbox.com (<a href="https://www.mapbox.com/help/">Help</a>, <a href="https://www.mapbox.com/foundations/">Foundations</a>, <a href="https://www.mapbox.com/developers/">Developers</a>).</p></li>
-<li><p>Take a look at the <a href="Classes/MBXMapKit.html">MBXMapKit</a> <a href="https://github.com/mapbox/mbxmapkit/issues?state=open">issues</a> on GitHub.</p></li>
-<li><p>Take a look at <a href="http://stackoverflow.com/questions/tagged/mapbox?sort=votes&amp;pageSize=100">Mapbox questions</a> on StackOverflow</p></li>
-<li><p>If none of that helps, you can file an <a href="https://github.com/mapbox/mbxmapkit/issues?state=open">issue</a> on GitHub, ask a question on <a href="http://stackoverflow.com/questions/tagged/mapbox?sort=votes&amp;pageSize=100">StackOverflow</a>, or <a href="https://www.mapbox.com/contact/">contact</a> Mapbox support. Specifically for <a href="Classes/MBXMapKit.html">MBXMapKit</a> (vs the iOS SDK), GitHub is best for possible bug reports, feature requests, and things generally having to do with improving <a href="Classes/MBXMapKit.html">MBXMapKit</a>. You can also ask usage questions on StackOverflow (please tag as Mapbox and <a href="Classes/MBXMapKit.html">MBXMapKit</a>). Contacting support is good for asking questions involving proprietary information or getting priority support for premium and enterprise accounts (please be sure to let us know who you are if you&rsquo;re using an email address which isn&rsquo;t associated with your Mapbox account).</p></li>
-</ol>
-
-
-<h3>Getting the Latest Release from GitHub</h3>
-
-<p>Generally speaking, <a href="Classes/MBXMapKit.html">MBXMapKit</a> follows the conventions described by GitHub&rsquo;s <a href="https://github.com/blog/1547-release-your-software">Release Your Software</a> post.</p>
-
-<p>Typically we develop new features as branches, and then merge them into the <em>master</em> as we are preparing for a release. When an official release is ready, we create a tag with the version number. You can view the list of releases at <a href="https://github.com/mapbox/mbxmapkit/releases">https://github.com/mapbox/mbxmapkit/releases</a></p>
-
-<h3>Installation</h3>
-
-<p>Note: This changed significantly as of version <code>0.3.0</code>!</p>
-
-<p>To include <a href="Classes/MBXMapKit.html">MBXMapKit</a> in your app you will need to:</p>
-
-<ol>
-<li><p>Copy all the <code>.m</code> and <code>.h</code> files from the mbxmapkit folder into your project.</p></li>
-<li><p>Make sure that the <code>.m</code> files are included in your build target (select the project, select build target, select <em>Build Phases</em> tab, expand the <em>Compile Sources</em> heading, and make sure all the <code>.m</code> files are listed).</p></li>
-<li><p>Make sure you have the map capability turned on for your build target (select project, select build target, select <em>Capabilities</em> tab, flip the switch to <code>ON</code> for Maps).</p></li>
-<li><p>Make sure that your build target is linked with <code>libsqlite3.dylib</code> (select project, select build target, select <em>Build Phases</em> tab, expand <em>Link Binary With Libraries</em>, and check the list). When you turn on the map capability, the MapKit framework should be added automatically, but you will probably need to add <code>libsqlite3.dylib</code> unless you are already using SQLite for something.</p></li>
-<li><p>Study the view controller in the iOS sample app. It&rsquo;s meant to be liberally copied and pasted. In particular, take a look at <code>-viewDidLoad</code>, <code>-resetMapViewAndRasterOverlayDefaults</code>, <code>-actionSheet:clickedButtonAtIndex:</code>, the <a href="Protocols/MBXOfflineMapDownloaderDelegate.html"><code>MBXOfflineMapDownloaderDelegate</code></a> callbacks, <code>-mapView:rendererForOverlay:</code>, <code>-mapView:viewForAnnotation:</code>, and the <a href="Protocols/MBXRasterTileOverlayDelegate.html"><code>MBXRasterTileOverlayDelegate</code></a> callbacks.</p></li>
-<li><p><strong>Provide some prominent means to display any applicable map data copyright attribution messages.</strong> For maps which include <a href="http://mapbox.com/about/maps">OpenStreetMap</a> data, that means you need something which links to the OSM copyright page (see sample app for an example). More details are available at <a href="https://www.mapbox.com/help/attribution/">https://www.mapbox.com/help/attribution/</a> and <a href="http://www.openstreetmap.org/copyright.">http://www.openstreetmap.org/copyright.</a></p></li>
-</ol>
-
-
-<h3>Understanding the Sample App</h3>
-
-<p>The sample app is meant to demonstrate the full capabilities of <a href="Classes/MBXMapKit.html">MBXMapKit</a> and to show examples of different ways to configure an <code>MKMapView</code>. We&rsquo;ve also found it to be useful for testing for responsiveness and visual glitching during work on the API implementation.</p>
-
-<p>A quick tour:</p>
-
-<ol>
-<li><p>Start the sample app</p></li>
-<li><p>Tap the info button in the bottom right corner to bring up an action sheet with several map configurations and an option to view the attribution dialog.</p></li>
-<li><p>Try the different map configurations, then take a look at <code>-resetMapViewAndRasterOverlayDefaults</code> and <code>-actionSheet:clickedButtonAtIndex:</code> from <code>MBXViewController.m</code> to understand what&rsquo;s going on. The basic idea is that when the map configuration gets switched, the <code>MKMapView</code> is reverted to a known state by removing overlays and markers, then new overlays and markers are added for the new configuration.</p></li>
-<li><p>Note that <em>World baselayer, no Apple</em> map includes several orange swim markers in Santa Cruz, CA. The callout text comes from the map&rsquo;s <code>markers.geojson</code> file, which is loaded from the Mapbox API, and the icons are also loaded from the Mapbox API after the necessary specifications are parsed out of <code>markers.geojson</code>. The map center coordinate and zoom scale come from the map&rsquo;s metadata JSON (i.e., <code>your-map-id.json</code>). The markers, centering, and zoom get applied to the map by way of the view controller&rsquo;s <a href="Protocols/MBXRasterTileOverlayDelegate.html"><code>MBXRasterTileOverlayDelegate</code></a> callback implementations.</p></li>
-<li><p>Note how <em>Offline map downloader</em> provides a view in the center of the screen with controls to begin, cancel, suspend, and resume the downloading of an offline map region. To select the region to be downloaded, just adjust the visible map region before hitting the begin button. When a download is active, you should see the progress indicator at the bottom of the screen. The progress indicator will remain on screen if you switch to other maps. If you kill the app before the download is complete, it should resume when you re-launch the app.</p></li>
-<li><p>Note how the <em>Offline map viewer</em> will show the most recent offline map region which was completely downloaded at the time you switched to <em>Offline map viewer</em>. Note how the offline map includes markers, initial centering, and initial zoom, even when airplane mode is enabled. There is also a button with a confirmation dialog for deleting all the stored maps. While the sample app only shows the most recently downloaded offline map, the API is designed so that you can enumerate all the available offline maps and use whichever ones you want.</p></li>
-</ol>
-
-
-<h3>Supported Platforms</h3>
-
-<p>As of version <code>0.3.0</code>, <a href="Classes/MBXMapKit.html">MBXMapKit</a> is officially supported only for iOS 7.0 and later. While iOS is the main priority, we also hope to keep things OS X friendly (10.9 and later since MapKit is required). That means you may notice instances of <code>#if TARGET_OS_IPHONE</code> around <code>UIImage</code>/<code>NSImage</code> and such, and it&rsquo;s possible the OS X side of some of those things may be broken. During the development from <code>0.2.1</code> to <code>0.3.0</code>, we were maintaining an OS X sample app to match the iOS sample app, but it ended up consuming a lot of time and slowing down progress on iOS, so we pulled back for now.</p>
-
-<p>If you encounter an OS X related problem and want to file an issue or pull request on GitHub, that would be welcome and appreciated. In particular, if you&rsquo;re working on an OS X app which needs something more than Mapbox.js in a <code>WebView</code> (offline maps?) we&rsquo;d <a href="http://github.com/mapbox/mbxmapkit/issues/new">like to hear about it</a>.</p>
+<p>With <a href="Classes/MBXMapKit.html">MBXMapKit</a>, there is a clear distinction between performance caching and persistent offline storage. If iOS decides it needs to free up disk space by deleting items in app cache directories, offline map data won&rsquo;t be affected.</p>
 
 <h3>Requirements</h3>
 
@@ -133,9 +69,65 @@
 </ul>
 
 
+<h3>Releases</h3>
+
+<p>Generally speaking, <a href="Classes/MBXMapKit.html">MBXMapKit</a> follows the conventions described by GitHub&rsquo;s <a href="https://github.com/blog/1547-release-your-software">Release Your Software</a> post.</p>
+
+<p>Typically we develop new features as branches, and then merge them into the <code>master</code> as we are preparing for a release. When an official release is ready, we create a tag with the version number. You can view the list of releases at <a href="https://github.com/mapbox/mbxmapkit/releases.">https://github.com/mapbox/mbxmapkit/releases.</a></p>
+
+<h3>Installation</h3>
+
+<p>To include <a href="Classes/MBXMapKit.html">MBXMapKit</a> in your app you will need to:</p>
+
+<ol>
+<li><p>Copy all the <code>.m</code> and <code>.h</code> files from the <a href="Classes/MBXMapKit.html"><code>MBXMapKit</code></a> folder into your project.</p></li>
+<li><p>Make sure that the <code>.m</code> files are included in your build target (select the project, select build target, select <em>Build Phases</em> tab, expand the <em>Compile Sources</em> heading, and make sure all the <code>.m</code> files are listed).</p></li>
+<li><p>Make sure you have the map capability turned on for your build target (select project, select build target, select <em>Capabilities</em> tab, flip the switch to <code>ON</code> for Maps).</p></li>
+<li><p>Make sure that your build target is linked with <code>libsqlite3.dylib</code> (select project, select build target, select <em>Build Phases</em> tab, expand <em>Link Binary With Libraries</em>, and check the list). When you turn on the map capability, the MapKit framework should be added automatically, but you will probably need to add <code>libsqlite3.dylib</code> unless you are already using SQLite for something else.</p></li>
+<li><p>Study the view controller in the iOS sample app. It&rsquo;s meant to be liberally copied and pasted. In particular, take a look at <code>-viewDidLoad</code>, <code>-resetMapViewAndRasterOverlayDefaults</code>, <code>-actionSheet:clickedButtonAtIndex:</code>, the <a href="Protocols/MBXOfflineMapDownloaderDelegate.html"><code>MBXOfflineMapDownloaderDelegate</code></a> callbacks, <code>-mapView:rendererForOverlay:</code>, <code>-mapView:viewForAnnotation:</code>, and the <a href="Protocols/MBXRasterTileOverlayDelegate.html"><code>MBXRasterTileOverlayDelegate</code></a> callbacks if you have any questions about how things work.</p></li>
+<li><p><strong>Provide some prominent means to display any applicable map data copyright attribution messages.</strong> For maps which include <a href="http://mapbox.com/about/maps">OpenStreetMap</a> data, that means you need something which links to the OSM copyright page (see sample app for an example). More details are available at <a href="https://www.mapbox.com/help/attribution/">https://www.mapbox.com/help/attribution/</a> and <a href="http://www.openstreetmap.org/copyright.">http://www.openstreetmap.org/copyright.</a></p></li>
+</ol>
+
+
+<h3>Support</h3>
+
+<p>If you have questions about how to use <a href="Classes/MBXMapKit.html">MBXMapKit</a>, or are encountering problems, here are our suggestions for how to proceed:</p>
+
+<ol>
+<li><p>Read all of this README, review the documentation in the <a href="Classes/MBXMapKit.html">MBXMapKit</a> header files, and check if what you&rsquo;re trying to do is similar to anything in the sample app.</p></li>
+<li><p>Search the web for your problem or error message. This can be very helpful for distinguishing <a href="Classes/MBXMapKit.html">MBXMapKit</a> specific problems from more general issues with MKMapKit, and it may also guide you to relevant GitHub issues or StackOverflow questions. In many cases, documentation and blog posts about using MKMapKit will also be applicable to <a href="Classes/MBXMapKit.html">MBXMapKit</a>.</p></li>
+<li><p>Familiarize yourself with the documentation and developer resources on Mapbox.com (<a href="https://www.mapbox.com/help/">Help</a>, <a href="https://www.mapbox.com/guides/">Guides</a>, and <a href="https://www.mapbox.com/developers/">Developers</a>).</p></li>
+<li><p>Take a look at the <a href="Classes/MBXMapKit.html">MBXMapKit</a> <a href="https://github.com/mapbox/mbxmapkit/issues?state=open">issues</a> on GitHub.</p></li>
+<li><p>Take a look at <a href="http://stackoverflow.com/questions/tagged/mapbox?sort=votes&amp;pageSize=100">Mapbox questions</a> on StackOverflow.</p></li>
+<li><p>If none of that helps, you can file an <a href="https://github.com/mapbox/mbxmapkit/issues?state=open">issue</a> on GitHub, ask a question on <a href="http://stackoverflow.com/questions/tagged/mapbox?sort=votes&amp;pageSize=100">StackOverflow</a>, or <a href="https://www.mapbox.com/help/">contact Mapbox support</a>.</p></li>
+</ol>
+
+
+<h3>Sample App</h3>
+
+<p>The sample app is meant to demonstrate the full capabilities of <a href="Classes/MBXMapKit.html">MBXMapKit</a> and to show examples of different ways to configure an <code>MKMapView</code>. We&rsquo;ve also found it to be useful for testing for responsiveness and visual glitching during work on the API implementation.</p>
+
+<p>A quick tour:</p>
+
+<ol>
+<li><p>Start the sample app.</p></li>
+<li><p>Tap the info button in the bottom right corner to bring up an action sheet with several map configurations and an option to view the attribution dialog.</p></li>
+<li><p>Try the different map configurations, then take a look at <code>-resetMapViewAndRasterOverlayDefaults</code> and <code>-actionSheet:clickedButtonAtIndex:</code> from <code>MBXViewController.m</code> to understand what&rsquo;s going on. The basic idea is that when the map configuration gets switched, the <code>MKMapView</code> is reverted to a known state by removing overlays and markers, then new overlays and markers are added for the new configuration.</p></li>
+<li><p>Note that <em>World baselayer, no Apple</em> map includes several orange swim markers in Santa Cruz, CA. The callout text comes from the map&rsquo;s <code>features.json</code> file, which is loaded from the Mapbox API, and the icons are also loaded from the Mapbox API after the necessary specifications are parsed out of <code>features.json</code>. The map center coordinate and zoom scale come from the map&rsquo;s metadata JSON (i.e., <code>your-map-id.json</code>). The markers, centering, and zoom get applied to the map by way of the view controller&rsquo;s <a href="Protocols/MBXRasterTileOverlayDelegate.html"><code>MBXRasterTileOverlayDelegate</code></a> callback implementations.</p></li>
+<li><p>Note how <em>Offline map downloader</em> provides a view in the center of the screen with controls to begin, cancel, suspend, and resume the downloading of an offline map region. To select the region to be downloaded, just adjust the visible map region before hitting the begin button. When a download is active, you should see the progress indicator at the bottom of the screen. The progress indicator will remain on screen if you switch to other maps. If you kill the app before the download is complete, it should resume when you re-launch the app.</p></li>
+<li><p>Note how the <em>Offline map viewer</em> will show the most recent offline map region which was completely downloaded at the time you switched to <em>Offline map viewer</em>. Note how the offline map includes markers, initial centering, and initial zoom, even when airplane mode is enabled. There is also a button with a confirmation dialog for deleting all the stored maps. While the sample app only shows the most recently downloaded offline map, the API is designed so that you can enumerate all the available offline maps and use whichever ones you want.</p></li>
+</ol>
+
+
+<h3>Platforms</h3>
+
+<p><a href="Classes/MBXMapKit.html">MBXMapKit</a> is officially supported for iOS 7.0 and later. While iOS is the main priority, we also hope to keep things OS X friendly (10.9 and later since MapKit is required). That means you may notice instances of <code>#if TARGET_OS_IPHONE</code> around <code>UIImage</code>/<code>NSImage</code> and such, and it&rsquo;s possible the OS X side of some of those things may be broken.</p>
+
+<p>If you encounter an OS X related problem and want to file an issue or pull request on GitHub, it would be welcome and appreciated. In particular, if you&rsquo;re working on an OS X app which needs something more than Mapbox.js in a <code>WebView</code> (offline maps?) we&rsquo;d <a href="http://github.com/mapbox/mbxmapkit/issues/new">like to hear about it</a>.</p>
+
 <h3>See Also</h3>
 
-<p>Check out the <a href="http://mapbox.com/mbxmapkit/">overview guide</a> for more details.</p>
+<p>Check out the <a href="http://mapbox.com/mbxmapkit/">overview guide</a> for summary details.</p>
 
 <p>You might also be interested in the <a href="http://mapbox.com/mapbox-ios-sdk/">Mapbox iOS SDK</a>, which is a ground-up rewrite meant as a replacement for Apple&rsquo;s MapKit, not an extension of it. If you&rsquo;ve always wished MapKit was open source for complete customizability, the Mapbox iOS SDK is for you.</p>
 
@@ -161,6 +153,8 @@
 							<li><a href="Classes/MBXPointAnnotation.html">MBXPointAnnotation</a></li>
 							
 							<li><a href="Classes/MBXRasterTileOverlay.html">MBXRasterTileOverlay</a></li>
+							
+							<li><a href="Classes/MBXRasterTileRenderer.html">MBXRasterTileRenderer</a></li>
 							
 						</ul>
 					</div>
@@ -205,7 +199,7 @@
 				<div id="footer">
 					<hr />
 					<div class="footer-copyright">
-						<p><span class="copyright">&copy; 2015 Mapbox. All rights reserved. (Last updated: 2015-01-28)</span><br />
+						<p><span class="copyright">&copy; 2015 Mapbox. All rights reserved. (Last updated: 2015-02-03)</span><br />
 						
 						<span class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2 (build 963)</a>.</span></p>
 						

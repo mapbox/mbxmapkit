@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="html/html; charset=utf-8" />
-		<title>MBXMapKit Class Reference</title>
+		<title>MBXRasterTileRenderer Class Reference</title>
 		<meta id="xcode-display" name="xcode-display" content="render"/>
 		<link rel="stylesheet" type="text/css" href="../css/styles.css" media="all" />
 		<link rel="stylesheet" type="text/css" media="print" href="../css/stylesPrint.css" />
@@ -16,7 +16,7 @@
 			</div>
 			
 			<div id="title" role="banner">
-				<h1 class="hideInXcode">MBXMapKit Class Reference</h1>
+				<h1 class="hideInXcode">MBXRasterTileRenderer Class Reference</h1>
 			</div>
 			<ul id="headerButtons" role="toolbar">
 				<li id="toc_button">
@@ -39,17 +39,13 @@
 	
 	
 	
-	<option value="class_methods">Class Methods</option>
-	
-	<option value="//api/name/accessToken">&nbsp;&nbsp;&nbsp;&nbsp;+ accessToken</option>
-	
-	<option value="//api/name/setAccessToken:">&nbsp;&nbsp;&nbsp;&nbsp;+ setAccessToken:</option>
-	
-	<option value="//api/name/setUserAgent:">&nbsp;&nbsp;&nbsp;&nbsp;+ setUserAgent:</option>
-	
-	<option value="//api/name/userAgent">&nbsp;&nbsp;&nbsp;&nbsp;+ userAgent</option>
 	
 	
+	<option value="instance_methods">Instance Methods</option>
+	
+	<option value="//api/name/initWithTileOverlay:">&nbsp;&nbsp;&nbsp;&nbsp;- initWithTileOverlay:</option>
+	
+	<option value="//api/name/reloadData">&nbsp;&nbsp;&nbsp;&nbsp;- reloadData</option>
 	
 	
 	
@@ -67,10 +63,6 @@
 
 <li role="treeitem" id="task_treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#tasks">Tasks</a></span><ul>
 	
-	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Authorizing Access">Authorizing Access</a></span></li>
-	
-	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_Using a Custom User Agent">Using a Custom User Agent</a></span></li>
-	
 </ul></li>
 
 
@@ -79,26 +71,22 @@
 
 
 
-<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#class_methods">Class Methods</a></span><ul>
+
+
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#instance_methods">Instance Methods</a></span><ul>
 	
-	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/accessToken">accessToken</a></span></li>
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/initWithTileOverlay:">initWithTileOverlay:</a></span></li>
 	
-	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/setAccessToken:">setAccessToken:</a></span></li>
-	
-	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/setUserAgent:">setUserAgent:</a></span></li>
-	
-	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/userAgent">userAgent</a></span></li>
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/reloadData">reloadData</a></span></li>
 	
 </ul></li>
-
-
 
 
 			</ul>
 		</nav>
 		<article>
 			<div id="contents" class="isShowingTOC" role="main">
-				<a title="MBXMapKit Class Reference" name="top"></a>
+				<a title="MBXRasterTileRenderer Class Reference" name="top"></a>
 				<div class="main-navigation navigation-top">
 					<ul>
 	<li><a href="../index.html">Index</a></li>
@@ -107,7 +95,7 @@
 				</div>
 				<div id="header">
 					<div class="section-header">
-						<h1 class="title title-header">MBXMapKit Class Reference</h1>
+						<h1 class="title title-header">MBXRasterTileRenderer Class Reference</h1>
 					</div>		
 				</div>
 				<div id="container">	
@@ -115,10 +103,10 @@
 					<div class="section section-specification"><table cellspacing="0"><tbody>
 						<tr>
 	<td class="specification-title">Inherits from</td>
-	<td class="specification-value">NSObject</td>
+	<td class="specification-value">MKOverlayRenderer</td>
 </tr><tr>
 	<td class="specification-title">Declared in</td>
-	<td class="specification-value">MBXMapKit.h</td>
+	<td class="specification-value">MBXRasterTileRenderer.h</td>
 </tr>
 						</tbody></table></div>
 					
@@ -128,7 +116,7 @@
 					<div class="section section-overview">
 						<a title="Overview" name="overview"></a>
 						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>Global convenience methods for the framework.</p>
+						<p>An <code>MBXRasterTileRenderer</code> object handles the drawing of tiles managed by an <a href="../Classes/MBXRasterTileOverlay.html"><code>MBXRasterTileOverlay</code></a> object. You create instances of this class when tile overlays become visible on the map view. A renderer works closely with its associated tile overlay object to coordinate the loading and drawing of tiles at appropriate times.</p>
 					</div>
 					
 					
@@ -140,39 +128,19 @@
 						<h2 class="subtitle subtitle-tasks">Tasks</h2>
 						
 						
-						<a title="Authorizing Access" name="task_Authorizing Access"></a>
-						<h3 class="subsubtitle task-title">Authorizing Access</h3>
+						
+						
 
 						<ul class="task-list">
 							<li>
 	<span class="tooltip">
-		<code><a href="#//api/name/setAccessToken:">+&nbsp;setAccessToken:</a></code>
+		<code><a href="#//api/name/initWithTileOverlay:">&ndash;&nbsp;initWithTileOverlay:</a></code>
 	</span>
 	
 	
 </li><li>
 	<span class="tooltip">
-		<code><a href="#//api/name/accessToken">+&nbsp;accessToken</a></code>
-	</span>
-	
-	
-</li>
-						</ul>
-						
-						
-						<a title="Using a Custom User Agent" name="task_Using a Custom User Agent"></a>
-						<h3 class="subsubtitle task-title">Using a Custom User Agent</h3>
-
-						<ul class="task-list">
-							<li>
-	<span class="tooltip">
-		<code><a href="#//api/name/setUserAgent:">+&nbsp;setUserAgent:</a></code>
-	</span>
-	
-	
-</li><li>
-	<span class="tooltip">
-		<code><a href="#//api/name/userAgent">+&nbsp;userAgent</a></code>
+		<code><a href="#//api/name/reloadData">&ndash;&nbsp;reloadData</a></code>
 	</span>
 	
 	
@@ -180,6 +148,8 @@
 						</ul>
 						
 					</div>
+					
+					
 					
 					
 					
@@ -188,63 +158,22 @@
 					
 					
 					<div class="section section-methods">
-						<a title="Class Methods" name="class_methods"></a>
-						<h2 class="subtitle subtitle-methods">Class Methods</h2>
+						<a title="Instance Methods" name="instance_methods"></a>
+						<h2 class="subtitle subtitle-methods">Instance Methods</h2>
 						
 						<div class="section-method">
-	<a name="//api/name/accessToken" title="accessToken"></a>
-	<h3 class="subsubtitle method-title">accessToken</h3>
+	<a name="//api/name/initWithTileOverlay:" title="initWithTileOverlay:"></a>
+	<h3 class="subsubtitle method-title">initWithTileOverlay:</h3>
 	
 	
 	
 	<div class="method-subsection brief-description">
-		<p>Returns the global access token for Mapbox API HTTP requests.</p>
+		<p>Initializes and returns a tile renderer with the specified overlay object.</p>
 	</div>		
 	
     
 
-	<div class="method-subsection method-declaration"><code>+ (NSString *)accessToken</code></div>
-
-    
-	
-	
-	
-	
-	
-	
-	
-	<div class="method-subsection discussion-section">
-		<h4 class="method-subtitle">Discussion</h4>
-		<p>Returns the global access token for Mapbox API HTTP requests.</p>
-	</div>
-	
-	
-	
-	
-	
-	
-	
-	<div class="method-subsection declared-in-section">
-		<h4 class="method-subtitle">Declared In</h4>
-		<code class="declared-in-ref">MBXMapKit.h</code><br />
-	</div>				
-	
-	
-</div>
-						
-						<div class="section-method">
-	<a name="//api/name/setAccessToken:" title="setAccessToken:"></a>
-	<h3 class="subsubtitle method-title">setAccessToken:</h3>
-	
-	
-	
-	<div class="method-subsection brief-description">
-		<p>Sets the global access token for Mapbox API HTTP requests. Obtain an access token on your <a href="https://www.mapbox.com/account/apps/">Mapbox account page</a>. Setting an access token will use Mapbox&rsquo;s <code>v4</code> API, otherwise <code>v3</code> will be used. At a future date, <code>v3</code> support will be phased out of the library.</p>
-	</div>		
-	
-    
-
-	<div class="method-subsection method-declaration"><code>+ (void)setAccessToken:(NSString *)<em>accessToken</em></code></div>
+	<div class="method-subsection method-declaration"><code>- (id)initWithTileOverlay:(MKTileOverlay *)<em>overlay</em></code></div>
 
     
 	
@@ -252,21 +181,28 @@
 		<h4 class="method-subtitle parameter-title">Parameters</h4>
 		
 		<dl class="argument-def parameter-def">
-			<dt><em>accessToken</em></dt>
-			<dd><p>A Mapbox API access token.</p></dd>
+			<dt><em>overlay</em></dt>
+			<dd><p>The tile overlay object whose contents you want to draw.</p></dd>
 		</dl>
 		
 	</div>
 	
 	
 	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p>An initialized tile renderer object.</p>
+	</div>
+	
 	
 	
 	
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>Sets the global access token for Mapbox API HTTP requests. Obtain an access token on your <a href="https://www.mapbox.com/account/apps/">Mapbox account page</a>. Setting an access token will use Mapbox&rsquo;s <code>v4</code> API, otherwise <code>v3</code> will be used. At a future date, <code>v3</code> support will be phased out of the library.</p>
+		<p>Initializes and returns a tile renderer with the specified overlay object.</p>
+
+<p>The returned renderer object works with the tile overlay object to coordinate the loading and display of its map tiles.</p>
 	</div>
 	
 	
@@ -277,80 +213,25 @@
 	
 	<div class="method-subsection declared-in-section">
 		<h4 class="method-subtitle">Declared In</h4>
-		<code class="declared-in-ref">MBXMapKit.h</code><br />
+		<code class="declared-in-ref">MBXRasterTileRenderer.h</code><br />
 	</div>				
 	
 	
 </div>
 						
 						<div class="section-method">
-	<a name="//api/name/setUserAgent:" title="setUserAgent:"></a>
-	<h3 class="subsubtitle method-title">setUserAgent:</h3>
+	<a name="//api/name/reloadData" title="reloadData"></a>
+	<h3 class="subsubtitle method-title">reloadData</h3>
 	
 	
 	
 	<div class="method-subsection brief-description">
-		<p>Sets the global user agent for Mapbox API HTTP requests.</p>
+		<p>Forces tiles to be reloaded and displayed.</p>
 	</div>		
 	
     
 
-	<div class="method-subsection method-declaration"><code>+ (void)setUserAgent:(NSString *)<em>userAgent</em></code></div>
-
-    
-	
-	<div class="method-subsection arguments-section parameters">
-		<h4 class="method-subtitle parameter-title">Parameters</h4>
-		
-		<dl class="argument-def parameter-def">
-			<dt><em>userAgent</em></dt>
-			<dd><p>The desired user agent string.</p></dd>
-		</dl>
-		
-	</div>
-	
-	
-	
-	
-	
-	
-	
-	<div class="method-subsection discussion-section">
-		<h4 class="method-subtitle">Discussion</h4>
-		<p>Sets the global user agent for Mapbox API HTTP requests.</p>
-
-<p>If unset, defaults to <code>MBXMapKit</code> followed by the library version, generic hardware model, and software version information.</p>
-
-<p>Example: <code>MyMapApp/1.2</code></p>
-	</div>
-	
-	
-	
-	
-	
-	
-	
-	<div class="method-subsection declared-in-section">
-		<h4 class="method-subtitle">Declared In</h4>
-		<code class="declared-in-ref">MBXMapKit.h</code><br />
-	</div>				
-	
-	
-</div>
-						
-						<div class="section-method">
-	<a name="//api/name/userAgent" title="userAgent"></a>
-	<h3 class="subsubtitle method-title">userAgent</h3>
-	
-	
-	
-	<div class="method-subsection brief-description">
-		<p>Returns the global user agent for Mapbox API HTTP requests.</p>
-	</div>		
-	
-    
-
-	<div class="method-subsection method-declaration"><code>+ (NSString *)userAgent</code></div>
+	<div class="method-subsection method-declaration"><code>- (void)reloadData</code></div>
 
     
 	
@@ -362,7 +243,9 @@
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>Returns the global user agent for Mapbox API HTTP requests.</p>
+		<p>Forces tiles to be reloaded and displayed.</p>
+
+<p>Use this method to remove the overlay’s existing tile images and reload them from the original source. This method automatically causes the renderer to redraw the new tiles as soon as they are loaded into memory.</p>
 	</div>
 	
 	
@@ -373,15 +256,13 @@
 	
 	<div class="method-subsection declared-in-section">
 		<h4 class="method-subtitle">Declared In</h4>
-		<code class="declared-in-ref">MBXMapKit.h</code><br />
+		<code class="declared-in-ref">MBXRasterTileRenderer.h</code><br />
 	</div>				
 	
 	
 </div>
 						
 					</div>
-					
-					
 					
 					
                     
