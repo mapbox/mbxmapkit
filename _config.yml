@@ -2,5 +2,5 @@ url: https://122e4e-mapbox.global.ssl.fastly.net
 api: https://122e4e-mapbox.global.ssl.fastly.net/core
 tileApi: https://api-maps-staging.tilestream.net
 baseurl: /mbxmapkit
-version: v0.5.0
+version: v0.6.0
 pygments: true
