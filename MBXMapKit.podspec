@@ -14,7 +14,6 @@ Pod::Spec.new do |m|
   m.source = { :git => 'https://github.com/mapbox/mbxmapkit.git', :tag => m.version.to_s }
 
   m.ios.deployment_target = '7.0'
-  m.osx.deployment_target = '10.9'
 
   m.source_files = 'MBXMapKit/*.{h,m}'
 

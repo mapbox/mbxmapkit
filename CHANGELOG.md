@@ -9,6 +9,7 @@ Changelog
 - Added a category method on `MKMapView` for obtaining the current zoom level. See `MKMapView.mbx_zoomLevel`. 
 - Added a delegate callback for tile overlay rendering completion, similar to `MKMapViewDelegate.mapViewDidFinishRenderingMap(_, fullyRendered)`. See `MBXRasterTileOverlayDelegate.tileOverlayDidFinishRendering(_, fullyRendered)`. 
 - Fixed a bug with setting the zoom level in a category method. 
+- Removed official support for OS X from CocoaPods. 
 - Updated the way that deprecated methods and properties are marked. 
 - Documentation improvements. 
 
