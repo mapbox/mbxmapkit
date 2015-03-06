@@ -71,6 +71,7 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
 @property (nonatomic) BOOL didFinishLoadingMarkers;
 
 @property (strong, nonatomic) MBXOfflineMapDatabase *offlineMapDatabase;
+@property (strong, nonatomic) NSArray *offlineMapDatabases;
 
 @property (nonatomic) NSDictionary *metadataForPendingNotification;
 @property (nonatomic) NSError *metadataErrorForPendingNotification;
@@ -225,6 +226,32 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
     {
         _offlineMapDatabase = offlineMapDatabase;
         [self setupMapID:offlineMapDatabase.mapID includeMetadata:offlineMapDatabase.includesMetadata includeMarkers:offlineMapDatabase.includesMarkers imageQuality:offlineMapDatabase.imageQuality];
+    }
+    return self;
+}
+
+- (instancetype)initWithOfflineMapDatabases:(NSArray *)offlineMapDatabases
+{
+    assert(offlineMapDatabases);
+    self = [super init];
+    if (self)
+    {
+        NSString* mapID = ((MBXOfflineMapDatabase*)[offlineMapDatabases firstObject]).mapID;
+        BOOL includesMetadata = ((MBXOfflineMapDatabase*)[offlineMapDatabases firstObject]).includesMetadata;
+        BOOL includesMarkers = ((MBXOfflineMapDatabase*)[offlineMapDatabases firstObject]).includesMarkers;
+        MBXRasterImageQuality imageQuality = ((MBXOfflineMapDatabase*)[offlineMapDatabases firstObject]).imageQuality;
+        
+        // Check that all databases have the same properties
+        for (MBXOfflineMapDatabase* offlineDatabase in offlineMapDatabases)
+        {
+            assert([offlineDatabase.mapID isEqualToString:mapID]);
+            assert(offlineDatabase.includesMetadata == includesMetadata);
+            assert(offlineDatabase.includesMarkers == includesMarkers);
+            assert(offlineDatabase.imageQuality == imageQuality);
+        }
+        
+        _offlineMapDatabases = offlineMapDatabases;
+        [self setupMapID:mapID includeMetadata:includesMetadata includeMarkers:includesMarkers imageQuality:imageQuality];
     }
     return self;
 }
@@ -640,6 +667,50 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
                           ifCurrentStateIs:MBXRenderCompletionStateFull];
         }
 
+        [self addPendingRender:nil removePendingRender:url];
+    }
+    else if (_offlineMapDatabases)
+    {
+        NSData* data;
+        NSError *error;
+        for (MBXOfflineMapDatabase* offlineDatabase in _offlineMapDatabases)
+        {
+            // If this assert fails, it's probably because MBXOfflineMapDownloader's removeOfflineMapDatabase: method has been invoked
+            // for this offline map database object while the database is still associated with a map overlay. That's a serious logic
+            // error which should be checked for and avoided.
+            //
+            assert(offlineDatabase.isInvalid == NO);
+            
+            // If an offline map database is configured for this overlay, use the database to fetch data for URLs
+            //
+            error = nil;
+            data = [offlineDatabase dataForURL:url withError:&error];
+            
+            if (error)
+            {
+                // Data not found, continue to check the next database
+                //
+                continue;
+            }
+            
+            // Since the URL was successfully retrieved, invoke the block to process its data
+            //
+            if (workerBlock)
+            {
+                workerBlock(data, &error);
+            }
+            
+            break;
+        }
+        
+        completionHandler(data, error);
+        
+        if (error)
+        {
+            [self setRenderCompletionState:MBXRenderCompletionStatePartial
+                          ifCurrentStateIs:MBXRenderCompletionStateFull];
+        }
+        
         [self addPendingRender:nil removePendingRender:url];
     }
     else
