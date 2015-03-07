@@ -15,7 +15,7 @@
 
 #import "MBXMapKit.h"
 
-NSString *const MBXMapKitVersion = @"0.5.0";
+NSString *const MBXMapKitVersion = @"0.7.0";
 
 #pragma mark - Add support to MKMapView for using Mapbox-style center/zoom to configure the visible region
 
@@ -80,13 +80,13 @@ NSInteger const MBXMapKitErrorCodeURLSessionConnectivity = -6;
 
 + (void)setAccessToken:(NSString *)accessToken
 {
-    NSAssert([[[UIDevice currentDevice] systemVersion] integerValue] >= 8, @"use of access tokens and the Mapbox v4 API requires iOS 8 and up");
-
     [[MBXMapKit sharedInstance] setAccessToken:accessToken];
 }
 
 + (NSString *)accessToken
 {
+    NSAssert([[MBXMapKit sharedInstance] accessToken], @"An access token is required in order to use the Mapbox API. Obtain a token on your Mapbox account page at https://www.mapbox.com/account/apps/.");
+
     return [[MBXMapKit sharedInstance] accessToken];
 }
 

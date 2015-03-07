@@ -36,7 +36,7 @@
 
 @property (readonly, nonatomic) NSString *path;
 
-- (id)initWithContentsOfFile:(NSString *)path;
+- (instancetype)initWithContentsOfFile:(NSString *)path;
 - (void)invalidate;
 
 @end
@@ -91,7 +91,7 @@
 
 #pragma mark - Initialize and restore saved state from disk
 
-- (id)init
+- (instancetype)init
 {
     // MBXMapKit expects libsqlite to have been compiled with SQLITE_THREADSAFE=2 (multi-thread mode), which means
     // that it can handle its own thread safety as long as you don't attempt to re-use database connections.
@@ -257,7 +257,7 @@
 
     if([_delegate respondsToSelector:@selector(offlineMapDownloader:stateChangedTo:)])
     {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^{
             [_delegate offlineMapDownloader:self stateChangedTo:_state];
         });
     }
@@ -270,7 +270,7 @@
     {
         // Update the delegate with the file count so it can display a progress indicator
         //
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^{
             [_delegate offlineMapDownloader:self totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
         });
     }
@@ -283,7 +283,7 @@
 
     if([_delegate respondsToSelector:@selector(offlineMapDownloader:totalFilesWritten:totalFilesExpectedToWrite:)])
     {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^{
             [_delegate offlineMapDownloader:self totalFilesWritten:_totalFilesWritten totalFilesExpectedToWrite:_totalFilesExpectedToWrite];
         });
     }
@@ -298,7 +298,7 @@
     {
         NSError *networkError = [NSError mbx_errorWithCode:MBXMapKitErrorCodeURLSessionConnectivity reason:[error localizedFailureReason] description:[error localizedDescription]];
 
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^{
             [_delegate offlineMapDownloader:self didEncounterRecoverableError:networkError];
         });
     }
@@ -313,7 +313,7 @@
     {
         NSError *networkError = [NSError mbx_errorWithCode:MBXMapKitErrorCodeOfflineMapSqlite reason:[error localizedFailureReason] description:[error localizedDescription]];
 
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^{
             [_delegate offlineMapDownloader:self didEncounterRecoverableError:networkError];
         });
     }
@@ -329,7 +329,7 @@
         NSString *reason = [NSString stringWithFormat:@"HTTP status %li was received for %@", (long)status,[url absoluteString]];
         NSError *statusError = [NSError mbx_errorWithCode:MBXMapKitErrorCodeHTTPStatus reason:reason description:@"HTTP status error"];
 
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^{
             [_delegate offlineMapDownloader:self didEncounterRecoverableError:statusError];
         });
     }
@@ -342,7 +342,7 @@
 
     if([_delegate respondsToSelector:@selector(offlineMapDownloader:didCompleteOfflineMapDatabase:withError:)])
     {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^{
             [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:offlineMap withError:error];
         });
     }
@@ -837,26 +837,19 @@
 
         NSMutableArray *urls = [[NSMutableArray alloc] init];
 
-        NSString *version = ([MBXMapKit accessToken] ? @"v4" : @"v3");
-        NSString *dataName = ([MBXMapKit accessToken] ? @"features.json" : @"markers.geojson");
-        NSString *accessToken = ([MBXMapKit accessToken] ? [@"access_token=" stringByAppendingString:[MBXMapKit accessToken]] : nil);
-
         // Include URLs for the metadata and markers json if applicable
         //
         if(includeMetadata)
         {
-            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@.json?secure%@",
-                                version,
+            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v4/%@.json?secure%@",
                                 mapID,
-                                (accessToken ? [@"&" stringByAppendingString:accessToken] : @"")]];
+                                [@"&access_token=" stringByAppendingString:[MBXMapKit accessToken]]]];
         }
         if(includeMarkers)
         {
-            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%@%@",
-                                version,
+            [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v4/%@/features.json%@",
                                 mapID,
-                                dataName,
-                                (accessToken ? [@"?" stringByAppendingString:accessToken] : @"")]];
+                                [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]]]];
         }
 
         // Loop through the zoom levels and lat/lon bounds to generate a list of urls which should be included in the offline map
@@ -881,8 +874,7 @@
             {
                 for(NSUInteger y=minY; y<=maxY; y++)
                 {
-                    [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/%@/%@/%ld/%ld/%ld%@.%@%@",
-                                     ([MBXMapKit accessToken] ? @"v4" : @"v3"),
+                    [urls addObject:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v4/%@/%ld/%ld/%ld%@.%@%@",
                                      mapID,
                                      (long)zoom,
                                      (long)x,
@@ -896,7 +888,7 @@
                                      @"",
 #endif
                                      [MBXRasterTileOverlay qualityExtensionForImageQuality:_imageQuality],
-                                     ([MBXMapKit accessToken] ? [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]] : @"")
+                                     [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]]
                                      ]
                      ];
                 }
@@ -908,8 +900,10 @@
         //
         if(includeMarkers)
         {
-            NSString *dataName = ([MBXMapKit accessToken] ? @"features.json" : @"markers.geojson");
-            NSURL *geojson = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v3/%@/%@", mapID, dataName]];
+            NSURL *geojson = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v4/%@/features.json%@",
+                mapID,
+                [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]]]];
+
             NSURLSessionDataTask *task;
             NSURLRequest *request = [NSURLRequest requestWithURL:geojson cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
             task = [_dataSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
@@ -1049,7 +1043,7 @@
 
     if([_delegate respondsToSelector:@selector(offlineMapDownloader:didCompleteOfflineMapDatabase:withError:)])
     {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^{
             [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:nil withError:error];
         });
     }
@@ -1094,7 +1088,7 @@
                 if([_delegate respondsToSelector:@selector(offlineMapDownloader:didCompleteOfflineMapDatabase:withError:)])
                 {
                     NSError *canceled = [NSError mbx_errorWithCode:MBXMapKitErrorCodeDownloadingCanceled reason:@"The download job was canceled" description:@"Download canceled"];
-                    dispatch_async(dispatch_get_main_queue(), ^(void){
+                    dispatch_async(dispatch_get_main_queue(), ^{
                         [_delegate offlineMapDownloader:self didCompleteOfflineMapDatabase:nil withError:canceled];
                     });
                 }

@@ -1,6 +1,23 @@
 Changelog
 ---------
 
+### 0.7.0
+#### February 4, 2015
+
+- Removed support for the Mapbox `v3` server API, requiring use of [access tokens](https://www.mapbox.com/developers/api/#access-tokens). 
+
+### 0.6.0
+#### February 3, 2015
+
+- Re-added support for Mapbox `v4` API and [access tokens](https://www.mapbox.com/developers/api/#access-tokens) in tile and metadata requests. See `MBXMapKit.setAccessToken()`. 
+- Added a new `MBXRasterTileRenderer` replacement for `MKTileOverlayRenderer` to support `512px` raster tiles and work around some iOS bugs. 
+- Added a category method on `MKMapView` for obtaining the current zoom level. See `MKMapView.mbx_zoomLevel`. 
+- Added a delegate callback for tile overlay rendering completion, similar to `MKMapViewDelegate.mapViewDidFinishRenderingMap(_, fullyRendered)`. See `MBXRasterTileOverlayDelegate.tileOverlayDidFinishRendering(_, fullyRendered)`. 
+- Fixed a bug with setting the zoom level in a category method. 
+- Removed official support for OS X from CocoaPods. 
+- Updated the way that deprecated methods and properties are marked. 
+- Documentation improvements. 
+
 ### 0.5.0
 #### September 4, 2014
 
