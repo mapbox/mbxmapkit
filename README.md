@@ -99,4 +99,4 @@ Check out the [overview guide](http://mapbox.com/mbxmapkit/) for summary details
 
 You might also be interested in the [Mapbox iOS SDK](http://mapbox.com/mapbox-ios-sdk/), which is a ground-up rewrite meant as a replacement for Apple's MapKit, not an extension of it. If you've always wished MapKit was open source for complete customizability, the Mapbox iOS SDK is for you. 
 
-Keep your eye also on [Mapbox GL](https://www.mapbox.com/blog/mapbox-gl/), the future of our rendering technology. We are aiming to have a clear upgrade path between existing toolsets and GL as it matures. Read more in the [Mapbox GL Cocoa FAQ](https://github.com/mapbox/mapbox-gl-cocoa/blob/master/FAQ.md). 
+Keep your eye also on [Mapbox GL](https://www.mapbox.com/blog/mapbox-gl/), the future of our rendering technology. We are aiming to have a clear upgrade path between existing toolsets and GL as it matures. Read more in the [Mapbox GL Cocoa FAQ](https://github.com/mapbox/mapbox-gl-native/blob/master/ios/FAQ.md). 
