@@ -35,6 +35,7 @@
 @property (readwrite, nonatomic) NSInteger minimumZ;
 @property (readwrite, nonatomic) NSInteger maximumZ;
 @property (readwrite, nonatomic) NSString *path;
+@property (readwrite, nonatomic) NSData *blankTileData;
 @property (readwrite, nonatomic) BOOL invalid;
 
 @property (nonatomic) BOOL initializedProperly;
@@ -66,6 +67,10 @@
         NSString *region_longitude_delta = [self sqliteMetadataForName:@"region_longitude_delta"];
         NSString *minimumZ = [self sqliteMetadataForName:@"minimumZ"];
         NSString *maximumZ = [self sqliteMetadataForName:@"maximumZ"];
+
+        UIGraphicsBeginImageContext(CGSizeMake(256, 256));
+        _blankTileData = UIImagePNGRepresentation(UIGraphicsGetImageFromCurrentImageContext());
+        UIGraphicsEndImageContext();
 
         if ( ! uniqueID)
         {
@@ -170,6 +175,11 @@
 {
     NSString *query = [NSString stringWithFormat:@"SELECT value FROM data WHERE id = (SELECT id from resources WHERE url='%@');", [url absoluteString]];
     NSData *data = [self sqliteDataForSingleColumnQuery:query];
+
+    if (!data) {
+        data = _blankTileData;
+    }
+
     return data;
 }
 
