@@ -183,13 +183,29 @@
     MKTileOverlayPath path = [self pathForMapRect:mapRect zoomScale:zoomScale];
     BOOL usingBigTiles = (tileOverlay.tileSize.width == 512);
     MKTileOverlayPath childPath = path;
+
     if (usingBigTiles) {
         path.x /= 2;
         path.y /= 2;
         path.z -= 1;
     }
+
     NSString *xyz = [[self class] xyzForPath:childPath];
+    NSString *xyzQueue = [[self class] xyzForPath:path];
     BOOL tileReady = NO;
+
+    // introduce a new tileRect that covers the entire region of a 512px tile
+    MKMapRect tileRect;
+
+    if (usingBigTiles) {
+        double xTile = 256.0 * path.x / (0.5 * zoomScale);
+        double yTile = 256.0 * path.y / (0.5 * zoomScale);
+        double wTile = 2.0 * mapRect.size.width;
+
+        tileRect = MKMapRectMake(xTile, yTile, wTile, wTile);
+    } else {
+        tileRect=mapRect;
+    }
 
     @synchronized(self) {
         tileReady = ([[self class] imageDataFromRenderer:self forXYZ:xyz usingBigTiles:usingBigTiles] != nil);
@@ -201,26 +217,30 @@
         __weak typeof(self) weakSelf = self;
         BOOL tileActive = NO;
         @synchronized(weakSelf) {
-            tileActive = ([weakSelf.activeDownloads containsObject:xyz]);
+            tileActive = ([weakSelf.activeDownloads containsObject:xyzQueue]);
             if ( ! tileActive) {
-                [weakSelf.activeDownloads addObject:xyz];
+                [weakSelf.activeDownloads addObject:xyzQueue];
             }
         }
         if ( ! tileActive) {
             [(MKTileOverlay *)weakSelf.overlay loadTileAtPath:path result:^(NSData *tileData, NSError *error) {
+
                 @synchronized(weakSelf) {
-                    [weakSelf.activeDownloads removeObject:xyz];
+                    [weakSelf.activeDownloads removeObject:xyzQueue];
                 }
                 if (tileData) {
                     NSData *tileDataCopy = [[NSData alloc] initWithBytes:tileData.bytes length:tileData.length];
+
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                         CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)tileDataCopy);
                         CGImageRef imageRef = nil;
+
                         if ([[weakSelf class] dataIsPNG:tileDataCopy]) {
                             imageRef = CGImageCreateWithPNGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
                         } else if ([[weakSelf class] dataIsJPEG:tileDataCopy]) {
                             imageRef = CGImageCreateWithJPEGDataProvider(provider, nil, NO, kCGRenderingIntentDefault);
                         }
+
                         if (imageRef) {
                             @synchronized(weakSelf) {
                                 [[weakSelf class] addImageData:tileDataCopy
@@ -229,14 +249,14 @@
                                                  usingBigTiles:usingBigTiles];
                             }
                         }
+
                         CGImageRelease(imageRef);
                         CGDataProviderRelease(provider);
+
+                        [weakSelf setNeedsDisplayInMapRect:tileRect zoomScale:zoomScale];
                     });
                 }
-                [weakSelf setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
             }];
-        } else {
-            [weakSelf setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
         }
         return NO;
     }
