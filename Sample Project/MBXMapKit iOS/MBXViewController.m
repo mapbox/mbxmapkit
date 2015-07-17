@@ -83,7 +83,7 @@
 
     // Configure a raster tile overlay to use the initial sample map
     //
-    _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm"];
+    _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"mapbox.emerald"];
 
     // Let the raster tile overlay know that we want to be notified when it has asynchronously loaded the sample map's metadata
     // (so we can set the map's center and zoom) and the sample map's markers (so we can add them to the map).
@@ -184,7 +184,7 @@
             // OSM world map
             [self resetMapViewAndRasterOverlayDefaults];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm"];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"mapbox.emerald"];
             _rasterOverlay.delegate = self;
             [_mapView addOverlay:_rasterOverlay];
             break;
@@ -250,7 +250,7 @@
             // Offline Map Downloader
             [self resetMapViewAndRasterOverlayDefaults];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"examples.map-pgygbwdm" includeMetadata:YES includeMarkers:YES];
+            _rasterOverlay = [[MBXRasterTileOverlay alloc] initWithMapID:@"mapbox.emerald" includeMetadata:YES includeMarkers:YES];
             _rasterOverlay.delegate = self;
             [_mapView addOverlay:_rasterOverlay];
             _offlineMapDownloadControlsView.hidden = NO;
