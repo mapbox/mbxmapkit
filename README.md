@@ -1,6 +1,8 @@
 MBXMapKit
 ---------
 
+**MBXMapKit is deprecated in favor of the [Mapbox iOS SDK](http://github.com/mapbox/mapbox-ios-sdk) 2.0.0 and above. The future of Mapbox maps is vector rendering, and Apple shows no signs of allowing custom vector rendering in MapKit, so we recommend that you use the OpenGL-based Mapbox iOS SDK 2.0.0 instead.**
+
 MBXMapKit extends Apple's MapKit to integrate with maps hosted on [Mapbox](http://mapbox.com), combining the performance of native maps with convenience and integration similar to [Mapbox.js](http://mapbox.com/mapbox.js). With MBXMapKit, your app is responsible for providing and managing its own `MKMapView` instance, while MBXMapKit provides tile overlays, annotations, and an offline map downloader so you can easily display maps from Mapbox both online and offline.
 
 [![](https://raw.github.com/mapbox/mbxmapkit/packaging/screenshot.png)]()
@@ -98,5 +100,3 @@ If you encounter an OS X related problem and want to file an issue or pull reque
 Check out the [overview guide](http://mapbox.com/mbxmapkit/) for summary details. 
 
 You might also be interested in the [Mapbox iOS SDK](http://mapbox.com/mapbox-ios-sdk/), which is a ground-up rewrite meant as a replacement for Apple's MapKit, not an extension of it. If you've always wished MapKit was open source for complete customizability, the Mapbox iOS SDK is for you. 
-
-Keep your eye also on [Mapbox GL](https://www.mapbox.com/blog/mapbox-gl/), the future of our rendering technology. We are aiming to have a clear upgrade path between existing toolsets and GL as it matures. Read more in the [Mapbox GL Cocoa FAQ](https://github.com/mapbox/mapbox-gl-native/blob/master/ios/FAQ.md). 
