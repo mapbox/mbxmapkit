@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+### 0.8.0
+#### August 21, 2015
+
+- Minor docs updates & deprecation in favor of the GL-based iOS SDK 2.0.0+ ([#172](https://github.com/mapbox/mbxmapkit/issues/172)). 
+
+
 ### 0.7.0
 #### February 4, 2015
 

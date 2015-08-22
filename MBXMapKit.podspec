@@ -1,7 +1,7 @@
 Pod::Spec.new do |m|
 
   m.name    = 'MBXMapKit'
-  m.version = '0.7.0'
+  m.version = '0.8.0'
 
   m.deprecated_in_favor_of = 'Mapbox-iOS-SDK'
 
