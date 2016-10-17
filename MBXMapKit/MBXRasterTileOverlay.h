@@ -102,6 +102,16 @@ extern NSInteger const MBXMapKitErrorCodeDictionaryMissingKeys;
 *   @return An initialized raster tile overlay, or `nil` if an overlay could not be initialized. */
 - (instancetype)initWithOfflineMapDatabase:(MBXOfflineMapDatabase *)offlineMapDatabase;
 
+/**
+ *  Initialize a URL for retrieving custom tiles and tile size handled by the underlying provider
+ *
+ *  @param urlString Tile server URL
+ *  @param tileSize  Tile size
+ *
+ *  @return  An initialized raster tile overlay, or `nil` if an overlay could not be initialized.
+ */
+- (instancetype)initWithTileURL:(NSString *)urlString tileSize:(NSInteger)tileSize;
+
 /** @name Accessing the Delegate */
 
 /** Delegate to notify of asynchronous resource load completion events. */

@@ -42,6 +42,10 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
 
 @interface MBXRasterTileOverlay ()
 
+#pragma mark - Private read-write backing properties for custom tile server
+
+@property (nonatomic, strong) NSString* overlayTileURLString;
+@property (nonatomic, assign) NSInteger overlayTileSize;
 
 #pragma mark - Private read-write backing properties for public read-only properties
 
@@ -229,6 +233,16 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
     return self;
 }
 
+- (instancetype)initWithTileURL:(NSString *)urlString tileSize:(NSInteger)tileSize {
+    self = [super init];
+    if (self)
+    {
+        self.overlayTileURLString = urlString;
+        self.overlayTileSize = tileSize;
+    }
+    return self;
+}
+
 - (void)setupMapID:(NSString *)mapID includeMetadata:(BOOL)includeMetadata includeMarkers:(BOOL)includeMarkers imageQuality:(MBXRasterImageQuality)imageQuality
 {
     // Save the map configuration
@@ -305,15 +319,28 @@ typedef void (^MBXRasterTileOverlayCompletionBlock)(NSData *data, NSError *error
         return;
     }
 
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v4/%@/%ld/%ld/%ld%@.%@%@",
-                                       _mapID,
-                                       (long)path.z,
-                                       (long)path.x,
-                                       (long)path.y,
-                                       (path.contentScaleFactor > 1.0 ? @"@2x" : @""),
-                                       [MBXRasterTileOverlay qualityExtensionForImageQuality:_imageQuality],
-                                       [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]]
-                                       ]];
+    NSURL *url = nil;
+    if(self.overlayTileURLString == nil) {
+        
+        url = [NSURL URLWithString:[NSString stringWithFormat:@"https://a.tiles.mapbox.com/v4/%@/%ld/%ld/%ld%@.%@%@",
+                                    _mapID,
+                                    (long)path.z,
+                                    (long)path.x,
+                                    (long)path.y,
+                                    (path.contentScaleFactor > 1.0 ? @"@2x" : @""),
+                                    [MBXRasterTileOverlay qualityExtensionForImageQuality:_imageQuality],
+                                    [@"?access_token=" stringByAppendingString:[MBXMapKit accessToken]]
+                                    ]];
+    } else {
+        self.tileSize = CGSizeMake(self.overlayTileSize, self.overlayTileSize);
+        NSString *urlString = [NSString stringWithFormat:self.overlayTileURLString,
+                               (long)path.z,
+                               (long)path.x,
+                               (long)path.y
+                               ];
+        
+        url = [NSURL URLWithString:urlString];
+    }
 
     MBXRasterTileOverlayCompletionBlock completionHandler = ^(NSData *data, NSError *error) {
         // Invoke the loadTileAtPath's completion handler
