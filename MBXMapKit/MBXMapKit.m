@@ -25,7 +25,8 @@ NSString *const MBXMapKitVersion = @"0.7.0";
 {
     zoomLevel = zoomLevel > 20 ? 20 : zoomLevel;
 
-    MKCoordinateRegion region = MKCoordinateRegionMake(centerCoordinate, MKCoordinateSpanMake(0, 360 / (pow(2, zoomLevel) * (self.frame.size.width / 256))));
+    CGFloat longitudeDelta = pow(2.0f, -(CGFloat)zoomLevel) * (self.frame.size.width / 256) * 360;
+    MKCoordinateRegion region = MKCoordinateRegionMake(centerCoordinate, MKCoordinateSpanMake(0, longitudeDelta));
     [self setRegion:region animated:animated];
 }
 
