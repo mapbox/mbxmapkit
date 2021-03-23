@@ -67,7 +67,7 @@ If you have questions about how to use MBXMapKit, or are encountering problems, 
  
  5. Take a look at [Mapbox questions](http://stackoverflow.com/questions/tagged/mapbox?sort=votes&pageSize=100) on StackOverflow.
 
- 6. If none of that helps, you can file an [issue](https://github.com/mapbox/mbxmapkit/issues?state=open) on GitHub, ask a question on [StackOverflow](http://stackoverflow.com/questions/tagged/mapbox?sort=votes&pageSize=100), or [contact Mapbox support](https://www.mapbox.com/help/).
+ 6. If none of that helps, you can file an [issue](https://github.com/mapbox/mbxmapkit/issues?state=open) on GitHub or ask a question on [StackOverflow](http://stackoverflow.com/questions/tagged/mapbox?sort=votes&pageSize=100). 
 
 ### Sample App
 
