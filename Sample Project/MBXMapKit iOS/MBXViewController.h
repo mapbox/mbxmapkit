@@ -5,8 +5,8 @@
 //  Copyright (c) 2014 Mapbox. All rights reserved.
 //
 
-@import UIKit;
-@import MapKit;
+#import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
 
 #import "MBXMapKit.h"
 

@@ -5,7 +5,7 @@
 //  Copyright (c) 2014 Mapbox. All rights reserved.
 //
 
-@import MapKit;
+#import <MapKit/MapKit.h>
 
 /** An `MBXRasterTileRenderer` object handles the drawing of tiles managed by an `MBXRasterTileOverlay` object. You create instances of this class when tile overlays become visible on the map view. A renderer works closely with its associated tile overlay object to coordinate the loading and drawing of tiles at appropriate times. */
 @interface MBXRasterTileRenderer : MKOverlayRenderer
